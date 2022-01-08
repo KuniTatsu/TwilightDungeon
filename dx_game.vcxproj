@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="program\game\game_main.cpp" />
+    <ClCompile Include="program\game\SoundManager.cpp" />
     <ClCompile Include="program\library\bounding.cpp" />
     <ClCompile Include="program\library\font.cpp" />
     <ClCompile Include="program\library\input.cpp" />

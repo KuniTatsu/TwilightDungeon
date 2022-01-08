@@ -70,6 +70,7 @@
     <ClCompile Include="program\library\shape.cpp">
       <Filter>program\library</Filter>
     </ClCompile>
+    <ClCompile Include="program\game\SoundManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="program\support\FrameRateController.h">
