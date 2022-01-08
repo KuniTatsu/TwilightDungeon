@@ -16,12 +16,12 @@ public:
 	GameManager();
 	~GameManager();
 
-	SceneManager* sManager = nullptr;
-	FadeControl* fControl = nullptr;
-	Sound* sound = nullptr;
+	/*SceneManager* sManager = nullptr;
+	FadeControl* fControl = nullptr;*/
+	//Sound* sound = nullptr;
 	Map* map = nullptr;
 
-
+	double graphEx = 1;
 	
 	//一度読み込んだghを保存するmap
 	std::unordered_map<std::string, int> ghmap;
@@ -44,17 +44,15 @@ public:
 	//すでにあるghならそれを返す
 	int LoadGraphEx(std::string gh);
 
-	
-
-	//ghを返す関数
-	std::vector<int> SetCharaGh(int num);
-
 	//アイテムの初期所持数を決める関数
 	void haveItemInit();
 
 	void setitem(int ItemId, int addNum);
 
-	
+	//a~bの間の乱数取得
+	int GetRandEx(int a, int b);
+
+	void ReCreate();
 private:
 	
 	//アイテム情報をexcelから読み取る関数
@@ -63,7 +61,9 @@ private:
 	std::vector<std::vector<std::string>> loadItemCsv;
 
 	//マップの幅
-	const int MAPWIDTH = 30;
+	const int MAPWIDTH = 33;
 	//マップの縦幅
-	const int MAPHEIGHT = 30;
+	const int MAPHEIGHT = 33;
+
+	
 };

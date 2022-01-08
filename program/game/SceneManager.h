@@ -7,9 +7,7 @@ class SceneManager {
 public:
 	enum SCENE {
 		TITLE,
-		DUNGEON
-
-
+		DUNGEON,
 	};
 
 	static void ChangeScene(SCENE scene);     //

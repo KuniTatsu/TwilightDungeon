@@ -34,6 +34,7 @@ void GameManager::Draw()
 
 void GameManager::initGameManager()
 {
+	SRand(time(0));
 	map = new Map(MAPWIDTH,MAPHEIGHT);
 	map->DivideStart(MAPWIDTH, MAPHEIGHT, map);
 
@@ -41,9 +42,6 @@ void GameManager::initGameManager()
 	//fControl = new FadeControl();
 
 	deitatime_ = 0;
-
-	SRand(time(0));
-
 	SceneManager::ChangeScene(SceneManager::SCENE::DUNGEON);
 
 	/*itemList.resize(3);
@@ -85,6 +83,22 @@ void GameManager::setitem(int ItemId, int addNum)
 	haveItem[ItemId][0] += addNum;
 }
 
+int GameManager::GetRandEx(int a, int b)
+{
+	if (a > b) {
+		int hoge = a - b;
+		int random = GetRand(hoge) + b;
+		return random;
+	}
+	else {
+		int hoge = b - a;
+		int random = GetRand(hoge) + a;
+		return random;
+	}
+	return 0;
+}
+
+
 
 void GameManager::loadItem()
 {
@@ -114,5 +128,14 @@ void GameManager::loadItem()
 		//abilitytype‚²‚Æ‚ÉƒŠƒXƒg‚ÉŠi”[
 		//itemList[b].emplace_back(abi);
 	}
+}
+
+void GameManager::ReCreate()
+{
+	delete map;
+	map = nullptr;
+
+	map = new Map(MAPWIDTH, MAPHEIGHT);
+	map->DivideStart(MAPWIDTH, MAPHEIGHT, map);
 }
 

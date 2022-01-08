@@ -1,15 +1,20 @@
 #pragma once
-#include <iostream>
+#define _HAS_STD_BYTE 0
 #include<vector>
-#include<stdlib.h>
-#include<algorithm>
+
 using namespace std;
+
+class Camera;
 
 class Map {
 
 public:
 	//マップ情報の初期化(すべてを壁にする)
 	Map(int Width, int Height);
+
+	
+
+
 	//マップチップを取得
 	int GetChip(int x, int y);
 	//マップチップをSetChipで書き換え
@@ -23,12 +28,15 @@ public:
 	void MapDraw();
 
 private:
+
+	Camera* camera = nullptr;
+
 	//部屋の最小幅
-	const int roomMinWidth = 6;
+	const int roomMinWidth = 5;
 	//部屋の最小高さ
-	const int roomMinHeight = 6;
+	const int roomMinHeight = 5;
 	//部屋の最大数
-	const int roomMaxNum = 10;
+	const int roomMaxNum = 8;
 	
 
 	//マップの幅(コンストラクタで使用)

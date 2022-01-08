@@ -1,8 +1,20 @@
 #include "Map.h"
 #include"GameManager.h"
 #include"DxLib.h"
+#include"Camera.h"
 
 extern GameManager* gManager;
+
+void Map::SetAllChip(int Left, int Up, int Right, int Down)
+{
+	for (int i = Up; i <= Down; ++i) {
+		for (int k = Left; k <= Right; ++k) {
+			SetChip(k, i, ROUTE);
+		}
+	}
+
+
+}
 
 void Map::DivideStart(int Width, int Height, Map* map)
 {
@@ -23,6 +35,8 @@ Map::Map(int Width, int Height)
 	mapChip[0] = gManager->LoadGraphEx("graphics/canWalk.png");
 	mapChip[1] = gManager->LoadGraphEx("graphics/Wall.png");
 
+	camera = new Camera();
+
 	width = Width;
 	height = Height;
 
@@ -41,20 +55,34 @@ Map::Map(int Width, int Height)
 
 }
 
+int Map::GetChip(int x, int y)
+{
+	if (IsOutOfRange(x, y))return outOfRange;
+	return ground[y][x];
+}
+
+void Map::SetChip(int x, int y, int SetChip)
+{
+	if (IsOutOfRange(x, y))return;
+	ground[y][x] = SetChip;
+}
+
 void Map::MapDraw()
 {
+	camera->CameraMove();
+	int x = 0;
 	int y = 0;
 	for (auto i : ground) {
 		for (auto k : i) {
-			int x = 0;
 			if (k == WALL) {
-				DrawRotaGraph(x, y, 1, 0, mapChip[1], false);
+				DrawRotaGraph(x-camera->cameraPos.x, y-camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
 			}
 			else {
-				DrawRotaGraph(x, y, 1, 0, mapChip[0], false);
+				DrawRotaGraph(x - camera->cameraPos.x, y - camera->cameraPos.y, gManager->graphEx, 0, mapChip[0], false);
 			}
 			x += 50;
 		}
+		x = 0;
 		y += 50;
 	}
 
@@ -124,20 +152,49 @@ void Map::AreaDivide()
 
 	while (1) {
 		//部屋の最低幅より狭かったら分割しない
-		if (upperWidth - lowerWidth < 2 * roomMinWidth + 4)break;
-		if (upperHeight - lowerHeight < 2 * roomMinHeight + 4)break;
+		if (upperWidth - lowerWidth < 2 * roomMinWidth + 4) {
+			break;
+		}
+		if (upperHeight - lowerHeight < 2 * roomMinHeight + 4) {
+			break;
+		}
 		//最大部屋数に達したら分割をやめる
-		if (roomId > roomMaxNum)break;
+		if (roomId > roomMaxNum) {
+			break;
+		}
 
 		//分割座標
 		int dividePoint = 0;
 		if (isVertical) {
+			dividePoint = gManager->GetRandEx((lowerWidth + 2 + roomMinWidth), (upperWidth - roomMinWidth - 2));
 
+			if ((upperWidth + lowerWidth) / 2 < dividePoint) {
+				SetDivideArea(dividePoint + 2, lowerHeight + 1, upperWidth - 1, upperHeight - 1, roomId);
+				upperWidth = dividePoint - 1;
+			}
+			else {
+				SetDivideArea(dividePoint + 1, lowerHeight + 1, upperWidth - 2, upperHeight - 1, roomId);
+				lowerWidth = dividePoint + 1;
+			}
+			SetDivideLine(dividePoint, lowerHeight + 1, dividePoint, upperHeight - 1, VERTICAL);
+			isVertical = false;
 		}
 		else {
+			dividePoint = gManager->GetRandEx((lowerHeight + 2 + roomMinHeight), (upperHeight - roomMinHeight - 2));
 
+			if ((upperHeight + lowerHeight) / 2 < dividePoint) {
+				SetDivideArea(lowerWidth + 1, dividePoint + 2, upperWidth - 1, upperHeight - 1, roomId);
+				upperHeight = dividePoint - 1;
+			}
+			else {
+				SetDivideArea(lowerWidth + 1, lowerHeight + 1, upperWidth - 1, dividePoint - 2, roomId);
+				lowerHeight = dividePoint + 1;
+			}
+			SetDivideLine(lowerWidth + 1, dividePoint, upperWidth - 1, dividePoint, HORIZONTAL);
+			isVertical = true;
 
 		}
+		++roomId;
 
 	}
 
@@ -145,8 +202,90 @@ void Map::AreaDivide()
 
 void Map::CreateRoom()
 {
+	for (auto area : divideArea) {
+
+		int left = area[0];
+		int up = area[1];
+		int right = area[2];
+		int down = area[3];
+
+		int roomLeft = gManager->GetRandEx(left, right - roomMinWidth + 1);
+		int roomRight = gManager->GetRandEx(roomLeft + roomMinWidth - 1, right);
+		int roomUp = gManager->GetRandEx(up, down - roomMinHeight + 1);
+		int roomDown = gManager->GetRandEx(roomUp + roomMinHeight - 1, down);
+
+		SetDivideRoom(roomLeft, roomUp, roomRight, roomDown);
+	}
+
 }
 
+//通路の数は部屋の数+1
 void Map::CreatePassWay()
 {
+	int count = 0;
+	int size = divideLine.size() - 1;
+
+	for (auto line : divideLine) {
+
+		if (count >= size)break;
+
+		int startX = line[0];
+		int startY = line[1];
+		int goalX = line[2];
+		int goalY = line[3];
+		int dir = line[4];
+
+		//部屋の情報の取得
+		vector<int> roomBefore = divideRoom[count];
+		vector<int> roomAfter = divideRoom[count + 1];
+
+		int leftBefore = roomBefore[0];
+		int upBefore = roomBefore[1];
+		int rightBefore = roomBefore[2];
+		int downBefore = roomBefore[3];
+
+		int leftAfter = roomAfter[0];
+		int upAfter = roomAfter[1];
+		int rightAfter = roomAfter[2];
+		int downAfter = roomAfter[3];
+
+		if (dir == VERTICAL) {
+			//部屋から通路を生やす位置を決定
+			int passWayBefore = gManager->GetRandEx(upBefore + 1, downBefore - 1);
+			int passWayAfter = gManager->GetRandEx(upAfter + 1, downAfter - 1);
+
+			//分割線と部屋の相対位置で場合分け
+			if (leftBefore < leftAfter) {
+				SetAllChip(rightBefore, passWayBefore, startX, passWayBefore);
+				SetAllChip(startX, passWayAfter, leftAfter, passWayAfter);
+			}
+			else {
+				SetAllChip(rightAfter, passWayAfter, startX, passWayAfter);
+				SetAllChip(startX, passWayBefore, leftBefore, passWayBefore);
+			}
+			if (passWayBefore > passWayAfter)swap(passWayBefore, passWayAfter);
+			SetAllChip(startX, passWayBefore, startX, passWayAfter);
+		}
+		else {
+			//部屋から通路を生やす位置を決定
+			int passWayBefore = gManager->GetRandEx(leftBefore + 1, rightBefore - 1);
+			int passWayAfter = gManager->GetRandEx(leftAfter + 1, rightAfter - 1);
+
+			//分割線と部屋の相対位置で場合分け
+			if (upBefore < upAfter) {
+				SetAllChip(passWayBefore, downBefore, passWayBefore, startY);
+				SetAllChip(passWayAfter, startY, passWayAfter, upAfter);
+			}
+			else {
+				SetAllChip(passWayAfter, downAfter, passWayAfter, startY);
+				SetAllChip(passWayBefore, startY, passWayBefore, upBefore);
+			}
+			if (passWayBefore > passWayAfter)swap(passWayBefore, passWayAfter);
+			SetAllChip(passWayBefore, startY, passWayAfter, startY);
+		}
+		count++;
+	}
+
+
+
 }

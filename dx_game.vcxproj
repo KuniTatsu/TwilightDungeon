@@ -11,9 +11,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="program\game\Camera.cpp" />
+    <ClCompile Include="program\game\DungeonScene.cpp" />
+    <ClCompile Include="program\game\GameManager.cpp" />
     <ClCompile Include="program\game\game_main.cpp" />
+    <ClCompile Include="program\game\Map.cpp" />
+    <ClCompile Include="program\game\MapManager.cpp" />
     <ClCompile Include="program\game\SceneManager.cpp" />
     <ClCompile Include="program\game\SoundManager.cpp" />
+    <ClCompile Include="program\game\TitleScene.cpp" />
     <ClCompile Include="program\library\bounding.cpp" />
     <ClCompile Include="program\library\font.cpp" />
     <ClCompile Include="program\library\input.cpp" />
@@ -31,8 +37,16 @@
     <ClCompile Include="program\system\sys_main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="program\game\Camera.h" />
+    <ClInclude Include="program\game\DungeonScene.h" />
+    <ClInclude Include="program\game\GameManager.h" />
     <ClInclude Include="program\game\game_main.h" />
+    <ClInclude Include="program\game\Map.h" />
+    <ClInclude Include="program\game\MapManager.h" />
+    <ClInclude Include="program\game\Scene.h" />
     <ClInclude Include="program\game\SceneManager.h" />
+    <ClInclude Include="program\game\SoundManager.h" />
+    <ClInclude Include="program\game\TitleScene.h" />
     <ClInclude Include="program\library\bounding.h" />
     <ClInclude Include="program\library\font.h" />
     <ClInclude Include="program\library\hierarchy_tree.h" />
