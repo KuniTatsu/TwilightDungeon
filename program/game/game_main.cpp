@@ -6,12 +6,20 @@
 #include <list>
 #include <map>
 #include <algorithm>
+#include"GameManager.h"
 
 bool init = false;
+
+GameManager* gManager = nullptr;
 
 void gameMain(float deltatime) {
 
 	if (!init) {
+
+		gManager = new GameManager();
+
+		gManager->initGameManager();
+
 		init = true;
 	}
 

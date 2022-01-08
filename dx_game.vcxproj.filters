@@ -71,6 +71,7 @@
       <Filter>program\library</Filter>
     </ClCompile>
     <ClCompile Include="program\game\SoundManager.cpp" />
+    <ClCompile Include="program\game\SceneManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="program\support\FrameRateController.h">
@@ -151,5 +152,6 @@
     <ClInclude Include="program\library\hierarchy_tree.h">
       <Filter>program\library</Filter>
     </ClInclude>
+    <ClInclude Include="program\game\SceneManager.h" />
   </ItemGroup>
 </Project>

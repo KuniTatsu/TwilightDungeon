@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="program\game\game_main.cpp" />
+    <ClCompile Include="program\game\SceneManager.cpp" />
     <ClCompile Include="program\game\SoundManager.cpp" />
     <ClCompile Include="program\library\bounding.cpp" />
     <ClCompile Include="program\library\font.cpp" />
@@ -31,6 +32,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="program\game\game_main.h" />
+    <ClInclude Include="program\game\SceneManager.h" />
     <ClInclude Include="program\library\bounding.h" />
     <ClInclude Include="program\library\font.h" />
     <ClInclude Include="program\library\hierarchy_tree.h" />
