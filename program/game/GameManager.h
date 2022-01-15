@@ -61,9 +61,9 @@ private:
 	std::vector<std::vector<std::string>> loadItemCsv;
 
 	//マップの幅
-	const int MAPWIDTH = 33;
+	const int MAPWIDTH = 50;
 	//マップの縦幅
-	const int MAPHEIGHT = 33;
+	const int MAPHEIGHT = 50;
 
 	
 };

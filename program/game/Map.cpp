@@ -32,8 +32,8 @@ void Map::DivideStart(int Width, int Height, Map* map)
 
 Map::Map(int Width, int Height)
 {
-	mapChip[0] = gManager->LoadGraphEx("graphics/canWalk.png");
-	mapChip[1] = gManager->LoadGraphEx("graphics/Wall.png");
+	mapChip[0] = gManager->LoadGraphEx("graphics/PassWay_20.png");
+	mapChip[1] = gManager->LoadGraphEx("graphics/Wall_20.png");
 
 	camera = new Camera();
 
@@ -75,15 +75,15 @@ void Map::MapDraw()
 	for (auto i : ground) {
 		for (auto k : i) {
 			if (k == WALL) {
-				DrawRotaGraph(x-camera->cameraPos.x, y-camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
+				DrawRotaGraph(x - camera->cameraPos.x, y - camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
 			}
 			else {
 				DrawRotaGraph(x - camera->cameraPos.x, y - camera->cameraPos.y, gManager->graphEx, 0, mapChip[0], false);
 			}
-			x += 50;
+			x += 20;
 		}
 		x = 0;
-		y += 50;
+		y += 20;
 	}
 
 
@@ -107,6 +107,18 @@ void Map::SetDivideArea(int Left, int Up, int Right, int Down, int Id)
 	divideArea[size - 1].emplace_back(Down);
 	divideArea[size - 1].emplace_back(Id);
 
+}
+
+void Map::setLargeDivideArea(int Left, int Up, int Right, int Down, int Id)
+{
+	dumpDivideArea.emplace_back();
+	int size = dumpDivideArea.size();
+	//区画に情報を格納
+	dumpDivideArea[size - 1].emplace_back(Left);
+	dumpDivideArea[size - 1].emplace_back(Up);
+	dumpDivideArea[size - 1].emplace_back(Right);
+	dumpDivideArea[size - 1].emplace_back(Down);
+	dumpDivideArea[size - 1].emplace_back(Id);
 }
 
 void Map::SetDivideLine(int Start_x, int Start_y, int Goal_x, int Goal_y, int Dir)
@@ -166,14 +178,17 @@ void Map::AreaDivide()
 		//分割座標
 		int dividePoint = 0;
 		if (isVertical) {
+			//ここで入れるランダムの値が、前回分割したときの大きい方の値だったら良くなる？
 			dividePoint = gManager->GetRandEx((lowerWidth + 2 + roomMinWidth), (upperWidth - roomMinWidth - 2));
 
 			if ((upperWidth + lowerWidth) / 2 < dividePoint) {
 				SetDivideArea(dividePoint + 2, lowerHeight + 1, upperWidth - 1, upperHeight - 1, roomId);
+				//setLargeDivideArea(dividePoint + 2, lowerHeight + 1, upperWidth - 1, upperHeight - 1, roomId);
 				upperWidth = dividePoint - 1;
 			}
 			else {
 				SetDivideArea(dividePoint + 1, lowerHeight + 1, upperWidth - 2, upperHeight - 1, roomId);
+				//setLargeDivideArea(dividePoint + 1, lowerHeight + 1, upperWidth - 2, upperHeight - 1, roomId);
 				lowerWidth = dividePoint + 1;
 			}
 			SetDivideLine(dividePoint, lowerHeight + 1, dividePoint, upperHeight - 1, VERTICAL);
@@ -184,10 +199,12 @@ void Map::AreaDivide()
 
 			if ((upperHeight + lowerHeight) / 2 < dividePoint) {
 				SetDivideArea(lowerWidth + 1, dividePoint + 2, upperWidth - 1, upperHeight - 1, roomId);
+				//setLargeDivideArea(lowerWidth + 1, dividePoint + 2, upperWidth - 1, upperHeight - 1, roomId);
 				upperHeight = dividePoint - 1;
 			}
 			else {
 				SetDivideArea(lowerWidth + 1, lowerHeight + 1, upperWidth - 1, dividePoint - 2, roomId);
+				//setLargeDivideArea(lowerWidth + 1, lowerHeight + 1, upperWidth - 1, dividePoint - 2, roomId);
 				lowerHeight = dividePoint + 1;
 			}
 			SetDivideLine(lowerWidth + 1, dividePoint, upperWidth - 1, dividePoint, HORIZONTAL);

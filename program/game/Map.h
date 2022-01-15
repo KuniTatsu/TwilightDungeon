@@ -54,6 +54,10 @@ private:
 	vector<vector<int>> ground;
 	//区間分割(区間)
 	vector<vector<int>> divideArea;
+
+	//分割した区間を一旦保存するvector
+	vector<vector<int>> dumpDivideArea;
+
 	//区間分割(区分線)
 	vector<vector<int>> divideLine;
 	//区間分割(部屋)
@@ -75,6 +79,9 @@ private:
 	//区間分割法
 	//上下左右の座標と部屋番号を取得してvectorに格納
 	void SetDivideArea(int Left, int Up, int Right, int Down, int Id);
+
+	//分割したエリアの大きい方を格納する関数
+	void setLargeDivideArea(int Left, int Up, int Right, int Down, int Id);
 
 	//全エリアを線で分割
 	//始点,終点のxy,方向
