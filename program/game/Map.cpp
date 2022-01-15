@@ -109,7 +109,7 @@ void Map::SetDivideArea(int Left, int Up, int Right, int Down, int Id)
 
 }
 
-void Map::setLargeDivideArea(int Left, int Up, int Right, int Down, int Id)
+void Map::SetLargeDivideArea(int Left, int Up, int Right, int Down, int Id)
 {
 	dumpDivideArea.emplace_back();
 	int size = dumpDivideArea.size();
@@ -154,67 +154,195 @@ void Map::AreaDivide()
 
 	int roomId = 0;
 
-	bool isVertical;
-	if (GetRand(1) == 1) {
-		isVertical = true;
-	}
-	else {
-		isVertical = false;
-	}
+	/*bool isVertical;*/
+	//if (GetRand(1) == 1) {
+	//	isVertical = true;
+	//}
+	//else {
+	//	isVertical = false;
+	//}
 
 	while (1) {
-		//•”‰®‚ÌÅ’á•‚æ‚è‹·‚©‚Á‚½‚ç•ªŠ„‚µ‚È‚¢
-		if (upperWidth - lowerWidth < 2 * roomMinWidth + 4) {
-			break;
-		}
-		if (upperHeight - lowerHeight < 2 * roomMinHeight + 4) {
-			break;
+		if (roomId > 0) {
+			//•”‰®‚ÌÅ’á•‚æ‚è‹·‚©‚Á‚½‚ç•ªŠ„‚µ‚È‚¢
+			if (dumpDivideArea[roomId - 1][2] - dumpDivideArea[roomId - 1][0] < 2 * roomMinWidth + 4) {
+				break;
+			}
+			if (dumpDivideArea[roomId - 1][3] - dumpDivideArea[roomId - 1][1] < 2 * roomMinHeight + 4) {
+				break;
+			}
 		}
 		//Å‘å•”‰®”‚É’B‚µ‚½‚ç•ªŠ„‚ğ‚â‚ß‚é
 		if (roomId > roomMaxNum) {
 			break;
 		}
 
+		////•”‰®‚ÌÅ’á•‚æ‚è‹·‚©‚Á‚½‚ç•ªŠ„‚µ‚È‚¢
+		//if (upperWidth - lowerWidth < 2 * roomMinWidth + 4) {
+		//	break;
+		//}
+		//if (upperHeight - lowerHeight < 2 * roomMinHeight + 4) {
+		//	break;
+		//}
+		////Å‘å•”‰®”‚É’B‚µ‚½‚ç•ªŠ„‚ğ‚â‚ß‚é
+		//if (roomId > roomMaxNum) {
+		//	break;
+		//}
+
 		//•ªŠ„À•W
 		int dividePoint = 0;
-		if (isVertical) {
-			//‚±‚±‚Å“ü‚ê‚éƒ‰ƒ“ƒ_ƒ€‚Ì’l‚ªA‘O‰ñ•ªŠ„‚µ‚½‚Æ‚«‚Ì‘å‚«‚¢•û‚Ì’l‚¾‚Á‚½‚ç—Ç‚­‚È‚éH
-			dividePoint = gManager->GetRandEx((lowerWidth + 2 + roomMinWidth), (upperWidth - roomMinWidth - 2));
 
-			if ((upperWidth + lowerWidth) / 2 < dividePoint) {
-				SetDivideArea(dividePoint + 2, lowerHeight + 1, upperWidth - 1, upperHeight - 1, roomId);
-				//setLargeDivideArea(dividePoint + 2, lowerHeight + 1, upperWidth - 1, upperHeight - 1, roomId);
-				upperWidth = dividePoint - 1;
+		//Å‰‚Ì•ªŠ„‚¾‚Á‚½‚ç
+		if (!doneFirstDivide) {
+			//‚à‚µ‰¡‚ªc‚æ‚è‘å‚«‚©‚Á‚½‚ç
+			if ((upperWidth - lowerWidth) > (upperHeight - lowerHeight)) {
+				//‰¡‚Ì‚Ç‚±‚©‚Åc‚ÉØ‚é
+				dividePoint = gManager->GetRandEx((lowerWidth + 2 + roomMinWidth), (upperWidth - roomMinWidth - 2));
+
+				//”¼•ª‚æ‚è¶‚È‚ç ¨¶‚Ì•”‰®‚ª¬‚³‚­A‰E‚Ì•”‰®‚ÍL‚¢
+				if (dividePoint < (upperWidth / 2)) {
+					//¬‚³‚¢•û‚ğ“o˜^‚·‚é
+					SetDivideArea(lowerWidth + 1, lowerHeight + 1, dividePoint - 2, upperHeight - 1, roomId);
+					//‘å‚«‚¢•û‚ğ“o˜^‚·‚é
+					SetLargeDivideArea(dividePoint + 1, lowerHeight - 1, upperWidth - 1, upperHeight - 1, roomId);
+				}
+				//”¼•ª‚æ‚è‰E‚È‚ç ¨‰E‚Ì•”‰®‚ª¬‚³‚­A¶‚Ì•”‰®‚ÍL‚¢
+				else {
+					//¬‚³‚¢•û‚ğ“o˜^‚·‚é
+					SetDivideArea(dividePoint + 2, lowerHeight + 1, upperWidth - 1, upperHeight - 1, roomId);
+					//‘å‚«‚¢•û‚ğ“o˜^‚·‚é
+					SetLargeDivideArea(lowerWidth + 1, lowerHeight - 1, dividePoint - 1, upperHeight - 1, roomId);
+				}
+				//•ªŠ„ü‚ğˆø‚­
+				SetDivideLine(dividePoint, lowerHeight + 1, dividePoint, upperHeight - 1, VERTICAL);
 			}
+			//‚à‚µc‚ª‰¡‚æ‚è‘å‚«‚©‚Á‚½‚ç
 			else {
-				SetDivideArea(dividePoint + 1, lowerHeight + 1, upperWidth - 2, upperHeight - 1, roomId);
-				//setLargeDivideArea(dividePoint + 1, lowerHeight + 1, upperWidth - 2, upperHeight - 1, roomId);
-				lowerWidth = dividePoint + 1;
+				//c‚Ì‚Ç‚±‚©‚Å‰¡‚É‚«‚é
+				dividePoint = gManager->GetRandEx((lowerHeight + 2 + roomMinHeight), (upperHeight - roomMinHeight - 2));
+				//”¼•ª‚æ‚èã‚È‚ç ¨ã‚Ì•”‰®‚ª¬‚³‚­A‰º‚Ì•”‰®‚ÍL‚¢
+				if (dividePoint < (upperHeight / 2)) {
+					//¬‚³‚¢•û‚ğ“o˜^‚·‚é
+					SetDivideArea(lowerWidth + 1, lowerHeight + 1, upperWidth - 1, dividePoint - 2, roomId);
+					//‘å‚«‚¢•û‚ğ“o˜^‚·‚é
+					SetLargeDivideArea(lowerWidth + 1, dividePoint + 1, upperWidth - 1, upperHeight - 1, roomId);
+
+				}
+				//”¼•ª‚æ‚è‰º‚È‚ç ¨ã‚Ì•”‰®‚ª‘å‚«‚­A‰º‚Ì•”‰®‚Í¬‚³‚¢
+				else {
+					//¬‚³‚¢•û‚ğ“o˜^‚·‚é
+					SetDivideArea(lowerWidth + 1, dividePoint + 2, upperWidth - 1, upperHeight - 1, roomId);
+					//‘å‚«‚¢•û‚ğ“o˜^‚·‚é
+					SetLargeDivideArea(lowerWidth + 1, lowerHeight + 1, upperWidth - 1, dividePoint - 1, roomId);
+				}
+
+				//•ªŠ„ü‚ğˆø‚­
+				SetDivideLine(lowerWidth + 1, dividePoint, upperWidth - 1, dividePoint, HORIZONTAL);
 			}
-			SetDivideLine(dividePoint, lowerHeight + 1, dividePoint, upperHeight - 1, VERTICAL);
-			isVertical = false;
+			//Å‰‚Ì•ªŠ„‚ğI—¹‚·‚é@ˆÈ~‚ÍSetLargeDivideArea‚É“o˜^‚³‚ê‚½•”‰®‚ğX‚É•ªŠ„‚µ‚Ä‚¢‚­
+			doneFirstDivide = true;
+			++roomId;
+			continue;
 		}
 		else {
-			dividePoint = gManager->GetRandEx((lowerHeight + 2 + roomMinHeight), (upperHeight - roomMinHeight - 2));
 
-			if ((upperHeight + lowerHeight) / 2 < dividePoint) {
-				SetDivideArea(lowerWidth + 1, dividePoint + 2, upperWidth - 1, upperHeight - 1, roomId);
-				//setLargeDivideArea(lowerWidth + 1, dividePoint + 2, upperWidth - 1, upperHeight - 1, roomId);
-				upperHeight = dividePoint - 1;
+			int left = dumpDivideArea[roomId - 1][0];
+			int up = dumpDivideArea[roomId - 1][1];
+			int right = dumpDivideArea[roomId - 1][2];
+			int down = dumpDivideArea[roomId - 1][3];
+
+			//‚à‚µ‰¡‚ªc‚æ‚è‘å‚«‚©‚Á‚½‚ç
+			if ((right - left) > (down - up)) {
+				//‰¡‚Ì‚Ç‚±‚©‚Åc‚ÉØ‚é
+				dividePoint = gManager->GetRandEx((left + 2 + roomMinWidth), (right - roomMinWidth - 2));
+
+				//”¼•ª‚æ‚è¶‚È‚ç ¨¶‚Ì•”‰®‚ª¬‚³‚­A‰E‚Ì•”‰®‚ÍL‚¢
+				if (dividePoint < ((right + left) / 2)) {
+					//¬‚³‚¢•û‚ğ“o˜^‚·‚é
+					SetDivideArea(left + 1, up + 1, dividePoint - 2, down - 1, roomId);
+					//‘å‚«‚¢•û‚ğ“o˜^‚·‚é
+					SetLargeDivideArea(dividePoint + 1, up - 1, right - 1, down - 1, roomId);
+				}
+				//”¼•ª‚æ‚è‰E‚È‚ç ¨‰E‚Ì•”‰®‚ª¬‚³‚­A¶‚Ì•”‰®‚ÍL‚¢
+				else {
+					//¬‚³‚¢•û‚ğ“o˜^‚·‚é
+					SetDivideArea(dividePoint + 2, up + 1, right - 1, down - 1, roomId);
+					//‘å‚«‚¢•û‚ğ“o˜^‚·‚é
+					SetLargeDivideArea(left + 1, up - 1, dividePoint - 1, down - 1, roomId);
+				}
+				//•ªŠ„ü‚ğˆø‚­
+				SetDivideLine(dividePoint, up + 1, dividePoint, down - 1, VERTICAL);
 			}
+			//‚à‚µc‚ª‰¡‚æ‚è‘å‚«‚©‚Á‚½‚ç
 			else {
-				SetDivideArea(lowerWidth + 1, lowerHeight + 1, upperWidth - 1, dividePoint - 2, roomId);
-				//setLargeDivideArea(lowerWidth + 1, lowerHeight + 1, upperWidth - 1, dividePoint - 2, roomId);
-				lowerHeight = dividePoint + 1;
-			}
-			SetDivideLine(lowerWidth + 1, dividePoint, upperWidth - 1, dividePoint, HORIZONTAL);
-			isVertical = true;
+				//c‚Ì‚Ç‚±‚©‚Å‰¡‚É‚«‚é
+				dividePoint = gManager->GetRandEx((up + 2 + roomMinHeight), (down - roomMinHeight - 2));
 
+				//”¼•ª‚æ‚èã‚È‚ç ¨ã‚Ì•”‰®‚ª¬‚³‚­A‰º‚Ì•”‰®‚ÍL‚¢
+				if (dividePoint < ((down + up) / 2)) {
+					//¬‚³‚¢•û‚ğ“o˜^‚·‚é
+					SetDivideArea(left + 1, up + 1, right - 1, dividePoint - 2, roomId);
+					//‘å‚«‚¢•û‚ğ“o˜^‚·‚é
+					SetLargeDivideArea(left + 1, dividePoint + 1, right - 1, down - 1, roomId);
+
+				}
+				//”¼•ª‚æ‚è‰º‚È‚ç ¨ã‚Ì•”‰®‚ª‘å‚«‚­A‰º‚Ì•”‰®‚Í¬‚³‚¢
+				else {
+					//¬‚³‚¢•û‚ğ“o˜^‚·‚é
+					SetDivideArea(left + 1, dividePoint + 2, right - 1, down - 1, roomId);
+					//‘å‚«‚¢•û‚ğ“o˜^‚·‚é
+					SetLargeDivideArea(left + 1, up + 1, right - 1, dividePoint - 1, roomId);
+				}
+
+				//•ªŠ„ü‚ğˆø‚­
+				SetDivideLine(left + 1, dividePoint, right - 1, dividePoint, HORIZONTAL);
+			}
+
+			++roomId;
+			continue;
 		}
-		++roomId;
 
 	}
+#if 0
 
+	if (isVertical) {
+		//‚±‚±‚Å“ü‚ê‚éƒ‰ƒ“ƒ_ƒ€‚Ì’l‚ªA‘O‰ñ•ªŠ„‚µ‚½‚Æ‚«‚Ì‘å‚«‚¢•û‚Ì’l‚¾‚Á‚½‚ç—Ç‚­‚È‚éH
+		dividePoint = gManager->GetRandEx((lowerWidth + 2 + roomMinWidth), (upperWidth - roomMinWidth - 2));
+
+		if ((upperWidth + lowerWidth) / 2 < dividePoint) {
+			SetDivideArea(dividePoint + 2, lowerHeight + 1, upperWidth - 1, upperHeight - 1, roomId);
+			//setLargeDivideArea(dividePoint + 2, lowerHeight + 1, upperWidth - 1, upperHeight - 1, roomId);
+			upperWidth = dividePoint - 1;
+		}
+		else {
+			SetDivideArea(dividePoint + 1, lowerHeight + 1, upperWidth - 2, upperHeight - 1, roomId);
+			//setLargeDivideArea(dividePoint + 1, lowerHeight + 1, upperWidth - 2, upperHeight - 1, roomId);
+			lowerWidth = dividePoint + 1;
+		}
+		SetDivideLine(dividePoint, lowerHeight + 1, dividePoint, upperHeight - 1, VERTICAL);
+		isVertical = false;
+	}
+	else {
+		dividePoint = gManager->GetRandEx((lowerHeight + 2 + roomMinHeight), (upperHeight - roomMinHeight - 2));
+
+		if ((upperHeight + lowerHeight) / 2 < dividePoint) {
+			SetDivideArea(lowerWidth + 1, dividePoint + 2, upperWidth - 1, upperHeight - 1, roomId);
+			//setLargeDivideArea(lowerWidth + 1, dividePoint + 2, upperWidth - 1, upperHeight - 1, roomId);
+			upperHeight = dividePoint - 1;
+		}
+		else {
+			SetDivideArea(lowerWidth + 1, lowerHeight + 1, upperWidth - 1, dividePoint - 2, roomId);
+			//setLargeDivideArea(lowerWidth + 1, lowerHeight + 1, upperWidth - 1, dividePoint - 2, roomId);
+			lowerHeight = dividePoint + 1;
+		}
+		SetDivideLine(lowerWidth + 1, dividePoint, upperWidth - 1, dividePoint, HORIZONTAL);
+		isVertical = true;
+
+	}
+	++roomId;
+
+	}
+#endif
 }
 
 void Map::CreateRoom()

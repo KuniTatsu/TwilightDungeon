@@ -31,6 +31,8 @@ private:
 
 	Camera* camera = nullptr;
 
+	bool doneFirstDivide = false;
+
 	//部屋の最小幅
 	const int roomMinWidth = 5;
 	//部屋の最小高さ
@@ -81,7 +83,7 @@ private:
 	void SetDivideArea(int Left, int Up, int Right, int Down, int Id);
 
 	//分割したエリアの大きい方を格納する関数
-	void setLargeDivideArea(int Left, int Up, int Right, int Down, int Id);
+	void SetLargeDivideArea(int Left, int Up, int Right, int Down, int Id);
 
 	//全エリアを線で分割
 	//始点,終点のxy,方向

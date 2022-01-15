@@ -60,7 +60,7 @@ private:
 
 	std::vector<std::vector<std::string>> loadItemCsv;
 
-	//マップの幅
+	//マップの幅(チップ数)
 	const int MAPWIDTH = 50;
 	//マップの縦幅
 	const int MAPHEIGHT = 50;
