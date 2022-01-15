@@ -22,6 +22,7 @@ void gameMain(float deltatime) {
 
 		init = true;
 	}
+	
 	gManager->deitatime_ = deltatime;
 	gManager->Update();
 	gManager->Draw();

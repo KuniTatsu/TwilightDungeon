@@ -78,6 +78,7 @@
     <ClCompile Include="program\game\TitleScene.cpp" />
     <ClCompile Include="program\game\DungeonScene.cpp" />
     <ClCompile Include="program\game\Camera.cpp" />
+    <ClCompile Include="program\game\Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="program\support\FrameRateController.h">
@@ -167,5 +168,6 @@
     <ClInclude Include="program\game\DungeonScene.h" />
     <ClInclude Include="program\game\SoundManager.h" />
     <ClInclude Include="program\game\Camera.h" />
+    <ClInclude Include="program\game\Player.h" />
   </ItemGroup>
 </Project>

@@ -2,6 +2,7 @@
 #include<vector>
 #include<string>
 #include<unordered_map>
+#include "../library/t2klib.h"
 class SceneManager;
 
 class Item;
@@ -53,6 +54,11 @@ public:
 	int GetRandEx(int a, int b);
 
 	void ReCreate();
+	//mapのどのチップか取得する
+	t2k::Vector3 WorldToLocal(t2k::Vector3 Pos);
+	//マップのチップの情報を取得する
+	int GetMapChip(t2k::Vector3 PInChip);
+
 private:
 	
 	//アイテム情報をexcelから読み取る関数
@@ -65,5 +71,7 @@ private:
 	//マップの縦幅
 	const int MAPHEIGHT = 50;
 
+
+	void Zoom(double* zoomEx);
 	
 };

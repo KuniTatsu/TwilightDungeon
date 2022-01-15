@@ -12,8 +12,6 @@ void Map::SetAllChip(int Left, int Up, int Right, int Down)
 			SetChip(k, i, ROUTE);
 		}
 	}
-
-
 }
 
 void Map::DivideStart(int Width, int Height, Map* map)
@@ -28,6 +26,22 @@ void Map::DivideStart(int Width, int Height, Map* map)
 		SetAllChip(room[0], room[1], room[2], room[3]);
 	}
 
+}
+
+t2k::Vector3 Map::WorldToMap(int WorldX, int WorldY)
+{
+	int mapX = WorldX / width;
+	int mapY = WorldY / height;
+
+	return t2k::Vector3(mapX, mapY, 0);
+}
+
+t2k::Vector3 Map::MapToWorld(int MapX, int MapY)
+{
+	int worldX = MapX * width;
+	int worldY = MapY * height;
+
+	return t2k::Vector3(worldX,worldY,0);
 }
 
 Map::Map(int Width, int Height)
@@ -192,6 +206,8 @@ void Map::AreaDivide()
 		//•ªŠ„À•W
 		int dividePoint = 0;
 
+		//•ªŠ„ü‚©‚ç•”‰®‚Ü‚Å‚ÍÅ’á2—£‚·
+		
 		//Å‰‚Ì•ªŠ„‚¾‚Á‚½‚ç
 		if (!doneFirstDivide) {
 			//‚à‚µ‰¡‚ªc‚æ‚è‘å‚«‚©‚Á‚½‚ç
@@ -341,96 +357,96 @@ void Map::AreaDivide()
 	}
 	++roomId;
 
-	}
+		}
 #endif
-}
-
-void Map::CreateRoom()
-{
-	for (auto area : divideArea) {
-
-		int left = area[0];
-		int up = area[1];
-		int right = area[2];
-		int down = area[3];
-
-		int roomLeft = gManager->GetRandEx(left, right - roomMinWidth + 1);
-		int roomRight = gManager->GetRandEx(roomLeft + roomMinWidth - 1, right);
-		int roomUp = gManager->GetRandEx(up, down - roomMinHeight + 1);
-		int roomDown = gManager->GetRandEx(roomUp + roomMinHeight - 1, down);
-
-		SetDivideRoom(roomLeft, roomUp, roomRight, roomDown);
 	}
 
-}
+	void Map::CreateRoom()
+	{
+		for (auto area : divideArea) {
 
-//’Ê˜H‚Ì”‚Í•”‰®‚Ì”+1
-void Map::CreatePassWay()
-{
-	int count = 0;
-	int size = divideLine.size() - 1;
+			int left = area[0];
+			int up = area[1];
+			int right = area[2];
+			int down = area[3];
 
-	for (auto line : divideLine) {
+			int roomLeft = gManager->GetRandEx(left, right - roomMinWidth + 1);
+			int roomRight = gManager->GetRandEx(roomLeft + roomMinWidth - 1, right);
+			int roomUp = gManager->GetRandEx(up, down - roomMinHeight + 1);
+			int roomDown = gManager->GetRandEx(roomUp + roomMinHeight - 1, down);
 
-		if (count >= size)break;
-
-		int startX = line[0];
-		int startY = line[1];
-		int goalX = line[2];
-		int goalY = line[3];
-		int dir = line[4];
-
-		//•”‰®‚Ìî•ñ‚Ìæ“¾
-		vector<int> roomBefore = divideRoom[count];
-		vector<int> roomAfter = divideRoom[count + 1];
-
-		int leftBefore = roomBefore[0];
-		int upBefore = roomBefore[1];
-		int rightBefore = roomBefore[2];
-		int downBefore = roomBefore[3];
-
-		int leftAfter = roomAfter[0];
-		int upAfter = roomAfter[1];
-		int rightAfter = roomAfter[2];
-		int downAfter = roomAfter[3];
-
-		if (dir == VERTICAL) {
-			//•”‰®‚©‚ç’Ê˜H‚ğ¶‚â‚·ˆÊ’u‚ğŒˆ’è
-			int passWayBefore = gManager->GetRandEx(upBefore + 1, downBefore - 1);
-			int passWayAfter = gManager->GetRandEx(upAfter + 1, downAfter - 1);
-
-			//•ªŠ„ü‚Æ•”‰®‚Ì‘Š‘ÎˆÊ’u‚Åê‡•ª‚¯
-			if (leftBefore < leftAfter) {
-				SetAllChip(rightBefore, passWayBefore, startX, passWayBefore);
-				SetAllChip(startX, passWayAfter, leftAfter, passWayAfter);
-			}
-			else {
-				SetAllChip(rightAfter, passWayAfter, startX, passWayAfter);
-				SetAllChip(startX, passWayBefore, leftBefore, passWayBefore);
-			}
-			if (passWayBefore > passWayAfter)swap(passWayBefore, passWayAfter);
-			SetAllChip(startX, passWayBefore, startX, passWayAfter);
+			SetDivideRoom(roomLeft, roomUp, roomRight, roomDown);
 		}
-		else {
-			//•”‰®‚©‚ç’Ê˜H‚ğ¶‚â‚·ˆÊ’u‚ğŒˆ’è
-			int passWayBefore = gManager->GetRandEx(leftBefore + 1, rightBefore - 1);
-			int passWayAfter = gManager->GetRandEx(leftAfter + 1, rightAfter - 1);
 
-			//•ªŠ„ü‚Æ•”‰®‚Ì‘Š‘ÎˆÊ’u‚Åê‡•ª‚¯
-			if (upBefore < upAfter) {
-				SetAllChip(passWayBefore, downBefore, passWayBefore, startY);
-				SetAllChip(passWayAfter, startY, passWayAfter, upAfter);
-			}
-			else {
-				SetAllChip(passWayAfter, downAfter, passWayAfter, startY);
-				SetAllChip(passWayBefore, startY, passWayBefore, upBefore);
-			}
-			if (passWayBefore > passWayAfter)swap(passWayBefore, passWayAfter);
-			SetAllChip(passWayBefore, startY, passWayAfter, startY);
-		}
-		count++;
 	}
 
+	//’Ê˜H‚Ì”‚Í•”‰®‚Ì”+1
+	void Map::CreatePassWay()
+	{
+		int count = 0;
+		int size = divideLine.size() - 1;
+
+		for (auto line : divideLine) {
+
+			if (count >= size)break;
+
+			int startX = line[0];
+			int startY = line[1];
+			int goalX = line[2];
+			int goalY = line[3];
+			int dir = line[4];
+
+			//•”‰®‚Ìî•ñ‚Ìæ“¾
+			vector<int> roomBefore = divideRoom[count];
+			vector<int> roomAfter = divideRoom[count + 1];
+
+			int leftBefore = roomBefore[0];
+			int upBefore = roomBefore[1];
+			int rightBefore = roomBefore[2];
+			int downBefore = roomBefore[3];
+
+			int leftAfter = roomAfter[0];
+			int upAfter = roomAfter[1];
+			int rightAfter = roomAfter[2];
+			int downAfter = roomAfter[3];
+
+			if (dir == VERTICAL) {
+				//•”‰®‚©‚ç’Ê˜H‚ğ¶‚â‚·ˆÊ’u‚ğŒˆ’è
+				int passWayBefore = gManager->GetRandEx(upBefore + 1, downBefore - 1);
+				int passWayAfter = gManager->GetRandEx(upAfter + 1, downAfter - 1);
+
+				//•ªŠ„ü‚Æ•”‰®‚Ì‘Š‘ÎˆÊ’u‚Åê‡•ª‚¯
+				if (leftBefore < leftAfter) {
+					SetAllChip(rightBefore, passWayBefore, startX, passWayBefore);
+					SetAllChip(startX, passWayAfter, leftAfter, passWayAfter);
+				}
+				else {
+					SetAllChip(rightAfter, passWayAfter, startX, passWayAfter);
+					SetAllChip(startX, passWayBefore, leftBefore, passWayBefore);
+				}
+				if (passWayBefore > passWayAfter)swap(passWayBefore, passWayAfter);
+				SetAllChip(startX, passWayBefore, startX, passWayAfter);
+			}
+			else {
+				//•”‰®‚©‚ç’Ê˜H‚ğ¶‚â‚·ˆÊ’u‚ğŒˆ’è
+				int passWayBefore = gManager->GetRandEx(leftBefore + 1, rightBefore - 1);
+				int passWayAfter = gManager->GetRandEx(leftAfter + 1, rightAfter - 1);
+
+				//•ªŠ„ü‚Æ•”‰®‚Ì‘Š‘ÎˆÊ’u‚Åê‡•ª‚¯
+				if (upBefore < upAfter) {
+					SetAllChip(passWayBefore, downBefore, passWayBefore, startY);
+					SetAllChip(passWayAfter, startY, passWayAfter, upAfter);
+				}
+				else {
+					SetAllChip(passWayAfter, downAfter, passWayAfter, startY);
+					SetAllChip(passWayBefore, startY, passWayBefore, upBefore);
+				}
+				if (passWayBefore > passWayAfter)swap(passWayBefore, passWayAfter);
+				SetAllChip(passWayBefore, startY, passWayAfter, startY);
+			}
+			count++;
+		}
 
 
-}
+
+	}

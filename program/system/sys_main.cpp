@@ -6,6 +6,7 @@
 
 static std::chrono::system_clock::time_point clock_start, clock_end ; 
 
+
 // プログラムは WinMain から始まります
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 						LPSTR lpCmdLine, int nCmdShow )
@@ -20,6 +21,9 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	// フレームレート設定
 	FpsSetting( 60, 800 ) ;
 
+	
+	
+
 	// ＤＸライブラリ初期化処理
 	if( DxLib_Init() == -1 )		
 	{
@@ -27,6 +31,8 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		return -1 ;				
 	}
 	SetDrawScreen(DX_SCREEN_BACK);
+
+	int ZoomScreen = MakeScreen(1024, 768);
 
 	// 計測開始時間
 	clock_start = std::chrono::system_clock::now();
@@ -61,8 +67,12 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		// フレームレートコントロール
 		FpsControll() ;
 
+
 		// バックバッファをフリップ
-		ScreenFlip() ;
+		SetDrawScreen(DX_SCREEN_BACK);
+		DrawRotaGraph(1024 / 2, 768 / 2, zoomEx, 0, ZoomScreen, FALSE);
+		ScreenFlip();
+		SetDrawScreen(ZoomScreen);
 		//SetWaitVSyncFlag(FALSE);
 
 	}

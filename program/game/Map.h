@@ -1,6 +1,7 @@
 #pragma once
 #define _HAS_STD_BYTE 0
 #include<vector>
+#include"../library/t2klib.h"
 
 using namespace std;
 
@@ -12,8 +13,8 @@ public:
 	//マップ情報の初期化(すべてを壁にする)
 	Map(int Width, int Height);
 
-	
-
+	//マップの背景
+	vector<vector<int>> ground;
 
 	//マップチップを取得
 	int GetChip(int x, int y);
@@ -23,6 +24,11 @@ public:
 	void SetAllChip(int Left, int Up, int Right, int Down);
 
 	void DivideStart(int Width, int Height, Map* map);
+
+	t2k::Vector3 WorldToMap(int WorldX, int WorldY);
+	t2k::Vector3 MapToWorld(int MapX, int MapY);
+
+
 
 	//マップ全体の描画
 	void MapDraw();
@@ -52,8 +58,7 @@ private:
 	int mapChip[3] = {};
 
 
-	//マップの背景
-	vector<vector<int>> ground;
+	
 	//区間分割(区間)
 	vector<vector<int>> divideArea;
 

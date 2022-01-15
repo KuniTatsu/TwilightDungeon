@@ -1,11 +1,12 @@
 #include "GameManager.h"
 #include"SceneManager.h"
 #include"DxLib.h"
-#include "../library/t2klib.h"
+
 #include"../support/Support.h"
 #include<string>
 #include"map.h"
 #include<time.h>
+#include"game_main.h"
 
 //#include"Item.h"
 //#include "FadeControl.h"
@@ -15,7 +16,7 @@
 
 GameManager::GameManager()
 {
-
+	
 }
 
 GameManager::~GameManager()
@@ -26,6 +27,7 @@ GameManager::~GameManager()
 void GameManager::Update()
 {
 	SceneManager::Update();
+	
 }
 void GameManager::Draw()
 {
@@ -130,6 +132,17 @@ void GameManager::loadItem()
 	}
 }
 
+void GameManager::Zoom(double* zoomEx)
+{
+	//if (t2k::Input::isKeyDown(t2k::Input::KEYBORD_Z)) {
+	//	*zoomEx -= 0.01;
+	//}
+	//else if (t2k::Input::isKeyDown(t2k::Input::KEYBORD_X)) {
+	//	*zoomEx += 0.01;
+	//}
+
+}
+
 void GameManager::ReCreate()
 {
 	delete map;
@@ -137,5 +150,15 @@ void GameManager::ReCreate()
 
 	map = new Map(MAPWIDTH, MAPHEIGHT);
 	map->DivideStart(MAPWIDTH, MAPHEIGHT, map);
+}
+
+t2k::Vector3 GameManager::WorldToLocal(t2k::Vector3 Pos)
+{
+	return map->WorldToMap(Pos.x, Pos.y);
+}
+
+int GameManager::GetMapChip(t2k::Vector3 PInChip)
+{
+	return map->GetChip(PInChip.x, PInChip.y);
 }
 

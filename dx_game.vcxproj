@@ -17,6 +17,7 @@
     <ClCompile Include="program\game\game_main.cpp" />
     <ClCompile Include="program\game\Map.cpp" />
     <ClCompile Include="program\game\MapManager.cpp" />
+    <ClCompile Include="program\game\Player.cpp" />
     <ClCompile Include="program\game\SceneManager.cpp" />
     <ClCompile Include="program\game\SoundManager.cpp" />
     <ClCompile Include="program\game\TitleScene.cpp" />
@@ -43,6 +44,7 @@
     <ClInclude Include="program\game\game_main.h" />
     <ClInclude Include="program\game\Map.h" />
     <ClInclude Include="program\game\MapManager.h" />
+    <ClInclude Include="program\game\Player.h" />
     <ClInclude Include="program\game\Scene.h" />
     <ClInclude Include="program\game\SceneManager.h" />
     <ClInclude Include="program\game\SoundManager.h" />
