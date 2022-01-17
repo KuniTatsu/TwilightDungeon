@@ -11,7 +11,7 @@ public:
 
 	void Move();
 	
-
+	void Draw();
 private:
 
 	int gh = 0;

@@ -1,6 +1,7 @@
 #include "Player.h"
 #include"GameManager.h"
-
+#include"DxLib.h"
+#include"Camera.h"
 
 extern GameManager* gManager;
 
@@ -23,9 +24,8 @@ void Player::Move()
 
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_LEFT)) {
 		//キャラのチップの左のチップがWALLなら移動しない
-
+		if ((gManager->GetMapChip(playerInMap + t2k::Vector3(-1, 0, 0))) == 0)return;
 		//キャラのチップの左のチップがPASSWAYなら移動する
-
 		pos.x -= 20;
 	}
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_UP)) {
@@ -39,4 +39,9 @@ void Player::Move()
 	}
 
 
+}
+
+void Player::Draw()
+{
+	DrawRotaGraph(pos.x- gManager->camera->cameraPos.x, pos.y - gManager->camera->cameraPos.y, 1, 0, gh, true);
 }

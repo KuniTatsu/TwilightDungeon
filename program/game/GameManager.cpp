@@ -6,7 +6,9 @@
 #include<string>
 #include"map.h"
 #include<time.h>
-#include"game_main.h"
+#include"Player.h"
+#include"Camera.h"
+//#include"game_main.h"
 
 //#include"Item.h"
 //#include "FadeControl.h"
@@ -16,7 +18,7 @@
 
 GameManager::GameManager()
 {
-	
+
 }
 
 GameManager::~GameManager()
@@ -26,8 +28,9 @@ GameManager::~GameManager()
 
 void GameManager::Update()
 {
+	camera->CameraMove();
 	SceneManager::Update();
-	
+
 }
 void GameManager::Draw()
 {
@@ -37,8 +40,12 @@ void GameManager::Draw()
 void GameManager::initGameManager()
 {
 	SRand(time(0));
-	map = new Map(MAPWIDTH,MAPHEIGHT);
+	camera = new Camera();
+	map = new Map(MAPWIDTH, MAPHEIGHT);
 	map->DivideStart(MAPWIDTH, MAPHEIGHT, map);
+
+	player = new Player(SetStartPos());
+	//camera->cameraPos = player->pos /*+ t2k::Vector3(512, 0, 0)*/;
 
 	//sound = new Sound();
 	//fControl = new FadeControl();
@@ -132,6 +139,22 @@ void GameManager::loadItem()
 	}
 }
 
+t2k::Vector3 GameManager::SetStartPos()
+{
+	//ランダムな部屋番号を取得
+	int rand = GetRand(map->GetRoomNum());
+	//部屋番号から部屋を取得 0:左 1:上 2:右 3:下 帰ってくるのはマップ座標
+	vector<int> room = map->GetRoom(rand);
+	//部屋の中のランダムなマップ座標を取得する
+	int x = GetRandEx(room[0], room[2]);
+	int y = GetRandEx(room[1], room[3]);
+
+	//取得したマップ座標を描画座標に変換する
+	t2k::Vector3 playerPos = map->MapToWorld(x, y);
+
+	return playerPos;
+}
+
 void GameManager::Zoom(double* zoomEx)
 {
 	//if (t2k::Input::isKeyDown(t2k::Input::KEYBORD_Z)) {
@@ -147,14 +170,24 @@ void GameManager::ReCreate()
 {
 	delete map;
 	map = nullptr;
+	delete player;
+	player = nullptr;
 
 	map = new Map(MAPWIDTH, MAPHEIGHT);
 	map->DivideStart(MAPWIDTH, MAPHEIGHT, map);
+
+	player = new Player(SetStartPos());
+
 }
 
 t2k::Vector3 GameManager::WorldToLocal(t2k::Vector3 Pos)
 {
 	return map->WorldToMap(Pos.x, Pos.y);
+}
+
+t2k::Vector3 GameManager::LocalToWorld(int MapX, int MapY)
+{
+	return map->MapToWorld(MapX, MapY);
 }
 
 int GameManager::GetMapChip(t2k::Vector3 PInChip)

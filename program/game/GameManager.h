@@ -9,6 +9,8 @@ class Item;
 class FadeControl;
 class Sound;
 class Map;
+class Player;
+class Camera;
 
 class GameManager {
 
@@ -21,6 +23,8 @@ public:
 	FadeControl* fControl = nullptr;*/
 	//Sound* sound = nullptr;
 	Map* map = nullptr;
+	Player* player = nullptr;
+	Camera* camera = nullptr;
 
 	double graphEx = 1;
 	
@@ -54,8 +58,11 @@ public:
 	int GetRandEx(int a, int b);
 
 	void ReCreate();
-	//mapのどのチップか取得する
+	//mapのどのチップか取得する 描画座標からマップ座標への変換
 	t2k::Vector3 WorldToLocal(t2k::Vector3 Pos);
+	//マップ座標から描画座標への変換
+	t2k::Vector3 LocalToWorld(int MapX,int MapY);
+
 	//マップのチップの情報を取得する
 	int GetMapChip(t2k::Vector3 PInChip);
 
@@ -69,7 +76,9 @@ private:
 	//マップの幅(チップ数)
 	const int MAPWIDTH = 50;
 	//マップの縦幅
-	const int MAPHEIGHT = 50;
+	const int MAPHEIGHT = 38;
+	//マップ内のランダムな部屋を取得→部屋の中のランダムな座標を取得→座標を描画座標に変換して返す
+	t2k::Vector3 SetStartPos();
 
 
 	void Zoom(double* zoomEx);

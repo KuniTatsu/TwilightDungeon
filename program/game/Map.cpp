@@ -38,10 +38,20 @@ t2k::Vector3 Map::WorldToMap(int WorldX, int WorldY)
 
 t2k::Vector3 Map::MapToWorld(int MapX, int MapY)
 {
-	int worldX = MapX * width;
-	int worldY = MapY * height;
+	int worldX = MapX * 20;
+	int worldY = MapY * 20;
 
 	return t2k::Vector3(worldX,worldY,0);
+}
+
+int Map::GetRoomNum()
+{
+	return divideRoom.size()-1;
+}
+
+vector<int> Map::GetRoom(int roomNum)
+{
+	return divideRoom[roomNum];
 }
 
 Map::Map(int Width, int Height)
@@ -49,8 +59,7 @@ Map::Map(int Width, int Height)
 	mapChip[0] = gManager->LoadGraphEx("graphics/PassWay_20.png");
 	mapChip[1] = gManager->LoadGraphEx("graphics/Wall_20.png");
 
-	camera = new Camera();
-
+	
 	width = Width;
 	height = Height;
 
@@ -83,16 +92,16 @@ void Map::SetChip(int x, int y, int SetChip)
 
 void Map::MapDraw()
 {
-	camera->CameraMove();
+	
 	int x = 0;
 	int y = 0;
 	for (auto i : ground) {
 		for (auto k : i) {
 			if (k == WALL) {
-				DrawRotaGraph(x - camera->cameraPos.x, y - camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
+				DrawRotaGraph(x - gManager->camera->cameraPos.x, y - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
 			}
 			else {
-				DrawRotaGraph(x - camera->cameraPos.x, y - camera->cameraPos.y, gManager->graphEx, 0, mapChip[0], false);
+				DrawRotaGraph(x - gManager->camera->cameraPos.x, y - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[0], false);
 			}
 			x += 20;
 		}
@@ -151,7 +160,7 @@ void Map::SetDivideRoom(int Left, int Up, int Right, int Down)
 {
 	divideRoom.emplace_back();
 	int size = divideRoom.size();
-	//•ªŠ„ü‚Ìî•ñ‚ğŠi”[
+	//•”‰®‚Ìî•ñ‚ğŠi”[
 	divideRoom[size - 1].emplace_back(Left);
 	divideRoom[size - 1].emplace_back(Up);
 	divideRoom[size - 1].emplace_back(Right);

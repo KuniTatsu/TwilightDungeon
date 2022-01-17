@@ -3,6 +3,7 @@
 #include"GameManager.h"
 #include "../library/t2klib.h"
 #include"../support/Support.h"
+#include "Player.h"
 
 extern GameManager* gManager;
 
@@ -38,4 +39,5 @@ void DungeonScene::Update()
 void DungeonScene::Draw()
 {
 	gManager->map->MapDraw();
+	gManager->player->Draw();
 }

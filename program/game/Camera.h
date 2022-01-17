@@ -7,7 +7,7 @@ class Camera {
 public:
 	
 
-	t2k::Vector3 cameraPos = {};
+	t2k::Vector3 cameraPos = {0,0,0};
 
 	void CameraMove();
 

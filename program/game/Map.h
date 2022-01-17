@@ -28,15 +28,18 @@ public:
 	t2k::Vector3 WorldToMap(int WorldX, int WorldY);
 	t2k::Vector3 MapToWorld(int MapX, int MapY);
 
+	//外部から部屋の数を取得するときの関数
+	int GetRoomNum();
 
+	//外部から特定の部屋を取得するときの関数
+	vector<int> GetRoom(int roomNum);
 
 	//マップ全体の描画
 	void MapDraw();
 
 private:
 
-	Camera* camera = nullptr;
-
+	
 	bool doneFirstDivide = false;
 
 	//部屋の最小幅
