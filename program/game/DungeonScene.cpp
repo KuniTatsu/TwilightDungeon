@@ -24,15 +24,15 @@ void DungeonScene::Update()
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_SPACE)) {
 		gManager->ReCreate();
 	}
-
-	//スクリーン全体をズーム,ズームアウトしたかった
-	//失敗コード
-	if (t2k::Input::isKeyDown(t2k::Input::KEYBORD_1)) {
-		gManager->graphEx += 0.02;
-	}
-	else if (t2k::Input::isKeyDown(t2k::Input::KEYBORD_2)) {
-		gManager->graphEx -= 0.02;
-	}
+	gManager->player->Move();
+	////スクリーン全体をズーム,ズームアウトしたかった
+	////失敗コード
+	//if (t2k::Input::isKeyDown(t2k::Input::KEYBORD_1)) {
+	//	gManager->graphEx += 0.02;
+	//}
+	//else if (t2k::Input::isKeyDown(t2k::Input::KEYBORD_2)) {
+	//	gManager->graphEx -= 0.02;
+	//}
 	
 }
 

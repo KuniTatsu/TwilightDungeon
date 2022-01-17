@@ -45,7 +45,7 @@ void GameManager::initGameManager()
 	map->DivideStart(MAPWIDTH, MAPHEIGHT, map);
 
 	player = new Player(SetStartPos());
-	//camera->cameraPos = player->pos /*+ t2k::Vector3(512, 0, 0)*/;
+	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
 
 	//sound = new Sound();
 	//fControl = new FadeControl();
@@ -177,7 +177,7 @@ void GameManager::ReCreate()
 	map->DivideStart(MAPWIDTH, MAPHEIGHT, map);
 
 	player = new Player(SetStartPos());
-
+	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
 }
 
 t2k::Vector3 GameManager::WorldToLocal(t2k::Vector3 Pos)
@@ -193,5 +193,25 @@ t2k::Vector3 GameManager::LocalToWorld(int MapX, int MapY)
 int GameManager::GetMapChip(t2k::Vector3 PInChip)
 {
 	return map->GetChip(PInChip.x, PInChip.y);
+}
+//‚È‚ñ‚©”÷–­
+void GameManager::CameraMove(Player* p)
+{
+
+	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
+
+	/*if (p->pos.x < 200) {
+		camera->cameraPos.x = player->pos.x - 512;
+	}
+	if (p->pos.x > 800) {
+		camera->cameraPos.x = player->pos.x - 512;
+	}
+
+	if (p->pos.y < 150) {
+		camera->cameraPos.y = player->pos.y - 384;
+	}
+	if (p->pos.y > 570) {
+		camera->cameraPos.y = player->pos.y - 384;
+	}*/
 }
 

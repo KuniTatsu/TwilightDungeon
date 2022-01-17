@@ -66,6 +66,9 @@ public:
 	//マップのチップの情報を取得する
 	int GetMapChip(t2k::Vector3 PInChip);
 
+	//カメラの移動
+	void CameraMove(Player* p);
+
 private:
 	
 	//アイテム情報をexcelから読み取る関数

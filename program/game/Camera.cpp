@@ -2,7 +2,7 @@
 
 void Camera::CameraMove()
 {
-	if (t2k::Input::isKeyDown(t2k::Input::KEYBORD_LEFT)) {
+	/*if (t2k::Input::isKeyDown(t2k::Input::KEYBORD_LEFT)) {
 		cameraPos.x -= 5;
 	}
 	if (t2k::Input::isKeyDown(t2k::Input::KEYBORD_RIGHT)) {
@@ -13,6 +13,6 @@ void Camera::CameraMove()
 	}
 	if (t2k::Input::isKeyDown(t2k::Input::KEYBORD_DOWN)) {
 		cameraPos.y += 5;
-	}
+	}*/
 
 }
