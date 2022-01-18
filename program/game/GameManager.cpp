@@ -172,7 +172,7 @@ void GameManager::Zoom(double* zoomEx)
 	//}
 
 }
-
+//いずれexcelから階層だけのデータを読み込み、事前に全てのフロアを作成しておく
 void GameManager::ReCreate()
 {
 	delete map;

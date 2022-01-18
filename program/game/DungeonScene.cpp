@@ -62,5 +62,6 @@ void DungeonScene::Draw()
 	DrawStringEx(100, 140, -1, "PlayerMapChipY:%d", (int)playerPos.y);
 	if (gManager->GetMapChip(playerPos) == 3) {
 		nextLevelWindow->Menu_Draw();
+		DrawStringEx(nextLevelWindow->menu_x + 10, nextLevelWindow->menu_y + 100, -1, "Enter‚ÅŽŸ‚ÌŠK‚Ö");
 	}
 }
