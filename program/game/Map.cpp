@@ -9,7 +9,7 @@ void Map::SetAllChip(int Left, int Up, int Right, int Down)
 {
 	for (int i = Up; i <= Down; ++i) {
 		for (int k = Left; k <= Right; ++k) {
-			SetChip(k, i, ROUTE);
+			SetChip(k, i, PASSWAY);
 		}
 	}
 }
@@ -54,11 +54,19 @@ vector<int> Map::GetRoom(int roomNum)
 	return divideRoom[roomNum];
 }
 
+void Map::SetStairs(int x, int y)
+{
+
+
+
+
+}
+
 Map::Map(int Width, int Height)
 {
 	mapChip[0] = gManager->LoadGraphEx("graphics/PassWay_20.png");
 	mapChip[1] = gManager->LoadGraphEx("graphics/Wall_20.png");
-
+	mapChip[2] = gManager->LoadGraphEx("graphics/Stairs.png");
 
 	width = Width;
 	height = Height;
@@ -92,7 +100,6 @@ void Map::SetChip(int x, int y, int SetChip)
 
 void Map::MapDraw()
 {
-
 	int x = 0;
 	int y = 0;
 	for (auto i : ground) {
@@ -100,8 +107,11 @@ void Map::MapDraw()
 			if (k == WALL) {
 				DrawRotaGraph(x - gManager->camera->cameraPos.x, y - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
 			}
-			else {
+			else if(k== PASSWAY){
 				DrawRotaGraph(x - gManager->camera->cameraPos.x, y - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[0], false);
+			}
+			else if (k == STAIRS) {
+				DrawRotaGraph(x - gManager->camera->cameraPos.x, y - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[2], false);
 			}
 			/*if (k == WALL) {
 				DrawRotaGraph(x, y, gManager->graphEx, 0, mapChip[1], false);

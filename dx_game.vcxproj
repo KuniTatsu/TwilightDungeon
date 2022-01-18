@@ -13,10 +13,12 @@
   <ItemGroup>
     <ClCompile Include="program\game\Camera.cpp" />
     <ClCompile Include="program\game\DungeonScene.cpp" />
+    <ClCompile Include="program\game\FadeControl.cpp" />
     <ClCompile Include="program\game\GameManager.cpp" />
     <ClCompile Include="program\game\game_main.cpp" />
     <ClCompile Include="program\game\Map.cpp" />
     <ClCompile Include="program\game\MapManager.cpp" />
+    <ClCompile Include="program\game\MenuWindow.cpp" />
     <ClCompile Include="program\game\Player.cpp" />
     <ClCompile Include="program\game\SceneManager.cpp" />
     <ClCompile Include="program\game\SoundManager.cpp" />
@@ -40,10 +42,12 @@
   <ItemGroup>
     <ClInclude Include="program\game\Camera.h" />
     <ClInclude Include="program\game\DungeonScene.h" />
+    <ClInclude Include="program\game\FadeControl.h" />
     <ClInclude Include="program\game\GameManager.h" />
     <ClInclude Include="program\game\game_main.h" />
     <ClInclude Include="program\game\Map.h" />
     <ClInclude Include="program\game\MapManager.h" />
+    <ClInclude Include="program\game\MenuWindow.h" />
     <ClInclude Include="program\game\Player.h" />
     <ClInclude Include="program\game\Scene.h" />
     <ClInclude Include="program\game\SceneManager.h" />

@@ -12,7 +12,7 @@
 
 //#include"Item.h"
 //#include "FadeControl.h"
-//#include "SoundManager.h"
+#include "SoundManager.h"
 
 
 
@@ -43,11 +43,15 @@ void GameManager::initGameManager()
 	camera = new Camera();
 	map = new Map(MAPWIDTH, MAPHEIGHT);
 	map->DivideStart(MAPWIDTH, MAPHEIGHT, map);
+	//階段のマップ座標の取得
+	t2k::Vector3 stairsPos = SetStartPos(1);
+	//階段設置
+	map->SetChip(stairsPos.x, stairsPos.y, map->STAIRS);
 
-	player = new Player(SetStartPos());
+	player = new Player(SetStartPos(0));
 	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
 
-	//sound = new Sound();
+	sound = new Sound();
 	//fControl = new FadeControl();
 
 	deitatime_ = 0;
@@ -139,7 +143,7 @@ void GameManager::loadItem()
 	}
 }
 
-t2k::Vector3 GameManager::SetStartPos()
+t2k::Vector3 GameManager::SetStartPos(int setType)
 {
 	//ランダムな部屋番号を取得
 	int rand = GetRand(map->GetRoomNum());
@@ -149,10 +153,13 @@ t2k::Vector3 GameManager::SetStartPos()
 	int x = GetRandEx(room[0], room[2]);
 	int y = GetRandEx(room[1], room[3]);
 
-	//取得したマップ座標を描画座標に変換する
-	t2k::Vector3 playerPos = map->MapToWorld(x, y);
+	//0:playerじゃなければマップ座標を返す
+	if (setType != 0)return t2k::Vector3(x, y, 0);
 
-	return playerPos;
+	//取得したマップ座標を描画座標に変換する
+	t2k::Vector3 Pos = map->MapToWorld(x, y);
+
+	return Pos;
 }
 
 void GameManager::Zoom(double* zoomEx)
@@ -176,7 +183,12 @@ void GameManager::ReCreate()
 	map = new Map(MAPWIDTH, MAPHEIGHT);
 	map->DivideStart(MAPWIDTH, MAPHEIGHT, map);
 
-	player = new Player(SetStartPos());
+	//階段のマップ座標の取得
+	t2k::Vector3 stairsPos = SetStartPos(1);
+	//階段設置
+	map->SetChip(stairsPos.x, stairsPos.y, map->STAIRS);
+
+	player = new Player(SetStartPos(0));
 	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
 }
 
@@ -197,21 +209,6 @@ int GameManager::GetMapChip(t2k::Vector3 PInChip)
 //なんか微妙
 void GameManager::CameraMove(Player* p)
 {
-
 	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
-
-	/*if (p->pos.x < 200) {
-		camera->cameraPos.x = player->pos.x - 512;
-	}
-	if (p->pos.x > 800) {
-		camera->cameraPos.x = player->pos.x - 512;
-	}
-
-	if (p->pos.y < 150) {
-		camera->cameraPos.y = player->pos.y - 384;
-	}
-	if (p->pos.y > 570) {
-		camera->cameraPos.y = player->pos.y - 384;
-	}*/
 }
 

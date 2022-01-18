@@ -16,6 +16,13 @@ public:
 	//マップの背景
 	vector<vector<int>> ground;
 
+	enum mapElements {
+		WALL,
+		PASSWAY,
+		CHARACTOR,
+		STAIRS,
+	};
+
 	//マップチップを取得
 	int GetChip(int x, int y);
 	//マップチップをSetChipで書き換え
@@ -33,6 +40,9 @@ public:
 
 	//外部から特定の部屋を取得するときの関数
 	vector<int> GetRoom(int roomNum);
+
+	//階段の設置
+	void SetStairs(int x,int y);
 
 	//マップ全体の描画
 	void MapDraw();
@@ -73,11 +83,7 @@ private:
 	//区間分割(部屋)
 	vector<vector<int>> divideRoom;
 
-	enum mapElements {
-		WALL,
-		ROUTE,
-		CHARACTOR,
-	};
+	
 
 	enum mapDir {
 		VERTICAL,

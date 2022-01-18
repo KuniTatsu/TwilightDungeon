@@ -21,7 +21,7 @@ public:
 
 	/*SceneManager* sManager = nullptr;
 	FadeControl* fControl = nullptr;*/
-	//Sound* sound = nullptr;
+	Sound* sound = nullptr;
 	Map* map = nullptr;
 	Player* player = nullptr;
 	Camera* camera = nullptr;
@@ -57,7 +57,9 @@ public:
 	//a~bの間の乱数取得
 	int GetRandEx(int a, int b);
 
+	//部屋の再生成
 	void ReCreate();
+
 	//mapのどのチップか取得する 描画座標からマップ座標への変換
 	t2k::Vector3 WorldToLocal(t2k::Vector3 Pos);
 	//マップ座標から描画座標への変換
@@ -79,9 +81,10 @@ private:
 	//マップの幅(チップ数)
 	const int MAPWIDTH = 50;
 	//マップの縦幅
-	const int MAPHEIGHT = 38;
+	const int MAPHEIGHT = 50;
 	//マップ内のランダムな部屋を取得→部屋の中のランダムな座標を取得→座標を描画座標に変換して返す
-	t2k::Vector3 SetStartPos();
+	//setType 0:プレイヤー初期座標,1:階段
+	t2k::Vector3 SetStartPos(int setType);
 
 
 	void Zoom(double* zoomEx);
