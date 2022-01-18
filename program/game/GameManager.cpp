@@ -152,9 +152,19 @@ t2k::Vector3 GameManager::SetStartPos(int setType)
 	//部屋の中のランダムなマップ座標を取得する
 	int x = GetRandEx(room[0], room[2]);
 	int y = GetRandEx(room[1], room[3]);
+	//敵の生成だったら座標被りチェックを行う
+	if (setType == 2) {
+		int player_x = player->pos.x;
+		int player_y = player->pos.y;
+		while (1) {
+			if (player_x != x && player_y != y)break;
+			x = GetRandEx(room[0], room[2]);
+			y = GetRandEx(room[1], room[3]);
+		}
+	}
 
 	//0:playerじゃなければマップ座標を返す
-	if (setType != 0)return t2k::Vector3(x, y, 0);
+	if (setType == 1)return t2k::Vector3(x, y, 0);
 
 	//取得したマップ座標を描画座標に変換する
 	t2k::Vector3 Pos = map->MapToWorld(x, y);

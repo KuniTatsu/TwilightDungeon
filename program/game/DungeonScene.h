@@ -1,9 +1,11 @@
 #pragma once
 #include"Scene.h"
 #include "../library/t2klib.h"
+#include<memory>
 
 class Map;
 class Menu;
+class EnemyManager;
 
 class DungeonScene :public BaseScene {
 
@@ -22,6 +24,8 @@ private:
 
 	//Ÿ‚Ì‰ñ‚És‚¯‚éwindow
 	Menu* nextLevelWindow = nullptr;
+
+	std::shared_ptr<EnemyManager>eManager = nullptr;
 
 	//**debug
 	t2k::Vector3 playerPos = {};

@@ -5,14 +5,19 @@
 #include"../support/Support.h"
 #include "Player.h"
 #include"MenuWindow.h"
+#include"Actor/EnemyManager.h"
+#include"Actor/Enemy.h"
 
 extern GameManager* gManager;
 
 DungeonScene::DungeonScene()
 {
 	nextLevelWindow = new Menu(300, 300, 300, 200, "graphics/WindowBase_01.png");
-
-
+	eManager = std::make_shared<EnemyManager>();
+	for (int i = 0; i < 5; ++i) {
+		int rand = GetRand(100) % 6+100;
+		eManager->CreateEnemy(rand);
+	}
 }
 
 DungeonScene::~DungeonScene()
@@ -27,12 +32,19 @@ void DungeonScene::Update()
 	//‚à‚µplayer‚ªŠK’i‚Ìã‚É‚¢‚½‚ç
 	//window‚ðo‚·
 	//enter‚ÅŽŸ‚ÌŠK‚Ö
-	if (gManager->GetMapChip(playerPos)== 3) {
+	if (gManager->GetMapChip(playerPos) == 3) {
 		//nextLevelWindow->Menu_Draw();
 		if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
 			dungeonLevel += 1;
 			gManager->ReCreate();
 		}
+	}
+
+	//enemy‚ÌˆÚ“®
+	auto it = eManager->liveEnemyList.begin();
+	for (auto hoge : eManager->liveEnemyList) {
+		hoge->Move();
+		//hoge->Draw();
 	}
 
 
@@ -49,13 +61,18 @@ void DungeonScene::Update()
 	//else if (t2k::Input::isKeyDown(t2k::Input::KEYBORD_2)) {
 	//	gManager->graphEx -= 0.02;
 	//}
-	
+
 }
 
 void DungeonScene::Draw()
 {
 	gManager->map->MapDraw();
 	gManager->player->Draw();
+	for (auto hoge : eManager->liveEnemyList) {
+		hoge->Draw();
+	}
+
+
 	DrawStringEx(100, 100, -1, "%d", dungeonLevel);
 
 	DrawStringEx(100, 120, -1, "PlayerMapChipX:%d", (int)playerPos.x);

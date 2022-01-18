@@ -106,7 +106,7 @@ void Map::MapDraw()
 			if (k == WALL) {
 				DrawRotaGraph(x - gManager->camera->cameraPos.x, y - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
 			}
-			else if(k== PASSWAY){
+			else if (k == PASSWAY) {
 				DrawRotaGraph(x - gManager->camera->cameraPos.x, y - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[0], false);
 			}
 			else if (k == STAIRS) {
@@ -378,10 +378,10 @@ void Map::AreaDivide()
 		SetDivideLine(lowerWidth + 1, dividePoint, upperWidth - 1, dividePoint, HORIZONTAL);
 		isVertical = true;
 
-		}
+	}
 	++roomId;
 
-	}
+}
 #endif
 }
 
@@ -472,5 +472,12 @@ void Map::CreatePassWay()
 	}
 
 
+	//ある部屋から見て上下左右に隣り合う部屋があるか確認する
+	//隣り合う部屋がある場合
+	//もしその部屋と繋がっていればreturnする
+	//もし繋がってなければその部屋と自分の部屋につなげるポイントを作る
+	//ポイントから一番近いdividelineを割り出す
+	//dividelineに向かって伸ばす
+	//通路で埋める
 
 }

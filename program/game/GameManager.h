@@ -71,6 +71,10 @@ public:
 	//カメラの移動
 	void CameraMove(Player* p);
 
+	//マップ内のランダムな部屋を取得→部屋の中のランダムな座標を取得→座標を描画座標に変換して返す
+	//setType 0:プレイヤー初期座標,1:階段
+	t2k::Vector3 SetStartPos(int setType);
+
 private:
 	
 	//アイテム情報をexcelから読み取る関数
@@ -82,9 +86,7 @@ private:
 	const int MAPWIDTH = 50;
 	//マップの縦幅
 	const int MAPHEIGHT = 50;
-	//マップ内のランダムな部屋を取得→部屋の中のランダムな座標を取得→座標を描画座標に変換して返す
-	//setType 0:プレイヤー初期座標,1:階段
-	t2k::Vector3 SetStartPos(int setType);
+	
 
 
 	void Zoom(double* zoomEx);

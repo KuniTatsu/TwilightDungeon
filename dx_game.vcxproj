@@ -11,6 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="program\game\Actor\Actor.cpp" />
+    <ClCompile Include="program\game\Actor\Enemy.cpp" />
+    <ClCompile Include="program\game\Actor\EnemyManager.cpp" />
     <ClCompile Include="program\game\Camera.cpp" />
     <ClCompile Include="program\game\DungeonScene.cpp" />
     <ClCompile Include="program\game\FadeControl.cpp" />
@@ -40,6 +43,9 @@
     <ClCompile Include="program\system\sys_main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="program\game\Actor\Actor.h" />
+    <ClInclude Include="program\game\Actor\Enemy.h" />
+    <ClInclude Include="program\game\Actor\EnemyManager.h" />
     <ClInclude Include="program\game\Camera.h" />
     <ClInclude Include="program\game\DungeonScene.h" />
     <ClInclude Include="program\game\FadeControl.h" />

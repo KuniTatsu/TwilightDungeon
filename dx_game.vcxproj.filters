@@ -81,6 +81,9 @@
     <ClCompile Include="program\game\Player.cpp" />
     <ClCompile Include="program\game\FadeControl.cpp" />
     <ClCompile Include="program\game\MenuWindow.cpp" />
+    <ClCompile Include="program\game\Actor\Actor.cpp" />
+    <ClCompile Include="program\game\Actor\Enemy.cpp" />
+    <ClCompile Include="program\game\Actor\EnemyManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="program\support\FrameRateController.h">
@@ -173,5 +176,8 @@
     <ClInclude Include="program\game\Player.h" />
     <ClInclude Include="program\game\FadeControl.h" />
     <ClInclude Include="program\game\MenuWindow.h" />
+    <ClInclude Include="program\game\Actor\Actor.h" />
+    <ClInclude Include="program\game\Actor\Enemy.h" />
+    <ClInclude Include="program\game\Actor\EnemyManager.h" />
   </ItemGroup>
 </Project>
