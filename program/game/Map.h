@@ -121,6 +121,6 @@ private:
 	//arg1:動かさない座標(縦に検索ならx座標,横に検索ならy座標
 	//arg2:検索する辺の最小の座標
 	//arg3:検索する辺の最大の座標
-	//arg4:横か縦か 横:0,縦:1
+	//arg4:部屋のどっち方向の壁か 0:上,1:右,2:下,3:左
 	bool CheckPassWay(int roomPos_set, int roomPos_moveStart, int roomPos_moveGoal,int dir);
 };

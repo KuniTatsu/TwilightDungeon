@@ -28,7 +28,7 @@ GameManager::~GameManager()
 
 void GameManager::Update()
 {
-	camera->CameraMove();
+	
 	SceneManager::Update();
 
 }

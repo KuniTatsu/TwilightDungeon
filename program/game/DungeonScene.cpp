@@ -7,6 +7,7 @@
 #include"MenuWindow.h"
 #include"Actor/EnemyManager.h"
 #include"Actor/Enemy.h"
+#include"Camera.h"
 
 extern GameManager* gManager;
 
@@ -35,27 +36,7 @@ void DungeonScene::RandEnemyCreate(int num)
 
 void DungeonScene::Update()
 {
-	//playerPos = gManager->GetMapChip(gManager->player->pos);
-	playerPos = gManager->WorldToLocal(gManager->player->pos);
-
-	//もしplayerが階段の上にいたら
-	//windowを出す
-	//enterで次の階へ
-	if (gManager->GetMapChip(playerPos) == 3) {
-		//nextLevelWindow->Menu_Draw();
-		if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
-			dungeonLevel += 1;
-			gManager->ReCreate();
-		}
-	}
-
-	//enemyの移動
-	auto it = eManager->liveEnemyList.begin();
-	for (auto hoge : eManager->liveEnemyList) {
-		hoge->Move();
-		//hoge->Draw();
-	}
-
+	main_sequence.update(gManager->deitatime_);
 
 	//デバッグ用マップ再生成
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_SPACE)) {
@@ -63,15 +44,12 @@ void DungeonScene::Update()
 		/*for (auto enemy : eManager->liveEnemyList) {
 			enemy->isLive = false;
 		}*/
-		eManager->liveEnemyList.clear();
+		if (!eManager->liveEnemyList.empty())eManager->liveEnemyList.clear();
 		gManager->ReCreate();
 		RandEnemyCreate(5);
 	}
-	gManager->player->Move();
 
-
-	
-
+	//isLiveがfalseな敵をリストから外したい
 	/*std::list<std::shared_ptr<Enemy>>::iterator hoge = eManager->liveEnemyList.begin();
 	for (int i = 0; i < eManager->liveEnemyList.size(); ++i) {
 		if ((*it)->isLive == false) {
@@ -82,13 +60,6 @@ void DungeonScene::Update()
 
 
 	////スクリーン全体をズーム,ズームアウトしたかった
-	////失敗コード
-	//if (t2k::Input::isKeyDown(t2k::Input::KEYBORD_1)) {
-	//	gManager->graphEx += 0.02;
-	//}
-	//else if (t2k::Input::isKeyDown(t2k::Input::KEYBORD_2)) {
-	//	gManager->graphEx -= 0.02;
-	//}
 
 }
 
@@ -109,4 +80,65 @@ void DungeonScene::Draw()
 		nextLevelWindow->Menu_Draw();
 		DrawStringEx(nextLevelWindow->menu_x + 10, nextLevelWindow->menu_y + 100, -1, "Enterで次の階へ");
 	}
+}
+
+bool DungeonScene::Seq_Main(const float deltatime)
+{
+	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_ESCAPE)) {
+		ChangeSequence(sequence::CAMERA);
+		return true;
+	}
+
+
+	//毎フレーム取得する必要はなさそう→移動後に確認,エリア移動後に1回だけ確認するように変更したい
+	playerPos = gManager->WorldToLocal(gManager->player->pos);
+
+	//もしplayerが階段の上にいたら
+	//windowを出す
+	//enterで次の階へ
+	if (gManager->GetMapChip(playerPos) == 3) {
+
+		if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+			dungeonLevel += 1;
+			if (!eManager->liveEnemyList.empty())eManager->liveEnemyList.clear();
+			gManager->ReCreate();
+			RandEnemyCreate(5);
+		}
+	}
+
+	//enemyの移動
+	auto it = eManager->liveEnemyList.begin();
+	for (auto hoge : eManager->liveEnemyList) {
+		hoge->Move();
+	}
+
+	gManager->player->Move();
+
+	return true;
+}
+
+bool DungeonScene::Seq_CameraMove(const float deltatime)
+{
+	gManager->camera->CameraMove();
+
+
+	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_ESCAPE)) {
+		ChangeSequence(sequence::MAIN);
+		gManager->CameraMove(gManager->player);
+		return true;
+	}
+
+	return true;
+}
+
+void DungeonScene::ChangeSequence(sequence seq)
+{
+	nowSeq = seq;
+	if (seq == sequence::MAIN) {
+		main_sequence.change(&DungeonScene::Seq_Main);
+	}
+	else if (seq == sequence::CAMERA) {
+		main_sequence.change(&DungeonScene::Seq_CameraMove);
+	}
+
 }

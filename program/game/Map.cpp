@@ -53,13 +53,7 @@ vector<int> Map::GetRoom(int roomNum)
 	return divideRoom[roomNum];
 }
 
-void Map::SetStairs(int x, int y)
-{
 
-
-
-
-}
 
 Map::Map(int Width, int Height)
 {
@@ -511,7 +505,7 @@ void Map::CreatePassWay()
 					passWayBefore = gManager->GetRandEx(upBefore + 1, downBefore - 1);
 					before = 1;
 				}
-				else if (CheckPassWay(downBefore, leftBefore, rightBefore, 0)) {
+				else if (CheckPassWay(downBefore, leftBefore, rightBefore, 2)) {
 					//â∫ï”ÇÃÇ«Ç±Ç©Ç…ì¸ÇËå˚ÇçÏÇÈ
 					passWayBefore = gManager->GetRandEx(leftBefore + 1, rightBefore - 1);
 					before = 2;
@@ -527,7 +521,7 @@ void Map::CreatePassWay()
 					passWayAfter = gManager->GetRandEx(leftAfter + 1, rightAfter - 1);
 					after = 1;
 				}
-				else if (CheckPassWay(leftAfter, upAfter, downAfter, 1)) {
+				else if (CheckPassWay(leftAfter, upAfter, downAfter, 3)) {
 					//ç∂ï”ÇÃÇ«Ç±Ç©Ç…ì¸ÇËå˚ÇçÏÇÈ
 					passWayBefore = gManager->GetRandEx(upAfter + 1, downAfter - 1);
 					after = 2;
@@ -576,12 +570,12 @@ void Map::CreatePassWay()
 
 				//*****beforeÇÃïîâÆÇÃì¸å˚åüçı
 				//Ç‡Çµí òHÇ™Ç»ÇØÇÍÇŒ:true
-				if (CheckPassWay(leftBefore, upBefore, downBefore, 1)) {
+				if (CheckPassWay(leftBefore, upBefore, downBefore, 3)) {
 					//ç∂ï”ÇÃÇ«Ç±Ç©Ç…ì¸ÇËå˚ÇçÏÇÈ
 					passWayBefore = gManager->GetRandEx(upBefore + 1, downBefore - 1);
 					before = 1;
 				}
-				else if (CheckPassWay(downBefore, leftBefore, rightBefore, 0)) {
+				else if (CheckPassWay(downBefore, leftBefore, rightBefore, 2)) {
 					//â∫ï”ÇÃÇ«Ç±Ç©Ç…ì¸ÇËå˚ÇçÏÇÈ
 					passWayBefore = gManager->GetRandEx(leftBefore + 1, rightBefore - 1);
 					before = 2;
@@ -666,13 +660,13 @@ void Map::CreatePassWay()
 				//*****
 
 				//*****AfterÇÃïîâÆÇÃì¸ÇËå˚åüçı
-				if (CheckPassWay(leftAfter, upAfter, downAfter, 1)) {
-					//è„ï”ÇÃÇ«Ç±Ç©Ç…ì¸ÇËå˚ÇçÏÇÈ
+				if (CheckPassWay(leftAfter, upAfter, downAfter, 3)) {
+					//ç∂ï”ÇÃÇ«Ç±Ç©Ç…ì¸ÇËå˚ÇçÏÇÈ
 					passWayAfter = gManager->GetRandEx(upAfter + 1, downAfter - 1);
 					after = 1;
 				}
-				else if (CheckPassWay(downAfter, leftAfter, rightAfter, 0)) {
-					//âEï”ÇÃÇ«Ç±Ç©Ç…ì¸ÇËå˚ÇçÏÇÈ
+				else if (CheckPassWay(downAfter, leftAfter, rightAfter, 2)) {
+					//â∫ï”ÇÃÇ«Ç±Ç©Ç…ì¸ÇËå˚ÇçÏÇÈ
 					passWayBefore = gManager->GetRandEx(leftAfter + 1, rightAfter - 1);
 					after = 2;
 				}
@@ -725,7 +719,7 @@ void Map::CreatePassWay()
 					passWayBefore = gManager->GetRandEx(leftBefore + 1, rightBefore - 1);
 					before = 1;
 				}
-				else if (CheckPassWay(leftBefore, upBefore, downBefore, 1)) {
+				else if (CheckPassWay(leftBefore, upBefore, downBefore, 3)) {
 					//ç∂ï”ÇÃÇ«Ç±Ç©Ç…ì¸ÇËå˚ÇçÏÇÈ
 					passWayBefore = gManager->GetRandEx(upBefore + 1, downBefore - 1);
 					before = 2;
@@ -741,7 +735,7 @@ void Map::CreatePassWay()
 					passWayAfter = gManager->GetRandEx(upAfter + 1, downAfter - 1);
 					after = 1;
 				}
-				else if (CheckPassWay(downAfter, leftAfter, rightAfter, 0)) {
+				else if (CheckPassWay(downAfter, leftAfter, rightAfter, 2)) {
 					//â∫ï”ÇÃÇ«Ç±Ç©Ç…ì¸ÇËå˚ÇçÏÇÈ
 					passWayBefore = gManager->GetRandEx(leftAfter + 1, rightAfter - 1);
 					after = 2;
@@ -802,14 +796,28 @@ bool Map::CheckPassWay(int roomPos_set, int roomPos_moveStart, int roomPos_moveG
 		//í òHÇ™Ç†ÇÍÇŒforï∂Çî≤ÇØÇÈ
 		if (dir == 0) {
 			//ç∂Ç©ÇÁâEÇ÷í≤ç∏
-			if (GetChip(roomPos_set, i) == PASSWAY) {
+			if (GetChip(roomPos_set, i-1) == PASSWAY) {
 				check = false;
 				break;
 			}
 		}
 		else if (dir == 1) {
 			//è„Ç©ÇÁâ∫Ç÷í≤ç∏
-			if (GetChip(i, roomPos_set) == PASSWAY) {
+			if (GetChip(i+1, roomPos_set) == PASSWAY) {
+				check = false;
+				break;
+			}
+		}
+		else if (dir == 2) {
+			//ç∂Ç©ÇÁâEÇ÷í≤ç∏
+			if (GetChip(roomPos_set, i + 1) == PASSWAY) {
+				check = false;
+				break;
+			}
+		}
+		else if (dir == 3) {
+			//è„Ç©ÇÁâ∫Ç÷í≤ç∏
+			if (GetChip(i - 1, roomPos_set) == PASSWAY) {
 				check = false;
 				break;
 			}
