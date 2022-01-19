@@ -53,6 +53,22 @@ vector<int> Map::GetRoom(int roomNum)
 	return divideRoom[roomNum];
 }
 
+int Map::CheckIsThere(int x, int y)
+{
+	//全ての部屋の座標をチェック
+	//x,yがその範囲内にあるならその部屋に存在する
+	for (auto room : divideRoom) {
+		if (x > room[2])continue;
+		if (y > room[3])continue;
+		if (x >= room[0] && y >= room[1]) {
+			return room[5];
+			break;//いる？
+		}
+	}
+
+	return -1;
+}
+
 
 
 Map::Map(int Width, int Height)
@@ -165,7 +181,7 @@ void Map::SetDivideLine(int Start_x, int Start_y, int Goal_x, int Goal_y, int Di
 	divideLine[size - 1].emplace_back(Dir);
 }
 
-void Map::SetDivideRoom(int Left, int Up, int Right, int Down)
+void Map::SetDivideRoom(int Left, int Up, int Right, int Down, int RoomId)
 {
 	divideRoom.emplace_back();
 	int size = divideRoom.size();
@@ -174,6 +190,7 @@ void Map::SetDivideRoom(int Left, int Up, int Right, int Down)
 	divideRoom[size - 1].emplace_back(Up);
 	divideRoom[size - 1].emplace_back(Right);
 	divideRoom[size - 1].emplace_back(Down);
+	divideRoom[size - 1].emplace_back(RoomId);
 }
 
 void Map::AreaDivide()
@@ -387,13 +404,14 @@ void Map::CreateRoom()
 		int up = area[1];
 		int right = area[2];
 		int down = area[3];
+		int id = area[4];
 
 		int roomLeft = gManager->GetRandEx(left, right - roomMinWidth + 1);
 		int roomRight = gManager->GetRandEx(roomLeft + roomMinWidth - 1, right);
 		int roomUp = gManager->GetRandEx(up, down - roomMinHeight + 1);
 		int roomDown = gManager->GetRandEx(roomUp + roomMinHeight - 1, down);
 
-		SetDivideRoom(roomLeft, roomUp, roomRight, roomDown);
+		SetDivideRoom(roomLeft, roomUp, roomRight, roomDown,id);
 	}
 
 }

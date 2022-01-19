@@ -42,8 +42,8 @@ public:
 	//外部から特定の部屋を取得するときの関数
 	vector<int> GetRoom(int roomNum);
 
-	//階段の設置
-	void SetStairs(int x, int y);
+	//特定のマップ座標が部屋のどこかに存在するか確認する関数
+	int CheckIsThere(int x, int y);
 
 	//マップ全体の描画
 	void MapDraw();
@@ -81,7 +81,7 @@ private:
 
 	//区間分割(区分線)
 	vector<vector<int>> divideLine;
-	//区間分割(部屋)
+	//区間分割(部屋) 左,上,右,下,id
 	vector<vector<int>> divideRoom;
 
 
@@ -105,7 +105,7 @@ private:
 	void SetDivideLine(int Start_x, int Start_y, int Goal_x, int Goal_y, int Dir);
 
 	//部屋の格納
-	void SetDivideRoom(int Left, int Up, int Right, int Down);
+	void SetDivideRoom(int Left, int Up, int Right, int Down,int RoomId);
 
 
 	//区画の分割

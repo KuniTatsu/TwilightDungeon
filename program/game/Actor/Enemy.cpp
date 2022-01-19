@@ -41,8 +41,15 @@ void Enemy::Move()
 	// 
 	// •”‰®‚©‚ç‚Â‚È‚ª‚é’Ê˜H‚ªˆê‚Â‚µ‚©–³‚¢‚Æ‚«‚ÍÜ‚è•Ô‚· //‚¢‚¸‚ê“G“¯Žm‚Ì“–‚½‚è”»’è‚àŽæ‚é‚Ì‚Å‚»‚Ì‚Æ‚«‚Í‹l‚Ü‚Á‚Ä‚µ‚Ü‚¤
 	// 
+	
+	//•”‰®‚É‚¢‚é‚È‚ç•”‰®‚ÌId,‚¢‚È‚¯‚ê‚Î-1
+	int nowPos = gManager->CheckIsThere(pos);
+	//•”‰®‚Ì‚Ç‚±‚©‚É‚¢‚é‚È‚ç
+	if (nowPos != -1) {
+		//•”‰®‚Ì’†‚Ì’Ê˜H‚ðŒŸõ
 
 
+	}
 
 
 

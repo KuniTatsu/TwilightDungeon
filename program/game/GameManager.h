@@ -68,6 +68,9 @@ public:
 	//マップのチップの情報を取得する
 	int GetMapChip(t2k::Vector3 PInChip);
 
+	//特定のマップ座標が部屋のどこかにあるか確認する関数
+	int CheckIsThere(t2k::Vector3 Pos);
+
 	//カメラの移動
 	void CameraMove(Player* p);
 

@@ -218,6 +218,11 @@ int GameManager::GetMapChip(t2k::Vector3 PInChip)
 {
 	return map->GetChip(PInChip.x, PInChip.y);
 }
+int GameManager::CheckIsThere(t2k::Vector3 Pos)
+{
+	t2k::Vector3 PosMap = WorldToLocal(Pos);
+	return map->CheckIsThere(PosMap.x, PosMap.y);;
+}
 //‚È‚ñ‚©”÷–­
 void GameManager::CameraMove(Player* p)
 {
