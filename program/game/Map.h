@@ -25,6 +25,7 @@ public:
 
 	//マップチップを取得
 	int GetChip(int x, int y);
+
 	//マップチップをSetChipで書き換え
 	void SetChip(int x, int y, int SetChip);
 	//一定範囲すべてを書き換え
@@ -42,14 +43,14 @@ public:
 	vector<int> GetRoom(int roomNum);
 
 	//階段の設置
-	void SetStairs(int x,int y);
+	void SetStairs(int x, int y);
 
 	//マップ全体の描画
 	void MapDraw();
 
 private:
 
-	
+
 	bool doneFirstDivide = false;
 
 	//部屋の最小幅
@@ -58,7 +59,7 @@ private:
 	const int roomMinHeight = 5;
 	//部屋の最大数
 	const int roomMaxNum = 8;
-	
+
 
 	//マップの幅(コンストラクタで使用)
 	int width = 0;
@@ -71,7 +72,7 @@ private:
 	int mapChip[3] = {};
 
 
-	
+
 	//区間分割(区間)
 	vector<vector<int>> divideArea;
 
@@ -83,7 +84,7 @@ private:
 	//区間分割(部屋)
 	vector<vector<int>> divideRoom;
 
-	
+
 
 	enum mapDir {
 		VERTICAL,
@@ -116,4 +117,10 @@ private:
 
 
 	
+	//引数の辺に通路があるかどうか確認する関数
+	//arg1:動かさない座標(縦に検索ならx座標,横に検索ならy座標
+	//arg2:検索する辺の最小の座標
+	//arg3:検索する辺の最大の座標
+	//arg4:横か縦か
+	bool CheckPassWay(int roomPos_set, int roomPos_moveStart, int roomPos_moveGoal,int dir);
 };

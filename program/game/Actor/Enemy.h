@@ -9,6 +9,7 @@ public:
 	Enemy(int Id, int Type, std::string Name, int Hp,int Atack, int Defence, int Speed, std::string Gh,int Exp);
 	~Enemy()override;
 
+	void Move()override;
 
 
 };

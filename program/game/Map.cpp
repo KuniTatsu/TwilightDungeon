@@ -471,7 +471,78 @@ void Map::CreatePassWay()
 		count++;
 	}
 
+	int count_Jump = 0;
+	while (count_Jump + 2 <= divideRoom.size()) {
+		//部屋の情報の取得
+		vector<int> roomBefore = divideRoom[count_Jump];
+		vector<int> roomAfter = divideRoom[count_Jump + 2];
 
+		int leftBefore = roomBefore[0];
+		int upBefore = roomBefore[1];
+		int rightBefore = roomBefore[2];
+		int downBefore = roomBefore[3];
+
+		int leftAfter = roomAfter[0];
+		int upAfter = roomAfter[1];
+		int rightAfter = roomAfter[2];
+		int downAfter = roomAfter[3];
+
+		int passWayBefore = 0;
+		int passWayAfter = 0;
+
+		//どこかの点を基準に部屋の相対位置を取得したい
+		//もし若い方の部屋が上なら(数が小さい)
+		if (upBefore < upAfter && downBefore < downAfter) {
+			//若い方の部屋が右か左かで場合分け
+			//若いほうが左なら
+			if (rightBefore < leftAfter) {
+				//部屋の相対位置は左上に若い部屋,右下に年上の部屋
+				//通路が作られていない辺に通路を作りたい
+				//一辺を全て眺めてWALL以外があったら通路が存在する
+				bool before = false;
+				bool after = false;
+				//beforeの部屋の入口検索
+				//もし通路がなければ:true
+				if (CheckPassWay(rightBefore, upBefore, downBefore, 1)) {
+					//右辺のどこかに入り口を作る
+					passWayBefore = gManager->GetRandEx(upBefore + 1, downBefore - 1);
+				}
+				else if (CheckPassWay(downBefore, leftBefore, rightBefore, 0)) {
+					//下辺のどこかに入り口を作る
+					passWayBefore = gManager->GetRandEx(leftBefore + 1, rightBefore - 1);
+				}
+
+				//Afterの部屋の入り口検索
+				if (CheckPassWay(upAfter, leftAfter, rightAfter, 0)) {
+					//上辺のどこかに入り口を作る
+					passWayAfter = gManager->GetRandEx(leftAfter + 1, rightAfter - 1);
+				}
+				else if (CheckPassWay(leftAfter, upAfter, downAfter, 1)) {
+					//左辺のどこかに入り口を作る
+					passWayBefore = gManager->GetRandEx(upAfter + 1, downAfter - 1);
+				}
+
+
+			}
+			//若い方が右なら
+			else {
+				//部屋の相対位置は右上に若い部屋,左下に年上の部屋
+			}
+		}
+		//若い部屋が下なら
+		else {
+			//若い方の部屋が右か左かで場合分け
+			//若いほうが左なら
+			if (rightBefore < leftAfter) {
+				//部屋の相対位置は左下に若い部屋,右上に年上の部屋
+			}
+			//若い方が右なら
+			else {
+				//部屋の相対位置は右下に若い部屋,左上に年上の部屋
+			}
+		}
+
+	}
 	//ある部屋から見て上下左右に隣り合う部屋があるか確認する
 	//隣り合う部屋がある場合
 	//もしその部屋と繋がっていればreturnする
@@ -480,4 +551,27 @@ void Map::CreatePassWay()
 	//dividelineに向かって伸ばす
 	//通路で埋める
 
+}
+
+bool Map::CheckPassWay(int roomPos_set, int roomPos_moveStart, int roomPos_moveGoal, int dir)
+{
+	bool check = true;
+	for (int i = roomPos_moveStart; i < roomPos_moveGoal; ++i) {
+		//通路があればfor文を抜ける
+		if (dir == 0) {
+			//左から右へ調査
+			if (GetChip(roomPos_set, i) == PASSWAY) {
+				check = false;
+				break;
+			}
+		}
+		else if (dir == 1) {
+			//上から下へ調査
+			if (GetChip(i, roomPos_set) == PASSWAY) {
+				check = false;
+				break;
+			}
+		}
+	}
+	return check;
 }

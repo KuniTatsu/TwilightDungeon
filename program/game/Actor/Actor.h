@@ -46,7 +46,7 @@ public:
 
 	virtual void Update();
 	virtual void Draw();
-private:
+protected:
 	const int ACT_SPEED = 20;
 	const int MAX_MOTION_INDEX = 3;
 	int act_wait = ACT_SPEED;
