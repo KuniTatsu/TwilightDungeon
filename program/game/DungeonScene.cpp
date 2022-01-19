@@ -14,14 +14,23 @@ DungeonScene::DungeonScene()
 {
 	nextLevelWindow = new Menu(300, 300, 300, 200, "graphics/WindowBase_01.png");
 	eManager = std::make_shared<EnemyManager>();
-	for (int i = 0; i < 5; ++i) {
+	/*for (int i = 0; i < 5; ++i) {
 		int rand = GetRand(100) % 6+100;
 		eManager->CreateEnemy(rand);
-	}
+	}*/
+	RandEnemyCreate(5);
 }
 
 DungeonScene::~DungeonScene()
 {
+}
+
+void DungeonScene::RandEnemyCreate(int num)
+{
+	for (int i = 0; i < num; ++i) {
+		int rand = GetRand(100) % 6 + 100;
+		eManager->CreateEnemy(rand);
+	}
 }
 
 void DungeonScene::Update()
@@ -50,9 +59,28 @@ void DungeonScene::Update()
 
 	//デバッグ用マップ再生成
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_SPACE)) {
+
+		/*for (auto enemy : eManager->liveEnemyList) {
+			enemy->isLive = false;
+		}*/
+		eManager->liveEnemyList.clear();
 		gManager->ReCreate();
+		RandEnemyCreate(5);
 	}
 	gManager->player->Move();
+
+
+	
+
+	/*std::list<std::shared_ptr<Enemy>>::iterator hoge = eManager->liveEnemyList.begin();
+	for (int i = 0; i < eManager->liveEnemyList.size(); ++i) {
+		if ((*it)->isLive == false) {
+			eManager->liveEnemyList.erase(it);
+		}
+		it++;
+	}*/
+
+
 	////スクリーン全体をズーム,ズームアウトしたかった
 	////失敗コード
 	//if (t2k::Input::isKeyDown(t2k::Input::KEYBORD_1)) {

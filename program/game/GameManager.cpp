@@ -190,6 +190,8 @@ void GameManager::ReCreate()
 	delete player;
 	player = nullptr;
 
+
+
 	map = new Map(MAPWIDTH, MAPHEIGHT);
 	map->DivideStart(MAPWIDTH, MAPHEIGHT, map);
 

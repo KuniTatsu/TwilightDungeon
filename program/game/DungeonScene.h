@@ -14,6 +14,8 @@ public:
 	~DungeonScene();
 
 
+	//num‘Ì“G‚ğì‚éŠÖ”
+	void RandEnemyCreate(int num);
 
 	void Update();
 
