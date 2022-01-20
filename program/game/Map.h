@@ -2,6 +2,7 @@
 #define _HAS_STD_BYTE 0
 #include<vector>
 #include"../library/t2klib.h"
+#include"DxLib.h"
 
 using namespace std;
 
@@ -49,6 +50,14 @@ public:
 	void MapDraw();
 
 private:
+
+	int color_red = GetColor(255, 0, 0);
+	int color_green = GetColor(0, 255, 0);
+	int color_blue = GetColor(0, 0, 255);
+	int color_hoge = GetColor(200, 200, 0);
+	int color_hage = GetColor(200, 0, 200);
+
+	int colors[5] = { color_red,color_green ,color_blue,color_hoge,color_hage };
 
 
 	bool doneFirstDivide = false;

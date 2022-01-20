@@ -78,6 +78,11 @@ public:
 	//setType 0:プレイヤー初期座標,1:階段
 	t2k::Vector3 SetStartPos(int setType);
 
+	//static vector<int> hoge;
+
+
+
+
 private:
 	
 	//アイテム情報をexcelから読み取る関数
@@ -88,7 +93,7 @@ private:
 	//マップの幅(チップ数)
 	const int MAPWIDTH = 50;
 	//マップの縦幅
-	const int MAPHEIGHT = 50;
+	const int MAPHEIGHT = 36;
 	
 
 

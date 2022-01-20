@@ -61,7 +61,7 @@ int Map::CheckIsThere(int x, int y)
 		if (x > room[2])continue;
 		if (y > room[3])continue;
 		if (x >= room[0] && y >= room[1]) {
-			return room[5];
+			return room[4];
 			break;//いる？
 		}
 	}
@@ -109,14 +109,36 @@ void Map::SetChip(int x, int y, int SetChip)
 
 void Map::MapDraw()
 {
+	int count = 0;
+	for (auto hoge : divideArea) {
+
+		int x1 = (hoge[0]-1) * 20 - gManager->camera->cameraPos.x;
+		int y1 = (hoge[1]-1) * 20 - gManager->camera->cameraPos.y;
+		int x2 = (hoge[2] + 1) * 20 - gManager->camera->cameraPos.x;
+		int y2 = (hoge[3] + 1) * 20 - gManager->camera->cameraPos.y;
+
+		DrawBox(x1, y1, x2, y2, colors[count], true);
+
+		count = (count + 1) % 5;
+	}
+	for (auto hoge : divideLine) {
+		int x1 = hoge[0] * 20 - gManager->camera->cameraPos.x;
+		int y1 = hoge[1] * 20 - gManager->camera->cameraPos.y;
+		int x2 = hoge[2] * 20 - gManager->camera->cameraPos.x;
+		int y2 = hoge[3] * 20 - gManager->camera->cameraPos.y;
+
+
+		DrawLine(x1, y1, x2, y2, -1);
+	}
+
 	int x = 0;
 	int y = 0;
 	for (auto i : ground) {
 		for (auto k : i) {
-			if (k == WALL) {
+			/*if (k == WALL) {
 				DrawRotaGraph(x - gManager->camera->cameraPos.x, y - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
 			}
-			else if (k == PASSWAY) {
+			else*/ if (k == PASSWAY) {
 				DrawRotaGraph(x - gManager->camera->cameraPos.x, y - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[0], false);
 			}
 			else if (k == STAIRS) {
@@ -295,8 +317,79 @@ void Map::AreaDivide()
 			++roomId;
 			continue;
 		}
-		else {
+		//else if (roomId < 2) {
 
+		//	int left = dumpDivideArea[roomId - 1][0];
+		//	int up = dumpDivideArea[roomId - 1][1];
+		//	int right = dumpDivideArea[roomId - 1][2];
+		//	int down = dumpDivideArea[roomId - 1][3];
+
+		//	//もし横が縦より大きかったら
+		//	if ((right - left) > (down - up)) {
+		//		//横のどこかで縦に切る
+		//		dividePoint = gManager->GetRandEx((left + 2 + roomMinWidth), (right - roomMinWidth - 2));
+
+		//		//半分より左なら →左の部屋が小さく、右の部屋は広い
+		//		if (dividePoint < ((right + left) / 2)) {
+		//			//小さい方を登録する
+		//			SetDivideArea(left + 1, up + 1, dividePoint - 2, down - 1, roomId);
+		//			//大きい方を登録する
+		//			SetLargeDivideArea(dividePoint + 2, up - 1, right - 1, down - 1, roomId);
+		//		}
+		//		//半分より右なら →右の部屋が小さく、左の部屋は広い
+		//		else {
+		//			//小さい方を登録する
+		//			SetDivideArea(dividePoint + 2, up + 1, right - 1, down - 1, roomId);
+		//			//大きい方を登録する
+		//			SetLargeDivideArea(left + 1, up - 1, dividePoint - 1, down - 1, roomId);
+		//		}
+		//		//分割線を引く
+		//		SetDivideLine(dividePoint, up + 1, dividePoint, down - 1, VERTICAL);
+		//	}
+		//	//もし縦が横より大きかったら
+		//	else {
+		//		//縦のどこかで横にきる
+		//		dividePoint = gManager->GetRandEx((up + 2 + roomMinHeight), (down - roomMinHeight - 2));
+
+		//		//半分より上なら →上の部屋が小さく、下の部屋は広い
+		//		if (dividePoint < ((down + up) / 2)) {
+		//			//小さい方を登録する
+		//			SetDivideArea(left + 1, up + 1, right - 1, dividePoint - 2, roomId);
+		//			//大きい方を登録する
+		//			SetLargeDivideArea(left + 1, dividePoint + 1, right - 1, down - 1, roomId);
+
+		//		}
+		//		//半分より下なら →上の部屋が大きく、下の部屋は小さい
+		//		else {
+		//			//小さい方を登録する
+		//			SetDivideArea(left + 1, dividePoint + 2, right - 1, down - 1, roomId);
+		//			//大きい方を登録する
+		//			SetLargeDivideArea(left + 1, up + 1, right - 1, dividePoint - 1, roomId);
+		//		}
+
+		//		//分割線を引く
+		//		SetDivideLine(left + 1, dividePoint, right - 1, dividePoint, HORIZONTAL);
+		//	}
+
+		//	++roomId;
+		//	continue;
+		//}
+		else
+		{
+			//一つ前に登録された小さい部屋のデータ
+			int lastLeft = divideArea[roomId - 1][0];
+			int lastUp = divideArea[roomId - 1][1];
+			int lastRight = divideArea[roomId - 1][2];
+			int lastDown = divideArea[roomId - 1][3];
+
+			int dir = divideLine[roomId - 1][4];
+
+			/*int prev_2_Left = divideArea[roomId - 2][0];
+			int prev_2_Up = divideArea[roomId - 2][1];
+			int prev_2_Right = divideArea[roomId - 2][2];
+			int prev_2_Down = divideArea[roomId - 2][3];*/
+
+			//今回分割するエリアのデータ
 			int left = dumpDivideArea[roomId - 1][0];
 			int up = dumpDivideArea[roomId - 1][1];
 			int right = dumpDivideArea[roomId - 1][2];
@@ -304,55 +397,111 @@ void Map::AreaDivide()
 
 			//もし横が縦より大きかったら
 			if ((right - left) > (down - up)) {
-				//横のどこかで縦に切る
-				dividePoint = gManager->GetRandEx((left + 2 + roomMinWidth), (right - roomMinWidth - 2));
+				int midPoint = (left + right) / 2;
+				//1つ前のエリアが左にあるか右にあるか確かめる
+				//一つ前の分割が縦の場合は分割点で場合分け
+				//一つ前が縦の分割　かつ　横が長い→前のエリアが隣り合うように切らなければいけない
+				if (dir == VERTICAL) {
 
-				//半分より左なら →左の部屋が小さく、右の部屋は広い
-				if (dividePoint < ((right + left) / 2)) {
-					//小さい方を登録する
-					SetDivideArea(left + 1, up + 1, dividePoint - 2, down - 1, roomId);
-					//大きい方を登録する
-					SetLargeDivideArea(dividePoint + 1, up - 1, right - 1, down - 1, roomId);
+					//1つ前のエリアの右が分割するエリアの左より小さい→1つ前のエリアは左にある
+					if (lastRight < left) {
+
+						//分割点は分割するエリアの左側になければいけない
+						dividePoint = gManager->GetRandEx((left + 2 + roomMinWidth), (midPoint/* - roomMinWidth - 2*/));
+						//必ず分割エリアの左側の部屋が小さくなる
+						//小さい部屋の登録
+						SetDivideArea(left + 1, up + 1, dividePoint - 2, down - 1, roomId);
+						//大きい部屋の登録
+						SetLargeDivideArea(dividePoint + 1, up + 1, right - 1, down - 1, roomId);
+					}
+					//1つ前のエリアが右にある
+					else {
+						//分割点は右側になければいけない
+						dividePoint = gManager->GetRandEx((midPoint + 2 + roomMinWidth), (right - roomMinWidth - 2));
+						//必ず右側の部屋が小さくなる
+						//小さい方を登録する
+						SetDivideArea(dividePoint + 2, up + 1, right - 1, down - 1, roomId);
+						//大きい方を登録する
+						SetLargeDivideArea(left + 1, up + 1, dividePoint - 1, down - 1, roomId);
+
+					}
 				}
-				//半分より右なら →右の部屋が小さく、左の部屋は広い
 				else {
-					//小さい方を登録する
-					SetDivideArea(dividePoint + 2, up + 1, right - 1, down - 1, roomId);
-					//大きい方を登録する
-					SetLargeDivideArea(left + 1, up - 1, dividePoint - 1, down - 1, roomId);
+					//一つ前が横の分割　かつ　横が長い→どう切っても隣り合う
+					dividePoint = gManager->GetRandEx((left + 2 + roomMinWidth), (right - roomMinWidth - 2));
+					//半分より左なら →左の部屋が小さく、右の部屋は広い
+					if (dividePoint < ((right + left) / 2)) {
+						//小さい方を登録する
+						SetDivideArea(left + 1, up + 1, dividePoint - 2, down - 1, roomId);
+						//大きい方を登録する
+						SetLargeDivideArea(dividePoint + 1, up - 1, right - 1, down - 1, roomId);
+					}
+					//半分より右なら →右の部屋が小さく、左の部屋は広い
+					else {
+						//小さい方を登録する
+						SetDivideArea(dividePoint + 2, up + 1, right - 1, down - 1, roomId);
+						//大きい方を登録する
+						SetLargeDivideArea(left + 1, up - 1, dividePoint - 1, down - 1, roomId);
+					}
 				}
 				//分割線を引く
 				SetDivideLine(dividePoint, up + 1, dividePoint, down - 1, VERTICAL);
 			}
 			//もし縦が横より大きかったら
 			else {
-				//縦のどこかで横にきる
-				dividePoint = gManager->GetRandEx((up + 2 + roomMinHeight), (down - roomMinHeight - 2));
+				int midPoint = (up + down) / 2;
+				//1つ前のエリアが上にあるか下にあるか確かめる
+				// 1つ前の分割が横なら分割点は1つ前のエリア寄り
+				if (dir == HORIZONTAL) {
 
-				//半分より上なら →上の部屋が小さく、下の部屋は広い
-				if (dividePoint < ((down + up) / 2)) {
-					//小さい方を登録する
-					SetDivideArea(left + 1, up + 1, right - 1, dividePoint - 2, roomId);
-					//大きい方を登録する
-					SetLargeDivideArea(left + 1, dividePoint + 1, right - 1, down - 1, roomId);
 
+					//一つ前のエリアの上が分割エリアの下よりも大きければ一つ前のエリアは下にある
+					if (down < lastUp) {
+						//分割点は分割するエリアの下側になければいけない
+						dividePoint = gManager->GetRandEx((midPoint + 2 + roomMinHeight), (down - roomMinHeight - 2));
+						//必ず分割エリアの下側の部屋が小さくなる
+						//小さい部屋の登録
+
+						SetDivideArea(left + 1, dividePoint + 2, right - 1, down - 1, roomId);
+						//大きい部屋の登録
+						SetLargeDivideArea(left + 1, up + 1, right - 1, dividePoint - 1, roomId);
+					}
+					//一つ前のエリアが上にある
+					else {
+						//分割点は分割するエリアの上側になければいけない
+						dividePoint = gManager->GetRandEx((up + 2 + roomMinHeight), (midPoint - roomMinHeight - 2));
+						//必ず上側の部屋が小さくなる
+						//小さい方を登録する
+						SetDivideArea(left + 1, up + 1, right - 1, dividePoint - 2, roomId);
+						//大きい方を登録する
+						SetLargeDivideArea(left + 1, dividePoint + 1, right - 1, down - 1, roomId);
+
+					}
 				}
-				//半分より下なら →上の部屋が大きく、下の部屋は小さい
+				// 1つ前の分割が縦なら分割点どこでもエリアは隣り合う
 				else {
-					//小さい方を登録する
-					SetDivideArea(left + 1, dividePoint + 2, right - 1, down - 1, roomId);
-					//大きい方を登録する
-					SetLargeDivideArea(left + 1, up + 1, right - 1, dividePoint - 1, roomId);
+					dividePoint = gManager->GetRandEx((up + 2 + roomMinWidth), (down - roomMinWidth - 2));
+					//半分より下なら →下の部屋が小さく、上の部屋は広い
+					if (dividePoint < ((up + down) / 2)) {
+						//小さい方を登録する
+						SetDivideArea(left + 1, up + 1, right - 1, dividePoint - 2, roomId);
+						//大きい方を登録する
+						SetLargeDivideArea(left + 1, dividePoint + 2, right - 1, down - 1, roomId);
+					}
+					//半分より上なら →上の部屋が小さく、下の部屋は広い
+					else {
+						//小さい方を登録する
+						SetDivideArea(left + 1, dividePoint + 2, right - 1, down - 1, roomId);
+						//大きい方を登録する
+						SetLargeDivideArea(left + 1, up + 1, right - 1, dividePoint - 2, roomId);
+					}
 				}
-
 				//分割線を引く
 				SetDivideLine(left + 1, dividePoint, right - 1, dividePoint, HORIZONTAL);
 			}
-
 			++roomId;
 			continue;
 		}
-
 	}
 #if 0
 
@@ -406,12 +555,12 @@ void Map::CreateRoom()
 		int down = area[3];
 		int id = area[4];
 
-		int roomLeft = gManager->GetRandEx(left, right - roomMinWidth + 1);
-		int roomRight = gManager->GetRandEx(roomLeft + roomMinWidth - 1, right);
-		int roomUp = gManager->GetRandEx(up, down - roomMinHeight + 1);
-		int roomDown = gManager->GetRandEx(roomUp + roomMinHeight - 1, down);
+		int roomLeft = gManager->GetRandEx(left, right - roomMinWidth + 2);
+		int roomRight = gManager->GetRandEx(roomLeft + roomMinWidth - 2, right);
+		int roomUp = gManager->GetRandEx(up, down - roomMinHeight + 2);
+		int roomDown = gManager->GetRandEx(roomUp + roomMinHeight - 2, down);
 
-		SetDivideRoom(roomLeft, roomUp, roomRight, roomDown,id);
+		SetDivideRoom(roomLeft, roomUp, roomRight, roomDown, id);
 	}
 
 }
@@ -484,6 +633,7 @@ void Map::CreatePassWay()
 	}
 
 	int count_Jump = 0;
+	/*
 	while (count_Jump + 2 < divideRoom.size()) {
 		//部屋の情報の取得
 		vector<int> roomBefore = divideRoom[count_Jump];
@@ -640,7 +790,7 @@ void Map::CreatePassWay()
 					//beforeから交差点まで
 					SetAllChip(passWayBefore, downBefore, passWayBefore, passWayAfter);
 					//afterから交差点まで
-					SetAllChip(leftAfter, passWayAfter, passWayBefore, passWayAfter);
+					SetAllChip(rightAfter, passWayAfter, passWayBefore, passWayAfter);
 					count_Jump += 1;
 					continue;
 				}
@@ -782,9 +932,9 @@ void Map::CreatePassWay()
 				else if (before == 2 && after == 2) {
 					//通路をつなぐ
 					//交差点からbeforeまで
-					SetAllChip(passWayBefore, passWayAfter, leftBefore, passWayBefore);
+					SetAllChip(passWayAfter, passWayBefore, leftBefore, passWayBefore);
 					//afterから交差点まで
-					SetAllChip(passWayAfter, downAfter, passWayBefore, passWayAfter);
+					SetAllChip(passWayAfter, downAfter, passWayAfter, passWayBefore);
 					count_Jump += 1;
 					continue;
 				}
@@ -804,7 +954,7 @@ void Map::CreatePassWay()
 	//ポイントから一番近いdividelineを割り出す
 	//dividelineに向かって伸ばす
 	//通路で埋める
-
+	*/
 }
 
 bool Map::CheckPassWay(int roomPos_set, int roomPos_moveStart, int roomPos_moveGoal, int dir)
@@ -814,14 +964,14 @@ bool Map::CheckPassWay(int roomPos_set, int roomPos_moveStart, int roomPos_moveG
 		//通路があればfor文を抜ける
 		if (dir == 0) {
 			//左から右へ調査
-			if (GetChip(roomPos_set, i-1) == PASSWAY) {
+			if (GetChip(roomPos_set, i - 1) == PASSWAY) {
 				check = false;
 				break;
 			}
 		}
 		else if (dir == 1) {
 			//上から下へ調査
-			if (GetChip(i+1, roomPos_set) == PASSWAY) {
+			if (GetChip(i + 1, roomPos_set) == PASSWAY) {
 				check = false;
 				break;
 			}
