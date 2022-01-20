@@ -68,7 +68,7 @@ private:
 	//•”‰®‚ÌÅ¬•
 	const int roomMinWidth = 5;
 	//•”‰®‚ÌÅ¬‚‚³
-	const int roomMinHeight = 5;
+	const int roomMinHeight = 4;
 	//•”‰®‚ÌÅ‘å”
 	const int roomMaxNum = 8;
 

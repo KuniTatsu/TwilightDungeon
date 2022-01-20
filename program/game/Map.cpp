@@ -9,7 +9,7 @@ Map::Map(int Width, int Height)
 {
 	mapChip[0] = gManager->LoadGraphEx("graphics/PassWay_20.png");
 	mapChip[1] = gManager->LoadGraphEx("graphics/Wall_20.png");
-	mapChip[2] = gManager->LoadGraphEx("graphics/Stairs.png");
+	mapChip[2] = gManager->LoadGraphEx("graphics/Stairs_.png");
 
 	width = Width;
 	height = Height;
@@ -227,13 +227,7 @@ void Map::AreaDivide()
 
 	int roomId = 0;
 
-	/*bool isVertical;*/
-	//if (GetRand(1) == 1) {
-	//	isVertical = true;
-	//}
-	//else {
-	//	isVertical = false;
-	//}
+	
 
 	while (1) {
 		if (roomId > 0) {
