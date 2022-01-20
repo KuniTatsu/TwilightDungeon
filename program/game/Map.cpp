@@ -5,6 +5,30 @@
 
 extern GameManager* gManager;
 
+Map::Map(int Width, int Height)
+{
+	mapChip[0] = gManager->LoadGraphEx("graphics/PassWay_20.png");
+	mapChip[1] = gManager->LoadGraphEx("graphics/Wall_20.png");
+	mapChip[2] = gManager->LoadGraphEx("graphics/Stairs.png");
+
+	width = Width;
+	height = Height;
+
+	//c‚Ì‰Šú‰»
+	ground.resize(height);
+	for (auto v : ground)v.resize(width);
+	for (int i = 0; i < height; ++i) {
+		ground[i].resize(width);
+	}
+	//‚·‚×‚Ä‚ğ•Ç‚É‚·‚é
+	for (int i = 0; i < height; ++i) {
+		for (int k = 0; k < width; ++k) {
+			ground[i][k] = WALL;
+		}
+	}
+
+}
+
 void Map::SetAllChip(int Left, int Up, int Right, int Down)
 {
 	for (int i = Up; i <= Down; ++i) {
@@ -68,33 +92,6 @@ int Map::CheckIsThere(int x, int y)
 
 	return -1;
 }
-
-
-
-Map::Map(int Width, int Height)
-{
-	mapChip[0] = gManager->LoadGraphEx("graphics/PassWay_20.png");
-	mapChip[1] = gManager->LoadGraphEx("graphics/Wall_20.png");
-	mapChip[2] = gManager->LoadGraphEx("graphics/Stairs.png");
-
-	width = Width;
-	height = Height;
-
-	//c‚Ì‰Šú‰»
-	ground.resize(height);
-	for (auto v : ground)v.resize(width);
-	for (int i = 0; i < height; ++i) {
-		ground[i].resize(width);
-	}
-	//‚·‚×‚Ä‚ğ•Ç‚É‚·‚é
-	for (int i = 0; i < height; ++i) {
-		for (int k = 0; k < width; ++k) {
-			ground[i][k] = WALL;
-		}
-	}
-
-}
-
 int Map::GetChip(int x, int y)
 {
 	if (IsOutOfRange(x, y))return outOfRange;
@@ -109,28 +106,31 @@ void Map::SetChip(int x, int y, int SetChip)
 
 void Map::MapDraw()
 {
-	int count = 0;
-	for (auto hoge : divideArea) {
+	//**debug
+	if (gManager->isDebug) {
+		int count = 0;
+		for (auto hoge : divideArea) {
 
-		int x1 = (hoge[0]-1) * 20 - gManager->camera->cameraPos.x;
-		int y1 = (hoge[1]-1) * 20 - gManager->camera->cameraPos.y;
-		int x2 = (hoge[2] + 1) * 20 - gManager->camera->cameraPos.x;
-		int y2 = (hoge[3] + 1) * 20 - gManager->camera->cameraPos.y;
+			int x1 = (hoge[0] - 1) * 20 - gManager->camera->cameraPos.x;
+			int y1 = (hoge[1] - 1) * 20 - gManager->camera->cameraPos.y;
+			int x2 = (hoge[2] + 1) * 20 - gManager->camera->cameraPos.x;
+			int y2 = (hoge[3] + 1) * 20 - gManager->camera->cameraPos.y;
 
-		DrawBox(x1, y1, x2, y2, colors[count], true);
+			DrawBox(x1, y1, x2, y2, colors[count], true);
 
-		count = (count + 1) % 5;
+			count = (count + 1) % 5;
+		}
+		for (auto hoge : divideLine) {
+			int x1 = hoge[0] * 20 - gManager->camera->cameraPos.x;
+			int y1 = hoge[1] * 20 - gManager->camera->cameraPos.y;
+			int x2 = hoge[2] * 20 - gManager->camera->cameraPos.x;
+			int y2 = hoge[3] * 20 - gManager->camera->cameraPos.y;
+
+
+			DrawLine(x1, y1, x2, y2, -1);
+		}
+		//**
 	}
-	for (auto hoge : divideLine) {
-		int x1 = hoge[0] * 20 - gManager->camera->cameraPos.x;
-		int y1 = hoge[1] * 20 - gManager->camera->cameraPos.y;
-		int x2 = hoge[2] * 20 - gManager->camera->cameraPos.x;
-		int y2 = hoge[3] * 20 - gManager->camera->cameraPos.y;
-
-
-		DrawLine(x1, y1, x2, y2, -1);
-	}
-
 	int x = 0;
 	int y = 0;
 	for (auto i : ground) {
@@ -155,8 +155,10 @@ void Map::MapDraw()
 		x = 0;
 		y += 20;
 	}
-
-
+	//debug
+	if(gManager->isDebug){
+	DrawAllRoomPos(divideRoom);
+	}
 }
 
 bool Map::IsOutOfRange(int x, int y)
@@ -317,63 +319,7 @@ void Map::AreaDivide()
 			++roomId;
 			continue;
 		}
-		//else if (roomId < 2) {
 
-		//	int left = dumpDivideArea[roomId - 1][0];
-		//	int up = dumpDivideArea[roomId - 1][1];
-		//	int right = dumpDivideArea[roomId - 1][2];
-		//	int down = dumpDivideArea[roomId - 1][3];
-
-		//	//‚à‚µ‰¡‚ªc‚æ‚è‘å‚«‚©‚Á‚½‚ç
-		//	if ((right - left) > (down - up)) {
-		//		//‰¡‚Ì‚Ç‚±‚©‚Åc‚ÉØ‚é
-		//		dividePoint = gManager->GetRandEx((left + 2 + roomMinWidth), (right - roomMinWidth - 2));
-
-		//		//”¼•ª‚æ‚è¶‚È‚ç ¨¶‚Ì•”‰®‚ª¬‚³‚­A‰E‚Ì•”‰®‚ÍL‚¢
-		//		if (dividePoint < ((right + left) / 2)) {
-		//			//¬‚³‚¢•û‚ğ“o˜^‚·‚é
-		//			SetDivideArea(left + 1, up + 1, dividePoint - 2, down - 1, roomId);
-		//			//‘å‚«‚¢•û‚ğ“o˜^‚·‚é
-		//			SetLargeDivideArea(dividePoint + 2, up - 1, right - 1, down - 1, roomId);
-		//		}
-		//		//”¼•ª‚æ‚è‰E‚È‚ç ¨‰E‚Ì•”‰®‚ª¬‚³‚­A¶‚Ì•”‰®‚ÍL‚¢
-		//		else {
-		//			//¬‚³‚¢•û‚ğ“o˜^‚·‚é
-		//			SetDivideArea(dividePoint + 2, up + 1, right - 1, down - 1, roomId);
-		//			//‘å‚«‚¢•û‚ğ“o˜^‚·‚é
-		//			SetLargeDivideArea(left + 1, up - 1, dividePoint - 1, down - 1, roomId);
-		//		}
-		//		//•ªŠ„ü‚ğˆø‚­
-		//		SetDivideLine(dividePoint, up + 1, dividePoint, down - 1, VERTICAL);
-		//	}
-		//	//‚à‚µc‚ª‰¡‚æ‚è‘å‚«‚©‚Á‚½‚ç
-		//	else {
-		//		//c‚Ì‚Ç‚±‚©‚Å‰¡‚É‚«‚é
-		//		dividePoint = gManager->GetRandEx((up + 2 + roomMinHeight), (down - roomMinHeight - 2));
-
-		//		//”¼•ª‚æ‚èã‚È‚ç ¨ã‚Ì•”‰®‚ª¬‚³‚­A‰º‚Ì•”‰®‚ÍL‚¢
-		//		if (dividePoint < ((down + up) / 2)) {
-		//			//¬‚³‚¢•û‚ğ“o˜^‚·‚é
-		//			SetDivideArea(left + 1, up + 1, right - 1, dividePoint - 2, roomId);
-		//			//‘å‚«‚¢•û‚ğ“o˜^‚·‚é
-		//			SetLargeDivideArea(left + 1, dividePoint + 1, right - 1, down - 1, roomId);
-
-		//		}
-		//		//”¼•ª‚æ‚è‰º‚È‚ç ¨ã‚Ì•”‰®‚ª‘å‚«‚­A‰º‚Ì•”‰®‚Í¬‚³‚¢
-		//		else {
-		//			//¬‚³‚¢•û‚ğ“o˜^‚·‚é
-		//			SetDivideArea(left + 1, dividePoint + 2, right - 1, down - 1, roomId);
-		//			//‘å‚«‚¢•û‚ğ“o˜^‚·‚é
-		//			SetLargeDivideArea(left + 1, up + 1, right - 1, dividePoint - 1, roomId);
-		//		}
-
-		//		//•ªŠ„ü‚ğˆø‚­
-		//		SetDivideLine(left + 1, dividePoint, right - 1, dividePoint, HORIZONTAL);
-		//	}
-
-		//	++roomId;
-		//	continue;
-		//}
 		else
 		{
 			//ˆê‚Â‘O‚É“o˜^‚³‚ê‚½¬‚³‚¢•”‰®‚Ìƒf[ƒ^
@@ -503,46 +449,6 @@ void Map::AreaDivide()
 			continue;
 		}
 	}
-#if 0
-
-	if (isVertical) {
-		//‚±‚±‚Å“ü‚ê‚éƒ‰ƒ“ƒ_ƒ€‚Ì’l‚ªA‘O‰ñ•ªŠ„‚µ‚½‚Æ‚«‚Ì‘å‚«‚¢•û‚Ì’l‚¾‚Á‚½‚ç—Ç‚­‚È‚éH
-		dividePoint = gManager->GetRandEx((lowerWidth + 2 + roomMinWidth), (upperWidth - roomMinWidth - 2));
-
-		if ((upperWidth + lowerWidth) / 2 < dividePoint) {
-			SetDivideArea(dividePoint + 2, lowerHeight + 1, upperWidth - 1, upperHeight - 1, roomId);
-			//setLargeDivideArea(dividePoint + 2, lowerHeight + 1, upperWidth - 1, upperHeight - 1, roomId);
-			upperWidth = dividePoint - 1;
-		}
-		else {
-			SetDivideArea(dividePoint + 1, lowerHeight + 1, upperWidth - 2, upperHeight - 1, roomId);
-			//setLargeDivideArea(dividePoint + 1, lowerHeight + 1, upperWidth - 2, upperHeight - 1, roomId);
-			lowerWidth = dividePoint + 1;
-		}
-		SetDivideLine(dividePoint, lowerHeight + 1, dividePoint, upperHeight - 1, VERTICAL);
-		isVertical = false;
-	}
-	else {
-		dividePoint = gManager->GetRandEx((lowerHeight + 2 + roomMinHeight), (upperHeight - roomMinHeight - 2));
-
-		if ((upperHeight + lowerHeight) / 2 < dividePoint) {
-			SetDivideArea(lowerWidth + 1, dividePoint + 2, upperWidth - 1, upperHeight - 1, roomId);
-			//setLargeDivideArea(lowerWidth + 1, dividePoint + 2, upperWidth - 1, upperHeight - 1, roomId);
-			upperHeight = dividePoint - 1;
-		}
-		else {
-			SetDivideArea(lowerWidth + 1, lowerHeight + 1, upperWidth - 1, dividePoint - 2, roomId);
-			//setLargeDivideArea(lowerWidth + 1, lowerHeight + 1, upperWidth - 1, dividePoint - 2, roomId);
-			lowerHeight = dividePoint + 1;
-		}
-		SetDivideLine(lowerWidth + 1, dividePoint, upperWidth - 1, dividePoint, HORIZONTAL);
-		isVertical = true;
-
-	}
-	++roomId;
-
-}
-#endif
 }
 
 void Map::CreateRoom()
@@ -631,9 +537,9 @@ void Map::CreatePassWay()
 		}
 		count++;
 	}
-
+#if 0
 	int count_Jump = 0;
-	/*
+
 	while (count_Jump + 2 < divideRoom.size()) {
 		//•”‰®‚Ìî•ñ‚Ìæ“¾
 		vector<int> roomBefore = divideRoom[count_Jump];
@@ -947,6 +853,7 @@ void Map::CreatePassWay()
 		}
 
 	}
+#endif
 	//‚ ‚é•”‰®‚©‚çŒ©‚Äã‰º¶‰E‚É—×‚è‡‚¤•”‰®‚ª‚ ‚é‚©Šm”F‚·‚é
 	//—×‚è‡‚¤•”‰®‚ª‚ ‚éê‡
 	//‚à‚µ‚»‚Ì•”‰®‚ÆŒq‚ª‚Á‚Ä‚¢‚ê‚Îreturn‚·‚é
@@ -954,7 +861,7 @@ void Map::CreatePassWay()
 	//ƒ|ƒCƒ“ƒg‚©‚çˆê”Ô‹ß‚¢divideline‚ğŠ„‚èo‚·
 	//divideline‚ÉŒü‚©‚Á‚ÄL‚Î‚·
 	//’Ê˜H‚Å–„‚ß‚é
-	*/
+
 }
 
 bool Map::CheckPassWay(int roomPos_set, int roomPos_moveStart, int roomPos_moveGoal, int dir)
@@ -964,32 +871,73 @@ bool Map::CheckPassWay(int roomPos_set, int roomPos_moveStart, int roomPos_moveG
 		//’Ê˜H‚ª‚ ‚ê‚Îfor•¶‚ğ”²‚¯‚é
 		if (dir == 0) {
 			//¶‚©‚ç‰E‚Ö’²¸
-			if (GetChip(roomPos_set, i - 1) == PASSWAY) {
+			if (roomPos_set - 1 < 0)break;
+			if (GetChip(i, roomPos_set - 1) == PASSWAY) {
 				check = false;
 				break;
 			}
 		}
 		else if (dir == 1) {
 			//ã‚©‚ç‰º‚Ö’²¸
-			if (GetChip(i + 1, roomPos_set) == PASSWAY) {
+			if (roomPos_set + 1 > width)break;
+			if (GetChip(roomPos_set + 1, i) == PASSWAY) {
 				check = false;
 				break;
 			}
 		}
 		else if (dir == 2) {
 			//¶‚©‚ç‰E‚Ö’²¸
-			if (GetChip(roomPos_set, i + 1) == PASSWAY) {
+			if (roomPos_set + 1 > height)break;
+			if (GetChip(i, roomPos_set + 1) == PASSWAY) {
 				check = false;
 				break;
 			}
 		}
 		else if (dir == 3) {
 			//ã‚©‚ç‰º‚Ö’²¸
-			if (GetChip(i - 1, roomPos_set) == PASSWAY) {
+			if (roomPos_set - 1 < 0)break;
+			if (GetChip(roomPos_set - 1, i) == PASSWAY) {
 				check = false;
 				break;
 			}
 		}
 	}
 	return check;
+}
+
+std::string Map::GetColorName(int code)
+{
+	if (code == color_red)return "Ô";
+	else if (code == color_green)return "—Î";
+	else if (code == color_blue)return "Â";
+	else if (code == color_yellow)return "‰©";
+	else if (code == color_purple)return "‡";
+
+	else return "ƒGƒ‰[";
+}
+
+void Map::DrawAllRoomPos(vector<vector<int>>RoomList)
+{
+	int drawPosX = 10;
+	int drawPosY = 10;
+
+	//¶ ã ‰E ‰º id
+	for (auto room : RoomList) {
+		for (auto area : divideArea) {
+			DrawStringEx(drawPosX + 200 * room[4], drawPosY, -1, "roomId:%d", room[4]);
+			DrawStringEx(drawPosX + 200 * room[4], drawPosY + 20, -1, "areaColor:%s", GetColorName(colors[room[4]]).c_str());
+			DrawStringEx(drawPosX + 200 * room[4], drawPosY + 40, -1, "Left:%d", room[0]);
+			DrawStringEx(drawPosX + 200 * room[4], drawPosY + 60, -1, "Up:%d", room[1]);
+			DrawStringEx(drawPosX + 200 * room[4], drawPosY + 80, -1, "Right:%d", room[2]);
+			DrawStringEx(drawPosX + 200 * room[4], drawPosY + 100, -1, "Down:%d", room[3]);
+
+			DrawStringEx(drawPosX + 200 * area[4], drawPosY + 140, -1, "areaId:%d", area[4]);
+			DrawStringEx(drawPosX + 200 * area[4], drawPosY + 160, -1, "Left:%d", area[0]);
+			DrawStringEx(drawPosX + 200 * area[4], drawPosY + 180, -1, "Up:%d", area[1]);
+			DrawStringEx(drawPosX + 200 * area[4], drawPosY + 200, -1, "Right:%d", area[2]);
+			DrawStringEx(drawPosX + 200 * area[4], drawPosY + 220, -1, "Down:%d", area[3]);
+
+
+		}
+	}
 }

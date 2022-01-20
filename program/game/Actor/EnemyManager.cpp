@@ -2,6 +2,7 @@
 #include"Enemy.h"
 #include<memory>
 #include"../GameManager.h"
+#include"../Player.h"
 
 extern GameManager* gManager;
 
@@ -46,8 +47,9 @@ void EnemyManager::CreateEnemy(int Id)
 		//‚Ü‚¾enemy‚ªˆê‘Ì‚àì‚ç‚ê‚Ä‚¢‚È‚¯‚ê‚Î‚·‚®”²‚¯‚é
 		if (liveEnemyList.empty())break;
 		for (auto liveEnemy : liveEnemyList) {
-
-			if (liveEnemy->pos.x != enemy->pos.x && liveEnemy->pos.y != enemy->pos.y)
+			//À•W”í‚è‚µ‚Ä‚¢‚È‚¯‚ê‚Îtrue‚É‚·‚é
+			if (liveEnemy->pos.x != enemy->pos.x && liveEnemy->pos.y != enemy->pos.y&&
+				gManager->player->pos.x != enemy->pos.x&& gManager->player->pos.y != enemy->pos.y)
 			{
 				canCreateEnemy = true;
 			}
@@ -80,16 +82,16 @@ void EnemyManager::LoadEnemyData()
 }
 std::shared_ptr<Enemy> EnemyManager::GetEnemyStatus(int num)
 {
-	int id = std::atoi(loadEnemy[num][0].c_str());
-	int type = std::atoi(loadEnemy[num][1].c_str());
+	int id = std::atoi(enemyList[num][0].c_str());
+	int type = std::atoi(enemyList[num][1].c_str());
 
-	int hp = std::atoi(loadEnemy[num][3].c_str());
-	int atack = std::atoi(loadEnemy[num][4].c_str());
-	int defence = std::atoi(loadEnemy[num][5].c_str());
-	int speed = std::atoi(loadEnemy[num][6].c_str());
+	int hp = std::atoi(enemyList[num][3].c_str());
+	int atack = std::atoi(enemyList[num][4].c_str());
+	int defence = std::atoi(enemyList[num][5].c_str());
+	int speed = std::atoi(enemyList[num][6].c_str());
 
-	int exp = std::atoi(loadEnemy[num][8].c_str());
+	int exp = std::atoi(enemyList[num][8].c_str());
 
 
-	return std::make_shared<Enemy>(id, type, loadEnemy[num][2], hp, atack, defence, speed, loadEnemy[num][7], exp);
+	return std::make_shared<Enemy>(id, type, enemyList[num][2], hp, atack, defence, speed, enemyList[num][7], exp);
 }

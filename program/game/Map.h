@@ -49,15 +49,18 @@ public:
 	//マップ全体の描画
 	void MapDraw();
 
+	//今表示されている全ての部屋の上下左右座標をする描画する関数
+	void DrawAllRoomPos(vector<vector<int>>RoomList);
+
 private:
 
 	int color_red = GetColor(255, 0, 0);
 	int color_green = GetColor(0, 255, 0);
 	int color_blue = GetColor(0, 0, 255);
-	int color_hoge = GetColor(200, 200, 0);
-	int color_hage = GetColor(200, 0, 200);
+	int color_yellow = GetColor(200, 200, 0);
+	int color_purple = GetColor(200, 0, 200);
 
-	int colors[5] = { color_red,color_green ,color_blue,color_hoge,color_hage };
+	int colors[5] = { color_red,color_green ,color_blue,color_yellow,color_purple };
 
 
 	bool doneFirstDivide = false;
@@ -132,4 +135,9 @@ private:
 	//arg3:検索する辺の最大の座標
 	//arg4:部屋のどっち方向の壁か 0:上,1:右,2:下,3:左
 	bool CheckPassWay(int roomPos_set, int roomPos_moveStart, int roomPos_moveGoal,int dir);
+
+
+	//色コードからstringを返す関数
+	std::string GetColorName(int code);
+	
 };

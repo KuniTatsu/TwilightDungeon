@@ -80,8 +80,8 @@ public:
 
 	//static vector<int> hoge;
 
-
-
+	//debugØ‚è‘Ö‚¦
+	bool isDebug = true;
 
 private:
 	

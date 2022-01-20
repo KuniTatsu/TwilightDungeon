@@ -38,6 +38,12 @@ void DungeonScene::Update()
 {
 	main_sequence.update(gManager->deitatime_);
 
+	//デバッグ切り替え
+	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_LSHIFT)) {
+		if (gManager->isDebug)gManager->isDebug = false;
+		else gManager->isDebug = true;
+	}
+
 	//デバッグ用マップ再生成
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_SPACE)) {
 
@@ -71,15 +77,19 @@ void DungeonScene::Draw()
 		hoge->Draw();
 	}
 
+	if (gManager->isDebug) {
+		DrawStringEx(100, 100, -1, "%d", dungeonLevel);
 
-	DrawStringEx(100, 100, -1, "%d", dungeonLevel);
+		DrawStringEx(100, 300, -1, "PlayerMapChipX:%d", (int)playerPos.x);
+		DrawStringEx(100, 320, -1, "PlayerMapChipY:%d", (int)playerPos.y);
 
-	DrawStringEx(100, 120, -1, "PlayerMapChipX:%d", (int)playerPos.x);
-	DrawStringEx(100, 140, -1, "PlayerMapChipY:%d", (int)playerPos.y);
+	}
 	if (gManager->GetMapChip(playerPos) == 3) {
 		nextLevelWindow->Menu_Draw();
 		DrawStringEx(nextLevelWindow->menu_x + 10, nextLevelWindow->menu_y + 100, -1, "Enterで次の階へ");
 	}
+
+	//gManager->map->DrawAllRoomPos(gManager->map.)
 }
 
 bool DungeonScene::Seq_Main(const float deltatime)

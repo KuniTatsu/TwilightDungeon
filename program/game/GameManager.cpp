@@ -40,7 +40,10 @@ void GameManager::Draw()
 void GameManager::initGameManager()
 {
 	//SRand(time(0));
+	// 
+	//debug
 	SRand(1);
+
 	camera = new Camera();
 	map = new Map(MAPWIDTH, MAPHEIGHT);
 	map->DivideStart(MAPWIDTH, MAPHEIGHT, map);
