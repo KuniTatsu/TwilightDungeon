@@ -51,6 +51,7 @@ void DungeonScene::Update()
 			enemy->isLive = false;
 		}*/
 		if (!eManager->liveEnemyList.empty())eManager->liveEnemyList.clear();
+		dungeonLevel++;
 		gManager->ReCreate();
 		RandEnemyCreate(5);
 	}
@@ -78,7 +79,7 @@ void DungeonScene::Draw()
 	}
 
 	if (gManager->isDebug) {
-		DrawStringEx(100, 100, -1, "%d", dungeonLevel);
+		DrawStringEx(100, 280, -1, "åªç›ÇÃäKëw:%d", dungeonLevel);
 
 		DrawStringEx(100, 300, -1, "PlayerMapChipX:%d", (int)playerPos.x);
 		DrawStringEx(100, 320, -1, "PlayerMapChipY:%d", (int)playerPos.y);

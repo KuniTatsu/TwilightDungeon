@@ -84,6 +84,7 @@
     <ClCompile Include="program\game\Actor\Actor.cpp" />
     <ClCompile Include="program\game\Actor\Enemy.cpp" />
     <ClCompile Include="program\game\Actor\EnemyManager.cpp" />
+    <ClCompile Include="program\game\Skill.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="program\support\FrameRateController.h">
@@ -179,5 +180,6 @@
     <ClInclude Include="program\game\Actor\Actor.h" />
     <ClInclude Include="program\game\Actor\Enemy.h" />
     <ClInclude Include="program\game\Actor\EnemyManager.h" />
+    <ClInclude Include="program\game\Skill.h" />
   </ItemGroup>
 </Project>

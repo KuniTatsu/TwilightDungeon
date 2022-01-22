@@ -41,6 +41,7 @@
     <ClCompile Include="program\support\dx_lib_ext.cpp" />
     <ClCompile Include="program\support\FrameRateController.cpp" />
     <ClCompile Include="program\system\sys_main.cpp" />
+    <ClCompile Include="program\game\Skill.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="program\game\Actor\Actor.h" />
@@ -84,6 +85,7 @@
     <ClInclude Include="program\support\dx_lib_ext.h" />
     <ClInclude Include="program\support\FrameRateController.h" />
     <ClInclude Include="program\support\Support.h" />
+    <ClInclude Include="program\game\Skill.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{16B0EE01-D3C9-4C3A-B205-DF401859A35C}</ProjectGuid>

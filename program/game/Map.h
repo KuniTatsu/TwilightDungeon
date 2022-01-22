@@ -22,6 +22,7 @@ public:
 		PASSWAY,
 		CHARACTOR,
 		STAIRS,
+		EXPASSWAY,
 	};
 
 	//マップチップを取得
@@ -66,9 +67,9 @@ private:
 	bool doneFirstDivide = false;
 
 	//部屋の最小幅
-	const int roomMinWidth = 5;
+	const int roomMinWidth = 8;
 	//部屋の最小高さ
-	const int roomMinHeight = 4;
+	const int roomMinHeight = 5;
 	//部屋の最大数
 	const int roomMaxNum = 8;
 
@@ -81,7 +82,7 @@ private:
 	int outOfRange = -1;
 
 	//マップチップ
-	int mapChip[3] = {};
+	int mapChip[4] = {};
 
 
 
@@ -136,6 +137,15 @@ private:
 	//arg4:部屋のどっち方向の壁か 0:上,1:右,2:下,3:左
 	bool CheckPassWay(int roomPos_set, int roomPos_moveStart, int roomPos_moveGoal,int dir);
 
+	//最初と最後の部屋から特定の分割線方向への入り口を作る関数 
+	t2k::Vector3 Map::RandomPoint(int roomId, int& dir);
+	//t2k::Vector3 Map::RandomPoint(int roomId, int& dir,vector<int>setDivideLine);
+
+	//入り口から隣接する部屋へと通路を伸ばす関数
+	bool Map::CreateSecondWay(int x, int y, int dir, int roomId);
+
+	//セル(x,y)からみてdir方向に垂直なセル2つとdir方向のセルが壁か通路か確認する関数
+	bool Map::CheckChip(int x, int y, int nextDir);
 
 	//色コードからstringを返す関数
 	std::string GetColorName(int code);

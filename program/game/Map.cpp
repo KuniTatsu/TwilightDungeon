@@ -10,6 +10,7 @@ Map::Map(int Width, int Height)
 	mapChip[0] = gManager->LoadGraphEx("graphics/PassWay_20.png");
 	mapChip[1] = gManager->LoadGraphEx("graphics/Wall_20.png");
 	mapChip[2] = gManager->LoadGraphEx("graphics/Stairs_.png");
+	mapChip[3] = gManager->LoadGraphEx("graphics/EXPASSWAY.png");
 
 	width = Width;
 	height = Height;
@@ -144,6 +145,9 @@ void Map::MapDraw()
 			else if (k == STAIRS) {
 				DrawRotaGraph(x - gManager->camera->cameraPos.x, y - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[2], false);
 			}
+			else if (k == EXPASSWAY) {
+				DrawRotaGraph(x - gManager->camera->cameraPos.x, y - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[3], false);
+			}
 			/*if (k == WALL) {
 				DrawRotaGraph(x, y, gManager->graphEx, 0, mapChip[1], false);
 			}
@@ -156,8 +160,8 @@ void Map::MapDraw()
 		y += 20;
 	}
 	//debug
-	if(gManager->isDebug){
-	DrawAllRoomPos(divideRoom);
+	if (gManager->isDebug) {
+		DrawAllRoomPos(divideRoom);
 	}
 }
 
@@ -215,6 +219,7 @@ void Map::SetDivideRoom(int Left, int Up, int Right, int Down, int RoomId)
 	divideRoom[size - 1].emplace_back(Right);
 	divideRoom[size - 1].emplace_back(Down);
 	divideRoom[size - 1].emplace_back(RoomId);
+	//SetAllChip(Left, Up, Right, Down);
 }
 
 void Map::AreaDivide()
@@ -227,7 +232,7 @@ void Map::AreaDivide()
 
 	int roomId = 0;
 
-	
+
 
 	while (1) {
 		if (roomId > 0) {
@@ -357,7 +362,7 @@ void Map::AreaDivide()
 					//1つ前のエリアが右にある
 					else {
 						//分割点は右側になければいけない
-						dividePoint = gManager->GetRandEx((midPoint + 2 + roomMinWidth), (right - roomMinWidth - 2));
+						dividePoint = gManager->GetRandEx((midPoint /*+ 2 + roomMinWidth*/), (right - roomMinWidth - 2));
 						//必ず右側の部屋が小さくなる
 						//小さい方を登録する
 						SetDivideArea(dividePoint + 2, up + 1, right - 1, down - 1, roomId);
@@ -374,14 +379,14 @@ void Map::AreaDivide()
 						//小さい方を登録する
 						SetDivideArea(left + 1, up + 1, dividePoint - 2, down - 1, roomId);
 						//大きい方を登録する
-						SetLargeDivideArea(dividePoint + 1, up - 1, right - 1, down - 1, roomId);
+						SetLargeDivideArea(dividePoint + 1, up + 1, right - 1, down - 1, roomId);
 					}
 					//半分より右なら →右の部屋が小さく、左の部屋は広い
 					else {
 						//小さい方を登録する
 						SetDivideArea(dividePoint + 2, up + 1, right - 1, down - 1, roomId);
 						//大きい方を登録する
-						SetLargeDivideArea(left + 1, up - 1, dividePoint - 1, down - 1, roomId);
+						SetLargeDivideArea(left + 1, up + 1, dividePoint - 1, down - 1, roomId);
 					}
 				}
 				//分割線を引く
@@ -848,6 +853,21 @@ void Map::CreatePassWay()
 
 	}
 #endif
+#if 1
+	//0:上, 1 : 右, 2 : 下, 3 : 左
+	int dir = 0;
+	//最初の部屋の出発点を取得する
+	t2k::Vector3 start = RandomPoint(0, dir);
+	CreateSecondWay(start.x, start.y, dir, 0);
+
+	//最後の部屋の出発点を取得する
+	int lastroomId = divideRoom.back()[4];
+	int lastdir = 0;
+	t2k::Vector3 laststart = RandomPoint(lastroomId, lastdir);
+	CreateSecondWay(laststart.x, laststart.y, lastdir, lastroomId);
+
+
+#endif
 	//ある部屋から見て上下左右に隣り合う部屋があるか確認する
 	//隣り合う部屋がある場合
 	//もしその部屋と繋がっていればreturnする
@@ -857,7 +877,252 @@ void Map::CreatePassWay()
 	//通路で埋める
 
 }
+//0:上, 1 : 右, 2 : 下, 3 : 左
+// 最後の部屋の場合は取得する分割線は一つ前の分割線じゃないといけない
+t2k::Vector3 Map::RandomPoint(int roomId, int& dir)
+{
+	//**********最後の部屋の場合**********
+	if (roomId != 0) {
+		if (divideLine[roomId - 2][4] == VERTICAL) {
+			//分割線のx座標と部屋のx座標を比べる
+			//分割線より部屋の左が大きければ分割線は左にある
+			if (divideLine[roomId - 2][0] < divideRoom[roomId][0]) {
+				int point = 0;
+				while (1) {
+					//部屋の左端のどっかのy座標
+					point = gManager->GetRandEx(divideRoom[roomId][1], divideRoom[roomId][3]);
+					if ((GetChip(divideRoom[roomId][0] - 1, point) == 0 && GetChip(divideRoom[roomId][0] - 1, point - 1) == 0 && GetChip(divideRoom[roomId][0] - 1, point + 1)) == 0) break;
+				}
+				dir = 3;
+				int pointX = divideRoom[roomId][0];
+				return t2k::Vector3(pointX, point, 0);
+			}
+			else {
+				int point = 0;
+				while (1) {
+					//部屋の右端のどっかのy座標
+					point = gManager->GetRandEx(divideRoom[roomId][1], divideRoom[roomId][3]);
+					if ((GetChip(divideRoom[roomId][0] + 1, point)) == 0 && (GetChip(divideRoom[roomId][0] + 1, point - 1)) == 0 && (GetChip(divideRoom[roomId][0] + 1, point + 1)) == 0) break;
+				}
+				dir = 1;
+				int pointX = divideRoom[roomId][2];
+				return t2k::Vector3(pointX, point, 0);
+			}
+		}//横なら上か下
+		else {
+			//分割線のy座標と部屋のy座標を比べる
+			//分割線より部屋の上が大きければ分割線は上にある
+			if (divideLine[roomId - 2][1] < divideRoom[roomId][1]) {
+				int point = 0;
+				while (1) {
+					//部屋の上端のどっかのy座標
+					point = gManager->GetRandEx(divideRoom[roomId][0], divideRoom[roomId][2]);
+					if ((GetChip(point, divideRoom[roomId][1] - 1)) == 0 && (GetChip(point - 1, divideRoom[roomId][1] - 1)) == 0 && (GetChip(point + 1, divideRoom[roomId][1] - 1)) == 0) break;
+				}
+				dir = 0;
+				int pointY = divideRoom[roomId][1];
+				return t2k::Vector3(point, pointY, 0);
+			}
+			else {
+				int point = 0;
+				while (1) {
+					//部屋の下端のどっかのy座標
+					point = gManager->GetRandEx(divideRoom[roomId][0], divideRoom[roomId][2]);
+					if ((GetChip(point, divideRoom[roomId][3] + 1)) == 0 && (GetChip(point - 1, divideRoom[roomId][3] + 1)) == 0 && (GetChip(point + 1, divideRoom[roomId][3] + 1)) == 0) break;
+				}
+				dir = 2;
+				int pointY = divideRoom[roomId][3];
+				return t2k::Vector3(point, pointY, 0);
+			}
+		}
 
+
+	}
+	//**********最後の部屋の場合**********
+
+	//**********最初の部屋の場合**********
+
+	//自分の部屋から見て分割線がどこにあるか調べる
+	//分割線が縦なら左か右
+	if (divideLine[roomId][4] == VERTICAL) {
+		//分割線のx座標と部屋のx座標を比べる
+		//分割線より部屋の左が大きければ分割線は左にある
+		if (divideLine[roomId][0] < divideRoom[roomId][0]) {
+			int point = 0;
+			while (1) {
+				//部屋の左端のどっかのy座標
+				point = gManager->GetRandEx(divideRoom[roomId][1], divideRoom[roomId][3]);
+				if ((GetChip(divideRoom[roomId][0] - 1, point)) == 0) break;
+			}
+			dir = 3;
+			int pointX = divideRoom[roomId][0];
+			return t2k::Vector3(pointX, point, 0);
+		}
+		else {
+			int point = 0;
+			while (1) {
+				//部屋の右端のどっかのy座標
+				point = gManager->GetRandEx(divideRoom[roomId][1], divideRoom[roomId][3]);
+				if ((GetChip(divideRoom[roomId][0] + 1, point)) == 0) break;
+			}
+			dir = 1;
+			int pointX = divideRoom[roomId][2];
+			return t2k::Vector3(pointX, point, 0);
+		}
+	}//横なら上か下
+	else {
+		//分割線のy座標と部屋のy座標を比べる
+		//分割線より部屋の上が大きければ分割線は上にある
+		if (divideLine[roomId][1] < divideRoom[roomId][1]) {
+			int point = 0;
+			while (1) {
+				//部屋の上端のどっかのy座標
+				point = gManager->GetRandEx(divideRoom[roomId][0], divideRoom[roomId][2]);
+				if ((GetChip(point, divideRoom[roomId][1] - 1)) == 0) break;
+			}
+			dir = 0;
+			int pointY = divideRoom[roomId][1];
+			return t2k::Vector3(point, pointY, 0);
+		}
+		else {
+			int point = 0;
+			while (1) {
+				//部屋の下端のどっかのy座標
+				point = gManager->GetRandEx(divideRoom[roomId][0], divideRoom[roomId][2]);
+				if ((GetChip(point, divideRoom[roomId][3] + 1)) == 0) break;
+			}
+			dir = 2;
+			int pointY = divideRoom[roomId][3];
+			return t2k::Vector3(point, pointY, 0);
+		}
+	}
+	//**********最初の部屋の場合**********
+
+	//return t2k::Vector3(-1, -1, -1);
+}
+//0:上, 1 : 右, 2 : 下, 3 : 左
+bool Map::CreateSecondWay(int x, int y, int dir, int roomId)
+{
+	if (x - 1 < 0 || y - 1 < 0)return true;
+	if (x + 1 > gManager->MAPWIDTH - 1 || y + 1 > gManager->MAPHEIGHT - 1)return true;
+	int chip = 0;
+	int setX = 0;
+	int setY = 0;
+
+	if (dir == 0) {
+		setX = x;
+		setY = y - 1;
+		SetChip(setX, setY, EXPASSWAY);
+		//chip = GetChip(x, y - 1);
+	}
+	else if (dir == 1) {
+		setX = x + 1;
+		setY = y;
+		SetChip(setX, setY, EXPASSWAY);
+		//chip = GetChip(x + 1, y);
+	}
+	else if (dir == 2) {
+		setX = x;
+		setY = y + 1;
+		SetChip(setX, setY, EXPASSWAY);
+		//chip = GetChip(x, (y + 1));
+	}
+	else if (dir == 3) {
+		setX = x - 1;
+		setY = y;
+		SetChip(setX, setY, EXPASSWAY);
+		//chip = GetChip((x - 1), y);
+	}
+	//もし通路の横のどちらかか、進行方向に通路があれば
+	if (CheckChip(setX, setY, dir))
+	{
+		return true;
+	}
+
+	//もし今のx,y座標と隣の部屋の辺のどこかのx,またはy座標が同じなら直角に曲げる
+	//最初の部屋なら
+	if (roomId == 0) {
+		//上か下なら
+		if (dir == 0 || dir == 2) {
+			//部屋の範囲内にいるか確認
+			if (divideRoom[roomId + 2][1]<setY && divideRoom[roomId + 2][3]>setY) {
+				//部屋が左にあるなら
+				if (divideRoom[roomId + 2][2] < setX) {
+					return CreateSecondWay(setX, setY, 3, roomId);
+				}
+				else {
+					return CreateSecondWay(setX, setY, 1, roomId);
+				}
+			}
+		}
+		//右か左なら
+		else if (dir == 1 || dir == 3) {
+			if (divideRoom[roomId + 2][0]<setX && divideRoom[roomId + 2][2]>setX) {
+				//部屋が上にある
+				if (divideRoom[roomId + 2][3] < setY) {
+					return CreateSecondWay(setX, setY, 0, roomId);
+				}
+				else {
+					return CreateSecondWay(setX, setY, 2, roomId);
+				}
+			}
+		}
+	}
+	//最後のへやなら
+	else if (roomId == divideRoom.back()[4]) {
+		if (dir == 0 || dir == 2) {
+			//上
+			if (divideRoom[roomId - 2][1]<setY && divideRoom[roomId - 2][3]>setY) {
+				//部屋が左にある
+				if (divideRoom[roomId - 2][2] < setX) {
+					return CreateSecondWay(setX, setY, 3, roomId);
+				}
+				else {
+					return CreateSecondWay(setX, setY, 1, roomId);
+				}
+			}
+		}
+		else if (dir == 1 || dir == 3) {
+			if (divideRoom[roomId - 2][0]<setX && divideRoom[roomId - 2][2]>setX) {
+				//部屋が上にある
+				if (divideRoom[roomId - 2][3] < setY) {
+					return CreateSecondWay(setX, setY, 0, roomId);
+				}
+				else {
+					return CreateSecondWay(setX, setY, 2, roomId);
+				}
+			}
+		}
+	}
+	return CreateSecondWay(setX, setY, dir, roomId);
+}
+//0:上, 1 : 右, 2 : 下, 3 : 左
+bool Map::CheckChip(int x, int y, int nextDir)
+{
+	if (x + 1 > gManager->MAPWIDTH - 1 || y + 1 > gManager->MAPHEIGHT - 1 || x <= 1 || y <= 1)return true;
+	//if (x >= 49 || y >= 35 || x <= 1 || y <= 1)return true;
+	if (nextDir == 0) {
+		if (GetChip(x - 1, y) == 1)return true;
+		else if (GetChip(x + 1, y) == 1)return true;
+		else if (GetChip(x, y - 1) == 1)return true;
+	}
+	else if (nextDir == 1) {
+		if (GetChip(x, y - 1) == 1)return true;
+		else if (GetChip(x, y + 1) == 1)return true;
+		else if (GetChip(x + 1, y) == 1)return true;
+	}
+	else if (nextDir == 2) {
+		if (GetChip(x - 1, y) == 1)return true;
+		else if (GetChip(x + 1, y) == 1)return true;
+		else if (GetChip(x, y + 1) == 1)return true;
+	}
+	else if (nextDir == 3) {
+		if (GetChip(x, y - 1) == 1)return true;
+		else if (GetChip(x, y + 1) == 1)return true;
+		else if (GetChip(x - 1, y) == 1)return true;
+	}
+	return false;
+}
 bool Map::CheckPassWay(int roomPos_set, int roomPos_moveStart, int roomPos_moveGoal, int dir)
 {
 	bool check = true;

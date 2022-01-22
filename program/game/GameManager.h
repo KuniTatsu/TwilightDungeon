@@ -27,6 +27,11 @@ public:
 	Camera* camera = nullptr;
 
 	double graphEx = 1;
+
+	//マップの幅(チップ数)
+	const int MAPWIDTH = 60;//default:50
+	//マップの縦幅
+	const int MAPHEIGHT = 48;//default:36
 	
 	//一度読み込んだghを保存するmap
 	std::unordered_map<std::string, int> ghmap;
@@ -90,10 +95,7 @@ private:
 
 	std::vector<std::vector<std::string>> loadItemCsv;
 
-	//マップの幅(チップ数)
-	const int MAPWIDTH = 50;
-	//マップの縦幅
-	const int MAPHEIGHT = 36;
+	
 	
 
 

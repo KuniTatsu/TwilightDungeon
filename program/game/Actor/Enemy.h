@@ -11,5 +11,10 @@ public:
 
 	void Move()override;
 
+	//¡‚ÌŒü‚«‚©‚çŒ©‚Ä¶‘¤‚Ì•ûŒü‚ğæ“¾‚·‚éŠÖ”
+	int GetMyLeft(int MyDir);
+
+	
+
 
 };
