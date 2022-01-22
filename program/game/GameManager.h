@@ -83,6 +83,14 @@ public:
 	//setType 0:プレイヤー初期座標,1:階段
 	t2k::Vector3 SetStartPos(int setType);
 
+	//部屋番号ごとの通路の座標を格納するvector
+	std::vector< std::vector<t2k::Vector3>>wayPoint;
+
+	//部屋の外周1マス外側を探索してvectorに格納する関数
+	void CheckRoomWayPoint(int roomId);
+
+
+
 	//static vector<int> hoge;
 
 	//debug切り替え

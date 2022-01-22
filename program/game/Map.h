@@ -17,6 +17,10 @@ public:
 	//マップの背景
 	vector<vector<int>> ground;
 
+	//部屋の数
+
+	int nowRoomNum = 0;
+
 	enum mapElements {
 		WALL,
 		PASSWAY,
@@ -43,6 +47,8 @@ public:
 
 	//外部から特定の部屋を取得するときの関数
 	vector<int> GetRoom(int roomNum);
+
+	
 
 	//特定のマップ座標が部屋のどこかに存在するか確認する関数
 	int CheckIsThere(int x, int y);

@@ -14,7 +14,9 @@ public:
 	//¡‚ÌŒü‚«‚©‚çŒ©‚Ä¶‘¤‚Ì•ûŒü‚ğæ“¾‚·‚éŠÖ”
 	int GetMyLeft(int MyDir);
 
-	
+private:
+	t2k::Vector3 ChasePoint = {};
+	t2k::Vector3 myNowPos = {};
 
 
 };

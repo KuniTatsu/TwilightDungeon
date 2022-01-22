@@ -34,11 +34,20 @@ Enemy::~Enemy()
 void Enemy::Move()
 {
 	//向きに関係なく左に進めるなら進む
-
-
 	//}
 	//キャラの位置がマップ上のどのチップか特定する
-	t2k::Vector3 myNowPos = gManager->WorldToLocal(pos);
+	myNowPos = gManager->WorldToLocal(pos);
+
+	//今いる場所が部屋のどこかなら部屋の番号を取得する
+	int roomNum =gManager->CheckIsThere(myNowPos);
+	//部屋のどこかにいるなら
+	if (roomNum != -1) {
+		//部屋の外周1マス外側の範囲で通路のマスを探す
+		
+
+	}
+
+
 	if (--moveTimer > 0)return;
 	moveTimer = MOVETIME;
 

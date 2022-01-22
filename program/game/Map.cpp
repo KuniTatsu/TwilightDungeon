@@ -50,6 +50,7 @@ void Map::DivideStart(int Width, int Height, Map* map)
 	for (auto room : divideRoom) {
 		SetAllChip(room[0], room[1], room[2], room[3]);
 	}
+	nowRoomNum = divideRoom.size();
 }
 
 t2k::Vector3 Map::WorldToMap(int WorldX, int WorldY)
@@ -952,7 +953,7 @@ t2k::Vector3 Map::RandomPoint(int roomId, int& dir)
 			while (1) {
 				//部屋の左端のどっかのy座標
 				point = gManager->GetRandEx(divideRoom[roomId][1], divideRoom[roomId][3]);
-				if ((GetChip(divideRoom[roomId][0] - 1, point)) == 0) break;
+				if ((GetChip(divideRoom[roomId][0] - 1, point)) == 0 && (GetChip(divideRoom[roomId][0] - 1, point + 1)) == 0 && (GetChip(divideRoom[roomId][0] - 1, point - 1)) == 0) break;
 			}
 			dir = 3;
 			int pointX = divideRoom[roomId][0];
@@ -963,7 +964,7 @@ t2k::Vector3 Map::RandomPoint(int roomId, int& dir)
 			while (1) {
 				//部屋の右端のどっかのy座標
 				point = gManager->GetRandEx(divideRoom[roomId][1], divideRoom[roomId][3]);
-				if ((GetChip(divideRoom[roomId][0] + 1, point)) == 0) break;
+				if ((GetChip(divideRoom[roomId][2] + 1, point)) == 0 && (GetChip(divideRoom[roomId][2] + 1, point - 1)) == 0 && (GetChip(divideRoom[roomId][2] + 1, point + 1)) == 0) break;
 			}
 			dir = 1;
 			int pointX = divideRoom[roomId][2];
@@ -978,7 +979,7 @@ t2k::Vector3 Map::RandomPoint(int roomId, int& dir)
 			while (1) {
 				//部屋の上端のどっかのy座標
 				point = gManager->GetRandEx(divideRoom[roomId][0], divideRoom[roomId][2]);
-				if ((GetChip(point, divideRoom[roomId][1] - 1)) == 0) break;
+				if ((GetChip(point, divideRoom[roomId][1] - 1)) == 0 && (GetChip(point - 1, divideRoom[roomId][1] - 1)) == 0 && (GetChip(point + 1, divideRoom[roomId][1] - 1)) == 0) break;
 			}
 			dir = 0;
 			int pointY = divideRoom[roomId][1];
@@ -989,7 +990,7 @@ t2k::Vector3 Map::RandomPoint(int roomId, int& dir)
 			while (1) {
 				//部屋の下端のどっかのy座標
 				point = gManager->GetRandEx(divideRoom[roomId][0], divideRoom[roomId][2]);
-				if ((GetChip(point, divideRoom[roomId][3] + 1)) == 0) break;
+				if ((GetChip(point, divideRoom[roomId][3] + 1)) == 0 && (GetChip(point - 1, divideRoom[roomId][3] + 1)) == 0 && (GetChip(point + 1, divideRoom[roomId][3] + 1)) == 0) break;
 			}
 			dir = 2;
 			int pointY = divideRoom[roomId][3];
@@ -1105,21 +1106,37 @@ bool Map::CheckChip(int x, int y, int nextDir)
 		if (GetChip(x - 1, y) == 1)return true;
 		else if (GetChip(x + 1, y) == 1)return true;
 		else if (GetChip(x, y - 1) == 1)return true;
+
+		if (CheckIsThere(x - 1, y) != -1)return true;
+		else if (CheckIsThere(x + 1, y) != -1)return true;
+		else if (CheckIsThere(x, y - 1) != -1)return true;
 	}
 	else if (nextDir == 1) {
 		if (GetChip(x, y - 1) == 1)return true;
 		else if (GetChip(x, y + 1) == 1)return true;
 		else if (GetChip(x + 1, y) == 1)return true;
+
+		if (CheckIsThere(x, y - 1) != -1)return true;
+		else if (CheckIsThere(x, y + 1) != -1)return true;
+		else if (CheckIsThere(x + 1, y) != -1)return true;
 	}
 	else if (nextDir == 2) {
 		if (GetChip(x - 1, y) == 1)return true;
 		else if (GetChip(x + 1, y) == 1)return true;
 		else if (GetChip(x, y + 1) == 1)return true;
+
+		if (CheckIsThere(x - 1, y) != -1)return true;
+		else if (CheckIsThere(x + 1, y) != -1)return true;
+		else if (CheckIsThere(x, y + 1) != -1)return true;
 	}
 	else if (nextDir == 3) {
 		if (GetChip(x, y - 1) == 1)return true;
 		else if (GetChip(x, y + 1) == 1)return true;
 		else if (GetChip(x - 1, y) == 1)return true;
+
+		if (CheckIsThere(x, y - 1) != -1)return true;
+		else if (CheckIsThere(x, y + 1) != -1)return true;
+		else if (CheckIsThere(x - 1, y) != -1)return true;
 	}
 	return false;
 }

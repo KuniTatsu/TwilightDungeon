@@ -28,7 +28,7 @@ GameManager::~GameManager()
 
 void GameManager::Update()
 {
-	
+
 	SceneManager::Update();
 
 }
@@ -39,10 +39,10 @@ void GameManager::Draw()
 
 void GameManager::initGameManager()
 {
-	//SRand(time(0));
+	SRand(time(0));
 	// 
 	//debug
-	SRand(1);
+	//SRand(1);
 
 	camera = new Camera();
 	map = new Map(MAPWIDTH, MAPHEIGHT);
@@ -51,6 +51,10 @@ void GameManager::initGameManager()
 	t2k::Vector3 stairsPos = SetStartPos(1);
 	//階段設置
 	map->SetChip(stairsPos.x, stairsPos.y, map->STAIRS);
+	
+	/*for (int i = 0; i < map->nowRoomNum; ++i) {
+		CheckRoomWayPoint(i);
+	}*/
 
 	player = new Player(SetStartPos(0));
 	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
@@ -176,6 +180,19 @@ t2k::Vector3 GameManager::SetStartPos(int setType)
 	return Pos;
 }
 
+void GameManager::CheckRoomWayPoint(int roomId)
+{
+	//roomIdの部屋の左上から右下まで見て通路があればemplase_backする
+	std::vector<int> room = map->GetRoom(roomId);
+	for (int i = room[0] - 1; i < room[2] + 1; ++i) {
+		for (int k = room[1] - 1; k < room[3] + 1; ++k) {
+			if (GetMapChip(t2k::Vector3(i, k, 0)) != 0) {
+				wayPoint[roomId].emplace_back(t2k::Vector3(i, k, 0));
+			}
+		}
+	}
+}
+
 void GameManager::Zoom(double* zoomEx)
 {
 	//if (t2k::Input::isKeyDown(t2k::Input::KEYBORD_Z)) {
@@ -193,9 +210,6 @@ void GameManager::ReCreate()
 	map = nullptr;
 	delete player;
 	player = nullptr;
-
-
-
 	map = new Map(MAPWIDTH, MAPHEIGHT);
 	map->DivideStart(MAPWIDTH, MAPHEIGHT, map);
 
@@ -203,6 +217,10 @@ void GameManager::ReCreate()
 	t2k::Vector3 stairsPos = SetStartPos(1);
 	//階段設置
 	map->SetChip(stairsPos.x, stairsPos.y, map->STAIRS);
+
+	for (int i = 0; i < map->nowRoomNum; ++i) {
+		CheckRoomWayPoint(i);
+	}
 
 	player = new Player(SetStartPos(0));
 	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
