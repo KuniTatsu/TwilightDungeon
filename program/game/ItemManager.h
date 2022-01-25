@@ -9,7 +9,7 @@ class ItemManager {
 public:
 	std::vector<std::vector<std::string>> loadItem;
 
-	
+	ItemManager();
 
 
 
