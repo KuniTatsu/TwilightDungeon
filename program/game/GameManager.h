@@ -104,7 +104,8 @@ private:
 	std::vector<std::vector<std::string>> loadItemCsv;
 
 	
-	
+	int test = 0;
+
 
 
 	void Zoom(double* zoomEx);

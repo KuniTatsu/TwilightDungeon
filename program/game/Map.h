@@ -19,7 +19,7 @@ public:
 
 	//•”‰®‚Ì”
 
-	int nowRoomNum = 0;
+	int sumRoomNum = 0;
 
 	enum mapElements {
 		WALL,

@@ -50,7 +50,7 @@ void Map::DivideStart(int Width, int Height, Map* map)
 	for (auto room : divideRoom) {
 		SetAllChip(room[0], room[1], room[2], room[3]);
 	}
-	nowRoomNum = divideRoom.size();
+	sumRoomNum = divideRoom.size();
 }
 
 t2k::Vector3 Map::WorldToMap(int WorldX, int WorldY)

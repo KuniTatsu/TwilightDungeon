@@ -31,6 +31,7 @@ void GameManager::Update()
 
 	SceneManager::Update();
 
+
 }
 void GameManager::Draw()
 {
@@ -51,10 +52,12 @@ void GameManager::initGameManager()
 	t2k::Vector3 stairsPos = SetStartPos(1);
 	//階段設置
 	map->SetChip(stairsPos.x, stairsPos.y, map->STAIRS);
-	
-	/*for (int i = 0; i < map->nowRoomNum; ++i) {
+
+	wayPoint.resize(map->GetRoomNum() + 1);
+
+	for (int i = 0; i < map->sumRoomNum; ++i) {
 		CheckRoomWayPoint(i);
-	}*/
+	}
 
 	player = new Player(SetStartPos(0));
 	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
@@ -184,11 +187,18 @@ void GameManager::CheckRoomWayPoint(int roomId)
 {
 	//roomIdの部屋の左上から右下まで見て通路があればemplase_backする
 	std::vector<int> room = map->GetRoom(roomId);
-	for (int i = room[0] - 1; i < room[2] + 1; ++i) {
-		for (int k = room[1] - 1; k < room[3] + 1; ++k) {
-			if (GetMapChip(t2k::Vector3(i, k, 0)) != 0) {
-				wayPoint[roomId].emplace_back(t2k::Vector3(i, k, 0));
-			}
+	for (int k = room[1] - 1; k < room[3] + 2; ++k) {
+		for (int i = room[0] - 1; i < room[2] + 2; ++i) {
+
+			t2k::Vector3 chip = t2k::Vector3(i, k, 0);
+			//壁だったらcontinue
+			if (GetMapChip(chip) == 0)continue;
+			test++;//通ってる
+			//もし部屋の中ならcontinue
+			if (chip.x >= room[0] && chip.x <= room[2])continue;
+			if (chip.y >= room[1] && chip.y <= room[3])continue;
+			wayPoint[roomId].emplace_back(chip);//増えない
+
 		}
 	}
 }
@@ -218,7 +228,7 @@ void GameManager::ReCreate()
 	//階段設置
 	map->SetChip(stairsPos.x, stairsPos.y, map->STAIRS);
 
-	for (int i = 0; i < map->nowRoomNum; ++i) {
+	for (int i = 0; i < map->sumRoomNum; ++i) {
 		CheckRoomWayPoint(i);
 	}
 
