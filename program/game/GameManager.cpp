@@ -267,6 +267,8 @@ void GameManager::ReCreate()
 	map = nullptr;
 	delete player;
 	player = nullptr;
+	wayPoint.clear();
+
 	map = new Map(MAPWIDTH, MAPHEIGHT);
 	map->DivideStart(MAPWIDTH, MAPHEIGHT, map);
 

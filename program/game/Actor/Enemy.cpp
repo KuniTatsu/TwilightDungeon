@@ -56,6 +56,7 @@ void Enemy::Move()
 		ChasePoint = wayPoint;
 
 		isSetChasePoint = true;
+		MoveChasePoint();
 		return;
 	}
 	//通路にいるなら
@@ -70,27 +71,6 @@ void Enemy::Move()
 			else DegradedMoveToDir(GetDir(mydir, CheckDir::RIGHT));
 		}
 	}
-
-
-
-
-	//	//向きを取得する
-	//	//2.1 向きが左のとき
-	//	//下側を見る
-	//	//下も壁だったら上に向かう
-
-	//	//2.2 向きが上のとき
-	//	//まっすぐ進めるか見る
-	//	//まっすぐがダメなら右に向かう
-
-	//	//2.3 向きが右のとき
-	//	//まっすぐ進めるか見る
-	//	//まっすぐがダメなら
-
-	//	//2.4 向きが下のとき
-	//	//まっすぐ進めるか見る
-	//	//まっすぐがダメなら右に向かう
-	//}
 
 
 #if 0
@@ -232,7 +212,7 @@ void Enemy::Move()
 		//キャラのチップの左のチップがPASSWAYなら移動する
 		mydir = UP;
 		pos.y -= 20;
-	}
+		}
 	else if (rand == 1) {
 		//キャラのチップの左のチップがWALLなら移動しない
 		if ((gManager->GetMapChip(myNowPos + t2k::Vector3(1, 0, 0))) == 0)return;
@@ -274,6 +254,13 @@ void Enemy::MoveChasePoint()
 	int disX = abs(ChasePoint.x - myNowPos.x);
 	int disY = abs(ChasePoint.y - myNowPos.y);
 
+	////もし今の自分の位置と目的地が一致していれば
+	//if (myNowPos.x == ChasePoint.x && myNowPos.y == ChasePoint.y) {
+	//	//isSetChasePointをfalseにする
+	//	isSetChasePoint = false;
+	//	//目的地を破棄する
+	//	ChasePoint = { 0,0,0 };
+	//}
 
 	//xのほうが長い場合
 	if (disX > disY) {
@@ -291,27 +278,62 @@ void Enemy::MoveChasePoint()
 		}
 	}//yのほうが長い場合
 	else {
+		//もしxとyが同じでここに入り
+		//目的地に向かって下側か上側が壁の時
+		//x方向に進ませる
+
+
 		//y方向に進む
 		//自分のy座標が目的地より上なら下に進む
 		if (myNowPos.y < ChasePoint.y) {
+			//ひとつ下が壁のとき
+			if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, 1, 0)) == 0) {
+				//自分のx座標が目的地より左なら右に進む
+				if (myNowPos.x < ChasePoint.x) {
+					if (gManager->GetMapChip(myNowPos + t2k::Vector3(1, 0, 0)) == 0)return;
+					pos.x += 20;
+					mydir = dir::RIGHT;
+				}//左に進む
+				else {
+					if (gManager->GetMapChip(myNowPos + t2k::Vector3(-1, 0, 0)) == 0)return;
+					pos.x -= 20;
+					mydir = dir::LEFT;
+				}
+			}
 			if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, 1, 0)) == 0)return;
 			pos.y += 20;
 			mydir = dir::DOWN;
 		}//上に進む
 		else {
+			//ひとつ上が壁のとき
+			if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, -1, 0)) == 0) {
+				//自分のx座標が目的地より左なら右に進む
+				if (myNowPos.x < ChasePoint.x) {
+					if (gManager->GetMapChip(myNowPos + t2k::Vector3(1, 0, 0)) == 0)return;
+					pos.x += 20;
+					mydir = dir::RIGHT;
+				}//左に進む
+				else {
+					if (gManager->GetMapChip(myNowPos + t2k::Vector3(-1, 0, 0)) == 0)return;
+					pos.x -= 20;
+					mydir = dir::LEFT;
+				}
+			}
 			if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, -1, 0)) == 0)return;
 			pos.y -= 20;
 			mydir = dir::UP;
 		}
 	}
+
 	//もし今の自分の位置と目的地が一致していれば
-	if (myNowPos.x == ChasePoint.x && myNowPos.y == ChasePoint.y) {
+	if (pos.x / 20 == ChasePoint.x && pos.y / 20 == ChasePoint.y) {
 		//isSetChasePointをfalseにする
 		isSetChasePoint = false;
 		//目的地を破棄する
 		ChasePoint = { 0,0,0 };
 	}
-}
+
+	}
 int Enemy::GetDir(const int dir, const int getDir)
 {
 	//今の向きが上
