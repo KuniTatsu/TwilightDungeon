@@ -24,6 +24,8 @@ private:
 	//ŠK‘w
 	int dungeonLevel = 1;
 
+	int alfa = 0;
+
 	//Ÿ‚Ì‰ñ‚És‚¯‚éwindow
 	Menu* nextLevelWindow = nullptr;
 

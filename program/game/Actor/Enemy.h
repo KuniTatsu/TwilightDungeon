@@ -49,4 +49,9 @@ private:
 	//自分のdirから見て特定の方向に1進んだマスが移動可能かどうか確認する関数
 	bool CheckCanMoveToDir(const int dir, const t2k::Vector3 nowPos, const int checkDir);
 
+	//キャラクターに向かって移動するAI関数
+	void MoveToPlayer();
+
+
+
 };

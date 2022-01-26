@@ -13,6 +13,7 @@ extern GameManager* gManager;
 
 DungeonScene::DungeonScene()
 {
+	alfa = gManager->LoadGraphEx("graphics/old/test.png");
 	nextLevelWindow = new Menu(300, 300, 300, 200, "graphics/WindowBase_01.png");
 	eManager = std::make_shared<EnemyManager>();
 	/*for (int i = 0; i < 5; ++i) {
@@ -96,6 +97,10 @@ void DungeonScene::Draw()
 			DrawCircle(X * 20 - gManager->camera->cameraPos.x, Y * 20 - gManager->camera->cameraPos.y, 10, -1, true);
 		}
 	}
+
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+	DrawRotaGraph(gManager->player->pos.x - gManager->camera->cameraPos.x, gManager->player->pos.y - gManager->camera->cameraPos.y, 1, 0, alfa, true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	//gManager->map->DrawAllRoomPos(gManager->map.)
 }
 
