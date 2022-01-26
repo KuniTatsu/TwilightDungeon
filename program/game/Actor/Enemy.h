@@ -15,8 +15,17 @@ public:
 	int GetMyLeft(int MyDir);
 
 private:
+	//目的地
 	t2k::Vector3 ChasePoint = {};
+
+	//目的地セットフラグ
+	bool isSetChasePoint = false;
+
 	t2k::Vector3 myNowPos = {};
+	//設定された目的地に最短経路で向かう関数
+	void MoveChasePoint();
+
+	
 
 
 };

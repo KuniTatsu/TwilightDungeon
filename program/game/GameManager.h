@@ -89,13 +89,14 @@ public:
 	//wayPointVectorを初期化する関数
 	void InitWayPointVector(int initroomNum);
 
-	//部屋の外周1マス外側を探索してvectorに格納する関数 //使わない
-	void CheckRoomWayPoint(int roomId);
+	////部屋の外周1マス外側を探索してvectorに格納する関数 //使わない
+	//void CheckRoomWayPoint(int roomId);
 
 	//通路作成時にvectorに格納する関数
 	void SetRoomWayPoint(t2k::Vector3 pos,int roomId);
 
-
+	//部屋番号と引数の座標から一番遠い部屋の出口を取得する関数
+	t2k::Vector3 GetFarPoint(int roomId, t2k::Vector3 pos);
 
 	//debug切り替え
 	bool isDebug = true;

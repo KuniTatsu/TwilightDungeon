@@ -1,6 +1,7 @@
 #include "GameManager.h"
 #include"SceneManager.h"
 #include"DxLib.h"
+#include<algorithm>
 
 #include"../support/Support.h"
 #include<string>
@@ -188,29 +189,65 @@ void GameManager::InitWayPointVector(int initroomNum)
 	wayPoint.resize(initroomNum + 1);
 }
 
-void GameManager::CheckRoomWayPoint(int roomId)
-{
-	//roomIdの部屋の左上から右下まで見て通路があればemplase_backする
-	std::vector<int> room = map->GetRoom(roomId);
-	for (int k = room[1] - 1; k < room[3] + 2; ++k) {
-		for (int i = room[0] - 1; i < room[2] + 2; ++i) {
-
-			t2k::Vector3 chip = t2k::Vector3(i, k, 0);
-			//壁だったらcontinue
-			if (GetMapChip(chip) == 0)continue;
-			test++;//通ってる
-			//もし部屋の中ならcontinue
-			if (chip.x >= room[0] && chip.x <= room[2])continue;
-			if (chip.y >= room[1] && chip.y <= room[3])continue;
-			wayPoint[roomId].emplace_back(chip);//増えない
-
-		}
-	}
-}
+//void GameManager::CheckRoomWayPoint(int roomId)
+//{
+//	//roomIdの部屋の左上から右下まで見て通路があればemplase_backする
+//	std::vector<int> room = map->GetRoom(roomId);
+//	for (int k = room[1] - 1; k < room[3] + 2; ++k) {
+//		for (int i = room[0] - 1; i < room[2] + 2; ++i) {
+//
+//			t2k::Vector3 chip = t2k::Vector3(i, k, 0);
+//			//壁だったらcontinue
+//			if (GetMapChip(chip) == 0)continue;
+//			test++;//通ってる
+//			//もし部屋の中ならcontinue
+//			if (chip.x >= room[0] && chip.x <= room[2])continue;
+//			if (chip.y >= room[1] && chip.y <= room[3])continue;
+//			wayPoint[roomId].emplace_back(chip);//増えない
+//
+//		}
+//	}
+//}
 
 void GameManager::SetRoomWayPoint(t2k::Vector3 pos, int roomId)
 {
 	wayPoint[roomId].emplace_back(pos);
+}
+
+t2k::Vector3 GameManager::GetFarPoint(int roomId, t2k::Vector3 pos)
+{
+	//roomIdから出口の座標を取得する
+	//一応出口が3個以上あるものとして書く(たぶん2個しか無いはず)
+	std::vector<t2k::Vector3> outPoint;
+	for (int i = 0; i < wayPoint[roomId].size(); ++i) {
+		outPoint.emplace_back(wayPoint[roomId][i]);
+	}
+
+	std::vector<int> Distances;
+
+	//outPointの各座標とposを比べて距離を出す
+	for (auto point : outPoint) {
+		int disX = point.x - pos.x;
+		int disY = point.y - pos.y;
+		int distance = disX * disX + disY * disY;//2乗の状態で比べる
+		Distances.emplace_back(distance);
+		//Distances[num].emplace_back(point);	
+	}
+	//Distancesの添字番号とoutPointの添字番号は一致するはず
+	//最大の距離になるときのoutPointの番号がほしい
+	int max = 0;//添字番号
+	int buf = 0;//distanceの一時保管用
+	for (int i = 0; i < Distances.size(); ++i) {
+		if (buf == 0)buf = Distances[i];//比較用のdistanceがなければ自分を入れる
+		//もしbufの中身よりi番のdistanceが大きければ
+		if (buf < Distances[i]) {
+			//配列番号を取得する
+			max = i;
+		}
+	}
+	//この時点でmaxに距離が一番遠いoutPointの添字番号が入っているはず
+	//一番遠いoutPointを返す
+	return outPoint[max];
 }
 
 void GameManager::Zoom(double* zoomEx)

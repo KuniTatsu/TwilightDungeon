@@ -33,33 +33,43 @@ Enemy::~Enemy()
 
 void Enemy::Move()
 {
-	//向きに関係なく左に進めるなら進む
-	//}
+	//動ける状態じゃなければ動かない
+	if (--moveTimer > 0)return;
+	moveTimer = MOVETIME;
+
 	//キャラの位置がマップ上のどのチップか特定する
 	myNowPos = gManager->WorldToLocal(pos);
+	
+	//目的地がセットされていればそちらへ向かう
+	if (isSetChasePoint) {
+		//MoveChasePoint();
+		return;
+	}
 
 	//今いる場所が部屋のどこかなら部屋の番号を取得する
-	int roomNum =gManager->CheckIsThere(myNowPos);
+	int roomNum = gManager->CheckIsThere(myNowPos);
 	//部屋のどこかにいるなら
 	if (roomNum != -1) {
-		//部屋の外周1マス外側の範囲で通路のマスを探す
-		
+		//その部屋の出口の中から自分から一番遠い出口を取得する
+		t2k::Vector3 wayPoint = gManager->GetFarPoint(roomNum, myNowPos);
+		//取得した出口を目的地にセットする
+		ChasePoint = wayPoint;
+		return;
+	}
+	//通路にいるなら
+	else {
+		//進めるなら自分のdirの方向に進む
+		//もし進めなければdirから見て左側に行けないか確認する
+		//行けるなら進む
+		//行けないなら右側に進む
+
+
 
 	}
 
 
-	if (--moveTimer > 0)return;
-	moveTimer = MOVETIME;
 
-	//t2k::Vector3 Left = t2k::Vector3(myNowPos.x - 1, myNowPos.y, 0);
-	////左が壁じゃなかったら
-	//if (gManager->GetMapChip(Left) != 0) {
-	//	//左に進む
-	//	pos.x -= 20;
-	//	mydir = LEFT;
-	//}
-	////左が壁だったら
-	//else {
+
 	//	//向きを取得する
 	//	//2.1 向きが左のとき
 	//	//下側を見る
@@ -249,6 +259,16 @@ int Enemy::GetMyLeft(int MyDir)
 	//左を向いていたら 左は下側
 
 	return (MyDir - 1) % 4;
+}
+
+void Enemy::MoveChasePoint()
+{
+
+
+
+	//もし今の自分の位置と目的地が一致していれば
+
+	//移動せずにisSetChasePointをfalseにする
 }
 
 
