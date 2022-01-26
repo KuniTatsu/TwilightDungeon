@@ -39,10 +39,10 @@ void Enemy::Move()
 
 	//キャラの位置がマップ上のどのチップか特定する
 	myNowPos = gManager->WorldToLocal(pos);
-	
+
 	//目的地がセットされていればそちらへ向かう
 	if (isSetChasePoint) {
-		//MoveChasePoint();
+		MoveChasePoint();
 		return;
 	}
 
@@ -54,17 +54,21 @@ void Enemy::Move()
 		t2k::Vector3 wayPoint = gManager->GetFarPoint(roomNum, myNowPos);
 		//取得した出口を目的地にセットする
 		ChasePoint = wayPoint;
+
+		isSetChasePoint = true;
 		return;
 	}
 	//通路にいるなら
 	else {
 		//進めるなら自分のdirの方向に進む
+		bool canMove = MoveToDir(mydir, myNowPos);
 		//もし進めなければdirから見て左側に行けないか確認する
-		//行けるなら進む
-		//行けないなら右側に進む
-
-
-
+		if (!canMove) {
+			//もし左に進めるなら左に進む
+			if (CheckCanMoveToDir(mydir, myNowPos, CheckDir::LEFT)) DegradedMoveToDir(GetDir(mydir, CheckDir::LEFT));
+			//もし左に進めないなら右に進む
+			else DegradedMoveToDir(GetDir(mydir, CheckDir::RIGHT));
+		}
 	}
 
 
@@ -89,7 +93,7 @@ void Enemy::Move()
 	//}
 
 
-#if 1
+#if 0
 	int myleft = GetMyLeft(mydir);
 	//もし自分の向いている向きの左が壁じゃなかったら
 	//そっちに進む
@@ -101,7 +105,7 @@ void Enemy::Move()
 		t2k::Vector3 nextPos = t2k::Vector3(myNowPos.x, myNowPos.y - 1, 0);
 		if (gManager->GetMapChip(nextPos) != 0) {
 			pos.y -= 20;
-			mydir = UP;
+			mydir = dir::UP;
 		}
 		//壁だったら
 		else {
@@ -118,7 +122,7 @@ void Enemy::Move()
 				if (gManager->GetMapChip(right) == 0)return;
 				//右に進む
 				pos.y += 20;
-				mydir = DOWN;
+				mydir = dir::DOWN;
 			}
 		}
 	}
@@ -129,7 +133,7 @@ void Enemy::Move()
 		t2k::Vector3 nextPos = t2k::Vector3(myNowPos.x + 1, myNowPos.y, 0);
 		if (gManager->GetMapChip(nextPos) != 0) {
 			pos.x += 20;
-			mydir = RIGHT;
+			mydir = dir::RIGHT;
 		}
 		//壁だったら
 		else {
@@ -146,7 +150,7 @@ void Enemy::Move()
 				if (gManager->GetMapChip(right) == 0)return;
 				//右に進む
 				pos.x -= 20;
-				mydir = LEFT;
+				mydir = dir::LEFT;
 			}
 		}
 	}
@@ -157,7 +161,7 @@ void Enemy::Move()
 		t2k::Vector3 nextPos = t2k::Vector3(myNowPos.x, myNowPos.y + 1, 0);
 		if (gManager->GetMapChip(nextPos) != 0) {
 			pos.y += 20;
-			mydir = DOWN;
+			mydir = dir::DOWN;
 		}
 		//壁だったら
 		else {
@@ -174,7 +178,7 @@ void Enemy::Move()
 				if (gManager->GetMapChip(right) == 0)return;
 				//右に進む
 				pos.y -= 20;
-				mydir = UP;
+				mydir = dir::UP;
 			}
 		}
 	}
@@ -185,7 +189,7 @@ void Enemy::Move()
 		t2k::Vector3 nextPos = t2k::Vector3(myNowPos.x - 1, myNowPos.y, 0);
 		if (gManager->GetMapChip(nextPos) != 0) {
 			pos.x -= 20;
-			mydir = LEFT;
+			mydir = dir::LEFT;
 		}
 		//壁だったら
 		else {
@@ -202,7 +206,7 @@ void Enemy::Move()
 				if (gManager->GetMapChip(right) == 0)return;
 				//右に進む
 				pos.x += 20;
-				mydir = RIGHT;
+				mydir = dir::RIGHT;
 			}
 		}
 	}
@@ -263,12 +267,228 @@ int Enemy::GetMyLeft(int MyDir)
 
 void Enemy::MoveChasePoint()
 {
+	//目的地に向かって移動する
+	//辺の長い方を先に進む
+
+	//目的地までの距離を計算(絶対値で求める)
+	int disX = abs(ChasePoint.x - myNowPos.x);
+	int disY = abs(ChasePoint.y - myNowPos.y);
 
 
-
+	//xのほうが長い場合
+	if (disX > disY) {
+		//x方向に進む
+		//自分のx座標が目的地より左なら右に進む
+		if (myNowPos.x < ChasePoint.x) {
+			if (gManager->GetMapChip(myNowPos + t2k::Vector3(1, 0, 0)) == 0)return;
+			pos.x += 20;
+			mydir = dir::RIGHT;
+		}//左に進む
+		else {
+			if (gManager->GetMapChip(myNowPos + t2k::Vector3(-1, 0, 0)) == 0)return;
+			pos.x -= 20;
+			mydir = dir::LEFT;
+		}
+	}//yのほうが長い場合
+	else {
+		//y方向に進む
+		//自分のy座標が目的地より上なら下に進む
+		if (myNowPos.y < ChasePoint.y) {
+			if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, 1, 0)) == 0)return;
+			pos.y += 20;
+			mydir = dir::DOWN;
+		}//上に進む
+		else {
+			if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, -1, 0)) == 0)return;
+			pos.y -= 20;
+			mydir = dir::UP;
+		}
+	}
 	//もし今の自分の位置と目的地が一致していれば
+	if (myNowPos.x == ChasePoint.x && myNowPos.y == ChasePoint.y) {
+		//isSetChasePointをfalseにする
+		isSetChasePoint = false;
+		//目的地を破棄する
+		ChasePoint = { 0,0,0 };
+	}
+}
+int Enemy::GetDir(const int dir, const int getDir)
+{
+	//今の向きが上
+	if (dir == 0) {
+		//左は左側
+		if (getDir == CheckDir::LEFT)return CheckDir::LEFT;
+		//右は右側
+		if (getDir == CheckDir::RIGHT)return CheckDir::RIGHT;
+	}
+	//今の向きが右
+	else if (dir == 1) {
+		//左は上側
+		if (getDir == CheckDir::LEFT)return CheckDir::UP;
+		//右は下側
+		if (getDir == CheckDir::RIGHT)return CheckDir::DOWN;
+	}
+	//今の向きが下
+	else if (dir == 2) {
+		//左は右側
+		if (getDir == CheckDir::LEFT)return CheckDir::RIGHT;
+		//右は左側
+		if (getDir == CheckDir::RIGHT)return CheckDir::LEFT;
+	}
+	//今の向きが左
+	else if (dir == 3) {
+		//左は下側
+		if (getDir == CheckDir::LEFT)return CheckDir::DOWN;
+		//右は上側
+		if (getDir == CheckDir::RIGHT)return CheckDir::UP;
+	}
+	return -1;
+}
+/*
+enum dir{
+		UP,
+		RIGHT,
+		DOWN,
+		LEFT
+	};
+*/
+/*
+t2k::Vector3 Enemy::MoveToDir(int dir)
+{
+	//上
+	if (dir == 0) {
+		return t2k::Vector3(0, -1, 0);
+	}
+	//右
+	else if (dir == 1) {
+		return t2k::Vector3(1, 0, 0);
+	}
+	//下
+	else if (dir == 2) {
+		return t2k::Vector3(0, 1, 0);
+	}
+	//左
+	else if (dir == 3) {
+		return t2k::Vector3(-1, 0, 0);
+	}
+	return t2k::Vector3(-1, -1, -1);
+}
+*/
 
-	//移動せずにisSetChasePointをfalseにする
+bool Enemy::MoveToDir(const int dir, t2k::Vector3& nowPos)
+{
+	//dir方向の1マス先が移動不可なら移動しない
+	if (!CheckCanMove(dir, nowPos))return false;
+	//上
+	if (dir == 0) {
+		pos.y -= 20;
+	}
+	//右
+	else if (dir == 1) {
+		pos.x += 20;
+	}
+	//下
+	else if (dir == 2) {
+		pos.y += 20;
+	}
+	//左
+	else if (dir == 3) {
+		pos.x -= 20;
+	}
+	else {
+		t2k::debugTrace("\n移動エラー\n");
+	}
+	return true;
+}
+
+void Enemy::DegradedMoveToDir(const int dir)
+{
+	//上
+	if (dir == 0) {
+		pos.y -= 20;
+		mydir = dir::UP;
+	}
+	//右
+	else if (dir == 1) {
+		pos.x += 20;
+		mydir = dir::RIGHT;
+	}
+	//下
+	else if (dir == 2) {
+		pos.y += 20;
+		mydir = dir::DOWN;
+	}
+	//左
+	else if (dir == 3) {
+		pos.x -= 20;
+		mydir = dir::LEFT;
+	}
+	else {
+		t2k::debugTrace("\n移動エラー\n");
+	}
+}
+
+bool Enemy::CheckCanMove(const int dir, const t2k::Vector3 nowPos)
+{
+	t2k::Vector3 nextPos = { 0,0,0 };
+	//上
+	if (dir == 0) {
+		nextPos = nowPos + t2k::Vector3(0, -1, 0);
+	}
+	//右
+	else if (dir == 1) {
+		nextPos = nowPos + t2k::Vector3(1, 0, 0);
+	}
+	//下
+	else if (dir == 2) {
+		nextPos = nowPos + t2k::Vector3(0, 1, 0);
+	}
+	//左
+	else if (dir == 3) {
+		nextPos = nowPos + t2k::Vector3(-1, 0, 0);
+	}
+	//壁ならfalseを返す
+	if (gManager->GetMapChip(nextPos) == 0)return false;
+
+	return true;
+}
+
+bool Enemy::CheckCanMoveToDir(const int dir, const t2k::Vector3 nowPos, const int checkDir)
+{
+	//今向いているのが上の場合
+	if (dir == 0) {
+		//確認したい方向がdirから見て上の時
+		if (checkDir == CheckDir::UP)return CheckCanMove(CheckDir::UP, nowPos);
+		//右の時
+		if (checkDir == CheckDir::RIGHT)return CheckCanMove(CheckDir::RIGHT, nowPos);
+		//下の時
+		if (checkDir == CheckDir::DOWN)return CheckCanMove(CheckDir::DOWN, nowPos);
+		//左の時
+		if (checkDir == CheckDir::LEFT)return CheckCanMove(CheckDir::LEFT, nowPos);
+	}
+	//今向いているのが右の場合
+	else if (dir == 1) {
+		//向かって左側は上方向
+		if (checkDir == CheckDir::LEFT)return CheckCanMove(CheckDir::UP, nowPos);
+		//向かって右側は下方向
+		if (checkDir == CheckDir::RIGHT)return CheckCanMove(CheckDir::DOWN, nowPos);
+	}
+	//今向いているのが下の場合
+	else if (dir == 2) {
+		//向かって左側は右方向
+		if (checkDir == CheckDir::LEFT)return CheckCanMove(CheckDir::RIGHT, nowPos);
+		//向かって右側は左方向
+		if (checkDir == CheckDir::RIGHT)return CheckCanMove(CheckDir::LEFT, nowPos);
+	}
+	//今向いているのが左の場合
+	else if (dir == 3) {
+		//向かって左側は下方向
+		if (checkDir == CheckDir::LEFT)return CheckCanMove(CheckDir::DOWN, nowPos);
+		//向かって右側は上方向
+		if (checkDir == CheckDir::RIGHT)return CheckCanMove(CheckDir::UP, nowPos);
+	}
+
+	return false;
 }
 
 

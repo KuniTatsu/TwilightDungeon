@@ -83,6 +83,7 @@ vector<int> Map::GetRoom(int roomNum)
 
 int Map::CheckIsThere(int x, int y)
 {
+	bool isThere = false;
 	//全ての部屋の座標をチェック
 	//x,yがその範囲内にあるならその部屋に存在する
 	for (auto room : divideRoom) {
@@ -90,11 +91,11 @@ int Map::CheckIsThere(int x, int y)
 		if (y > room[3])continue;
 		if (x >= room[0] && y >= room[1]) {
 			return room[4];
-			break;//いる？
+			isThere = true;
 		}
 	}
+	if (!isThere)return -1;
 
-	return -1;
 }
 int Map::GetChip(int x, int y)
 {
@@ -515,9 +516,9 @@ void Map::CreatePassWay()
 			if (leftBefore < leftAfter) {
 				//通路の開始地点を保存する
 				//前の部屋
-				gManager->SetRoomWayPoint(t2k::Vector3(rightBefore, passWayBefore, 0), roomBefore[4]);
+				gManager->SetRoomWayPoint(t2k::Vector3(rightBefore + 1, passWayBefore, 0), roomBefore[4]);
 				//あとの部屋
-				gManager->SetRoomWayPoint(t2k::Vector3(leftAfter, passWayAfter, 0), roomAfter[4]);
+				gManager->SetRoomWayPoint(t2k::Vector3(leftAfter - 1, passWayAfter, 0), roomAfter[4]);
 
 				//前の部屋から分割線に直交する線を引く
 				SetAllChip(rightBefore, passWayBefore, startX, passWayBefore);
@@ -527,9 +528,9 @@ void Map::CreatePassWay()
 			else {
 				//通路の開始地点を保存する
 				//前の部屋
-				gManager->SetRoomWayPoint(t2k::Vector3(leftBefore, passWayBefore, 0), roomBefore[4]);
+				gManager->SetRoomWayPoint(t2k::Vector3(leftBefore - 1, passWayBefore, 0), roomBefore[4]);
 				//あとの部屋
-				gManager->SetRoomWayPoint(t2k::Vector3(rightAfter, passWayAfter, 0), roomAfter[4]);
+				gManager->SetRoomWayPoint(t2k::Vector3(rightAfter + 1, passWayAfter, 0), roomAfter[4]);
 
 				SetAllChip(rightAfter, passWayAfter, startX, passWayAfter);
 				SetAllChip(startX, passWayBefore, leftBefore, passWayBefore);
@@ -549,9 +550,9 @@ void Map::CreatePassWay()
 			if (upBefore < upAfter) {
 				//通路の開始地点を保存する
 				//前の部屋
-				gManager->SetRoomWayPoint(t2k::Vector3(passWayBefore, downBefore, 0), roomBefore[4]);
+				gManager->SetRoomWayPoint(t2k::Vector3(passWayBefore, downBefore + 1, 0), roomBefore[4]);
 				//あとの部屋
-				gManager->SetRoomWayPoint(t2k::Vector3(passWayAfter, upAfter, 0), roomAfter[4]);
+				gManager->SetRoomWayPoint(t2k::Vector3(passWayAfter, upAfter - 1, 0), roomAfter[4]);
 
 				SetAllChip(passWayBefore, downBefore, passWayBefore, startY);
 				SetAllChip(passWayAfter, startY, passWayAfter, upAfter);
@@ -559,9 +560,9 @@ void Map::CreatePassWay()
 			else {
 				//通路の開始地点を保存する
 				//前の部屋
-				gManager->SetRoomWayPoint(t2k::Vector3(passWayBefore, upBefore, 0), roomBefore[4]);
+				gManager->SetRoomWayPoint(t2k::Vector3(passWayBefore, upBefore - 1, 0), roomBefore[4]);
 				//あとの部屋
-				gManager->SetRoomWayPoint(t2k::Vector3(passWayAfter, downAfter, 0), roomAfter[4]);
+				gManager->SetRoomWayPoint(t2k::Vector3(passWayAfter, downAfter + 1, 0), roomAfter[4]);
 
 				SetAllChip(passWayAfter, downAfter, passWayAfter, startY);
 				SetAllChip(passWayBefore, startY, passWayBefore, upBefore);
@@ -604,7 +605,7 @@ t2k::Vector3 Map::RandomPoint(int roomId, int& dir)
 				}
 				dir = 3;
 				int pointX = divideRoom[roomId][0];
-				gManager->SetRoomWayPoint(t2k::Vector3(pointX, point, 0), divideRoom[roomId][4]);
+				gManager->SetRoomWayPoint(t2k::Vector3(pointX - 1, point, 0), divideRoom[roomId][4]);
 				return t2k::Vector3(pointX, point, 0);
 			}
 			else {
@@ -616,7 +617,7 @@ t2k::Vector3 Map::RandomPoint(int roomId, int& dir)
 				}
 				dir = 1;
 				int pointX = divideRoom[roomId][2];
-				gManager->SetRoomWayPoint(t2k::Vector3(pointX, point, 0), divideRoom[roomId][4]);
+				gManager->SetRoomWayPoint(t2k::Vector3(pointX + 1, point, 0), divideRoom[roomId][4]);
 				return t2k::Vector3(pointX, point, 0);
 			}
 		}//横なら上か下
@@ -626,25 +627,25 @@ t2k::Vector3 Map::RandomPoint(int roomId, int& dir)
 			if (divideLine[roomId - 2][1] < divideRoom[roomId][1]) {
 				int point = 0;
 				while (1) {
-					//部屋の上端のどっかのy座標
+					//部屋の上端のどっかのx座標
 					point = gManager->GetRandEx(divideRoom[roomId][0], divideRoom[roomId][2]);
 					if ((GetChip(point, divideRoom[roomId][1] - 1)) == 0 && (GetChip(point - 1, divideRoom[roomId][1] - 1)) == 0 && (GetChip(point + 1, divideRoom[roomId][1] - 1)) == 0) break;
 				}
 				dir = 0;
 				int pointY = divideRoom[roomId][1];
-				gManager->SetRoomWayPoint(t2k::Vector3(point, pointY, 0), divideRoom[roomId][4]);
+				gManager->SetRoomWayPoint(t2k::Vector3(point, pointY - 1, 0), divideRoom[roomId][4]);
 				return t2k::Vector3(point, pointY, 0);
 			}
 			else {
 				int point = 0;
 				while (1) {
-					//部屋の下端のどっかのy座標
+					//部屋の下端のどっかのx座標
 					point = gManager->GetRandEx(divideRoom[roomId][0], divideRoom[roomId][2]);
 					if ((GetChip(point, divideRoom[roomId][3] + 1)) == 0 && (GetChip(point - 1, divideRoom[roomId][3] + 1)) == 0 && (GetChip(point + 1, divideRoom[roomId][3] + 1)) == 0) break;
 				}
 				dir = 2;
 				int pointY = divideRoom[roomId][3];
-				gManager->SetRoomWayPoint(t2k::Vector3(point, pointY, 0), divideRoom[roomId][4]);
+				gManager->SetRoomWayPoint(t2k::Vector3(point, pointY + 1, 0), divideRoom[roomId][4]);
 				return t2k::Vector3(point, pointY, 0);
 			}
 		}
@@ -669,7 +670,7 @@ t2k::Vector3 Map::RandomPoint(int roomId, int& dir)
 			}
 			dir = 3;
 			int pointX = divideRoom[roomId][0];
-			gManager->SetRoomWayPoint(t2k::Vector3(pointX, point, 0), divideRoom[roomId][4]);
+			gManager->SetRoomWayPoint(t2k::Vector3(pointX - 1, point, 0), divideRoom[roomId][4]);
 			return t2k::Vector3(pointX, point, 0);
 		}
 		else {
@@ -681,7 +682,7 @@ t2k::Vector3 Map::RandomPoint(int roomId, int& dir)
 			}
 			dir = 1;
 			int pointX = divideRoom[roomId][2];
-			gManager->SetRoomWayPoint(t2k::Vector3(pointX, point, 0), divideRoom[roomId][4]);
+			gManager->SetRoomWayPoint(t2k::Vector3(pointX + 1, point, 0), divideRoom[roomId][4]);
 			return t2k::Vector3(pointX, point, 0);
 		}
 	}//横なら上か下
@@ -697,7 +698,7 @@ t2k::Vector3 Map::RandomPoint(int roomId, int& dir)
 			}
 			dir = 0;
 			int pointY = divideRoom[roomId][1];
-			gManager->SetRoomWayPoint(t2k::Vector3(point, pointY, 0), divideRoom[roomId][4]);
+			gManager->SetRoomWayPoint(t2k::Vector3(point, pointY - 1, 0), divideRoom[roomId][4]);
 			return t2k::Vector3(point, pointY, 0);
 		}
 		else {
@@ -709,7 +710,7 @@ t2k::Vector3 Map::RandomPoint(int roomId, int& dir)
 			}
 			dir = 2;
 			int pointY = divideRoom[roomId][3];
-			gManager->SetRoomWayPoint(t2k::Vector3(point, pointY, 0), divideRoom[roomId][4]);
+			gManager->SetRoomWayPoint(t2k::Vector3(point, pointY + 1, 0), divideRoom[roomId][4]);
 			return t2k::Vector3(point, pointY, 0);
 		}
 	}
