@@ -86,12 +86,16 @@ public:
 	//•”‰®”Ô†‚²‚Æ‚Ì’Ê˜H‚ÌÀ•W‚ğŠi”[‚·‚évector
 	std::vector< std::vector<t2k::Vector3>>wayPoint;
 
-	//•”‰®‚ÌŠOü1ƒ}ƒXŠO‘¤‚ğ’Tõ‚µ‚Ävector‚ÉŠi”[‚·‚éŠÖ”
+	//wayPointVector‚ğ‰Šú‰»‚·‚éŠÖ”
+	void InitWayPointVector(int initroomNum);
+
+	//•”‰®‚ÌŠOü1ƒ}ƒXŠO‘¤‚ğ’Tõ‚µ‚Ävector‚ÉŠi”[‚·‚éŠÖ” //g‚í‚È‚¢
 	void CheckRoomWayPoint(int roomId);
 
+	//’Ê˜Hì¬‚Évector‚ÉŠi”[‚·‚éŠÖ”
+	void SetRoomWayPoint(t2k::Vector3 pos,int roomId);
 
 
-	//static vector<int> hoge;
 
 	//debugØ‚è‘Ö‚¦
 	bool isDebug = true;

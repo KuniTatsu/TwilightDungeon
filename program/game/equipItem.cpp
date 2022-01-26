@@ -9,3 +9,7 @@ equipItem::equipItem(int Id, int ItemType, std::string ItemName, int Saturation,
 	speed = Speed;
 
 }
+
+equipItem::~equipItem()
+{
+}

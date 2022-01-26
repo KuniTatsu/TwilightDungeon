@@ -53,11 +53,11 @@ void GameManager::initGameManager()
 	//ŠK’iÝ’u
 	map->SetChip(stairsPos.x, stairsPos.y, map->STAIRS);
 
-	wayPoint.resize(map->GetRoomNum() + 1);
+	//wayPoint.resize(map->GetRoomNum() + 1);
 
-	for (int i = 0; i < map->sumRoomNum; ++i) {
+	/*for (int i = 0; i < map->sumRoomNum; ++i) {
 		CheckRoomWayPoint(i);
-	}
+	}*/
 
 	player = new Player(SetStartPos(0));
 	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
@@ -183,6 +183,11 @@ t2k::Vector3 GameManager::SetStartPos(int setType)
 	return Pos;
 }
 
+void GameManager::InitWayPointVector(int initroomNum)
+{
+	wayPoint.resize(initroomNum + 1);
+}
+
 void GameManager::CheckRoomWayPoint(int roomId)
 {
 	//roomId‚Ì•”‰®‚Ì¶ã‚©‚ç‰E‰º‚Ü‚ÅŒ©‚Ä’Ê˜H‚ª‚ ‚ê‚Îemplase_back‚·‚é
@@ -201,6 +206,11 @@ void GameManager::CheckRoomWayPoint(int roomId)
 
 		}
 	}
+}
+
+void GameManager::SetRoomWayPoint(t2k::Vector3 pos, int roomId)
+{
+	wayPoint[roomId].emplace_back(pos);
 }
 
 void GameManager::Zoom(double* zoomEx)
@@ -228,9 +238,9 @@ void GameManager::ReCreate()
 	//ŠK’iÝ’u
 	map->SetChip(stairsPos.x, stairsPos.y, map->STAIRS);
 
-	for (int i = 0; i < map->sumRoomNum; ++i) {
+	/*for (int i = 0; i < map->sumRoomNum; ++i) {
 		CheckRoomWayPoint(i);
-	}
+	}*/
 
 	player = new Player(SetStartPos(0));
 	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);

@@ -45,6 +45,8 @@ void Map::DivideStart(int Width, int Height, Map* map)
 
 	CreateRoom();
 
+	gManager->InitWayPointVector(GetRoomNum());
+
 	CreatePassWay();
 
 	for (auto room : divideRoom) {
@@ -501,34 +503,66 @@ void Map::CreatePassWay()
 		int rightAfter = roomAfter[2];
 		int downAfter = roomAfter[3];
 
+		//分割線が縦なら
 		if (dir == VERTICAL) {
 			//部屋から通路を生やす位置を決定
+			//y座標
 			int passWayBefore = gManager->GetRandEx(upBefore + 1, downBefore - 1);
 			int passWayAfter = gManager->GetRandEx(upAfter + 1, downAfter - 1);
 
-			//分割線と部屋の相対位置で場合分け
+			//部屋の相対位置で場合分け
+			//分割前の部屋が分割後の部屋より左にあれば
 			if (leftBefore < leftAfter) {
+				//通路の開始地点を保存する
+				//前の部屋
+				gManager->SetRoomWayPoint(t2k::Vector3(rightBefore, passWayBefore, 0), roomBefore[4]);
+				//あとの部屋
+				gManager->SetRoomWayPoint(t2k::Vector3(leftAfter, passWayAfter, 0), roomAfter[4]);
+
+				//前の部屋から分割線に直交する線を引く
 				SetAllChip(rightBefore, passWayBefore, startX, passWayBefore);
+				//分割線からあとの部屋へ直交する線を引く
 				SetAllChip(startX, passWayAfter, leftAfter, passWayAfter);
 			}
 			else {
+				//通路の開始地点を保存する
+				//前の部屋
+				gManager->SetRoomWayPoint(t2k::Vector3(leftBefore, passWayBefore, 0), roomBefore[4]);
+				//あとの部屋
+				gManager->SetRoomWayPoint(t2k::Vector3(rightAfter, passWayAfter, 0), roomAfter[4]);
+
 				SetAllChip(rightAfter, passWayAfter, startX, passWayAfter);
 				SetAllChip(startX, passWayBefore, leftBefore, passWayBefore);
 			}
 			if (passWayBefore > passWayAfter)swap(passWayBefore, passWayAfter);
 			SetAllChip(startX, passWayBefore, startX, passWayAfter);
 		}
+		//分割線が横なら
 		else {
 			//部屋から通路を生やす位置を決定
+			//x座標
 			int passWayBefore = gManager->GetRandEx(leftBefore + 1, rightBefore - 1);
 			int passWayAfter = gManager->GetRandEx(leftAfter + 1, rightAfter - 1);
 
-			//分割線と部屋の相対位置で場合分け
+			//部屋の相対位置で場合分け
+			//前の部屋よりあとの部屋が下にあれば
 			if (upBefore < upAfter) {
+				//通路の開始地点を保存する
+				//前の部屋
+				gManager->SetRoomWayPoint(t2k::Vector3(passWayBefore, downBefore, 0), roomBefore[4]);
+				//あとの部屋
+				gManager->SetRoomWayPoint(t2k::Vector3(passWayAfter, upAfter, 0), roomAfter[4]);
+
 				SetAllChip(passWayBefore, downBefore, passWayBefore, startY);
 				SetAllChip(passWayAfter, startY, passWayAfter, upAfter);
 			}
 			else {
+				//通路の開始地点を保存する
+				//前の部屋
+				gManager->SetRoomWayPoint(t2k::Vector3(passWayBefore, upBefore, 0), roomBefore[4]);
+				//あとの部屋
+				gManager->SetRoomWayPoint(t2k::Vector3(passWayAfter, downAfter, 0), roomAfter[4]);
+
 				SetAllChip(passWayAfter, downAfter, passWayAfter, startY);
 				SetAllChip(passWayBefore, startY, passWayBefore, upBefore);
 			}
@@ -537,324 +571,7 @@ void Map::CreatePassWay()
 		}
 		count++;
 	}
-#if 0
-	int count_Jump = 0;
 
-	while (count_Jump + 2 < divideRoom.size()) {
-		//部屋の情報の取得
-		vector<int> roomBefore = divideRoom[count_Jump];
-		vector<int> roomAfter = divideRoom[count_Jump + 2];
-
-		int leftBefore = roomBefore[0];
-		int upBefore = roomBefore[1];
-		int rightBefore = roomBefore[2];
-		int downBefore = roomBefore[3];
-
-		int leftAfter = roomAfter[0];
-		int upAfter = roomAfter[1];
-		int rightAfter = roomAfter[2];
-		int downAfter = roomAfter[3];
-
-		int passWayBefore = 0;
-		int passWayAfter = 0;
-
-		//どこかの点を基準に部屋の相対位置を取得したい
-		//もし若い方の部屋が上なら(数が小さい)
-		if (upBefore < upAfter) {
-			//若い方の部屋が右か左かで場合分け
-
-			//若いほうが左なら
-			if (rightBefore < leftAfter) {
-				//部屋の相対位置は左上に若い部屋,右下に年上の部屋
-				//通路が作られていない辺に通路を作りたい
-				//一辺を全て眺めてWALL以外があったら通路が存在する
-
-				int before = 0;
-				int after = 0;
-
-				//*****beforeの部屋の入口検索
-				//もし通路がなければ:true
-				if (CheckPassWay(rightBefore, upBefore, downBefore, 1)) {
-					//右辺のどこかに入り口を作る
-					passWayBefore = gManager->GetRandEx(upBefore + 1, downBefore - 1);
-					before = 1;
-				}
-				else if (CheckPassWay(downBefore, leftBefore, rightBefore, 2)) {
-					//下辺のどこかに入り口を作る
-					passWayBefore = gManager->GetRandEx(leftBefore + 1, rightBefore - 1);
-					before = 2;
-				}
-				else {
-					before = -1;
-				}
-				//*****
-
-				//*****Afterの部屋の入り口検索
-				if (CheckPassWay(upAfter, leftAfter, rightAfter, 0)) {
-					//上辺のどこかに入り口を作る
-					passWayAfter = gManager->GetRandEx(leftAfter + 1, rightAfter - 1);
-					after = 1;
-				}
-				else if (CheckPassWay(leftAfter, upAfter, downAfter, 3)) {
-					//左辺のどこかに入り口を作る
-					passWayBefore = gManager->GetRandEx(upAfter + 1, downAfter - 1);
-					after = 2;
-				}
-				else {
-					after = -1;
-				}
-				//*****
-				//入り口がどちらか一方でも作れなかったら次のループへ抜ける
-				if (before == -1 || after == -1)
-				{
-					count_Jump += 1;
-					continue;
-				}
-
-				//入り口が両方出来ていたら
-				if (before == 1 && after == 1) {
-					//通路をつなぐ
-					//beforeから交差点まで
-					SetAllChip(rightBefore, passWayBefore, passWayAfter, passWayBefore);
-					//交差点からafterまで
-					SetAllChip(passWayAfter, passWayBefore, passWayAfter, upAfter);
-					count_Jump += 1;
-					continue;
-				}
-				else if (before == 2 && after == 2) {
-					//通路をつなぐ
-					//beforeから交差点まで
-					SetAllChip(passWayBefore, downBefore, passWayBefore, passWayAfter);
-					//交差点からafter
-					SetAllChip(passWayBefore, passWayAfter, leftAfter, passWayAfter);
-					count_Jump += 1;
-					continue;
-				}
-				else {
-					//通路が交差しない場合はつくらない
-					count_Jump += 1;
-					continue;
-				}
-			}
-			//若い方が右なら
-			else {
-				//部屋の相対位置は右上に若い部屋,左下に年上の部屋
-				int before = 0;
-				int after = 0;
-
-				//*****beforeの部屋の入口検索
-				//もし通路がなければ:true
-				if (CheckPassWay(leftBefore, upBefore, downBefore, 3)) {
-					//左辺のどこかに入り口を作る
-					passWayBefore = gManager->GetRandEx(upBefore + 1, downBefore - 1);
-					before = 1;
-				}
-				else if (CheckPassWay(downBefore, leftBefore, rightBefore, 2)) {
-					//下辺のどこかに入り口を作る
-					passWayBefore = gManager->GetRandEx(leftBefore + 1, rightBefore - 1);
-					before = 2;
-				}
-				else {
-					before = -1;
-				}
-				//*****
-
-				//*****Afterの部屋の入り口検索
-				if (CheckPassWay(upAfter, leftAfter, rightAfter, 0)) {
-					//上辺のどこかに入り口を作る
-					passWayAfter = gManager->GetRandEx(leftAfter + 1, rightAfter - 1);
-					after = 1;
-				}
-				else if (CheckPassWay(rightAfter, upAfter, downAfter, 1)) {
-					//右辺のどこかに入り口を作る
-					passWayBefore = gManager->GetRandEx(upAfter + 1, downAfter - 1);
-					after = 2;
-				}
-				else {
-					after = -1;
-				}
-				//*****
-				//入り口がどちらか一方でも作れなかったら次のループへ抜ける
-				if (before == -1 || after == -1)
-				{
-					count_Jump += 1;
-					continue;
-				}
-
-				//入り口が両方出来ていたら
-				if (before == 1 && after == 1) {
-					//通路をつなぐ
-					//交差点からbeforeまで
-					SetAllChip(passWayAfter, passWayBefore, leftBefore, passWayBefore);
-					//交差点からafterまで
-					SetAllChip(passWayAfter, passWayBefore, passWayAfter, upAfter);
-					count_Jump += 1;
-					continue;
-				}
-				else if (before == 2 && after == 2) {
-					//通路をつなぐ
-					//beforeから交差点まで
-					SetAllChip(passWayBefore, downBefore, passWayBefore, passWayAfter);
-					//afterから交差点まで
-					SetAllChip(rightAfter, passWayAfter, passWayBefore, passWayAfter);
-					count_Jump += 1;
-					continue;
-				}
-				else {
-					//通路が交差しない場合はつくらない
-					count_Jump += 1;
-					continue;
-				}
-			}//上で左右の場合終わり
-		}
-		//若い部屋が下なら
-		else {
-			//若い方の部屋が右か左かで場合分け
-			//若いほうが左なら
-			if (rightBefore < leftAfter) {
-				//部屋の相対位置は左下に若い部屋,右上に年上の部屋
-				int before = 0;
-				int after = 0;
-
-				//*****beforeの部屋の入口検索
-				//もし通路がなければ:true
-				if (CheckPassWay(upBefore, leftBefore, rightBefore, 0)) {
-					//上辺のどこかに入り口を作る
-					passWayBefore = gManager->GetRandEx(leftBefore + 1, rightBefore - 1);
-					before = 1;
-				}
-				else if (CheckPassWay(rightBefore, upBefore, downBefore, 1)) {
-					//右辺のどこかに入り口を作る
-					passWayBefore = gManager->GetRandEx(upBefore + 1, downBefore - 1);
-					before = 2;
-				}
-				else {
-					before = -1;
-				}
-				//*****
-
-				//*****Afterの部屋の入り口検索
-				if (CheckPassWay(leftAfter, upAfter, downAfter, 3)) {
-					//左辺のどこかに入り口を作る
-					passWayAfter = gManager->GetRandEx(upAfter + 1, downAfter - 1);
-					after = 1;
-				}
-				else if (CheckPassWay(downAfter, leftAfter, rightAfter, 2)) {
-					//下辺のどこかに入り口を作る
-					passWayBefore = gManager->GetRandEx(leftAfter + 1, rightAfter - 1);
-					after = 2;
-				}
-				else {
-					after = -1;
-				}
-				//*****
-				//入り口がどちらか一方でも作れなかったら次のループへ抜ける
-				if (before == -1 || after == -1)
-				{
-					count_Jump += 1;
-					continue;
-				}
-
-				//入り口が両方出来ていたら
-				if (before == 1 && after == 1) {
-					//通路をつなぐ
-					//交差点からbeforeまで
-					SetAllChip(passWayBefore, passWayAfter, passWayBefore, upBefore);
-					//交差点からafterまで
-					SetAllChip(passWayBefore, passWayAfter, leftAfter, passWayAfter);
-					count_Jump += 1;
-					continue;
-				}
-				else if (before == 2 && after == 2) {
-					//通路をつなぐ
-					//beforeから交差点まで
-					SetAllChip(rightBefore, passWayBefore, passWayAfter, passWayBefore);
-					//afterから交差点まで
-					SetAllChip(passWayAfter, downAfter, passWayAfter, passWayBefore);
-					count_Jump += 1;
-					continue;
-				}
-				else {
-					//通路が交差しない場合はつくらない
-					count_Jump += 1;
-					continue;
-				}
-			}
-			//若い方が右なら
-			else {
-				//部屋の相対位置は右下に若い部屋,左上に年上の部屋
-				int before = 0;
-				int after = 0;
-
-				//*****beforeの部屋の入口検索
-				//もし通路がなければ:true
-				if (CheckPassWay(upBefore, leftBefore, rightBefore, 0)) {
-					//上辺のどこかに入り口を作る
-					passWayBefore = gManager->GetRandEx(leftBefore + 1, rightBefore - 1);
-					before = 1;
-				}
-				else if (CheckPassWay(leftBefore, upBefore, downBefore, 3)) {
-					//左辺のどこかに入り口を作る
-					passWayBefore = gManager->GetRandEx(upBefore + 1, downBefore - 1);
-					before = 2;
-				}
-				else {
-					before = -1;
-				}
-				//*****
-
-				//*****Afterの部屋の入り口検索
-				if (CheckPassWay(rightAfter, upAfter, downAfter, 1)) {
-					//右辺のどこかに入り口を作る
-					passWayAfter = gManager->GetRandEx(upAfter + 1, downAfter - 1);
-					after = 1;
-				}
-				else if (CheckPassWay(downAfter, leftAfter, rightAfter, 2)) {
-					//下辺のどこかに入り口を作る
-					passWayBefore = gManager->GetRandEx(leftAfter + 1, rightAfter - 1);
-					after = 2;
-				}
-				else {
-					after = -1;
-				}
-				//*****
-				//入り口がどちらか一方でも作れなかったら次のループへ抜ける
-				if (before == -1 || after == -1)
-				{
-					count_Jump += 1;
-					continue;
-				}
-
-				//入り口が両方出来ていたら
-				if (before == 1 && after == 1) {
-					//通路をつなぐ
-					//交差点からbeforeまで
-					SetAllChip(passWayBefore, passWayAfter, passWayBefore, upBefore);
-					//afterから交差点まで
-					SetAllChip(rightAfter, passWayAfter, passWayBefore, passWayAfter);
-					count_Jump += 1;
-					continue;
-				}
-				else if (before == 2 && after == 2) {
-					//通路をつなぐ
-					//交差点からbeforeまで
-					SetAllChip(passWayAfter, passWayBefore, leftBefore, passWayBefore);
-					//afterから交差点まで
-					SetAllChip(passWayAfter, downAfter, passWayAfter, passWayBefore);
-					count_Jump += 1;
-					continue;
-				}
-				else {
-					//通路が交差しない場合はつくらない
-					count_Jump += 1;
-					continue;
-				}
-			}
-		}
-
-	}
-#endif
-#if 1
 	//0:上, 1 : 右, 2 : 下, 3 : 左
 	int dir = 0;
 	//最初の部屋の出発点を取得する
@@ -867,15 +584,6 @@ void Map::CreatePassWay()
 	t2k::Vector3 laststart = RandomPoint(lastroomId, lastdir);
 	CreateSecondWay(laststart.x, laststart.y, lastdir, lastroomId);
 
-
-#endif
-	//ある部屋から見て上下左右に隣り合う部屋があるか確認する
-	//隣り合う部屋がある場合
-	//もしその部屋と繋がっていればreturnする
-	//もし繋がってなければその部屋と自分の部屋につなげるポイントを作る
-	//ポイントから一番近いdividelineを割り出す
-	//dividelineに向かって伸ばす
-	//通路で埋める
 
 }
 //0:上, 1 : 右, 2 : 下, 3 : 左
@@ -896,6 +604,7 @@ t2k::Vector3 Map::RandomPoint(int roomId, int& dir)
 				}
 				dir = 3;
 				int pointX = divideRoom[roomId][0];
+				gManager->SetRoomWayPoint(t2k::Vector3(pointX, point, 0), divideRoom[roomId][4]);
 				return t2k::Vector3(pointX, point, 0);
 			}
 			else {
@@ -907,6 +616,7 @@ t2k::Vector3 Map::RandomPoint(int roomId, int& dir)
 				}
 				dir = 1;
 				int pointX = divideRoom[roomId][2];
+				gManager->SetRoomWayPoint(t2k::Vector3(pointX, point, 0), divideRoom[roomId][4]);
 				return t2k::Vector3(pointX, point, 0);
 			}
 		}//横なら上か下
@@ -922,6 +632,7 @@ t2k::Vector3 Map::RandomPoint(int roomId, int& dir)
 				}
 				dir = 0;
 				int pointY = divideRoom[roomId][1];
+				gManager->SetRoomWayPoint(t2k::Vector3(point, pointY, 0), divideRoom[roomId][4]);
 				return t2k::Vector3(point, pointY, 0);
 			}
 			else {
@@ -933,6 +644,7 @@ t2k::Vector3 Map::RandomPoint(int roomId, int& dir)
 				}
 				dir = 2;
 				int pointY = divideRoom[roomId][3];
+				gManager->SetRoomWayPoint(t2k::Vector3(point, pointY, 0), divideRoom[roomId][4]);
 				return t2k::Vector3(point, pointY, 0);
 			}
 		}
@@ -957,6 +669,7 @@ t2k::Vector3 Map::RandomPoint(int roomId, int& dir)
 			}
 			dir = 3;
 			int pointX = divideRoom[roomId][0];
+			gManager->SetRoomWayPoint(t2k::Vector3(pointX, point, 0), divideRoom[roomId][4]);
 			return t2k::Vector3(pointX, point, 0);
 		}
 		else {
@@ -968,6 +681,7 @@ t2k::Vector3 Map::RandomPoint(int roomId, int& dir)
 			}
 			dir = 1;
 			int pointX = divideRoom[roomId][2];
+			gManager->SetRoomWayPoint(t2k::Vector3(pointX, point, 0), divideRoom[roomId][4]);
 			return t2k::Vector3(pointX, point, 0);
 		}
 	}//横なら上か下
@@ -983,6 +697,7 @@ t2k::Vector3 Map::RandomPoint(int roomId, int& dir)
 			}
 			dir = 0;
 			int pointY = divideRoom[roomId][1];
+			gManager->SetRoomWayPoint(t2k::Vector3(point, pointY, 0), divideRoom[roomId][4]);
 			return t2k::Vector3(point, pointY, 0);
 		}
 		else {
@@ -994,6 +709,7 @@ t2k::Vector3 Map::RandomPoint(int roomId, int& dir)
 			}
 			dir = 2;
 			int pointY = divideRoom[roomId][3];
+			gManager->SetRoomWayPoint(t2k::Vector3(point, pointY, 0), divideRoom[roomId][4]);
 			return t2k::Vector3(point, pointY, 0);
 		}
 	}
