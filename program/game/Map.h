@@ -32,6 +32,9 @@ public:
 	//マップチップを取得
 	int GetChip(int x, int y);
 
+	//範囲内のマップチップを取得
+	void GetAllChip(int roomNum, std::vector<std::vector<int>>& chips);
+
 	//マップチップをSetChipで書き換え
 	void SetChip(int x, int y, int SetChip);
 	//一定範囲すべてを道で書き換え
@@ -42,13 +45,15 @@ public:
 	t2k::Vector3 WorldToMap(int WorldX, int WorldY);
 	t2k::Vector3 MapToWorld(int MapX, int MapY);
 
-	//外部から部屋の数を取得するときの関数
+	//外部から"部屋の数"を取得するときの関数
 	int GetRoomNum();
 
-	//外部から特定の部屋を取得するときの関数
+	//外部から"特定の部屋"を取得するときの関数
 	vector<int> GetRoom(int roomNum);
 
-	
+	//外部から"特定の部屋の大きさ"を取得するときの関数
+	t2k::Vector3 GetRoomValue(int roomNum);
+
 
 	//特定のマップ座標が部屋のどこかに存在するか確認する関数
 	int CheckIsThere(int x, int y);

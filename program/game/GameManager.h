@@ -104,6 +104,9 @@ public:
 	//特定の範囲のチップを変更する関数
 	void SetChip(int Left, int Up, int Right, int Down);
 
+	//部屋の大きさ取得
+	t2k::Vector3 GetRoomValue(int roomNum);
+
 	//debug切り替え
 	bool isDebug = true;
 

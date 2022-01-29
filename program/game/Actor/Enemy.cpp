@@ -2,7 +2,7 @@
 #include"DxLib.h"
 #include "../GameManager.h"
 #include"../Player.h"
-
+#include"../Map.h"
 
 extern GameManager* gManager;
 Enemy::Enemy(int Id, int Type, std::string Name, int Hp, int Atack, int Defence, int Speed, std::string Gh, int Exp)
@@ -47,7 +47,7 @@ void Enemy::Move()
 	}
 
 	//今いる場所が部屋のどこかなら部屋の番号を取得する
-	int roomNum = gManager->CheckIsThere(myNowPos);
+	roomNum = gManager->CheckIsThere(myNowPos);
 	//部屋のどこかにいるなら
 	if (roomNum != -1) {
 		//その部屋の出口の中から自分から一番遠い出口を取得する
@@ -212,7 +212,7 @@ void Enemy::Move()
 		//キャラのチップの左のチップがPASSWAYなら移動する
 		mydir = UP;
 		pos.y -= 20;
-		}
+	}
 	else if (rand == 1) {
 		//キャラのチップの左のチップがWALLなら移動しない
 		if ((gManager->GetMapChip(myNowPos + t2k::Vector3(1, 0, 0))) == 0)return;
@@ -333,7 +333,7 @@ void Enemy::MoveChasePoint()
 		ChasePoint = { 0,0,0 };
 	}
 
-	}
+}
 int Enemy::GetDir(const int dir, const int getDir)
 {
 	//今の向きが上
@@ -515,9 +515,168 @@ bool Enemy::CheckCanMoveToDir(const int dir, const t2k::Vector3 nowPos, const in
 
 void Enemy::MoveToPlayer()
 {
+	Point goal;
+	Point start;
 
+	//自分が今いる部屋を取得する →roomNum
+	//今いる部屋の大きさを取得する
+	t2k::Vector3 hoge = gManager->GetRoomValue(roomNum);
+
+	std::vector<std::vector<int>>chips;
+	//chipsに今いる部屋の中のchipデータを収納
+	gManager->map->GetAllChip(roomNum, chips);
+
+	nodes.resize(chips.size());
+	
+	// スタートとゴールの位置を取得
+	
+	start = Point(myNowPos.x, myNowPos.y);
+
+	//スタートは自分自身,ゴールはplayer
+	for (int i = 0; i < chips.size(); ++i) {
+		for (int k = 0; k < chips[i].size(); ++k) {
+			//2==Playerだったらゴールにする
+			if (2 == chips[i][k]) goal = Point(k, i);
+		}
+	}
+
+	// ノードデータの初期設定
+	for (int i = 0; i < MH; ++i) {
+		for (int k = 0; k < MW; ++k) {
+			nodes[i][k].pos = Point(k, i);
+			nodes[i][k].status = chips[i][k];
+			nodes[i][k].cost_guess = abs((goal.x + goal.y) - (i + k));
+		}
+	}
+
+	// 二次元配列のアドレスを引数に渡す為の準備
+	//Node* tmp_nodes[MH];
+
+	//**********************error*****************************//
+	//std::vector<Node>をNode*に変換出来ない
+	std::vector<Node*>tmp_nodes;
+	tmp_nodes.resize(MH);
+	for (int i = 0; i < MH; ++i) {
+		tmp_nodes[i] = nodes[i];
+	}
+	//**********************error*****************************//
+	 
+	// 経路探索実行
+
+	bool is_success = aster(tmp_nodes, &nodes[start.y][start.x], &willMove);
+
+	// false が帰ってきたら到達不能
+	if (!is_success) {
+		printf("到達不能\n");
+		return ;
+	}
 
 
 }
 
+bool isEnableMapPosition(Point pos, /*Node***/std::vector<Node*> _nodes)
+{
+	//探索範囲外ならfalse
+	if (pos.x < 0) return false;
+	if (pos.y < 0) return false;
+	if (pos.x >= MW) return false;
+	if (pos.y >= MH) return false;
+	//スタートは再度調べない
+	if (START == _nodes[pos.y][pos.x].status) return false;
+	//空間またはゴールなら探索可能
+	if (SPACE == _nodes[pos.y][pos.x].status) return true;
+	if (GOAL == _nodes[pos.y][pos.x].status) return true;
+	//壁は探索不可
+	return false;
+}
+Node* getSmallScoreNodeFromOpenNodes()
+{
+	Node* p = nullptr;
 
+	std::list<Node*>::iterator itr = openNodes.begin();
+	for (auto node : openNodes) {
+		//もし検索の最初ならはじめのノードを入れる
+		if (nullptr == p) {
+			p = *itr;
+			++itr;
+			continue;
+		}
+		//もしスコアが小さいものが見つかればpにいれる
+		if (p->score > (*itr)->score) p = *itr;
+		//もしスコアが同じなら
+		else if (p->score == (*itr)->score) {
+			//実コストを比べて小さいならpに入れる
+			if (p->cost_real > (*itr)->cost_real) p = *itr;
+		}
+		++itr;
+	}
+	return p;
+}
+
+bool aster(std::vector<Node*> _nodes, Node* _now, std::list<Node*>* _route)
+{
+	// スタート地点のスコア計算
+	if (START == _now->status) {
+		_now->score = _now->cost_real + _now->cost_guess;
+	}
+
+	// ４方向の座標
+	Point dir[4] = { Point(0, 1), Point(1, 0), Point(0, -1), Point(-1, 0) };
+
+	// 周り４方向を調べて可能ならオープン
+	for (int i = 0; i < 4; ++i) {
+		Point next = _now->pos + dir[i];
+
+		// 調べ先がオープン可能かどうか
+		if (!isEnableMapPosition(next, _nodes)) continue;
+
+		// オープン予定の座標がゴールだった
+		if (GOAL == _nodes[next.y][next.x].status) {
+
+			// ゴールを保存して
+			(*_route).push_back(&_nodes[next.y][next.x]);
+
+			// ゴール一歩手前から自分の親ノードを遡って記録
+			// この記録が最短経路となる
+			Node* p = _now;
+			while (nullptr != p) {
+				(*_route).push_back(p);
+				p = p->parent;
+			}
+
+			// ゴールが見つかったので true
+			return true;
+		}
+
+		// ４方向のノードに対するオープンとスコア計算処理
+		_nodes[next.y][next.x].status = OPEN;
+		//openvectorに格納
+		openNodes.emplace_back(_nodes[next.y][next.x]);
+		_nodes[next.y][next.x].parent = _now;
+		_nodes[next.y][next.x].cost_real = _now->cost_real + 1;
+		_nodes[next.y][next.x].score = _nodes[next.y][next.x].cost_real + _nodes[next.y][next.x].cost_guess;
+	}
+
+	// 周りのオープンが終わったので自分はクローズ
+	if (START != _now->status) {
+		_now->status = CLOSED;
+
+		//opennodesのなかから_nowと同じものを見つけてpopする
+		for (auto itr = openNodes.begin(); itr != openNodes.end();) {
+			if (*itr == _now) {
+				itr = openNodes.erase(itr);
+				break;
+			}
+			++itr;
+		}
+	}
+
+	// 現在オープンしているノードで一番スコアの小さいものが基準ノード
+	Node* node = getSmallScoreNodeFromOpenNodes();
+
+	// ノードが見つからなければ到達不能
+	if (nullptr == node) return false;
+
+	// 再帰的に調べていく
+	return aster(_nodes, node, _route);
+}

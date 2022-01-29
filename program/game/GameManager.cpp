@@ -255,6 +255,11 @@ void GameManager::SetChip(int Left, int Up, int Right, int Down)
 	map->SetAllChip(Left, Up, Right, Down);
 }
 
+t2k::Vector3 GameManager::GetRoomValue(int roomNum)
+{
+	return map->GetRoomValue(roomNum);
+}
+
 void GameManager::Zoom(double* zoomEx)
 {
 	//if (t2k::Input::isKeyDown(t2k::Input::KEYBORD_Z)) {

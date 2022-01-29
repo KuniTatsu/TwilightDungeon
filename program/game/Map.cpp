@@ -81,6 +81,13 @@ vector<int> Map::GetRoom(int roomNum)
 	return divideRoom[roomNum];
 }
 
+t2k::Vector3 Map::GetRoomValue(int roomNum)
+{
+	int x = divideRoom[roomNum][2] - divideRoom[roomNum][0];
+	int y = divideRoom[roomNum][3] - divideRoom[roomNum][1];
+	return t2k::Vector3(x + 1, y + 1, 0);
+}
+
 int Map::CheckIsThere(int x, int y)
 {
 	bool isThere = false;
@@ -101,6 +108,35 @@ int Map::GetChip(int x, int y)
 {
 	if (IsOutOfRange(x, y))return outOfRange;
 	return ground[y][x];
+}
+
+void Map::GetAllChip(int roomNum, std::vector<std::vector<int>>& chips)
+{
+	t2k::Vector3 hoge = GetRoomValue(roomNum);
+	//配列を一旦リセット
+	chips.clear();
+
+	//部屋の縦の大きさで配列の大きさを設定
+	chips.resize(hoge.y);
+
+	int Left = divideRoom[roomNum][0];
+	int Up = divideRoom[roomNum][1];
+	int Right = divideRoom[roomNum][2];
+	int Down = divideRoom[roomNum][3];
+	for (int i = Up; i <= Down; ++i) {
+		for (int k = Left; k <= Right; ++k) {
+			chips[i].emplace_back(GetChip(k, i));
+		}
+	}
+	/*t2k::Vector3 hoge = GetRoomValue(roomNum);
+	for (int i = 0; i < hoge.x; ++i) {
+		for (int k = 0; k < hoge.y; ++k) {
+
+			chips[k][i] = ground[divideRoom[roomNum][0] + i][divideRoom[roomNum][1] + k];
+			chips[k][i] = ground[divideRoom[roomNum][0] + i][divideRoom[roomNum][1] + k];
+		}
+	}*/
+
 }
 
 void Map::SetChip(int x, int y, int SetChip)
