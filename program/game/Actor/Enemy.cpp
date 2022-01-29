@@ -523,6 +523,11 @@ void Enemy::MoveToPlayer()
 	std::vector<std::vector<int>>chips;
 	//chipsに今いる部屋の中のchipデータを収納
 	gManager->map->GetAllChip(roomNum, chips);
+	//部屋の大きさ
+	t2k::Vector3 hoge = gManager->GetRoomValue(roomNum);
+	MH = hoge.y;
+	MW = hoge.x;
+
 	nodes.resize(chips.size());
 	
 	// スタートとゴールの位置を取得
