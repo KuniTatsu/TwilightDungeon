@@ -519,19 +519,14 @@ void Enemy::MoveToPlayer()
 	Point start;
 
 	//自分が今いる部屋を取得する →roomNum
-	//今いる部屋の大きさを取得する
-	t2k::Vector3 hoge = gManager->GetRoomValue(roomNum);
 
 	std::vector<std::vector<int>>chips;
 	//chipsに今いる部屋の中のchipデータを収納
 	gManager->map->GetAllChip(roomNum, chips);
-
 	nodes.resize(chips.size());
 	
 	// スタートとゴールの位置を取得
-	
 	start = Point(myNowPos.x, myNowPos.y);
-
 	//スタートは自分自身,ゴールはplayer
 	for (int i = 0; i < chips.size(); ++i) {
 		for (int k = 0; k < chips[i].size(); ++k) {
