@@ -250,6 +250,11 @@ t2k::Vector3 GameManager::GetFarPoint(int roomId, t2k::Vector3 pos)
 	return outPoint[max];
 }
 
+void GameManager::SetChip(int Left, int Up, int Right, int Down)
+{
+	map->SetAllChip(Left, Up, Right, Down);
+}
+
 void GameManager::Zoom(double* zoomEx)
 {
 	//if (t2k::Input::isKeyDown(t2k::Input::KEYBORD_Z)) {

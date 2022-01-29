@@ -101,6 +101,9 @@ public:
 	//部屋番号と引数の座標から一番遠い部屋の出口を取得する関数
 	t2k::Vector3 GetFarPoint(int roomId, t2k::Vector3 pos);
 
+	//特定の範囲のチップを変更する関数
+	void SetChip(int Left, int Up, int Right, int Down);
+
 	//debug切り替え
 	bool isDebug = true;
 

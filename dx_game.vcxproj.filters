@@ -88,6 +88,7 @@
     <ClCompile Include="program\game\Item.cpp" />
     <ClCompile Include="program\game\ItemManager.cpp" />
     <ClCompile Include="program\game\equipItem.cpp" />
+    <ClCompile Include="program\game\ExEffectManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="program\support\FrameRateController.h">
@@ -187,5 +188,6 @@
     <ClInclude Include="program\game\Item.h" />
     <ClInclude Include="program\game\ItemManager.h" />
     <ClInclude Include="program\game\equipItem.h" />
+    <ClInclude Include="program\game\ExEffectManager.h" />
   </ItemGroup>
 </Project>

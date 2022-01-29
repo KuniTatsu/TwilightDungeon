@@ -515,6 +515,9 @@ bool Enemy::CheckCanMoveToDir(const int dir, const t2k::Vector3 nowPos, const in
 
 void Enemy::MoveToPlayer()
 {
+
+
+
 }
 
 
