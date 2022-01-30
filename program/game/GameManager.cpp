@@ -125,6 +125,11 @@ int GameManager::GetRandEx(int a, int b)
 
 
 
+void GameManager::setPlayerRoomNum(int roomNum)
+{
+	playerRoomNum = roomNum;
+}
+
 void GameManager::loadItem()
 {
 	loadItemCsv = t2k::loadCsv("Csv/Item.csv");

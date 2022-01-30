@@ -110,6 +110,10 @@ public:
 	//debugØ‚è‘Ö‚¦
 	bool isDebug = true;
 
+	int playerRoomNum = 0;
+
+	void setPlayerRoomNum(int roomNum);
+
 private:
 	
 	//ƒAƒCƒeƒ€î•ñ‚ğexcel‚©‚ç“Ç‚İæ‚éŠÖ”

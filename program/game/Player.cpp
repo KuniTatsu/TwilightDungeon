@@ -52,6 +52,7 @@ void Player::Move()
 		pos.y += 20;
 		gManager->CameraMove(this);
 	}
+	gManager->setPlayerRoomNum(gManager->CheckIsThere(playerInMap));
 }
 
 void Player::Draw()

@@ -40,14 +40,28 @@ void Enemy::Move()
 	//キャラの位置がマップ上のどのチップか特定する
 	myNowPos = gManager->WorldToLocal(pos);
 
+	//今いる場所が部屋のどこかなら部屋の番号を取得する
+	roomNum = gManager->CheckIsThere(myNowPos);
+
+	if (roomNum == gManager->playerRoomNum) {
+		//A*で経路探索
+		//経路のlistがn個以上残っていれば行わない
+
+		MoveToPlayer();
+
+		//willMoveリストの一番初めのNodeに向かう
+		//移動し終わったらリストの戦闘をpopする
+
+		return;
+	}
+
 	//目的地がセットされていればそちらへ向かう
 	if (isSetChasePoint) {
 		MoveChasePoint();
 		return;
 	}
 
-	//今いる場所が部屋のどこかなら部屋の番号を取得する
-	roomNum = gManager->CheckIsThere(myNowPos);
+	
 	//部屋のどこかにいるなら
 	if (roomNum != -1) {
 		//その部屋の出口の中から自分から一番遠い出口を取得する
@@ -513,7 +527,7 @@ bool Enemy::CheckCanMoveToDir(const int dir, const t2k::Vector3 nowPos, const in
 	return false;
 }
 
-
+//経路探索
 void Enemy::MoveToPlayer()
 {
 	Point goal;
