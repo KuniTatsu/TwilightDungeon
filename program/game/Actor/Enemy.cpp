@@ -518,6 +518,18 @@ void Enemy::MoveToPlayer()
 	Point goal;
 	Point start;
 
+
+	if (nodes != nullptr)
+	{
+		for (int i = 0; i < MH; i++)
+		{
+			delete[] nodes[i];
+		}
+
+		delete[] nodes;
+		nodes = nullptr;
+	}
+
 	//自分が今いる部屋を取得する →roomNum
 
 	std::vector<std::vector<int>>chips;
@@ -528,7 +540,11 @@ void Enemy::MoveToPlayer()
 	MH = hoge.y;
 	MW = hoge.x;
 
-	nodes.resize(chips.size());
+	nodes = new Node*[MH];
+	for (int i = 0; i < MH; i++)
+	{
+		nodes[i] = new Node[MW];
+	}
 	
 	// スタートとゴールの位置を取得
 	start = Point(myNowPos.x, myNowPos.y);
@@ -552,17 +568,20 @@ void Enemy::MoveToPlayer()
 	// 二次元配列のアドレスを引数に渡す為の準備
 	//Node* tmp_nodes[MH];
 
-	//**********************error*****************************//
-	//std::vector<Node>をNode*に変換出来ない
-	std::vector<Node*>tmp_nodes;
-	tmp_nodes.resize(MH);
-	for (int i = 0; i < MH; ++i) {
-		tmp_nodes[i] = nodes[i];
+	// nodes
+	//TODO: 開放すること
+	Node** tmp_nodes;
+	tmp_nodes = new Node * [MH];
+	for (int i = 0; i < MH; i++)
+	{
+		tmp_nodes[i] = new Node[MW];
+		for (int j = 0; j < MW; j++)
+		{
+			tmp_nodes[i][j] = nodes[i][j];
+		}
 	}
-	//**********************error*****************************//
 	 
 	// 経路探索実行
-
 	bool is_success = aster(tmp_nodes, &nodes[start.y][start.x], &willMove);
 
 	// false が帰ってきたら到達不能
@@ -574,7 +593,7 @@ void Enemy::MoveToPlayer()
 
 }
 
-bool isEnableMapPosition(Point pos, /*Node***/std::vector<Node*> _nodes)
+bool isEnableMapPosition(Point pos, Node** const _nodes)
 {
 	//探索範囲外ならfalse
 	if (pos.x < 0) return false;
@@ -613,7 +632,7 @@ Node* getSmallScoreNodeFromOpenNodes()
 	return p;
 }
 
-bool aster(std::vector<Node*> _nodes, Node* _now, std::list<Node*>* _route)
+bool aster(Node** _nodes, Node* _now, std::list<Node*>* _route)
 {
 	// スタート地点のスコア計算
 	if (START == _now->status) {
@@ -634,13 +653,14 @@ bool aster(std::vector<Node*> _nodes, Node* _now, std::list<Node*>* _route)
 		if (GOAL == _nodes[next.y][next.x].status) {
 
 			// ゴールを保存して
-			(*_route).push_back(&_nodes[next.y][next.x]);
+			auto goal = &_nodes[next.y][next.x];
+			_route->push_back(&_nodes[next.y][next.x]);
 
 			// ゴール一歩手前から自分の親ノードを遡って記録
 			// この記録が最短経路となる
-			Node* p = _now;
+			auto p = _now;
 			while (nullptr != p) {
-				(*_route).push_back(p);
+				_route->push_back(p);
 				p = p->parent;
 			}
 
