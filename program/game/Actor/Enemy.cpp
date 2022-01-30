@@ -513,6 +513,7 @@ bool Enemy::CheckCanMoveToDir(const int dir, const t2k::Vector3 nowPos, const in
 	return false;
 }
 
+
 void Enemy::MoveToPlayer()
 {
 	Point goal;
@@ -533,12 +534,16 @@ void Enemy::MoveToPlayer()
 	// スタートとゴールの位置を取得
 	start = Point(myNowPos.x, myNowPos.y);
 	//スタートは自分自身,ゴールはplayer
-	for (int i = 0; i < chips.size(); ++i) {
-		for (int k = 0; k < chips[i].size(); ++k) {
-			//2==Playerだったらゴールにする
-			if (2 == chips[i][k]) goal = Point(k, i);
-		}
-	}
+	//for (int i = 0; i < chips.size(); ++i) {
+	//	for (int k = 0; k < chips[i].size(); ++k) {
+	//		//2==Playerだったらゴールにする →本当に取れてるか不明
+	//		if (2 == chips[i][k]) goal = Point(k, i);
+	//	}
+	//}
+	
+	//プレイヤーの座標から直接ゴールを指定する
+	t2k::Vector3 playerPos = gManager->WorldToLocal(gManager->player->pos);
+	goal = Point(playerPos.x, playerPos.y);
 
 	// ノードデータの初期設定
 	for (int i = 0; i < MH; ++i) {

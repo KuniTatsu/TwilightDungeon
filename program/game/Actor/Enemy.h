@@ -160,3 +160,4 @@ Node* getSmallScoreNodeFromOpenNodes();
 // åoòHíTçı A*
 //bool aster(Node** _nodes, Node* _now, std::list<Node*>* _route);
 bool aster(std::vector<Node*> _nodes, Node* _now, std::list<Node*>* _route);
+
