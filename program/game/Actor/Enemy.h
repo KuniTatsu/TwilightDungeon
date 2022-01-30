@@ -140,7 +140,7 @@ public:
 //探索開始時に自分を中心として20マス範囲を調べる
 //Node nodes[MH][MW];
 
-std::vector<std::vector<Node>>nodes;
+Node** nodes;
 
 //enemyの移動予定リスト Asterの引数に入れる
 std::list<Node*>willMove;
