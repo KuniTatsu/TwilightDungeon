@@ -127,15 +127,35 @@ bool DungeonScene::Seq_Main(const float deltatime)
 			RandEnemyCreate(5);
 		}
 	}
-
 	//enemy‚ÌˆÚ“®
-	auto it = eManager->liveEnemyList.begin();
-	for (auto hoge : eManager->liveEnemyList) {
-		hoge->Move();
-	}
+	//for (auto hoge : eManager->liveEnemyList) {
+	//	//hoge->Move();
+	//	hoge->Update();
+	//}
 
 	gManager->player->Move();
 
+	ChangeSequence(sequence::ENEMYACT);
+
+	return true;
+}
+
+bool DungeonScene::Seq_EnemyAct(const float deltatime)
+{
+	//enemy‚ÌˆÚ“®/UŒ‚
+	for (auto hoge : eManager->liveEnemyList) {
+		//player‚Æenemy‚ª—×‚è‡‚Á‚Ä‚¢‚é‚È‚ç
+		if(gManager->CheckNearByPlayer(hoge))
+		{
+			//UŒ‚ŠÖ”‚ðŒÄ‚Ô
+		}
+		else {
+			//ˆÚ“®ŠÖ”‚ðŒÄ‚Ô
+			hoge->Move();
+		}
+		//hoge->Update();
+	}
+	ChangeSequence(sequence::MAIN);
 	return true;
 }
 
@@ -158,6 +178,9 @@ void DungeonScene::ChangeSequence(sequence seq)
 	nowSeq = seq;
 	if (seq == sequence::MAIN) {
 		main_sequence.change(&DungeonScene::Seq_Main);
+	}
+	else if (seq == sequence::ENEMYACT) {
+		main_sequence.change(&DungeonScene::Seq_EnemyAct);
 	}
 	else if (seq == sequence::CAMERA) {
 		main_sequence.change(&DungeonScene::Seq_CameraMove);

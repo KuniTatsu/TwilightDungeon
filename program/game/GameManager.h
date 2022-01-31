@@ -3,6 +3,7 @@
 #include<string>
 #include<unordered_map>
 #include "../library/t2klib.h"
+#include<memory>
 class SceneManager;
 
 class Item;
@@ -11,6 +12,7 @@ class Sound;
 class Map;
 class Player;
 class Camera;
+class Enemy;
 
 class GameManager {
 
@@ -65,6 +67,8 @@ public:
 	//部屋の再生成
 	void ReCreate();
 
+	//将来的にMapに橋渡しする関数群はMapのポインタだけ渡してあとは勝手にやれって感じの関数にまとめたい
+
 	//mapのどのチップか取得する 描画座標からマップ座標への変換
 	t2k::Vector3 WorldToLocal(t2k::Vector3 Pos);
 	//マップ座標から描画座標への変換
@@ -106,6 +110,10 @@ public:
 
 	//部屋の大きさ取得
 	t2k::Vector3 GetRoomValue(int roomNum);
+
+	//特定のEnemyとPlayerが隣り合っているか確認する関数
+	bool CheckNearByPlayer(std::shared_ptr<Enemy>enemy);
+
 
 	//debug切り替え
 	bool isDebug = true;

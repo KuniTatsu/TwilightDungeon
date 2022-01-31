@@ -20,6 +20,8 @@ public:
 	//今の向きから見て左側の方向を取得する関数
 	int GetMyLeft(int MyDir);
 
+	void Update();
+	void Draw();
 private:
 	//目的地
 	t2k::Vector3 ChasePoint = {};
@@ -29,8 +31,30 @@ private:
 
 	//目的地セットフラグ
 	bool isSetChasePoint = false;
-
+	//現在のマップ座標
 	t2k::Vector3 myNowPos = {};
+
+	//t2k::Sequence<Enemy*> main_sequence =
+	//	t2k::Sequence<Enemy*>(this, &Enemy::SeqMove);
+
+	////enemyが移動するシークエンス
+	//bool SeqMove(const float deltatime);
+
+	////enemyが攻撃するシークエンス
+	//bool SeqAttack(const float deltatime);
+
+	////シークエンスの列挙体
+	//enum class sequence {
+	//	MOVE,
+	//	ATTACK,
+
+	//};
+	//sequence nowSeq = sequence::MOVE;
+	////Sequenceを移動させる関数,enumも一緒に変更する
+	//void ChangeSequence(sequence seq);
+
+
+
 	//設定された目的地に向かう関数
 	void MoveChasePoint();
 

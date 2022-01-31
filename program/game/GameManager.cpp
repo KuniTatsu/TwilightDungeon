@@ -9,6 +9,7 @@
 #include<time.h>
 #include"Player.h"
 #include"Camera.h"
+#include"Actor/Enemy.h"
 //#include"game_main.h"
 
 //#include"Item.h"
@@ -263,6 +264,36 @@ void GameManager::SetChip(int Left, int Up, int Right, int Down)
 t2k::Vector3 GameManager::GetRoomValue(int roomNum)
 {
 	return map->GetRoomValue(roomNum);
+}
+
+bool GameManager::CheckNearByPlayer(std::shared_ptr<Enemy>enemy)
+{
+	//enemyPosはマップ座標
+	t2k::Vector3 enemyPos = WorldToLocal(enemy->pos);
+	t2k::Vector3 hidari;
+	t2k::Vector3 ue;
+	t2k::Vector3 migi;
+	t2k::Vector3 shita;
+
+	if (enemyPos.x > 0)hidari = enemyPos + t2k::Vector3(-1, 0, 0);
+	if (enemyPos.y > 0)ue = enemyPos + t2k::Vector3(0, -1, 0);
+	if (enemyPos.x < MAPWIDTH)migi = enemyPos + t2k::Vector3(1, 0, 0);
+	if (enemyPos.y < MAPHEIGHT)shita = enemyPos + t2k::Vector3(0, -1, 0);
+
+	t2k::Vector3 enemyPosNear[4] = { hidari,ue,migi,shita };
+
+	t2k::Vector3 playerPos = WorldToLocal(player->pos);
+
+	bool isNear = false;
+	for (int i = 0; i < 4; ++i) {
+		//if (playerPos == enemyPosNear[i])
+		if (playerPos.x == enemyPosNear[i].x && playerPos.y == enemyPosNear[i].y) {
+			isNear = true;
+			break;
+		}
+	}
+	if (isNear)return true;
+	return false;
 }
 
 void GameManager::Zoom(double* zoomEx)

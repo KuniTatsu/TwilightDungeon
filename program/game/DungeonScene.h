@@ -38,10 +38,16 @@ private:
 		t2k::Sequence<DungeonScene*>(this, &DungeonScene::Seq_Main);
 
 	bool Seq_Main(const float deltatime);
+	bool Seq_EnemyAct(const float deltatime);
+
+
+
+	//debug
 	bool Seq_CameraMove(const float deltatime);
 	//シークエンスの列挙体
 	enum class sequence {
 		MAIN,
+		ENEMYACT,
 		CAMERA
 		
 	};

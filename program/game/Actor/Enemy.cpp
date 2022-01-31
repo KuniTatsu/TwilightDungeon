@@ -31,6 +31,31 @@ Enemy::~Enemy()
 {
 }
 
+//void Enemy::Update() {
+//	main_sequence.update(gManager->deitatime_);
+//}
+//
+//bool Enemy::SeqMove(const float deltatime)
+//{
+//	//移動処理
+//	Move();
+//
+//	//もし隣にplayerがいるなら攻撃シークエンスに映る
+//
+//	return true;
+//}
+//
+//bool Enemy::SeqAttack(const float deltatime)
+//{
+//	//隣のplayerに向かって攻撃するシークエンス
+//
+//	//攻撃関数を実行
+//	//アニメーションを実行
+//
+//
+//
+//	return true;
+//}
 void Enemy::Move()
 {
 	//動ける状態じゃなければ動かない
@@ -43,16 +68,32 @@ void Enemy::Move()
 	//今いる場所が部屋のどこかなら部屋の番号を取得する
 	roomNum = gManager->CheckIsThere(myNowPos);
 
+	//enemyとplayerが同じ部屋にいるなら
 	if (roomNum == gManager->playerRoomNum) {
 		//A*で経路探索
 		//経路のlistがn個以上残っていれば行わない
-
-		MoveToPlayer();
-
+		if (willMove.size() < 5) {
+			//経路探索
+			MoveToPlayer();
+		}
 		//willMoveリストの一番初めのNodeに向かう
-		//移動し終わったらリストの戦闘をpopする
+		
+		//willMoveリストにはNode*型の変数が入っている
+		//Node*の変数から中身のPos(マップ座標系)を取得し、目的地にする
 
-		return;
+
+		t2k::Vector3 chasePoint = t2k::Vector3(willMove.front()->pos.x, willMove.front()->pos.y, 0);
+
+		//リセット
+		ChasePoint = { 0,0,0 };
+		//ChasePointの更新
+		ChasePoint = chasePoint;
+		//移動し終わったらリストの戦闘をpopする
+		willMove.pop_front();
+
+		isSetChasePoint = true;
+		//MoveChasePoint();
+		//return;
 	}
 
 	//目的地がセットされていればそちらへ向かう
@@ -61,11 +102,14 @@ void Enemy::Move()
 		return;
 	}
 
-	
+
 	//部屋のどこかにいるなら
 	if (roomNum != -1) {
 		//その部屋の出口の中から自分から一番遠い出口を取得する
 		t2k::Vector3 wayPoint = gManager->GetFarPoint(roomNum, myNowPos);
+
+		//CHasePointのリセット
+		ChasePoint = (0, 0, 0);
 		//取得した出口を目的地にセットする
 		ChasePoint = wayPoint;
 
@@ -555,12 +599,12 @@ void Enemy::MoveToPlayer()
 	MH = hoge.y;
 	MW = hoge.x;
 
-	nodes = new Node*[MH];
+	nodes = new Node * [MH];
 	for (int i = 0; i < MH; i++)
 	{
 		nodes[i] = new Node[MW];
 	}
-	
+
 	// スタートとゴールの位置を取得
 	start = Point(myNowPos.x, myNowPos.y);
 	//スタートは自分自身,ゴールはplayer
@@ -570,7 +614,7 @@ void Enemy::MoveToPlayer()
 	//		if (2 == chips[i][k]) goal = Point(k, i);
 	//	}
 	//}
-	
+
 	//プレイヤーの座標から直接ゴールを指定する
 	t2k::Vector3 playerPos = gManager->WorldToLocal(gManager->player->pos);
 	goal = Point(playerPos.x, playerPos.y);
@@ -599,18 +643,47 @@ void Enemy::MoveToPlayer()
 			tmp_nodes[i][j] = nodes[i][j];
 		}
 	}
-	 
+
 	// 経路探索実行
 	bool is_success = aster(tmp_nodes, &nodes[start.y][start.x], &willMove);
 
 	// false が帰ってきたら到達不能
 	if (!is_success) {
 		printf("到達不能\n");
-		return ;
+		return;
 	}
+	if (nodes != nullptr)
+	{
+		for (int i = 0; i < MH; i++)
+		{
+			delete[] nodes[i];
+		}
 
+		delete[] nodes;
+		nodes = nullptr;
+	}
+	if (tmp_nodes != nullptr)
+	{
+		for (int i = 0; i < MH; i++)
+		{
+			delete[] tmp_nodes[i];
+		}
 
+		delete[] tmp_nodes;
+		tmp_nodes = nullptr;
+	}
 }
+
+//void Enemy::ChangeSequence(sequence seq)
+//{
+//	nowSeq = seq;
+//	if (seq == sequence::MOVE) {
+//		main_sequence.change(&Enemy::SeqMove);
+//	}
+//	else if (seq == sequence::ATTACK) {
+//		main_sequence.change(&Enemy::SeqAttack);
+//	}
+//}
 
 bool isEnableMapPosition(Point pos, Node** const _nodes)
 {
