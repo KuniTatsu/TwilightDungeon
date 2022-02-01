@@ -33,7 +33,7 @@ Enemy::~Enemy()
 void Enemy::TimeUpdate()
 {
 	--moveTimer;
-	if (moveTimer < 0)moveTimer == 0;
+	if (moveTimer < 0)moveTimer = 0;
 }
 //void Enemy::Update() {
 //	main_sequence.update(gManager->deitatime_);
@@ -82,7 +82,7 @@ void Enemy::Move()
 			MoveToPlayer();
 		}
 		//willMoveリストの一番初めのNodeに向かう
-		
+
 		//willMoveリストにはNode*型の変数が入っている
 		//Node*の変数から中身のPos(マップ座標系)を取得し、目的地にする
 
@@ -129,8 +129,14 @@ void Enemy::Move()
 		bool canMove = MoveToDir(mydir, myNowPos);
 		//もし進めなければdirから見て左側に行けないか確認する
 		if (!canMove) {
-			//もし左に進めるなら左に進む
-			if (CheckCanMoveToDir(mydir, myNowPos, CheckDir::LEFT)) DegradedMoveToDir(GetDir(mydir, CheckDir::LEFT));
+			//もし左右にすすめるならランダムで進む
+			if (CheckCanMoveToDir(mydir, myNowPos, CheckDir::LEFT) && CheckCanMoveToDir(mydir, myNowPos, CheckDir::RIGHT))
+			{
+				if (GetRand(10) % 2 == 0)DegradedMoveToDir(GetDir(mydir, CheckDir::LEFT));
+				else DegradedMoveToDir(GetDir(mydir, CheckDir::RIGHT));
+			}
+			//左にすすめるか確認
+			else if (CheckCanMoveToDir(mydir, myNowPos, CheckDir::LEFT))DegradedMoveToDir(GetDir(mydir, CheckDir::LEFT));
 			//もし左に進めないなら右に進む
 			else DegradedMoveToDir(GetDir(mydir, CheckDir::RIGHT));
 		}
@@ -290,7 +296,7 @@ void Enemy::Move()
 		//キャラのチップの左のチップがPASSWAYなら移動する
 		mydir = DOWN;
 		pos.y += 20;
-	}
+}
 #endif
 }
 
