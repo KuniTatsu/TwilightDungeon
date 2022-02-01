@@ -54,4 +54,7 @@ private:
 	sequence nowSeq = sequence::MAIN;
 	//Sequence‚ğˆÚ“®‚³‚¹‚éŠÖ”,enum‚àˆê‚É•ÏX‚·‚é
 	void ChangeSequence(sequence seq);
+
+	void DrawNowSequence(sequence seq);
+
 };

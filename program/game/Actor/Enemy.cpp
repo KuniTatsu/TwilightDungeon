@@ -30,7 +30,11 @@ Enemy::Enemy(int Id, int Type, std::string Name, int Hp, int Atack, int Defence,
 Enemy::~Enemy()
 {
 }
-
+void Enemy::TimeUpdate()
+{
+	--moveTimer;
+	if (moveTimer < 0)moveTimer == 0;
+}
 //void Enemy::Update() {
 //	main_sequence.update(gManager->deitatime_);
 //}
@@ -58,9 +62,9 @@ Enemy::~Enemy()
 //}
 void Enemy::Move()
 {
-	//動ける状態じゃなければ動かない
-	if (--moveTimer > 0)return;
-	moveTimer = MOVETIME;
+	////動ける状態じゃなければ動かない
+	//if (moveTimer > 0)return;
+	/*moveTimer = MOVETIME;*/
 
 	//キャラの位置がマップ上のどのチップか特定する
 	myNowPos = gManager->WorldToLocal(pos);
@@ -68,6 +72,7 @@ void Enemy::Move()
 	//今いる場所が部屋のどこかなら部屋の番号を取得する
 	roomNum = gManager->CheckIsThere(myNowPos);
 
+#if 0
 	//enemyとplayerが同じ部屋にいるなら
 	if (roomNum == gManager->playerRoomNum) {
 		//A*で経路探索
@@ -96,6 +101,7 @@ void Enemy::Move()
 		//return;
 	}
 
+#endif
 	//目的地がセットされていればそちらへ向かう
 	if (isSetChasePoint) {
 		MoveChasePoint();
@@ -571,6 +577,8 @@ bool Enemy::CheckCanMoveToDir(const int dir, const t2k::Vector3 nowPos, const in
 	return false;
 }
 
+#if 0
+
 //経路探索
 void Enemy::MoveToPlayer()
 {
@@ -792,3 +800,5 @@ bool aster(Node** _nodes, Node* _now, std::list<Node*>* _route)
 	// 再帰的に調べていく
 	return aster(_nodes, node, _route);
 }
+
+#endif

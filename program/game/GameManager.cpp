@@ -296,6 +296,42 @@ bool GameManager::CheckNearByPlayer(std::shared_ptr<Enemy>enemy)
 	return false;
 }
 
+
+bool GameManager::CheckNearByPlayerToAllEnemy(int range)
+{
+	for (auto enemy : hoge) {
+		bool isNear = false;
+		//enemyPosはマップ座標
+		t2k::Vector3 enemyPos = WorldToLocal(enemy->pos);
+		t2k::Vector3 hidari;
+		t2k::Vector3 ue;
+		t2k::Vector3 migi;
+		t2k::Vector3 shita;
+		for (int m = 0; m < range; ++m) {
+			if (enemyPos.x > 0)hidari = enemyPos + t2k::Vector3(-1 + (-1 * m), 0, 0);
+			if (enemyPos.y > 0)ue = enemyPos + t2k::Vector3(0, -1 + (-1 * m), 0);
+			if (enemyPos.x < MAPWIDTH)migi = enemyPos + t2k::Vector3(1 * m, 0, 0);
+			if (enemyPos.y < MAPHEIGHT)shita = enemyPos + t2k::Vector3(0, 1 * m, 0);
+
+			t2k::Vector3 enemyPosNear[4] = { hidari,ue,migi,shita };
+
+			t2k::Vector3 playerPos = WorldToLocal(player->pos);
+
+			for (int i = 0; i < 4; ++i) {
+				//if (playerPos == enemyPosNear[i])
+				if (playerPos.x == enemyPosNear[i].x && playerPos.y == enemyPosNear[i].y) {
+					isNear = true;
+					break;
+				}
+			}
+		}
+		//range範囲内にいたらtrueを返す
+		if (isNear)return true;
+		return false;
+	}
+	return false;
+}
+
 void GameManager::Zoom(double* zoomEx)
 {
 	//if (t2k::Input::isKeyDown(t2k::Input::KEYBORD_Z)) {

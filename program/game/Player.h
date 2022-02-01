@@ -9,7 +9,7 @@ public:
 
 	t2k::Vector3 pos = {};
 
-	void Move();
+	bool Move();
 	
 	void Draw();
 private:

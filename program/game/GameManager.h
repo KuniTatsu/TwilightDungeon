@@ -114,6 +114,14 @@ public:
 	//特定のEnemyとPlayerが隣り合っているか確認する関数
 	bool CheckNearByPlayer(std::shared_ptr<Enemy>enemy);
 
+	
+
+	//enemylist
+	std::list<std::shared_ptr<Enemy>> hoge;
+
+	//全てのenemyとplayerが一定範囲内にいるかどうか確認する関数
+	bool CheckNearByPlayerToAllEnemy(int range);
+
 
 	//debug切り替え
 	bool isDebug = true;

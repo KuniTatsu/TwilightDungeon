@@ -40,7 +40,7 @@ void DungeonScene::Update()
 	main_sequence.update(gManager->deitatime_);
 
 	//デバッグ切り替え
-	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_LSHIFT)) {
+	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_F2)) {
 		if (gManager->isDebug)gManager->isDebug = false;
 		else gManager->isDebug = true;
 	}
@@ -102,16 +102,17 @@ void DungeonScene::Draw()
 	DrawRotaGraph(gManager->player->pos.x - gManager->camera->cameraPos.x, gManager->player->pos.y - gManager->camera->cameraPos.y, 1, 0, alfa, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	//gManager->map->DrawAllRoomPos(gManager->map.)
+
+	DrawNowSequence(nowSeq);
 }
 
 bool DungeonScene::Seq_Main(const float deltatime)
 {
+	//debug
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_ESCAPE)) {
 		ChangeSequence(sequence::CAMERA);
 		return true;
 	}
-
-
 	//毎フレーム取得する必要はなさそう→移動後に確認,エリア移動後に1回だけ確認するように変更したい
 	playerPos = gManager->WorldToLocal(gManager->player->pos);
 
@@ -127,15 +128,16 @@ bool DungeonScene::Seq_Main(const float deltatime)
 			RandEnemyCreate(5);
 		}
 	}
-	//enemyの移動
+	////enemyの移動インターバル更新
 	//for (auto hoge : eManager->liveEnemyList) {
-	//	//hoge->Move();
-	//	hoge->Update();
+	//	hoge->TimeUpdate();
 	//}
+	//もしPlayerが動いたら
+	if (gManager->player->Move()) {
 
-	gManager->player->Move();
-
-	ChangeSequence(sequence::ENEMYACT);
+		ChangeSequence(sequence::ENEMYACT);
+		return true;
+	}
 
 	return true;
 }
@@ -186,4 +188,17 @@ void DungeonScene::ChangeSequence(sequence seq)
 		main_sequence.change(&DungeonScene::Seq_CameraMove);
 	}
 
+}
+
+void DungeonScene::DrawNowSequence(sequence seq)
+{
+	if (seq == sequence::MAIN) {
+		DrawStringEx(800, 500, -1, "MAINSequence");
+	}
+	else if (seq == sequence::ENEMYACT) {
+		DrawStringEx(800, 500, -1, "ENEMYACTSequence");
+	}
+	else if (seq == sequence::CAMERA) {
+		DrawStringEx(800, 500, -1, "CAMERASequence");
+	}
 }

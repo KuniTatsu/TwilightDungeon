@@ -7,6 +7,7 @@
 //const int MH = 21;
 //const int MW = 21;
 
+
 class Enemy :public Actor {
 
 public:
@@ -15,13 +16,18 @@ public:
 	Enemy(int Id, int Type, std::string Name, int Hp, int Atack, int Defence, int Speed, std::string Gh, int Exp);
 	~Enemy()override;
 
+	//移動インターバル更新関数
+	void TimeUpdate();
+
 	void Move()override;
 
 	//今の向きから見て左側の方向を取得する関数
 	int GetMyLeft(int MyDir);
 
-	void Update();
-	void Draw();
+
+
+	/*void Update();
+	void Draw();*/
 private:
 	//目的地
 	t2k::Vector3 ChasePoint = {};
@@ -93,7 +99,7 @@ private:
 };
 //本当はEnemyClassのメンバにしたい
 
-
+#if 0
 
 //*****ここから下は経路探索用のクラス,関数*****//
 
@@ -170,7 +176,7 @@ Node** nodes;
 std::list<Node*>willMove;
 
 // 指定座標が有効な( OPEN 可能な )マップ位置かどうか判定 2次元配列の中身がほしいときは引数に**を使う
-bool isEnableMapPosition(Point pos, std::vector<Node*> _nodes);
+bool isEnableMapPosition(Point pos, Node** const _nodes);
 
 //オープン済みのノードを格納するvector
 //std::vector<Node*>openNodes;
@@ -183,5 +189,6 @@ Node* getSmallScoreNodeFromOpenNodes();
 
 // 経路探索 A*
 //bool aster(Node** _nodes, Node* _now, std::list<Node*>* _route);
-bool aster(std::vector<Node*> _nodes, Node* _now, std::list<Node*>* _route);
+bool aster(Node** _nodes, Node* _now, std::list<Node*>* _route);
 
+#endif
