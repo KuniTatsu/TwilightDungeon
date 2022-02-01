@@ -15,30 +15,31 @@ public:
 
 	Enemy(int Id, int Type, std::string Name, int Hp, int Atack, int Defence, int Speed, std::string Gh, int Exp,int Floor);
 	~Enemy()override;
-	//階層やその他による上昇ステータス
-	int exHp = 0;
-	int exAtack = 0;
-	int exDefence = 0;
-	int exSpeed = 0;
-	int exExp = 0;
+	////階層やその他による上昇ステータス
+	//int exHp = 0;
+	//int exAtack = 0;
+	//int exDefence = 0;
+	//int exSpeed = 0;
+	//int exExp = 0;
 
-
+	//倒した時の経験値を取得する関数
+	int GetExp();
 
 	//移動インターバル更新関数
 	void TimeUpdate();
 
-	void Move()override;
-
-	//今の向きから見て左側の方向を取得する関数
-	int GetMyLeft(int MyDir);
-
-
+	bool Move()override;
 
 	/*void Update();
 	void Draw();*/
 private:
 	//目的地
 	t2k::Vector3 ChasePoint = {};
+
+	//倒した時に入手する経験値
+	int baseExp = 0;
+	int exExp = 0;
+	int exp = baseExp+exExp;
 
 	//所属する部屋 部屋にいない場合-1
 	int roomNum = -1;

@@ -5,15 +5,35 @@
 
 extern GameManager* gManager;
 
-Player::Player(t2k::Vector3 StartPos)
+Player::Player(t2k::Vector3 StartPos, float Hp, int Atack, int Defence, int Speed)
 {
 	pos = StartPos;
-	gh = gManager->LoadGraphEx("graphics/PlayerTest.png");
+	p_gh = gManager->LoadGraphEx("graphics/PlayerTest.png");
+	nowHpVar_gh = gManager->LoadGraphEx("graphics/haveHpVar.png");
+	hpVar_gh = gManager->LoadGraphEx("graphics/AllHpVar.png");
 
+	name = "Player";
+
+	hp = Hp;
+	atack = Atack;
+	defence = Defence;
+	speed = Speed;
+
+	nowHp = hp;
 }
 
 Player::~Player()
 {
+}
+
+void Player::TakeHpEffect(int HpMove)
+{
+	if (nowHp <= 0)return;
+	nowHp += HpMove;
+	if (nowHp < 0)nowHp = 0;
+	if (nowHp > hp)nowHp = hp;
+
+	nowHpVarWidth = nowHp / hp;
 }
 
 bool Player::Move()
@@ -107,7 +127,15 @@ bool Player::Move()
 
 void Player::Draw()
 {
-	DrawRotaGraph(pos.x - gManager->camera->cameraPos.x, pos.y - gManager->camera->cameraPos.y, 1, 0, gh, true);
+	DrawRotaGraph(pos.x - gManager->camera->cameraPos.x, pos.y - gManager->camera->cameraPos.y, 1, 0, p_gh, true);
+
+	//Hpƒo[ŠÖ˜A
+
+	DrawRotaGraph(pos.x - gManager->camera->cameraPos.x, pos.y - gManager->camera->cameraPos.y - 20, 1, 0, hpVar_gh, false);
+	DrawRotaGraph3(pos.x - gManager->camera->cameraPos.x - 15, pos.y - gManager->camera->cameraPos.y - 20 - 5, 0, 0,
+		nowHpVarWidth, 1, 0, nowHpVar_gh, false);
+	DrawStringEx(pos.x - gManager->camera->cameraPos.x - 10, pos.y - gManager->camera->cameraPos.y - 40, -1, "%.0f", nowHp);
+
 }
 
 void Player::DashToDir(int dir, t2k::Vector3 mapPos)

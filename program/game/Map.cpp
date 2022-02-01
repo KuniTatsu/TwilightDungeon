@@ -8,7 +8,7 @@ extern GameManager* gManager;
 Map::Map(int Width, int Height)
 {
 	mapChip[0] = gManager->LoadGraphEx("graphics/PassWay_20.png");
-	mapChip[1] = gManager->LoadGraphEx("graphics/Wall_20.png");
+	mapChip[1] = gManager->LoadGraphEx("graphics/Wall.png");
 	mapChip[2] = gManager->LoadGraphEx("graphics/Stairs_.png");
 	mapChip[3] = gManager->LoadGraphEx("graphics/EXPASSWAY.png");
 
@@ -176,10 +176,10 @@ void Map::MapDraw()
 	int y = 0;
 	for (auto i : ground) {
 		for (auto k : i) {
-			/*if (k == WALL) {
+			if (k == WALL) {
 				DrawRotaGraph(x - gManager->camera->cameraPos.x, y - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
 			}
-			else*/ if (k == PASSWAY) {
+			else if (k == PASSWAY) {
 				DrawRotaGraph(x - gManager->camera->cameraPos.x, y - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[0], false);
 			}
 			else if (k == STAIRS) {
@@ -203,6 +203,10 @@ void Map::MapDraw()
 	if (gManager->isDebug) {
 		DrawAllRoomPos(divideRoom);
 	}
+}
+
+void Map::MiniMapDraw()
+{
 }
 
 bool Map::IsOutOfRange(int x, int y)

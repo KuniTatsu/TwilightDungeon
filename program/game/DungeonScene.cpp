@@ -114,6 +114,17 @@ bool DungeonScene::Seq_Main(const float deltatime)
 		ChangeSequence(sequence::CAMERA);
 		return true;
 	}
+	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_D)) {
+		gManager->player->TakeHpEffect(-20);
+	}
+	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_U)) {
+		gManager->player->ChangeStatus(1,50);
+		for (auto enemy : eManager->liveEnemyList) {
+			enemy->ChangeStatus(2, 10);
+		}
+	}
+
+	//
 
 	//‘«“¥‚Ý(Player‚ÍˆÚ“®‚¹‚¸‚Éƒ^[ƒ“‚ÍŒo‰ß‚·‚é
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_SPACE)) {
@@ -216,12 +227,12 @@ void DungeonScene::DrawEnemyData()
 	int i = 0;
 	for (auto enemy : eManager->liveEnemyList) {
 
-		DrawStringEx(450 + 120 * i, 480, -1, "%s", enemy->name.c_str());
-		DrawStringEx(450 + 120 * i, 500, -1, "%d", enemy->hp);
-		DrawStringEx(450 + 120 * i, 520, -1, "%d", enemy->atack);
-		DrawStringEx(450 + 120 * i, 540, -1, "%d", enemy->defence);
-		DrawStringEx(450 + 120 * i, 560, -1, "%d", enemy->speed);
-		DrawStringEx(450 + 120 * i, 580, -1, "%d", enemy->exp);
+		DrawStringEx(450 + 120 * i, 480, -1, "%s", enemy->GetName().c_str());
+		DrawStringEx(450 + 120 * i, 500, -1, "%d", enemy->GetStatus(0));
+		DrawStringEx(450 + 120 * i, 520, -1, "%d", enemy->GetStatus(1));
+		DrawStringEx(450 + 120 * i, 540, -1, "%d", enemy->GetStatus(2));
+		DrawStringEx(450 + 120 * i, 560, -1, "%d", enemy->GetStatus(3));
+		DrawStringEx(450 + 120 * i, 580, -1, "%d", enemy->GetExp());
 		++i;
 	}
 

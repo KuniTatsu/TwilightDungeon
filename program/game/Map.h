@@ -61,6 +61,9 @@ public:
 	//マップ全体の描画
 	void MapDraw();
 
+	//ミニマップ描画
+	void MiniMapDraw();
+
 	//今表示されている全ての部屋の上下左右座標をする描画するDebug関数
 	void DrawAllRoomPos(vector<vector<int>>RoomList);
 

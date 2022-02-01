@@ -10,31 +10,39 @@ Enemy::Enemy(int Id, int Type, std::string Name, int Hp, int Atack, int Defence,
 	id = Id;
 	type = Type;
 	name = Name;
-
+	//補正値
 	exHp = (Floor - 1) * 10;
 	exAtack = (Floor - 1) * 2;
 	exDefence = (Floor - 1) * 2;
 	exSpeed = (Floor - 1) * 2;
 	exExp = (Floor - 1) * 5;
 
-	hp = Hp + exHp;
-	atack = Atack + exAtack;
-	defence = Defence + exDefence;
-	speed = Speed + exSpeed;
+	//csvから読み込む基礎値
+	baseHp = Hp;
+	baseAtack = Atack;
+	baseDefence = Defence;
+	baseSpeed = Speed;
+
+	//描画ステータスの算出
+	hp = baseHp + exHp;
+	atack = baseAtack + exAtack;
+	defence = baseDefence + exDefence;
+	speed = baseSpeed + exSpeed;
 
 	LoadDivGraph(Gh.c_str(), 12, 3, 4, 24, 32, gh);
 
-	exp = Exp + exExp;
-	//while (1) {
-	//	pos = gManager->SetStartPos(0);
-	//	//他のenemyと同じ座標でなければ抜ける
-	//	
-	//	
-	//}
+	baseExp = Exp;
+	exp = baseExp + exExp;
+	nowHp = hp;
 }
 
 Enemy::~Enemy()
 {
+}
+
+int Enemy::GetExp()
+{
+	return exp;
 }
 void Enemy::TimeUpdate()
 {
@@ -66,7 +74,7 @@ void Enemy::TimeUpdate()
 //
 //	return true;
 //}
-void Enemy::Move()
+bool Enemy::Move()
 {
 	////動ける状態じゃなければ動かない
 	//if (moveTimer > 0)return;
@@ -111,9 +119,8 @@ void Enemy::Move()
 	//目的地がセットされていればそちらへ向かう
 	if (isSetChasePoint) {
 		MoveChasePoint();
-		return;
+		return true;
 	}
-
 
 	//部屋のどこかにいるなら
 	if (roomNum != -1) {
@@ -127,7 +134,7 @@ void Enemy::Move()
 
 		isSetChasePoint = true;
 		MoveChasePoint();
-		return;
+		return true;
 	}
 	//通路にいるなら
 	else {
@@ -149,177 +156,9 @@ void Enemy::Move()
 	}
 
 
-#if 0
-	int myleft = GetMyLeft(mydir);
-	//もし自分の向いている向きの左が壁じゃなかったら
-	//そっちに進む
-
-	//今向いている向きが右のとき
-	//上を確認
-	if (myleft == UP) {
-		//上が壁じゃなかったらそっちに進む
-		t2k::Vector3 nextPos = t2k::Vector3(myNowPos.x, myNowPos.y - 1, 0);
-		if (gManager->GetMapChip(nextPos) != 0) {
-			pos.y -= 20;
-			mydir = dir::UP;
-		}
-		//壁だったら
-		else {
-			//前が壁じゃなかったら真っ直ぐ進む
-			t2k::Vector3 Front = t2k::Vector3(myNowPos.x + 1, myNowPos.y, 0);
-			if (gManager->GetMapChip(Front) != 0) {
-				pos.x += 20;
-			}
-			//前が壁だったら
-			else {
-				//右を取得
-				t2k::Vector3 right = t2k::Vector3(myNowPos.x, myNowPos.y - 1, 0);
-				//右が壁なら進まない
-				if (gManager->GetMapChip(right) == 0)return;
-				//右に進む
-				pos.y += 20;
-				mydir = dir::DOWN;
-			}
-		}
-	}
-	//今向いている向きが下のとき
-	//右を確認
-	else if (myleft == RIGHT) {
-		//右が壁じゃなかったらそっちに進む
-		t2k::Vector3 nextPos = t2k::Vector3(myNowPos.x + 1, myNowPos.y, 0);
-		if (gManager->GetMapChip(nextPos) != 0) {
-			pos.x += 20;
-			mydir = dir::RIGHT;
-		}
-		//壁だったら
-		else {
-			//前が壁じゃなかったら真っ直ぐ進む
-			t2k::Vector3 Front = t2k::Vector3(myNowPos.x, myNowPos.y + 1, 0);
-			if (gManager->GetMapChip(Front) != 0) {
-				pos.y += 20;
-			}
-			//前が壁だったら
-			else {
-				//右を取得
-				t2k::Vector3 right = t2k::Vector3(myNowPos.x - 1, myNowPos.y, 0);
-				//右が壁なら進まない
-				if (gManager->GetMapChip(right) == 0)return;
-				//右に進む
-				pos.x -= 20;
-				mydir = dir::LEFT;
-			}
-		}
-	}
-	//今向いている向きが左のとき
-	//下を確認
-	else if (myleft == DOWN) {
-		//下が壁じゃなかったらそっちに進む
-		t2k::Vector3 nextPos = t2k::Vector3(myNowPos.x, myNowPos.y + 1, 0);
-		if (gManager->GetMapChip(nextPos) != 0) {
-			pos.y += 20;
-			mydir = dir::DOWN;
-		}
-		//壁だったら
-		else {
-			//前が壁じゃなかったら真っ直ぐ進む
-			t2k::Vector3 Front = t2k::Vector3(myNowPos.x - 1, myNowPos.y, 0);
-			if (gManager->GetMapChip(Front) != 0) {
-				pos.x -= 20;
-			}
-			//前が壁だったら
-			else {
-				//右を取得
-				t2k::Vector3 right = t2k::Vector3(myNowPos.x, myNowPos.y - 1, 0);
-				//右が壁なら進まない
-				if (gManager->GetMapChip(right) == 0)return;
-				//右に進む
-				pos.y -= 20;
-				mydir = dir::UP;
-			}
-		}
-	}
-	//今向いている向きが上のとき
-	//左を確認
-	else if (myleft == LEFT) {
-		//左が壁じゃなかったらそっちに進む
-		t2k::Vector3 nextPos = t2k::Vector3(myNowPos.x - 1, myNowPos.y, 0);
-		if (gManager->GetMapChip(nextPos) != 0) {
-			pos.x -= 20;
-			mydir = dir::LEFT;
-		}
-		//壁だったら
-		else {
-			//前が壁じゃなかったら真っ直ぐ進む
-			t2k::Vector3 Front = t2k::Vector3(myNowPos.x, myNowPos.y - 1, 0);
-			if (gManager->GetMapChip(Front) != 0) {
-				pos.y -= 20;
-			}
-			//前が壁だったら
-			else {
-				//右を取得
-				t2k::Vector3 right = t2k::Vector3(myNowPos.x + 1, myNowPos.y, 0);
-				//右が壁なら進まない
-				if (gManager->GetMapChip(right) == 0)return;
-				//右に進む
-				pos.x += 20;
-				mydir = dir::RIGHT;
-			}
-		}
-	}
-
-#endif
-
-#if 0
-	int rand = GetRand(3);
-
-	if (rand == 3) {
-		//キャラのチップの左のチップがWALLなら移動しない
-		//int hoge = gManager->GetMapChip(myNowPos + t2k::Vector3(-1, 0, 0));
-		if ((gManager->GetMapChip(myNowPos + t2k::Vector3(-1, 0, 0))) == 0)return;
-		//キャラのチップの左のチップがPASSWAYなら移動する
-		mydir = LEFT;
-		pos.x -= 20;
-
-	}
-	else if (rand == 0) {
-
-		//キャラのチップの左のチップがWALLなら移動しない
-		if ((gManager->GetMapChip(myNowPos + t2k::Vector3(0, -1, 0))) == 0)return;
-		//キャラのチップの左のチップがPASSWAYなら移動する
-		mydir = UP;
-		pos.y -= 20;
-	}
-	else if (rand == 1) {
-		//キャラのチップの左のチップがWALLなら移動しない
-		if ((gManager->GetMapChip(myNowPos + t2k::Vector3(1, 0, 0))) == 0)return;
-		//キャラのチップの左のチップがPASSWAYなら移動する
-		mydir = RIGHT;
-		pos.x += 20;
-	}
-	else if (rand == 2) {
-		//キャラのチップの左のチップがWALLなら移動しない
-		if ((gManager->GetMapChip(myNowPos + t2k::Vector3(0, 1, 0))) == 0)return;
-		//キャラのチップの左のチップがPASSWAYなら移動する
-		mydir = DOWN;
-		pos.y += 20;
-	}
-#endif
+	return true;
 }
 
-int Enemy::GetMyLeft(int MyDir)
-{
-	//上,右,下,左 0,1,2,3
-	//もしいま向いている向きが上だったら
-	if (MyDir == 0) {
-		//向いている方向からみて左は左側
-		return LEFT;
-	}
-	//右を向いていたら 左は上側
-	//下を向いていたら 左は右側
-	//左を向いていたら 左は下側
-
-	return (MyDir - 1) % 4;
-}
 
 void Enemy::MoveChasePoint()
 {

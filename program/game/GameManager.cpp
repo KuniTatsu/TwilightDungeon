@@ -71,7 +71,7 @@ void GameManager::initGameManager()
 		CheckRoomWayPoint(i);
 	}*/
 
-	player = new Player(SetStartPos(0));
+	player = new Player(SetStartPos(0),100,10,10,10);
 	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
 
 	sound = new Sound();
@@ -381,7 +381,7 @@ void GameManager::ReCreate()
 		CheckRoomWayPoint(i);
 	}*/
 
-	player = new Player(SetStartPos(0));
+	player = new Player(SetStartPos(0), 100, 10, 10, 10);
 	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
 }
 
