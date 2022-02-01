@@ -33,7 +33,9 @@ void GameManager::Update()
 
 	SceneManager::Update();
 
-
+	/*if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_F4) && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_F5)) {
+		t2k::debugTrace("“¯‰Ÿ‚µ¬Œ÷");
+	}*/
 }
 void GameManager::Draw()
 {

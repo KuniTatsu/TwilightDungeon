@@ -46,7 +46,7 @@ void DungeonScene::Update()
 	}
 
 	//デバッグ用マップ再生成
-	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_SPACE)) {
+	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_F5)) {
 
 		/*for (auto enemy : eManager->liveEnemyList) {
 			enemy->isLive = false;
@@ -113,6 +113,12 @@ bool DungeonScene::Seq_Main(const float deltatime)
 		ChangeSequence(sequence::CAMERA);
 		return true;
 	}
+
+	//足踏み(Playerは移動せずにターンは経過する
+	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_SPACE)) {
+		skip = true;
+	}
+
 	//毎フレーム取得する必要はなさそう→移動後に確認,エリア移動後に1回だけ確認するように変更したい
 	playerPos = gManager->WorldToLocal(gManager->player->pos);
 
@@ -132,10 +138,11 @@ bool DungeonScene::Seq_Main(const float deltatime)
 	//for (auto hoge : eManager->liveEnemyList) {
 	//	hoge->TimeUpdate();
 	//}
-	//もしPlayerが動いたら
-	if (gManager->player->Move()) {
+	//もしPlayerが動いたら もしくはスキップしたら
+	if (gManager->player->Move()|| skip) {
 
 		ChangeSequence(sequence::ENEMYACT);
+		if (skip)skip = false;
 		return true;
 	}
 
@@ -202,3 +209,5 @@ void DungeonScene::DrawNowSequence(sequence seq)
 		DrawStringEx(800, 500, -1, "CAMERASequence");
 	}
 }
+
+

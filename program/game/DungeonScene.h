@@ -26,6 +26,8 @@ private:
 
 	int alfa = 0;
 
+	bool skip = false;
+
 	//Ÿ‚Ì‰ñ‚És‚¯‚éwindow
 	Menu* nextLevelWindow = nullptr;
 
@@ -56,5 +58,7 @@ private:
 	void ChangeSequence(sequence seq);
 
 	void DrawNowSequence(sequence seq);
+
+
 
 };
