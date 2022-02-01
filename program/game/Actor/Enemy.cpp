@@ -5,20 +5,26 @@
 #include"../Map.h"
 
 extern GameManager* gManager;
-Enemy::Enemy(int Id, int Type, std::string Name, int Hp, int Atack, int Defence, int Speed, std::string Gh, int Exp)
+Enemy::Enemy(int Id, int Type, std::string Name, int Hp, int Atack, int Defence, int Speed, std::string Gh, int Exp, int Floor)
 {
 	id = Id;
 	type = Type;
 	name = Name;
 
-	hp = Hp;
-	atack = Atack;
-	defence = Defence;
-	speed = Speed;
+	exHp = (Floor - 1) * 10;
+	exAtack = (Floor - 1) * 2;
+	exDefence = (Floor - 1) * 2;
+	exSpeed = (Floor - 1) * 2;
+	exExp = (Floor - 1) * 5;
+
+	hp = Hp + exHp;
+	atack = Atack + exAtack;
+	defence = Defence + exDefence;
+	speed = Speed + exSpeed;
 
 	LoadDivGraph(Gh.c_str(), 12, 3, 4, 24, 32, gh);
 
-	exp = Exp;
+	exp = Exp + exExp;
 	//while (1) {
 	//	pos = gManager->SetStartPos(0);
 	//	//他のenemyと同じ座標でなければ抜ける
@@ -296,7 +302,7 @@ void Enemy::Move()
 		//キャラのチップの左のチップがPASSWAYなら移動する
 		mydir = DOWN;
 		pos.y += 20;
-}
+	}
 #endif
 }
 
@@ -369,8 +375,9 @@ void Enemy::MoveChasePoint()
 					pos.x -= 20;
 					mydir = dir::LEFT;
 				}
+				return;
 			}
-			if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, 1, 0)) == 0)return;
+			//if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, 1, 0)) == 0)return;
 			pos.y += 20;
 			mydir = dir::DOWN;
 		}//上に進む
@@ -388,8 +395,9 @@ void Enemy::MoveChasePoint()
 					pos.x -= 20;
 					mydir = dir::LEFT;
 				}
+				return;
 			}
-			if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, -1, 0)) == 0)return;
+			//if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, -1, 0)) == 0)return;
 			pos.y -= 20;
 			mydir = dir::UP;
 		}

@@ -39,6 +39,14 @@ void GameManager::Update()
 }
 void GameManager::Draw()
 {
+	for (int i = 0; i < map->GetRoomNum() + 1; ++i) {
+		for (int k = 0; k < wayPoint[i].size(); ++k) {
+
+			DrawStringEx(100 + 100 * k, 400 + 80 * i, -1, "部屋番号:%d", i);
+			DrawStringEx(100 + 100 * k, 420 + 80 * i, -1, "x:%.1f", wayPoint[i][k].x);
+			DrawStringEx(100 + 100 * k, 440 + 80 * i, -1, "y:%.1f", wayPoint[i][k].y);
+		}
+	}
 	SceneManager::Render();
 }
 
@@ -301,8 +309,8 @@ bool GameManager::CheckNearByPlayer(std::shared_ptr<Enemy>enemy)
 
 bool GameManager::CheckNearByPlayerToAllEnemy(int range)
 {
+	bool isNear = false;
 	for (auto enemy : hoge) {
-		bool isNear = false;
 		//enemyPosはマップ座標
 		t2k::Vector3 enemyPos = WorldToLocal(enemy->pos);
 		t2k::Vector3 hidari;
@@ -312,8 +320,8 @@ bool GameManager::CheckNearByPlayerToAllEnemy(int range)
 		for (int m = 0; m < range; ++m) {
 			if (enemyPos.x > 0)hidari = enemyPos + t2k::Vector3(-1 + (-1 * m), 0, 0);
 			if (enemyPos.y > 0)ue = enemyPos + t2k::Vector3(0, -1 + (-1 * m), 0);
-			if (enemyPos.x < MAPWIDTH)migi = enemyPos + t2k::Vector3(1 * m, 0, 0);
-			if (enemyPos.y < MAPHEIGHT)shita = enemyPos + t2k::Vector3(0, 1 * m, 0);
+			if (enemyPos.x < MAPWIDTH)migi = enemyPos + t2k::Vector3(1 + 1 * m, 0, 0);
+			if (enemyPos.y < MAPHEIGHT)shita = enemyPos + t2k::Vector3(0, 1 + 1 * m, 0);
 
 			t2k::Vector3 enemyPosNear[4] = { hidari,ue,migi,shita };
 
@@ -321,16 +329,24 @@ bool GameManager::CheckNearByPlayerToAllEnemy(int range)
 
 			for (int i = 0; i < 4; ++i) {
 				//if (playerPos == enemyPosNear[i])
+				//int xDis = abs(playerPos.x - enemyPosNear[i].x);
+				//int yDis = abs(playerPos.y - enemyPosNear[i].y);
+
+				////xの差の絶対値がrange以下またはyの差の絶対値がrange以下だったら
+				//if (xDis < 3 || yDis < 3) {
+				//	isNear = true;
+				//	break;
+				//}
+
 				if (playerPos.x == enemyPosNear[i].x && playerPos.y == enemyPosNear[i].y) {
 					isNear = true;
 					break;
 				}
 			}
 		}
-		//range範囲内にいたらtrueを返す
-		if (isNear)return true;
-		return false;
 	}
+	//range範囲内にいたらtrueを返す
+	if (isNear)return true;
 	return false;
 }
 

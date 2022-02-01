@@ -790,6 +790,7 @@ bool Map::CreateSecondWay(int x, int y, int dir, int roomId)
 	//‚à‚µ’Ê˜H‚Ì‰¡‚Ì‚Ç‚¿‚ç‚©‚©Ais•ûŒü‚É’Ê˜H‚ª‚ ‚ê‚Î
 	if (CheckChip(setX, setY, dir))
 	{
+
 		return true;
 	}
 
@@ -855,42 +856,109 @@ bool Map::CheckChip(int x, int y, int nextDir)
 {
 	if (x + 1 > gManager->MAPWIDTH - 1 || y + 1 > gManager->MAPHEIGHT - 1 || x <= 1 || y <= 1)return true;
 	//if (x >= 49 || y >= 35 || x <= 1 || y <= 1)return true;
-	if (nextDir == 0) {
-		if (GetChip(x - 1, y) == 1)return true;
-		else if (GetChip(x + 1, y) == 1)return true;
-		else if (GetChip(x, y - 1) == 1)return true;
 
-		if (CheckIsThere(x - 1, y) != -1)return true;
-		else if (CheckIsThere(x + 1, y) != -1)return true;
-		else if (CheckIsThere(x, y - 1) != -1)return true;
+	bool isThere = false;
+	if (nextDir == 0) {
+		if (GetChip(x - 1, y) == 1)isThere = true;
+		else if (GetChip(x + 1, y) == 1)isThere = true;
+		else if (GetChip(x, y - 1) == 1)isThere = true;
+
+		int num = 0;
+		if (num = CheckIsThere(x - 1, y) != -1)
+		{
+			//if (num != 0)gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num - 1);
+			//else gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num);
+			isThere = true;
+		}
+		else if (num = CheckIsThere(x + 1, y) != -1)
+		{
+			//if (num != 0)gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num - 1);
+			//else gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num);
+			isThere = true;
+		}
+		else if (num = CheckIsThere(x, y - 1) != -1)
+		{
+			//if (num != 0)gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num - 1);
+			//else gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num);
+			isThere = true;
+		}
 	}
 	else if (nextDir == 1) {
-		if (GetChip(x, y - 1) == 1)return true;
-		else if (GetChip(x, y + 1) == 1)return true;
-		else if (GetChip(x + 1, y) == 1)return true;
+		if (GetChip(x, y - 1) == 1)isThere = true;
+		else if (GetChip(x, y + 1) == 1)isThere = true;
+		else if (GetChip(x + 1, y) == 1)isThere = true;
 
-		if (CheckIsThere(x, y - 1) != -1)return true;
-		else if (CheckIsThere(x, y + 1) != -1)return true;
-		else if (CheckIsThere(x + 1, y) != -1)return true;
+		int num = 0;
+		if (num = CheckIsThere(x, y - 1) != -1)
+		{
+			//if (num != 0)gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num - 1);
+			//else gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num);
+			isThere = true;
+		}
+		else if (num = CheckIsThere(x, y + 1) != -1)
+		{
+			//if (num != 0)gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num - 1);
+			//else gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num);
+			isThere = true;
+		}
+		else if (num = CheckIsThere(x + 1, y) != -1)
+		{
+			//if (num != 0)gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num - 1);
+			//else gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num);
+			isThere = true;
+		}
 	}
 	else if (nextDir == 2) {
-		if (GetChip(x - 1, y) == 1)return true;
-		else if (GetChip(x + 1, y) == 1)return true;
-		else if (GetChip(x, y + 1) == 1)return true;
+		if (GetChip(x - 1, y) == 1)isThere = true;
+		else if (GetChip(x + 1, y) == 1)isThere = true;
+		else if (GetChip(x, y + 1) == 1)isThere = true;
 
-		if (CheckIsThere(x - 1, y) != -1)return true;
-		else if (CheckIsThere(x + 1, y) != -1)return true;
-		else if (CheckIsThere(x, y + 1) != -1)return true;
+		int num = 0;
+		if (num = CheckIsThere(x - 1, y) != -1)
+		{
+			//if (num != 0)gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num - 1);
+			//else gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num);
+			isThere = true;
+		}
+		else if (num = CheckIsThere(x + 1, y) != -1)
+		{
+			//if (num != 0)gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num - 1);
+			//else gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num);
+			isThere = true;
+		}
+		else if (num = CheckIsThere(x, y + 1) != -1)
+		{
+			//if (num != 0)gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num - 1);
+			//else gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num);
+			isThere = true;
+		}
 	}
 	else if (nextDir == 3) {
-		if (GetChip(x, y - 1) == 1)return true;
-		else if (GetChip(x, y + 1) == 1)return true;
-		else if (GetChip(x - 1, y) == 1)return true;
+		if (GetChip(x, y - 1) == 1)isThere = true;
+		else if (GetChip(x, y + 1) == 1)isThere = true;
+		else if (GetChip(x - 1, y) == 1)isThere = true;
 
-		if (CheckIsThere(x, y - 1) != -1)return true;
-		else if (CheckIsThere(x, y + 1) != -1)return true;
-		else if (CheckIsThere(x - 1, y) != -1)return true;
+		int num = 0;
+		if (num = CheckIsThere(x, y - 1) != -1)
+		{
+			//if (num != 0)gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num - 1);
+			//else gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num);
+			isThere = true;
+		}
+		else if (num = CheckIsThere(x, y + 1) != -1)
+		{
+			//if (num != 0)gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num - 1);
+			//else gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num);
+			isThere = true;
+		}
+		else if (num = CheckIsThere(x - 1, y) != -1)
+		{
+			//if (num != 0)gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num - 1);
+			//else gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num);
+			isThere = true;
+		}
 	}
+	if (isThere)return true;
 	return false;
 }
 bool Map::CheckPassWay(int roomPos_set, int roomPos_moveStart, int roomPos_moveGoal, int dir)

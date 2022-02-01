@@ -56,9 +56,10 @@ private:
 	sequence nowSeq = sequence::MAIN;
 	//Sequenceを移動させる関数,enumも一緒に変更する
 	void ChangeSequence(sequence seq);
-
+	//シーケンス確認関数
 	void DrawNowSequence(sequence seq);
 
-
+	//enemyのデータの確認関数
+	void DrawEnemyData();
 
 };

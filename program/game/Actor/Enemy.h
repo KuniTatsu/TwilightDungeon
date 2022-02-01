@@ -13,8 +13,16 @@ class Enemy :public Actor {
 public:
 	//id(int)	EnemyType(int)	Enemy_Name(std::string)	HP(int)	Atack(int)	Defence(int)	Speed(int)	Gh(std::string)	Exp(int) level(int)
 
-	Enemy(int Id, int Type, std::string Name, int Hp, int Atack, int Defence, int Speed, std::string Gh, int Exp);
+	Enemy(int Id, int Type, std::string Name, int Hp, int Atack, int Defence, int Speed, std::string Gh, int Exp,int Floor);
 	~Enemy()override;
+	//階層やその他による上昇ステータス
+	int exHp = 0;
+	int exAtack = 0;
+	int exDefence = 0;
+	int exSpeed = 0;
+	int exExp = 0;
+
+
 
 	//移動インターバル更新関数
 	void TimeUpdate();

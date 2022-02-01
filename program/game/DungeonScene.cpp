@@ -31,7 +31,7 @@ void DungeonScene::RandEnemyCreate(int num)
 {
 	for (int i = 0; i < num; ++i) {
 		int rand = GetRand(100) % 6 + 100;
-		eManager->CreateEnemy(rand);
+		eManager->CreateEnemy(rand, dungeonLevel);
 	}
 }
 
@@ -52,6 +52,7 @@ void DungeonScene::Update()
 			enemy->isLive = false;
 		}*/
 		if (!eManager->liveEnemyList.empty())eManager->liveEnemyList.clear();
+		if (!gManager->hoge.empty())gManager->hoge.clear();
 		dungeonLevel++;
 		gManager->ReCreate();
 		RandEnemyCreate(5);
@@ -84,7 +85,7 @@ void DungeonScene::Draw()
 
 		DrawStringEx(100, 300, -1, "PlayerMapChipX:%d", (int)playerPos.x);
 		DrawStringEx(100, 320, -1, "PlayerMapChipY:%d", (int)playerPos.y);
-
+		DrawEnemyData();
 	}
 	if (gManager->GetMapChip(playerPos) == 3) {
 		nextLevelWindow->Menu_Draw();
@@ -139,7 +140,7 @@ bool DungeonScene::Seq_Main(const float deltatime)
 	//	hoge->TimeUpdate();
 	//}
 	//‚à‚µPlayer‚ª“®‚¢‚½‚ç ‚à‚µ‚­‚ÍƒXƒLƒbƒv‚µ‚½‚ç
-	if (gManager->player->Move()|| skip) {
+	if (gManager->player->Move() || skip) {
 
 		ChangeSequence(sequence::ENEMYACT);
 		if (skip)skip = false;
@@ -154,7 +155,7 @@ bool DungeonScene::Seq_EnemyAct(const float deltatime)
 	//enemy‚ÌˆÚ“®/UŒ‚
 	for (auto hoge : eManager->liveEnemyList) {
 		//player‚Æenemy‚ª—×‚è‡‚Á‚Ä‚¢‚é‚È‚ç
-		if(gManager->CheckNearByPlayer(hoge))
+		if (gManager->CheckNearByPlayer(hoge))
 		{
 			//UŒ‚ŠÖ”‚ðŒÄ‚Ô
 		}
@@ -200,14 +201,30 @@ void DungeonScene::ChangeSequence(sequence seq)
 void DungeonScene::DrawNowSequence(sequence seq)
 {
 	if (seq == sequence::MAIN) {
-		DrawStringEx(800, 500, -1, "MAINSequence");
+		DrawStringEx(800, 300, -1, "MAINSequence");
 	}
 	else if (seq == sequence::ENEMYACT) {
-		DrawStringEx(800, 500, -1, "ENEMYACTSequence");
+		DrawStringEx(800, 300, -1, "ENEMYACTSequence");
 	}
 	else if (seq == sequence::CAMERA) {
-		DrawStringEx(800, 500, -1, "CAMERASequence");
+		DrawStringEx(800, 300, -1, "CAMERASequence");
 	}
+}
+
+void DungeonScene::DrawEnemyData()
+{
+	int i = 0;
+	for (auto enemy : eManager->liveEnemyList) {
+
+		DrawStringEx(450 + 120 * i, 480, -1, "%s", enemy->name.c_str());
+		DrawStringEx(450 + 120 * i, 500, -1, "%d", enemy->hp);
+		DrawStringEx(450 + 120 * i, 520, -1, "%d", enemy->atack);
+		DrawStringEx(450 + 120 * i, 540, -1, "%d", enemy->defence);
+		DrawStringEx(450 + 120 * i, 560, -1, "%d", enemy->speed);
+		DrawStringEx(450 + 120 * i, 580, -1, "%d", enemy->exp);
+		++i;
+	}
+
 }
 
 
