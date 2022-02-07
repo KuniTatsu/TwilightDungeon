@@ -39,6 +39,9 @@ public:
 	//アイテムを追加する際の格納可能なインベントリ配列番号
 	int inventoryNum = 0;
 
+	//インベントリにアイテムを追加する関数
+	void AddItemToInventory(int itemId);
+
 	double graphEx = 1;
 
 	//マップの幅(チップ数)
@@ -55,6 +58,7 @@ public:
 	std::list<int> haveItemList;
 	//itemIdからItem*を取得する関数
 	Item* GetItemData(int ItemId);
+
 	//ItemIdが存在するかどうか確認する関数
 	bool OutOfRangeInItem(int ItemId);
 
@@ -97,7 +101,7 @@ public:
 	void CameraMove(Player* p);
 
 	//マップ内のランダムな部屋を取得→部屋の中のランダムな座標を取得→座標を描画座標に変換して返す
-	//setType 0:プレイヤー初期座標,1:階段
+	//setType 0:プレイヤー初期座標,1:階段,2:enemy
 	t2k::Vector3 SetStartPos(int setType);
 
 	//部屋番号ごとの通路の座標を格納するvector

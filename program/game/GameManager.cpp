@@ -32,6 +32,21 @@ GameManager::~GameManager()
 
 }
 
+void GameManager::AddItemToInventory(int itemId)
+{
+	//今のinventoryの持つアイテム配列がいっぱいなら
+	if (inventories[inventoryNum]->inventory[9] != nullptr) {
+		//新しくinventoryのインスタンスを生成する
+		Inventory* newInventory = new Inventory();
+		//inventory配列に登録
+		inventories.emplace_back(newInventory);
+		//登録するinventoryを更新する
+		inventoryNum++;
+	}
+	//debug itemId:2のアイテムをインベントリに追加
+	inventories[inventoryNum]->AddInventory(iManager->getItemData(itemId));
+}
+
 Item* GameManager::GetItemData(int ItemId)
 {
 	Item* hoge = iManager->getItemData(ItemId);
@@ -47,23 +62,7 @@ bool GameManager::OutOfRangeInItem(int ItemId)
 void GameManager::Update()
 {
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_I)) {
-		/*haveItem->setItemToInventory(2);
-		haveItemList.clear();
-		haveItem->getItemFromInventory(&haveItemList);*/
-
-		//*****ここから下の処理をいずれ関数にする*****//
-		//今のinventoryの持つアイテム配列がいっぱいなら
-		if (inventories[inventoryNum]->inventory[9] != nullptr) {
-			//新しくinventoryのインスタンスを生成する
-			Inventory* newInventory = new Inventory();
-			//inventory配列に登録
-			inventories.emplace_back(newInventory);
-			//登録するinventoryを更新する
-			inventoryNum++;
-		}
-		//debug itemId:2のアイテムをインベントリに追加
-		inventories[inventoryNum]->AddInventory(iManager->getItemData(2));
-		//*********************************************//
+		AddItemToInventory(2);
 	}
 	SceneManager::Update();
 
@@ -202,7 +201,7 @@ t2k::Vector3 GameManager::SetStartPos(int setType)
 		}
 	}
 
-	//0:playerじゃなければマップ座標を返す
+	//階段ならマップ座標を返す
 	if (setType == 1)return t2k::Vector3(x, y, 0);
 
 	//取得したマップ座標を描画座標に変換する

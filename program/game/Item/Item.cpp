@@ -3,6 +3,7 @@
 #include"DxLib.h"
 #include"../../library/t2klib.h"
 #include"../../support/Support.h"
+#include"../Camera.h"
 
 extern GameManager* gManager;
 
@@ -45,9 +46,19 @@ std::string Item::getItemName()
 	return itemName;
 }
 
+void Item::SetPos(t2k::Vector3 Pos)
+{
+	pos = Pos;
+}
+
 
 void Item::DrawItemData(int x, int y)
 {
 	DrawStringEx(x, y, -1, "%s", itemDesc[0].c_str());
 	DrawStringEx(x, y+30, -1, "%s", itemDesc[1].c_str());
+}
+
+void Item::DrawPopItem()
+{
+	DrawRotaGraph(pos.x - gManager->camera->cameraPos.x, pos.y - gManager->camera->cameraPos.y, 1, 0, gh, true);
 }

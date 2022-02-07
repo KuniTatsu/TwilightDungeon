@@ -7,6 +7,7 @@ class Map;
 class Menu;
 class MenuWindow;
 class EnemyManager;
+class Item;
 
 class DungeonScene :public BaseScene {
 
@@ -96,6 +97,13 @@ private:
 	int mouseX = 0;
 	int mouseY = 0;
 
+	//アイテムをスポーンさせる関数
+	void SpawnItem(int ItemId);
 
+	//落ちているアイテムリスト
+	std::list<Item*>dropItems;
+
+	//落ちているアイテムの描画
+	void DrawPopItem();
 
 };

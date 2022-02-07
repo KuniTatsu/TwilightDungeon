@@ -41,6 +41,10 @@ DungeonScene::DungeonScene()
 		eManager->CreateEnemy(rand);
 	}*/
 	RandEnemyCreate(5);
+	for (int i = 0; i < 5; ++i) {
+		int rand = GetRand(100) % 15;
+		SpawnItem(rand);
+	}
 }
 
 DungeonScene::~DungeonScene()
@@ -94,6 +98,7 @@ void DungeonScene::Draw()
 {
 	gManager->map->MapDraw();
 	gManager->player->Draw();
+	DrawPopItem();
 	for (auto hoge : eManager->liveEnemyList) {
 		hoge->Draw();
 	}
@@ -154,6 +159,10 @@ void DungeonScene::MoveLevel(int addLevel)
 	dungeonLevel++;
 	gManager->ReCreate();
 	RandEnemyCreate(5);
+	for (int i = 0; i < 5; ++i) {
+		int rand = GetRand(100) % 15;
+		SpawnItem(rand);
+	}
 }
 
 bool DungeonScene::Seq_Main(const float deltatime)
@@ -375,6 +384,22 @@ void DungeonScene::ChangeInventory()
 	if (gManager->inventories[inventoryPage]->inventory[0] == nullptr)return;
 	//ã‰ºˆÚ“®
 	gManager->inventories[inventoryPage]->CursorMove();
+}
+
+void DungeonScene::SpawnItem(int ItemId)
+{
+	Item* popItem = gManager->GetItemData(ItemId);
+	t2k::Vector3 popPos = gManager->SetStartPos(0);
+	popItem->SetPos(popPos);
+	dropItems.emplace_back(popItem);
+}
+
+void DungeonScene::DrawPopItem()
+{
+	if (dropItems.empty())return;
+	for (auto popItem : dropItems) {
+		popItem->DrawPopItem();
+	}
 }
 
 

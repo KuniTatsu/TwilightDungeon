@@ -1,6 +1,8 @@
 #pragma once
 #include<string>
 #include<vector>
+#include"../../library/t2klib.h"
+#include"../../support/Support.h"
 
 class Item
 {
@@ -11,10 +13,14 @@ public:
 
 	int GetItemId();
 	void DrawItemData(int x,int y);
+
+	void DrawPopItem();
 	 
 	//ColumnId: 0->id,1->type,2->manpukudo,3->heal,4->hitdamage
 	virtual int getItemData(int ColumnId);
 	std::string getItemName();
+
+	void SetPos(t2k::Vector3 Pos);
 	
 protected:
 
@@ -32,6 +38,7 @@ protected:
 	//–¼‘O‚Æà–¾•¶‚Ì“ü‚Á‚½”z—ñ
 	std::string itemDesc[2] = {};
 
+	t2k::Vector3 pos = { 0,0,0 };
 
 };
 
