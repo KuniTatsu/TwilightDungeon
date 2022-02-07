@@ -54,6 +54,9 @@ public:
 	//外部から"特定の部屋の大きさ"を取得するときの関数
 	t2k::Vector3 GetRoomValue(int roomNum);
 
+	//部屋座標系の0,0を取得する関数
+	t2k::Vector3 GetRoomStartPos(int roomNum);
+
 
 	//特定のマップ座標が部屋のどこかに存在するか確認する関数
 	int CheckIsThere(int x, int y);

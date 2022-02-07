@@ -83,9 +83,16 @@ vector<int> Map::GetRoom(int roomNum)
 
 t2k::Vector3 Map::GetRoomValue(int roomNum)
 {
-	int x = divideRoom[roomNum][2] - divideRoom[roomNum][0];
-	int y = divideRoom[roomNum][3] - divideRoom[roomNum][1];
+	int x = abs(divideRoom[roomNum][2] - divideRoom[roomNum][0]);
+	int y = abs(divideRoom[roomNum][3] - divideRoom[roomNum][1]);
 	return t2k::Vector3(x + 1, y + 1, 0);
+}
+
+t2k::Vector3 Map::GetRoomStartPos(int roomNum)
+{
+	int Left = divideRoom[roomNum][0];
+	int Up = divideRoom[roomNum][1];
+	return t2k::Vector3(Left, Up, 0);
 }
 
 int Map::CheckIsThere(int x, int y)
@@ -112,6 +119,7 @@ int Map::GetChip(int x, int y)
 
 void Map::GetAllChip(int roomNum, std::vector<std::vector<int>>& chips)
 {
+
 	t2k::Vector3 hoge = GetRoomValue(roomNum);
 	//配列を一旦リセット
 	chips.clear();
@@ -123,10 +131,13 @@ void Map::GetAllChip(int roomNum, std::vector<std::vector<int>>& chips)
 	int Up = divideRoom[roomNum][1];
 	int Right = divideRoom[roomNum][2];
 	int Down = divideRoom[roomNum][3];
+
+	int g = 0;
 	for (int i = Up; i <= Down; ++i) {
 		for (int k = Left; k <= Right; ++k) {
-			chips[i].emplace_back(GetChip(k, i));
+			chips[g].emplace_back(GetChip(k, i));
 		}
+		++g;
 	}
 	/*t2k::Vector3 hoge = GetRoomValue(roomNum);
 	for (int i = 0; i < hoge.x; ++i) {
@@ -172,6 +183,12 @@ void Map::MapDraw()
 		}
 		//**
 	}
+	/*for (int i = -200; i < 1424; ++i) {
+		for (int k = -200; k < 968; ++k) {
+			DrawRotaGraph(i * 20 - gManager->camera->cameraPos.x, k * 20 - gManager->camera->cameraPos.y, 1, 0, mapChip[1], false);
+		}
+	}*/
+
 	int x = 0;
 	int y = 0;
 	for (auto i : ground) {

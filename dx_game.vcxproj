@@ -11,8 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="program\game\equipItem.cpp" />
-    <ClCompile Include="program\game\Item.cpp" />
+    <ClCompile Include="program\game\Item\equipItem.cpp" />
+    <ClCompile Include="program\game\Item\HaveItem.cpp" />
+    <ClCompile Include="program\game\Item\Item.cpp" />
     <ClCompile Include="program\game\Actor\Actor.cpp" />
     <ClCompile Include="program\game\Actor\Enemy.cpp" />
     <ClCompile Include="program\game\Actor\EnemyManager.cpp" />
@@ -21,7 +22,7 @@
     <ClCompile Include="program\game\FadeControl.cpp" />
     <ClCompile Include="program\game\GameManager.cpp" />
     <ClCompile Include="program\game\game_main.cpp" />
-    <ClCompile Include="program\game\ItemManager.cpp" />
+    <ClCompile Include="program\game\Item\ItemManager.cpp" />
     <ClCompile Include="program\game\Map.cpp" />
     <ClCompile Include="program\game\MapManager.cpp" />
     <ClCompile Include="program\game\MenuWindow.cpp" />
@@ -48,8 +49,9 @@
     <ClCompile Include="program\game\ExEffectManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="program\game\equipItem.h" />
-    <ClInclude Include="program\game\Item.h" />
+    <ClInclude Include="program\game\Item\equipItem.h" />
+    <ClInclude Include="program\game\Item\HaveItem.h" />
+    <ClInclude Include="program\game\Item\Item.h" />
     <ClInclude Include="program\game\Actor\Actor.h" />
     <ClInclude Include="program\game\Actor\Enemy.h" />
     <ClInclude Include="program\game\Actor\EnemyManager.h" />
@@ -58,7 +60,7 @@
     <ClInclude Include="program\game\FadeControl.h" />
     <ClInclude Include="program\game\GameManager.h" />
     <ClInclude Include="program\game\game_main.h" />
-    <ClInclude Include="program\game\ItemManager.h" />
+    <ClInclude Include="program\game\Item\ItemManager.h" />
     <ClInclude Include="program\game\Map.h" />
     <ClInclude Include="program\game\MapManager.h" />
     <ClInclude Include="program\game\MenuWindow.h" />

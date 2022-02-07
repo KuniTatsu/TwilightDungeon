@@ -5,6 +5,7 @@
 
 class Map;
 class Menu;
+class MenuWindow;
 class EnemyManager;
 
 class DungeonScene :public BaseScene {
@@ -20,6 +21,12 @@ public:
 	void Update();
 
 	void Draw();
+
+	int GetDungeonLevel();
+	void SetDungeonLevel(int addLevel);
+
+	void MoveLevel(int addLevel);
+
 private:
 	//ŠK‘w
 	int dungeonLevel = 1;
@@ -30,6 +37,13 @@ private:
 
 	//Ÿ‚Ì‰ñ‚És‚¯‚éwindow
 	Menu* nextLevelWindow = nullptr;
+
+	MenuWindow* firstMenu = nullptr;
+	
+	/*
+	Menu* hoge=new Menu(30,50,175,390,gh(int))
+	Menu* hoge=new Menu(220,50,440,390,gh(int))
+	*/
 
 	std::shared_ptr<EnemyManager>eManager = nullptr;
 
@@ -51,7 +65,7 @@ private:
 		MAIN,
 		ENEMYACT,
 		CAMERA
-		
+
 	};
 	sequence nowSeq = sequence::MAIN;
 	//Sequence‚ğˆÚ“®‚³‚¹‚éŠÖ”,enum‚àˆê‚É•ÏX‚·‚é

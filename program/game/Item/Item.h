@@ -8,6 +8,13 @@ public:
 	Item() {};
 	Item(int Id,int ItemType,std::string ItemName,int Saturation,int Heal,int HitDamage,std::string Gh);
 	virtual ~Item();
+
+	int getItemId();
+	//virtual void DrawItemData();
+	 
+	//ColumnId: 0->id,1->type,2->manpukudo,3->heal,4->hitdamage
+	virtual int getItemData(int ColumnId);
+	std::string getItemName();
 	
 protected:
 

@@ -16,6 +16,18 @@ DungeonScene::DungeonScene()
 	alfa = gManager->LoadGraphEx("graphics/old/test.png");
 	nextLevelWindow = new Menu(300, 300, 300, 200, "graphics/WindowBase_01.png");
 	eManager = std::make_shared<EnemyManager>();
+
+	MenuWindow::MenuElement_t* menu_0 = new MenuWindow::MenuElement_t[]{
+		{70,80,"持ち物",0},
+		{70,110,"足元",1},
+		{70,140,"セーブ",2},
+		{70,170,"タイトルへ戻る",3},
+		{70,200,"Esc|メニューを閉じる",4}
+	};
+	// メニューウィンドウのインスタンス化
+	firstMenu = new MenuWindow(30, 50, 220, 210, "graphics/WindowBase_02.png", menu_0, 5);
+
+	//firstMenu->menu_live = true;
 	/*for (int i = 0; i < 5; ++i) {
 		int rand = GetRand(100) % 6+100;
 		eManager->CreateEnemy(rand);
@@ -51,11 +63,7 @@ void DungeonScene::Update()
 		/*for (auto enemy : eManager->liveEnemyList) {
 			enemy->isLive = false;
 		}*/
-		if (!eManager->liveEnemyList.empty())eManager->liveEnemyList.clear();
-		if (!gManager->hoge.empty())gManager->hoge.clear();
-		dungeonLevel++;
-		gManager->ReCreate();
-		RandEnemyCreate(5);
+		MoveLevel(1);
 	}
 
 	//isLiveがfalseな敵をリストから外したい
@@ -105,6 +113,27 @@ void DungeonScene::Draw()
 	//gManager->map->DrawAllRoomPos(gManager->map.)
 
 	DrawNowSequence(nowSeq);
+
+	firstMenu->All();
+}
+
+int DungeonScene::GetDungeonLevel()
+{
+	return dungeonLevel;
+}
+
+void DungeonScene::SetDungeonLevel(int addLevel)
+{
+	dungeonLevel += addLevel;
+}
+
+void DungeonScene::MoveLevel(int addLevel)
+{
+	if (!eManager->liveEnemyList.empty())eManager->liveEnemyList.clear();
+	if (!gManager->hoge.empty())gManager->hoge.clear();
+	dungeonLevel++;
+	gManager->ReCreate();
+	RandEnemyCreate(5);
 }
 
 bool DungeonScene::Seq_Main(const float deltatime)

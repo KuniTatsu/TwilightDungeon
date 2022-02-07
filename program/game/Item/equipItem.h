@@ -10,6 +10,9 @@ public:
 
 	~equipItem()override;
 
+	int getItemData(int ColumnId)override;
+private:
+
 	int hp = 0;
 	int attack = 0;
 	int defence = 0;

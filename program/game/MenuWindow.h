@@ -28,8 +28,6 @@ public:
 		int menu_num;
 	}MenuElement_t;
 
-public:
-
 	int SelectNum;				// 現在の選択番号
 	bool menuInit = false;
 
@@ -58,6 +56,12 @@ private:
 	int elements_num_;
 	bool m_IsStartOpened;		// ESCキーで開いた1フレーム目
 	MenuElement_t* MenuElement = nullptr;
+
+	int cursor_gh = 0;
+	int cursorX = 0;
+	int cursorY = 0;
+
+
 
 };
 

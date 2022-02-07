@@ -63,7 +63,8 @@ MenuWindow::MenuWindow(int menu_window_x, int menu_window_y, int menu_window_wid
 	MenuElement = elements;
 	elements_num_ = elements_num;
 	String_Color_Black = GetColor(0, 0, 0);
-
+	cursor_gh = gManager->LoadGraphEx("graphics/menuCursor.png");
+	cursorX = MenuElement[0].x - 20;
 }
 
 MenuWindow::~MenuWindow()
@@ -94,13 +95,14 @@ void MenuWindow::Read() {
 
 
 	if (menuInit == false) {
-		if (SelectNum == 0) {
-			MenuElement[0].x = read_menu_x + 10;
-			for (int i = 1; i < elements_num_; ++i) {
-				MenuElement[i].x = read_menu_x + 20;
-			}
-			//MenuElement[2].x = read_menu_x + 20;
-		}
+		//if (SelectNum == 0) {
+		//	MenuElement[0].x = read_menu_x + 10;
+		//	for (int i = 1; i < elements_num_; ++i) {
+		//		MenuElement[i].x = read_menu_x + 20;
+		//	}
+		//	//MenuElement[2].x = read_menu_x + 20;
+		//}
+		cursorY = MenuElement[0].y+8;
 		menuInit = true;
 	}
 	if (m_IsStartOpened == true)return;
@@ -133,11 +135,12 @@ void MenuWindow::Read() {
 
 			for (int i = 0; i < elements_num_; i++) {
 				if (i == SelectNum) {
-					MenuElement[i].x = read_menu_x + 10;
+					//MenuElement[i].x = read_menu_x + 10;
+					cursorY = MenuElement[i].y+8;
 				}
-				else {
+				/*else {
 					MenuElement[i].x = read_menu_x + 20;
-				}
+				}*/
 			}
 
 		}
@@ -145,7 +148,7 @@ void MenuWindow::Read() {
 	for (int i = 0; i < elements_num_; i++) {
 		DrawFormatString(MenuElement[i].x, MenuElement[i].y, GetColor(0, 0, 0), MenuElement[i].name.c_str());
 	}
-
+	DrawRotaGraph(cursorX, cursorY, 1, 0, cursor_gh, true);
 }
 
 

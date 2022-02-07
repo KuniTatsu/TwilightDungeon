@@ -86,9 +86,9 @@ bool Enemy::Move()
 	//今いる場所が部屋のどこかなら部屋の番号を取得する
 	roomNum = gManager->CheckIsThere(myNowPos);
 
-#if 0
+#if 1
 	//enemyとplayerが同じ部屋にいるなら
-	if (roomNum == gManager->playerRoomNum) {
+	if (roomNum == gManager->playerRoomNum && roomNum != -1) {
 		//A*で経路探索
 		//経路のlistがn個以上残っていれば行わない
 		if (willMove.size() < 5) {
@@ -101,13 +101,14 @@ bool Enemy::Move()
 		//Node*の変数から中身のPos(マップ座標系)を取得し、目的地にする
 
 
-		t2k::Vector3 chasePoint = t2k::Vector3(willMove.front()->pos.x, willMove.front()->pos.y, 0);
+		t2k::Vector3 chasePoint = willMove.front();
 
+		
 		//リセット
 		ChasePoint = { 0,0,0 };
 		//ChasePointの更新
 		ChasePoint = chasePoint;
-		//移動し終わったらリストの戦闘をpopする
+		//移動し終わったらリストの先頭をpopする
 		willMove.pop_front();
 
 		isSetChasePoint = true;
@@ -430,7 +431,7 @@ bool Enemy::CheckCanMoveToDir(const int dir, const t2k::Vector3 nowPos, const in
 	return false;
 }
 
-#if 0
+#if 1
 
 //経路探索
 void Enemy::MoveToPlayer()
@@ -457,8 +458,18 @@ void Enemy::MoveToPlayer()
 	gManager->map->GetAllChip(roomNum, chips);
 	//部屋の大きさ
 	t2k::Vector3 hoge = gManager->GetRoomValue(roomNum);
+
 	MH = hoge.y;
 	MW = hoge.x;
+
+
+	//部屋の左上の座標を取得→nodes[0][0]
+	t2k::Vector3 LeftTop = gManager->GetRoomStartPos(roomNum);
+	int x = myNowPos.x - LeftTop.x;
+	int y = myNowPos.y - LeftTop.y;
+
+	// スタートとゴールの位置を取得
+	start = Point(x, y);
 
 	nodes = new Node * [MH];
 	for (int i = 0; i < MH; i++)
@@ -466,8 +477,7 @@ void Enemy::MoveToPlayer()
 		nodes[i] = new Node[MW];
 	}
 
-	// スタートとゴールの位置を取得
-	start = Point(myNowPos.x, myNowPos.y);
+
 	//スタートは自分自身,ゴールはplayer
 	//for (int i = 0; i < chips.size(); ++i) {
 	//	for (int k = 0; k < chips[i].size(); ++k) {
@@ -478,13 +488,18 @@ void Enemy::MoveToPlayer()
 
 	//プレイヤーの座標から直接ゴールを指定する
 	t2k::Vector3 playerPos = gManager->WorldToLocal(gManager->player->pos);
-	goal = Point(playerPos.x, playerPos.y);
+	int goalx = playerPos.x - LeftTop.x;
+	int goaly = playerPos.y - LeftTop.y;
+	goal = Point(goalx, goaly);
+
 
 	// ノードデータの初期設定
 	for (int i = 0; i < MH; ++i) {
 		for (int k = 0; k < MW; ++k) {
 			nodes[i][k].pos = Point(k, i);
-			nodes[i][k].status = chips[i][k];
+			if (k == start.x && i == start.y)nodes[i][k].status = 4;
+			else if (k == goal.x && i == goal.y)nodes[i][k].status = 5;
+			else nodes[i][k].status = chips[i][k];
 			nodes[i][k].cost_guess = abs((goal.x + goal.y) - (i + k));
 		}
 	}
@@ -505,8 +520,15 @@ void Enemy::MoveToPlayer()
 		}
 	}
 
+	auto a = &nodes[start.y][start.x];
+
+	if (a->status == START) {
+		int b = 0;
+		++b;
+	}
+
 	// 経路探索実行
-	bool is_success = aster(tmp_nodes, &nodes[start.y][start.x], &willMove);
+	bool is_success = aster(tmp_nodes, &nodes[start.y][start.x], &willMove, LeftTop);
 
 	// false が帰ってきたら到達不能
 	if (!is_success) {
@@ -546,7 +568,7 @@ void Enemy::MoveToPlayer()
 //	}
 //}
 
-bool isEnableMapPosition(Point pos, Node** const _nodes)
+bool Enemy::isEnableMapPosition(Point pos, Node** const _nodes)
 {
 	//探索範囲外ならfalse
 	if (pos.x < 0) return false;
@@ -561,7 +583,7 @@ bool isEnableMapPosition(Point pos, Node** const _nodes)
 	//壁は探索不可
 	return false;
 }
-Node* getSmallScoreNodeFromOpenNodes()
+Enemy::Node* Enemy::getSmallScoreNodeFromOpenNodes()
 {
 	Node* p = nullptr;
 
@@ -585,7 +607,7 @@ Node* getSmallScoreNodeFromOpenNodes()
 	return p;
 }
 
-bool aster(Node** _nodes, Node* _now, std::list<Node*>* _route)
+bool Enemy::aster(Node** _nodes, Node* _now, std::list<t2k::Vector3>* _route, t2k::Vector3 LeftTop)
 {
 	// スタート地点のスコア計算
 	if (START == _now->status) {
@@ -607,13 +629,20 @@ bool aster(Node** _nodes, Node* _now, std::list<Node*>* _route)
 
 			// ゴールを保存して
 			auto goal = &_nodes[next.y][next.x];
-			_route->push_back(&_nodes[next.y][next.x]);
+			/*_route->push_back(&_nodes[next.y][next.x]);*/
+			int x = next.x + LeftTop.x;
+			int y = next.y + LeftTop.y;
+
+			(*_route).push_back(t2k::Vector3(x, y, 0));
 
 			// ゴール一歩手前から自分の親ノードを遡って記録
 			// この記録が最短経路となる
 			auto p = _now;
 			while (nullptr != p) {
-				_route->push_back(p);
+				/*_route->push_back(p);*/
+				int x = p->pos.x + LeftTop.x;
+				int y = p->pos.y + LeftTop.y;
+				(*_route).push_back(t2k::Vector3(x,y,0));
 				p = p->parent;
 			}
 
@@ -624,7 +653,7 @@ bool aster(Node** _nodes, Node* _now, std::list<Node*>* _route)
 		// ４方向のノードに対するオープンとスコア計算処理
 		_nodes[next.y][next.x].status = OPEN;
 		//openvectorに格納
-		openNodes.emplace_back(_nodes[next.y][next.x]);
+		openNodes.emplace_back(&_nodes[next.y][next.x]);
 		_nodes[next.y][next.x].parent = _now;
 		_nodes[next.y][next.x].cost_real = _now->cost_real + 1;
 		_nodes[next.y][next.x].score = _nodes[next.y][next.x].cost_real + _nodes[next.y][next.x].cost_guess;
@@ -651,7 +680,7 @@ bool aster(Node** _nodes, Node* _now, std::list<Node*>* _route)
 	if (nullptr == node) return false;
 
 	// 再帰的に調べていく
-	return aster(_nodes, node, _route);
+	return aster(_nodes, node, _route, LeftTop);
 }
 
 #endif

@@ -1,6 +1,8 @@
 #include "ExEffectManager.h"
 #include"GameManager.h"
 #include"Map.h"
+#include"SceneManager.h"
+#include"DungeonScene.h"
 
 extern GameManager* gManager;
 
@@ -52,6 +54,10 @@ void ExEffectManager::Warp(t2k::Vector3& Pos)
 void ExEffectManager::NextFloor()
 {
 	//ŠK‘w‚ðˆê‚ÂˆÚ“®‚³‚¹‚½‚©‚Á‚½
+	DungeonScene* hoge = SceneManager::CastScene<DungeonScene>();
+	if (hoge == nullptr)return;
+	//hoge->SetDungeonLevel(1);
+	hoge->MoveLevel(1);
 }
 
 void CreateWay(t2k::Vector3 Pos)

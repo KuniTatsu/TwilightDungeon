@@ -10,6 +10,9 @@
 #include"Player.h"
 #include"Camera.h"
 #include"Actor/Enemy.h"
+#include"Item/ItemManager.h"
+#include"Item/HaveItem.h"
+#include"Item/Item.h"
 //#include"game_main.h"
 
 //#include"Item.h"
@@ -30,7 +33,11 @@ GameManager::~GameManager()
 
 void GameManager::Update()
 {
-
+	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_F10)) {
+		inventory->setItemToInventory(2);
+		haveItemList.clear();
+		inventory->getItemFromInventory(&haveItemList);
+	}
 	SceneManager::Update();
 
 	/*if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_F4) && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_F5)) {
@@ -47,7 +54,23 @@ void GameManager::Draw()
 			DrawStringEx(100 + 100 * k, 440 + 80 * i, -1, "y:%.1f", wayPoint[i][k].y);
 		}
 	}
+
 	SceneManager::Render();
+
+	//debug
+
+	if (haveItemList.empty())return;
+
+	int k = 0;
+	for (auto id : haveItemList) {
+		Item* haveItem = iManager->getItemData(id);
+		DrawStringEx(500 + 100 * k, 100, -1, "ItemId:%d", haveItem->getItemData(0));
+		DrawStringEx(500 + 100 * k, 120, -1, "ItemName:%s", haveItem->getItemName().c_str());
+		++k;
+	}
+
+
+
 }
 
 void GameManager::initGameManager()
@@ -71,8 +94,10 @@ void GameManager::initGameManager()
 		CheckRoomWayPoint(i);
 	}*/
 
-	player = new Player(SetStartPos(0),100,10,10,10);
+	player = new Player(SetStartPos(0), 100, 10, 10, 10);
 	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
+	iManager = new ItemManager();
+	inventory = new HaveItem();
 
 	sound = new Sound();
 	//fControl = new FadeControl();
@@ -106,19 +131,6 @@ int GameManager::LoadGraphEx(std::string gh)
 	return ghmap[gh];
 }
 
-void GameManager::haveItemInit()
-{
-	for (int i = 0; i < haveItem.size(); ++i) {
-		//ƒAƒCƒeƒ€i”Ô‚ðZZŒÂ‚Å‰Šú‰»‚·‚é
-		haveItem[i].emplace_back(1);
-	}
-}
-
-void GameManager::setitem(int ItemId, int addNum)
-{
-	haveItem[ItemId][0] += addNum;
-}
-
 int GameManager::GetRandEx(int a, int b)
 {
 	if (a > b) {
@@ -139,36 +151,6 @@ int GameManager::GetRandEx(int a, int b)
 void GameManager::setPlayerRoomNum(int roomNum)
 {
 	playerRoomNum = roomNum;
-}
-
-void GameManager::loadItem()
-{
-	loadItemCsv = t2k::loadCsv("Csv/Item.csv");
-	for (int i = 1; i < loadItemCsv.size(); ++i) {
-
-		//id
-		int a = std::atoi(loadItemCsv[i][0].c_str());
-		//ItemType
-		int b = std::atoi(loadItemCsv[i][1].c_str());
-		//setDay
-		int c = std::atoi(loadItemCsv[i][2].c_str());
-		//addStatus
-		int d = std::atoi(loadItemCsv[i][3].c_str());
-		//addStatusNum
-		int e = std::atoi(loadItemCsv[i][4].c_str());
-		//setAbility
-		int f = std::atoi(loadItemCsv[i][5].c_str());
-		//setAbilityType
-		int g = std::atoi(loadItemCsv[i][6].c_str());
-		//num
-		int h = std::atoi(loadItemCsv[i][10].c_str());
-
-
-		//Item* abi = new Item(a, b, c, d, e, f, g, loadItemCsv[i][7], loadItemCsv[i][8], loadItemCsv[i][9], h);
-
-		//abilitytype‚²‚Æ‚ÉƒŠƒXƒg‚ÉŠi”[
-		//itemList[b].emplace_back(abi);
-	}
 }
 
 t2k::Vector3 GameManager::SetStartPos(int setType)
@@ -304,6 +286,11 @@ bool GameManager::CheckNearByPlayer(std::shared_ptr<Enemy>enemy)
 	}
 	if (isNear)return true;
 	return false;
+}
+
+t2k::Vector3 GameManager::GetRoomStartPos(int roomNum)
+{
+	return map->GetRoomStartPos(roomNum);
 }
 
 

@@ -13,6 +13,8 @@ class Map;
 class Player;
 class Camera;
 class Enemy;
+class ItemManager;
+class HaveItem;
 
 class GameManager {
 
@@ -27,6 +29,8 @@ public:
 	Map* map = nullptr;
 	Player* player = nullptr;
 	Camera* camera = nullptr;
+	ItemManager* iManager = nullptr;
+	HaveItem* inventory = nullptr;
 
 	double graphEx = 1;
 
@@ -34,7 +38,7 @@ public:
 	const int MAPWIDTH = 60;//default:50
 	//マップの縦幅
 	const int MAPHEIGHT = 48;//default:36
-	
+
 	//一度読み込んだghを保存するmap
 	std::unordered_map<std::string, int> ghmap;
 
@@ -45,7 +49,7 @@ public:
 
 	float deitatime_;
 
-	
+
 	void Update();
 	void Draw();
 
@@ -55,11 +59,6 @@ public:
 	//画像を読み込んでmapに入れる関数
 	//すでにあるghならそれを返す
 	int LoadGraphEx(std::string gh);
-
-	//アイテムの初期所持数を決める関数
-	void haveItemInit();
-
-	void setitem(int ItemId, int addNum);
 
 	//a~bの間の乱数取得
 	int GetRandEx(int a, int b);
@@ -72,7 +71,7 @@ public:
 	//mapのどのチップか取得する 描画座標からマップ座標への変換
 	t2k::Vector3 WorldToLocal(t2k::Vector3 Pos);
 	//マップ座標から描画座標への変換
-	t2k::Vector3 LocalToWorld(int MapX,int MapY);
+	t2k::Vector3 LocalToWorld(int MapX, int MapY);
 
 	//マップのチップの情報を取得する
 	int GetMapChip(t2k::Vector3 PInChip);
@@ -100,7 +99,7 @@ public:
 	//void CheckRoomWayPoint(int roomId);
 
 	//通路作成時にvectorに格納する関数
-	void SetRoomWayPoint(t2k::Vector3 pos,int roomId);
+	void SetRoomWayPoint(t2k::Vector3 pos, int roomId);
 
 	//部屋番号と引数の座標から一番遠い部屋の出口を取得する関数
 	t2k::Vector3 GetFarPoint(int roomId, t2k::Vector3 pos);
@@ -114,7 +113,7 @@ public:
 	//特定のEnemyとPlayerが隣り合っているか確認する関数
 	bool CheckNearByPlayer(std::shared_ptr<Enemy>enemy);
 
-	
+	t2k::Vector3 GetRoomStartPos(int roomNum);
 
 	//enemylist
 	std::list<std::shared_ptr<Enemy>> hoge;
@@ -131,17 +130,11 @@ public:
 	void setPlayerRoomNum(int roomNum);
 
 private:
-	
-	//アイテム情報をexcelから読み取る関数
-	void loadItem();
 
-	std::vector<std::vector<std::string>> loadItemCsv;
-
-	
 	int test = 0;
 
-
+	std::vector<int> haveItemList;
 
 	void Zoom(double* zoomEx);
-	
+
 };

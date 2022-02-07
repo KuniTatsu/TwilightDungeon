@@ -16,6 +16,18 @@ public:
 
 	static BaseScene* m_pScene;               //
 
+
+	 template<class T >
+	 static T* CastScene() {
+		T* scene = dynamic_cast<T*>(m_pScene);
+		return scene;
+	}
+	//DungeonScene* castScene() {
+	//	DungeonScene* scene = dynamic_cast<DungeonScene*>(m_pScene);
+	//	return scene;
+	//}
+
+
 	static void Save();
 	static void Load();
 
