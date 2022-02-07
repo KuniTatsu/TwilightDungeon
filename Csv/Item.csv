@@ -1,15 +1,15 @@
-id(int),ItemType(int),Item_Name(std::string),AmountOfSaturation(int),AmountOfHeal(int),HitDamage(int),HP(int),Atack(int),Defence(int),Speed(int),Gh(std::string)
-0,0,‚è‚ñ‚²,10,0,1,-1,-1,-1,-1,graphics/icon/apple.png
-1,0,”ü–¡‚µ‚¢“÷,20,0,1,-1,-1,-1,-1,graphics/icon/meet.png
-2,0,–ò‘,5,20,1,-1,-1,-1,-1,graphics/icon/herb.png
-4,0,‰ñ•œ–ò,5,30,1,-1,-1,-1,-1,graphics/icon/portion.png
-5,1,–Ø‚Ì},0,0,5,-1,-1,-1,-1,graphics/icon/woodPin.png
-6,1,“S‚Ì™,0,0,15,-1,-1,-1,-1,graphics/icon/ironPin.png
-7,1,‰s‚¢Î,0,0,10,-1,-1,-1,-1,graphics/icon/ironPin.png
-8,2,Î‚ÌŒ•,0,0,0,1,5,5,5,graphics/icon/stonesword.png
-9,2,“S‚ÌŒ•,0,0,0,10,10,10,10,graphics/icon/ironsword.png
-10,2,“S‚Ì•€,0,0,0,5,15,5,5,graphics/icon/ironaxe.png
-11,2,“S‚Ì‘„,0,0,0,5,13,10,15,graphics/icon/ironspear.png
-12,2,|‚ÌŒ•,0,0,0,15,15,15,15,graphics/icon/steelsword.png
-13,2,|‚Ì•€,0,0,0,10,25,15,10,graphics/icon/steelaxe.png
-14,2,|‚Ì‘„,0,0,0,10,20,10,20,graphics/icon/steelspear.png
+id(int),ItemType(int),Item_Name(std::string),AmountOfSaturation(int),AmountOfHeal(int),HitDamage(int),HP(int),Atack(int),Defence(int),Speed(int),Gh(std::string),Desc
+0,0,‚è‚ñ‚²,10,0,1,-1,-1,-1,-1,graphics/icon/apple.png,–• “x‚ğ‰ñ•œ‚·‚éX‚µ‚¢‚è‚ñ‚²B
+1,0,”ü–¡‚µ‚¢“÷,20,0,1,-1,-1,-1,-1,graphics/icon/meet.png,–• “x‚ğ‰ñ•œ‚·‚éƒWƒ…[ƒV[‚È“÷B
+2,0,–ò‘,5,20,1,-1,-1,-1,-1,graphics/icon/herb.png,‘Ì—Í‚ğ‰ñ•œ‚·‚é–ò‘B
+4,0,‰ñ•œ–ò,5,30,1,-1,-1,-1,-1,graphics/icon/portion.png,‘Ì—Í‚ğ‘å‚«‚­‰ñ•œ‚·‚é–òB
+5,1,–Ø‚Ì},0,0,5,-1,-1,-1,-1,graphics/icon/woodPin.png,“–‚½‚é‚Æ’É‚¢ë‚Á‚½–Ø‚Ì}
+6,1,“S‚Ì™,0,0,15,-1,-1,-1,-1,graphics/icon/ironPin.png,“–‚½‚é‚Æ’É‚¢ë‚Á‚½“S‚Ì™
+7,1,‰s‚¢Î,0,0,10,-1,-1,-1,-1,graphics/icon/ironPin.png,“–‚½‚é‚Æ’É‚¢ë‚Á‚½Î
+8,2,Î‚ÌŒ•,0,0,0,1,5,5,5,graphics/icon/stonesword.png,Î‚Å‚Å‚«‚½–³œ‚ÈŒ•
+9,2,“S‚ÌŒ•,0,0,0,10,10,10,10,graphics/icon/ironsword.png,“S‚Å‚Å‚«‚½–³œ‚ÈŒ•
+10,2,“S‚Ì•€,0,0,0,5,15,5,5,graphics/icon/ironaxe.png,“S‚Å‚Å‚«‚½–³œ‚È•€
+11,2,“S‚Ì‘„,0,0,0,5,13,10,15,graphics/icon/ironspear.png,“S‚Å‚Å‚«‚½–³œ‚È‘„
+12,2,|‚ÌŒ•,0,0,0,15,15,15,15,graphics/icon/steelsword.png,|‚Å‚Å‚«‚½dŒú‚ÈŒ•
+13,2,|‚Ì•€,0,0,0,10,25,15,10,graphics/icon/steelaxe.png,|‚Å‚Å‚«‚½dŒú‚È•€
+14,2,|‚Ì‘„,0,0,0,10,20,10,20,graphics/icon/steelspear.png,|‚Å‚Å‚«‚½dŒú‚È‘„

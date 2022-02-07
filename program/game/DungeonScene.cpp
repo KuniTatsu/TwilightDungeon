@@ -21,6 +21,7 @@ DungeonScene::DungeonScene()
 	menuOpen = new Menu(20, 20, 100, 100, "graphics/WindowBase_01.png");
 	inventory = new Menu(255, 50, 420, 340, "graphics/WindowBase_01.png");
 	log = new Menu(10, 580, 1000, 180, "graphics/WindowBase_01.png");
+	desc = new Menu(680, 300, 320, 90, "graphics/WindowBase_01.png");
 
 	eManager = std::make_shared<EnemyManager>();
 
@@ -131,6 +132,7 @@ void DungeonScene::Draw()
 	else if (nowSeq == sequence::INVENTORY_OPEN) {
 		inventory->Menu_Draw();
 		DrawInventory();
+		
 	}
 
 }
@@ -350,19 +352,29 @@ void DungeonScene::DrawEnemyData()
 
 void DungeonScene::DrawInventory()
 {
+	if (gManager->inventories[inventoryPage]->inventory[0] == nullptr)return;
+	desc->Menu_Draw();
+	SetFontSize(25);
 	gManager->inventories[inventoryPage]->DrawInventory(inventory->menu_x, inventory->menu_y);
+	gManager->inventories[inventoryPage]->DrawItemData(desc->menu_x + 10, desc->menu_y + 10);
+
+	SetFontSize(16);
 }
 
 void DungeonScene::ChangeInventory()
 {
-	//gManeger->inventoryNum‚Í‘¶Ý‚·‚éinventory‚Ì”-1‚É‚È‚é
-	//¨‚à‚µ¡‚ÌinventoryPage‚ªinventoryNum‚Æ“¯‚¶‚È‚ç
+	//ƒCƒ“ƒxƒ“ƒgƒŠ‚ðØ‚è‘Ö‚¦‚é
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RIGHT)) {
 		inventoryPage = (inventoryPage + 1) % (gManager->inventoryNum + 1);
+		gManager->inventories[inventoryPage]->CursorReset();
 	}
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_LEFT)) {
 		inventoryPage = (inventoryPage + (gManager->inventoryNum)) % (gManager->inventoryNum + 1);
+		gManager->inventories[inventoryPage]->CursorReset();
 	}
+	if (gManager->inventories[inventoryPage]->inventory[0] == nullptr)return;
+	//ã‰ºˆÚ“®
+	gManager->inventories[inventoryPage]->CursorMove();
 }
 
 

@@ -1,16 +1,16 @@
 #pragma once
 #include<string>
-
+#include<vector>
 
 class Item
 {
 public:
 	Item() {};
-	Item(int Id,int ItemType,std::string ItemName,int Saturation,int Heal,int HitDamage,std::string Gh);
+	Item(int Id,int ItemType,std::string ItemName,int Saturation,int Heal,int HitDamage,std::string Gh,std::string Desc);
 	virtual ~Item();
 
-	int getItemId();
-	//virtual void DrawItemData();
+	int GetItemId();
+	void DrawItemData(int x,int y);
 	 
 	//ColumnId: 0->id,1->type,2->manpukudo,3->heal,4->hitdamage
 	virtual int getItemData(int ColumnId);
@@ -28,6 +28,10 @@ protected:
 	int hitDamage = 0;
 
 	int gh = 0;
+	std::string desc = {};
+	//–¼‘O‚Æà–¾•¶‚Ì“ü‚Á‚½”z—ñ
+	std::string itemDesc[2] = {};
+
 
 };
 

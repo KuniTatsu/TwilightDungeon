@@ -1,9 +1,12 @@
 #include "Item.h"
 #include"../GameManager.h"
+#include"DxLib.h"
+#include"../../library/t2klib.h"
+#include"../../support/Support.h"
 
 extern GameManager* gManager;
 
-Item::Item(int Id, int ItemType, std::string ItemName, int Saturation, int Heal, int HitDamage, std::string Gh)
+Item::Item(int Id, int ItemType, std::string ItemName, int Saturation, int Heal, int HitDamage, std::string Gh, std::string Desc)
 {
 	id = Id;
 	itemType = ItemType;
@@ -13,14 +16,17 @@ Item::Item(int Id, int ItemType, std::string ItemName, int Saturation, int Heal,
 	hitDamage = HitDamage;
 
 	gh = gManager->LoadGraphEx(Gh);
+	desc = Desc;
 
+	itemDesc[0] = itemName;
+	itemDesc[1] = desc;
 }
 
 Item::~Item()
 {
 }
 
-int Item::getItemId()
+int Item::GetItemId()
 {
 	return id;
 }
@@ -39,7 +45,9 @@ std::string Item::getItemName()
 	return itemName;
 }
 
-//void Item::DrawItemData()
-//{
-//
-//}
+
+void Item::DrawItemData(int x, int y)
+{
+	DrawStringEx(x, y, -1, "%s", itemDesc[0].c_str());
+	DrawStringEx(x, y+30, -1, "%s", itemDesc[1].c_str());
+}

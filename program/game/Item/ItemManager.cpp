@@ -12,7 +12,7 @@ Item* ItemManager::getItemData(int ItemId)
 {
 	for (auto master : itemMaster) {
 		for (auto item : master) {
-			if (item->getItemId() == ItemId) {
+			if (item->GetItemId() == ItemId) {
 				return item;
 			}
 		}
@@ -39,11 +39,11 @@ void ItemManager::LoadItem()
 
 		//Á”ïƒAƒCƒeƒ€‚È‚ç
 		if (type < 2) {
-			Item* newItem = new Item(id, type, loadItem[i][2], manpuku, heal, damage, loadItem[i][10]);
+			Item* newItem = new Item(id, type, loadItem[i][2], manpuku, heal, damage, loadItem[i][10], loadItem[i][11]);
 			itemMaster[type].emplace_back(newItem);
 		}
 		else {
-			equipItem* newItem = new equipItem(id, type, loadItem[i][2], manpuku, heal, damage, loadItem[i][10], equipHp, equipAtack, equipDefence, equipSpeed);
+			equipItem* newItem = new equipItem(id, type, loadItem[i][2], manpuku, heal, damage, loadItem[i][10], loadItem[i][11], equipHp, equipAtack, equipDefence, equipSpeed);
 			itemMaster[type].emplace_back(newItem);
 		}
 		itemSumNum++;
