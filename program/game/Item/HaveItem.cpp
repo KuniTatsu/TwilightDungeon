@@ -13,7 +13,7 @@ void HaveItem::setItemToInventory(int ItemId)
 	inventory.emplace_back(ItemId);
 }
 
-std::vector<int>* HaveItem::getItemFromInventory(std::vector<int>* HaveItemIds)
+std::list<int>* HaveItem::getItemFromInventory(std::list<int>* HaveItemIds)
 {
 	for (auto items : inventory) {
 		HaveItemIds->emplace_back(items);

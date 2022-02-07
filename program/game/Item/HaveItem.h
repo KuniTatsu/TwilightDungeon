@@ -10,7 +10,7 @@ public:
 	//ItemId n番を持っているアイテムリストに登録
 	void setItemToInventory(int ItemId);
 	//inventoryの中身を外部のvectorに移す形で取得する関数
-	std::vector<int>* getItemFromInventory(std::vector<int>*HaveItemIds);
+	std::list<int>* getItemFromInventory(std::list<int>*HaveItemIds);
 
 private:
 

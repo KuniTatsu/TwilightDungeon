@@ -46,5 +46,6 @@ void ItemManager::LoadItem()
 			equipItem* newItem = new equipItem(id, type, loadItem[i][2], manpuku, heal, damage, loadItem[i][10], equipHp, equipAtack, equipDefence, equipSpeed);
 			itemMaster[type].emplace_back(newItem);
 		}
+		itemSumNum++;
 	}
 }

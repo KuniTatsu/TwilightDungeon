@@ -37,8 +37,12 @@ private:
 
 	//次の回に行けるwindow
 	Menu* nextLevelWindow = nullptr;
+	Menu* menuOpen = nullptr;
+	Menu* inventory = nullptr;
+	Menu* log = nullptr;
 
 	MenuWindow* firstMenu = nullptr;
+	
 	
 	/*
 	Menu* hoge=new Menu(30,50,175,390,gh(int))
@@ -53,10 +57,14 @@ private:
 	t2k::Sequence<DungeonScene*> main_sequence =
 		t2k::Sequence<DungeonScene*>(this, &DungeonScene::Seq_Main);
 
+	//プレイヤー動作シークエンス
 	bool Seq_Main(const float deltatime);
+	//エネミー動作シークエンス
 	bool Seq_EnemyAct(const float deltatime);
-
-
+	//１つ目のメニュー操作
+	bool Seq_FirstMenu(const float deltatime);
+	//Inventory描画シークエンス
+	bool Seq_InventoryOpen(const float deltatime);
 
 	//debug
 	bool Seq_CameraMove(const float deltatime);
@@ -64,6 +72,8 @@ private:
 	enum class sequence {
 		MAIN,
 		ENEMYACT,
+		FIRSTMENU,
+		INVENTORY_OPEN,
 		CAMERA
 
 	};
@@ -75,5 +85,14 @@ private:
 
 	//enemyのデータの確認関数
 	void DrawEnemyData();
+
+	int inventoryPage = 0;
+
+	void DrawInventory();
+
+	int mouseX = 0;
+	int mouseY = 0;
+
+
 
 };

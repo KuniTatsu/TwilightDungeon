@@ -31,9 +31,21 @@ GameManager::~GameManager()
 
 }
 
+Item* GameManager::GetItemData(int ItemId)
+{
+	Item* hoge = iManager->getItemData(ItemId);
+	return hoge;
+}
+
+bool GameManager::OutOfRangeInItem(int ItemId)
+{
+	if (ItemId > 0 && ItemId < iManager->itemSumNum + 1)return true;
+	return false;
+}
+
 void GameManager::Update()
 {
-	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_F10)) {
+	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_I)) {
 		inventory->setItemToInventory(2);
 		haveItemList.clear();
 		inventory->getItemFromInventory(&haveItemList);
@@ -401,3 +413,11 @@ void GameManager::CameraMove(Player* p)
 	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
 }
 
+bool GameManager::CheckMousePointToRect(int MouseX, int MouseY, int RectLeftTopX, int RectWidth, int RectTopY, int RectHeight)
+{
+	if (MouseX >= RectLeftTopX && MouseX <= RectLeftTopX + RectWidth
+		&& MouseY >= RectTopY && MouseY <= RectTopY + RectHeight) {
+		return true;
+	}
+	return false;
+}

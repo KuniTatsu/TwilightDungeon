@@ -42,10 +42,14 @@ public:
 	//一度読み込んだghを保存するmap
 	std::unordered_map<std::string, int> ghmap;
 
-	//[itemid][haveItemNum]アイテムを持っている数とidの二次元配列
-	std::vector<std::vector<int>> haveItem;
 	//itemすべての配列
-	std::vector<std::vector<Item*>> itemList;
+	//std::list<Item*> itemList;
+
+	std::list<int> haveItemList;
+	//itemIdからItem*を取得する関数
+	Item* GetItemData(int ItemId);
+	//ItemIdが存在するかどうか確認する関数
+	bool OutOfRangeInItem(int ItemId);
 
 	float deitatime_;
 
@@ -129,11 +133,14 @@ public:
 
 	void setPlayerRoomNum(int roomNum);
 
+	//短形とのマウスクリック感知
+	bool CheckMousePointToRect(int MouseX, int MouseY, int RectLeftTopX, int RectWidth, int RectTopY, int RectHeight);
+
 private:
 
 	int test = 0;
 
-	std::vector<int> haveItemList;
+	//std::vector<int> haveItemList;
 
 	void Zoom(double* zoomEx);
 

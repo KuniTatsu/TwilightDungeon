@@ -86,14 +86,14 @@ bool Enemy::Move()
 	//今いる場所が部屋のどこかなら部屋の番号を取得する
 	roomNum = gManager->CheckIsThere(myNowPos);
 
-#if 1
+#if 0
 	//enemyとplayerが同じ部屋にいるなら
 	if (roomNum == gManager->playerRoomNum && roomNum != -1) {
 		//A*で経路探索
 		//経路のlistがn個以上残っていれば行わない
 		if (willMove.size() < 5) {
-			//経路探索
-			MoveToPlayer();
+			//経路探索 今回は部屋内に障害物がないためまずは単純な経路探索を実装する
+			//MoveToPlayer();
 		}
 		//willMoveリストの一番初めのNodeに向かう
 
@@ -284,36 +284,6 @@ int Enemy::GetDir(const int dir, const int getDir)
 	}
 	return -1;
 }
-/*
-enum dir{
-		UP,
-		RIGHT,
-		DOWN,
-		LEFT
-	};
-*/
-/*
-t2k::Vector3 Enemy::MoveToDir(int dir)
-{
-	//上
-	if (dir == 0) {
-		return t2k::Vector3(0, -1, 0);
-	}
-	//右
-	else if (dir == 1) {
-		return t2k::Vector3(1, 0, 0);
-	}
-	//下
-	else if (dir == 2) {
-		return t2k::Vector3(0, 1, 0);
-	}
-	//左
-	else if (dir == 3) {
-		return t2k::Vector3(-1, 0, 0);
-	}
-	return t2k::Vector3(-1, -1, -1);
-}
-*/
 
 bool Enemy::MoveToDir(const int dir, t2k::Vector3& nowPos)
 {
@@ -431,7 +401,7 @@ bool Enemy::CheckCanMoveToDir(const int dir, const t2k::Vector3 nowPos, const in
 	return false;
 }
 
-#if 1
+#if 0
 
 //経路探索
 void Enemy::MoveToPlayer()

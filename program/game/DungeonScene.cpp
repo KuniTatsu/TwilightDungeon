@@ -8,6 +8,7 @@
 #include"Actor/EnemyManager.h"
 #include"Actor/Enemy.h"
 #include"Camera.h"
+#include"Item/Item.h"
 
 extern GameManager* gManager;
 
@@ -15,6 +16,10 @@ DungeonScene::DungeonScene()
 {
 	alfa = gManager->LoadGraphEx("graphics/old/test.png");
 	nextLevelWindow = new Menu(300, 300, 300, 200, "graphics/WindowBase_01.png");
+	menuOpen = new Menu(20, 20, 100, 100, "graphics/WindowBase_01.png");
+	inventory = new Menu(255, 50, 420, 340, "graphics/WindowBase_01.png");
+	log = new Menu(10, 580, 1000, 180, "graphics/WindowBase_01.png");
+
 	eManager = std::make_shared<EnemyManager>();
 
 	MenuWindow::MenuElement_t* menu_0 = new MenuWindow::MenuElement_t[]{
@@ -49,6 +54,8 @@ void DungeonScene::RandEnemyCreate(int num)
 
 void DungeonScene::Update()
 {
+	GetMousePoint(&mouseX, &mouseY);
+
 	main_sequence.update(gManager->deitatime_);
 
 	//デバッグ切り替え
@@ -113,8 +120,17 @@ void DungeonScene::Draw()
 	//gManager->map->DrawAllRoomPos(gManager->map.)
 
 	DrawNowSequence(nowSeq);
+	log->Menu_Draw();
 
 	firstMenu->All();
+	if (nowSeq == sequence::MAIN) {
+		menuOpen->Menu_Draw();
+	}
+	else if (nowSeq == sequence::INVENTORY_OPEN) {
+		inventory->Menu_Draw();
+		DrawInventory();
+	}
+
 }
 
 int DungeonScene::GetDungeonLevel()
@@ -147,21 +163,28 @@ bool DungeonScene::Seq_Main(const float deltatime)
 		gManager->player->TakeHpEffect(-20);
 	}
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_U)) {
-		gManager->player->ChangeStatus(1,50);
+		gManager->player->ChangeStatus(1, 50);
 		for (auto enemy : eManager->liveEnemyList) {
 			enemy->ChangeStatus(2, 10);
 		}
 	}
-
 	//
+
+	//menuを開く
+	//もしmenuボタンの上にマウスがいたら
+	if (gManager->CheckMousePointToRect(mouseX, mouseY, menuOpen->menu_x, menuOpen->menu_width, menuOpen->menu_y, menuOpen->menu_height)) {
+		//マウスクリックしていたら
+		if (t2k::Input::isMouseTrigger(t2k::Input::MOUSE_RELEASED_LEFT)) {
+			t2k::debugTrace("\n押されたよ\n");//ok
+			firstMenu->Open();
+			ChangeSequence(sequence::FIRSTMENU);
+		}
+	}
 
 	//足踏み(Playerは移動せずにターンは経過する
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_SPACE)) {
 		skip = true;
 	}
-
-	//毎フレーム取得する必要はなさそう→移動後に確認,エリア移動後に1回だけ確認するように変更したい
-	playerPos = gManager->WorldToLocal(gManager->player->pos);
 
 	//もしplayerが階段の上にいたら
 	//windowを出す
@@ -179,8 +202,11 @@ bool DungeonScene::Seq_Main(const float deltatime)
 	//for (auto hoge : eManager->liveEnemyList) {
 	//	hoge->TimeUpdate();
 	//}
+
 	//もしPlayerが動いたら もしくはスキップしたら
 	if (gManager->player->Move() || skip) {
+
+		playerPos = gManager->WorldToLocal(gManager->player->pos);
 
 		ChangeSequence(sequence::ENEMYACT);
 		if (skip)skip = false;
@@ -209,6 +235,47 @@ bool DungeonScene::Seq_EnemyAct(const float deltatime)
 	return true;
 }
 
+bool DungeonScene::Seq_FirstMenu(const float deltatime)
+{
+	if (firstMenu->SelectNum == 0 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+		//menuの上下を操作出来なくする
+		firstMenu->manageSelectFlag = false;
+		//gManager->sound->System_Play(gManager->sound->system_select);
+
+		//InventoryOpenシークエンスに移動する
+		ChangeSequence(sequence::INVENTORY_OPEN);
+		return true;
+	}
+	else if (firstMenu->SelectNum == 4 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+		firstMenu->menu_live = false;
+		ChangeSequence(sequence::MAIN);
+		return true;
+	}
+
+
+	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_ESCAPE))
+	{
+		firstMenu->menu_live = false;
+		ChangeSequence(sequence::MAIN);
+		return true;
+	}
+	return true;
+}
+
+bool DungeonScene::Seq_InventoryOpen(const float deltatime)
+{
+	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_ESCAPE))
+	{
+		firstMenu->manageSelectFlag = true;
+		ChangeSequence(sequence::FIRSTMENU);
+		return true;
+	}
+
+
+
+	return true;
+}
+
 bool DungeonScene::Seq_CameraMove(const float deltatime)
 {
 	gManager->camera->CameraMove();
@@ -232,6 +299,12 @@ void DungeonScene::ChangeSequence(sequence seq)
 	else if (seq == sequence::ENEMYACT) {
 		main_sequence.change(&DungeonScene::Seq_EnemyAct);
 	}
+	else if (seq == sequence::FIRSTMENU) {
+		main_sequence.change(&DungeonScene::Seq_FirstMenu);
+	}
+	else if (seq == sequence::INVENTORY_OPEN) {
+		main_sequence.change(&DungeonScene::Seq_InventoryOpen);
+	}
 	else if (seq == sequence::CAMERA) {
 		main_sequence.change(&DungeonScene::Seq_CameraMove);
 	}
@@ -245,6 +318,12 @@ void DungeonScene::DrawNowSequence(sequence seq)
 	}
 	else if (seq == sequence::ENEMYACT) {
 		DrawStringEx(800, 300, -1, "ENEMYACTSequence");
+	}
+	else if (seq == sequence::FIRSTMENU) {
+		DrawStringEx(800, 300, -1, "FIRSTMENUSequence");
+	}
+	else if (seq == sequence::INVENTORY_OPEN) {
+		DrawStringEx(800, 300, -1, "INVENTORYOPENSequence");
 	}
 	else if (seq == sequence::CAMERA) {
 		DrawStringEx(800, 300, -1, "CAMERASequence");
@@ -266,5 +345,35 @@ void DungeonScene::DrawEnemyData()
 	}
 
 }
+
+void DungeonScene::DrawInventory()
+{
+	if (gManager->haveItemList.empty())return;
+	//itemListの0~9番目までのアイテム名を表示する
+	//9個ずつ描画する
+	//10個以上ある場合は別ページに描画する
+	//ページ番号の変数が必要
+	//アイテムの所持上限を決める必要がある
+	//4ページまで->5*10個で50個まで保持可能とする
+
+	//auto itr = gManager->haveItemList.begin();
+	int i = 0;
+	for (auto item : gManager->haveItemList) {
+		Item* getItem = gManager->GetItemData(item);
+		DrawStringEx(inventory->menu_x + 10, inventory->menu_y + 10 + 20 * i, -1, "%s", getItem->getItemName().c_str());
+		++i;
+	}
+
+	//for (int i = inventoryPage * 10; i < inventoryPage * 10 + 10; ++i) {
+	//	//存在しないItemIdなら飛ばす
+	//	if (!gManager->OutOfRangeInItem((*itr)))continue;
+
+	//	Item* item = gManager->GetItemData((*itr));
+	//	DrawStringEx(inventory->menu_x + 10, inventory->menu_y + 10, -1, "%s", item->getItemName());
+	//	++itr;
+	//}
+}
+
+
 
 

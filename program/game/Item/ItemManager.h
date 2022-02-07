@@ -14,6 +14,8 @@ public:
 	//ItemType‚²‚Æ‚ÉU‚è•ª‚¯‚ç‚ê‚½ItemMasterƒf[ƒ^
 	std::vector < std::vector<Item*>> itemMaster;
 
+	int itemSumNum = 0;
+
 	Item* getItemData(int ItemId);
 
 private:
