@@ -13,6 +13,7 @@
 #include"Item/ItemManager.h"
 #include"Item/HaveItem.h"
 #include"Item/Item.h"
+#include"Item//Inventory.h"
 //#include"game_main.h"
 
 //#include"Item.h"
@@ -46,9 +47,23 @@ bool GameManager::OutOfRangeInItem(int ItemId)
 void GameManager::Update()
 {
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_I)) {
-		inventory->setItemToInventory(2);
+		/*haveItem->setItemToInventory(2);
 		haveItemList.clear();
-		inventory->getItemFromInventory(&haveItemList);
+		haveItem->getItemFromInventory(&haveItemList);*/
+
+		//*****ここから下の処理をいずれ関数にする*****//
+		//今のinventoryの持つアイテム配列がいっぱいなら
+		if (inventories[inventoryNum]->inventory[9] != nullptr) {
+			//新しくinventoryのインスタンスを生成する
+			Inventory* newInventory = new Inventory();
+			//inventory配列に登録
+			inventories.emplace_back(newInventory);
+			//登録するinventoryを更新する
+			inventoryNum++;
+		}
+		//debug itemId:2のアイテムをインベントリに追加
+		inventories[inventoryNum]->AddInventory(iManager->getItemData(2));
+		//*********************************************//
 	}
 	SceneManager::Update();
 
@@ -109,7 +124,9 @@ void GameManager::initGameManager()
 	player = new Player(SetStartPos(0), 100, 10, 10, 10);
 	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
 	iManager = new ItemManager();
-	inventory = new HaveItem();
+	haveItem = new HaveItem();
+	inventory = new Inventory();
+	inventories.emplace_back(inventory);
 
 	sound = new Sound();
 	//fControl = new FadeControl();

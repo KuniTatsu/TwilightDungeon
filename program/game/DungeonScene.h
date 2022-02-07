@@ -89,6 +89,7 @@ private:
 	int inventoryPage = 0;
 
 	void DrawInventory();
+	void ChangeInventory();
 
 	int mouseX = 0;
 	int mouseY = 0;

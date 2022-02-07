@@ -9,6 +9,8 @@
 #include"Actor/Enemy.h"
 #include"Camera.h"
 #include"Item/Item.h"
+#include"Item/Inventory.h"
+
 
 extern GameManager* gManager;
 
@@ -270,7 +272,7 @@ bool DungeonScene::Seq_InventoryOpen(const float deltatime)
 		ChangeSequence(sequence::FIRSTMENU);
 		return true;
 	}
-
+	ChangeInventory();
 
 
 	return true;
@@ -348,30 +350,19 @@ void DungeonScene::DrawEnemyData()
 
 void DungeonScene::DrawInventory()
 {
-	if (gManager->haveItemList.empty())return;
-	//itemListの0~9番目までのアイテム名を表示する
-	//9個ずつ描画する
-	//10個以上ある場合は別ページに描画する
-	//ページ番号の変数が必要
-	//アイテムの所持上限を決める必要がある
-	//4ページまで->5*10個で50個まで保持可能とする
+	gManager->inventories[inventoryPage]->DrawInventory(inventory->menu_x, inventory->menu_y);
+}
 
-	//auto itr = gManager->haveItemList.begin();
-	int i = 0;
-	for (auto item : gManager->haveItemList) {
-		Item* getItem = gManager->GetItemData(item);
-		DrawStringEx(inventory->menu_x + 10, inventory->menu_y + 10 + 20 * i, -1, "%s", getItem->getItemName().c_str());
-		++i;
+void DungeonScene::ChangeInventory()
+{
+	//gManeger->inventoryNumは存在するinventoryの数-1になる
+	//→もし今のinventoryPageがinventoryNumと同じなら
+	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RIGHT)) {
+		inventoryPage = (inventoryPage + 1) % (gManager->inventoryNum + 1);
 	}
-
-	//for (int i = inventoryPage * 10; i < inventoryPage * 10 + 10; ++i) {
-	//	//存在しないItemIdなら飛ばす
-	//	if (!gManager->OutOfRangeInItem((*itr)))continue;
-
-	//	Item* item = gManager->GetItemData((*itr));
-	//	DrawStringEx(inventory->menu_x + 10, inventory->menu_y + 10, -1, "%s", item->getItemName());
-	//	++itr;
-	//}
+	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_LEFT)) {
+		inventoryPage = (inventoryPage + (gManager->inventoryNum)) % (gManager->inventoryNum + 1);
+	}
 }
 
 

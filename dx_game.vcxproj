@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="program\game\Item\equipItem.cpp" />
     <ClCompile Include="program\game\Item\HaveItem.cpp" />
+    <ClCompile Include="program\game\Item\Inventory.cpp" />
     <ClCompile Include="program\game\Item\Item.cpp" />
     <ClCompile Include="program\game\Actor\Actor.cpp" />
     <ClCompile Include="program\game\Actor\Enemy.cpp" />
@@ -51,6 +52,7 @@
   <ItemGroup>
     <ClInclude Include="program\game\Item\equipItem.h" />
     <ClInclude Include="program\game\Item\HaveItem.h" />
+    <ClInclude Include="program\game\Item\Inventory.h" />
     <ClInclude Include="program\game\Item\Item.h" />
     <ClInclude Include="program\game\Actor\Actor.h" />
     <ClInclude Include="program\game\Actor\Enemy.h" />

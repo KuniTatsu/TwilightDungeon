@@ -15,6 +15,7 @@ class Camera;
 class Enemy;
 class ItemManager;
 class HaveItem;
+class Inventory;
 
 class GameManager {
 
@@ -30,7 +31,13 @@ public:
 	Player* player = nullptr;
 	Camera* camera = nullptr;
 	ItemManager* iManager = nullptr;
-	HaveItem* inventory = nullptr;
+	HaveItem* haveItem = nullptr;
+	Inventory* inventory = nullptr;
+
+	//インベントリが入った配列
+	std::vector<Inventory*> inventories;
+	//アイテムを追加する際の格納可能なインベントリ配列番号
+	int inventoryNum = 0;
 
 	double graphEx = 1;
 
