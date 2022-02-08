@@ -1,4 +1,5 @@
 #pragma once
+#include<list>
 class Item;
 
 class Inventory
@@ -8,6 +9,8 @@ public:
 	~Inventory();
 
 	Item* inventory[10] = { nullptr,nullptr ,nullptr ,nullptr ,nullptr ,nullptr ,nullptr ,nullptr ,nullptr ,nullptr };
+
+	std::list<Item*> inventoryList;
 	//インベントリにアイテムを追加する関数
 	void AddInventory(Item* item);
 	//カーソルを上下に動かす関数

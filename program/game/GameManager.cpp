@@ -35,6 +35,19 @@ GameManager::~GameManager()
 void GameManager::AddItemToInventory(int itemId)
 {
 	//今のinventoryの持つアイテム配列がいっぱいなら
+	if (inventories[inventoryNum]->inventoryList.size() >= 10) {
+		//新しくinventoryのインスタンスを生成する
+		Inventory* newInventory = new Inventory();
+		//inventory配列に登録
+		inventories.emplace_back(newInventory);
+		//登録するinventoryを更新する
+		inventoryNum++;
+	}
+	inventories[inventoryNum]->AddInventory(iManager->getItemData(itemId));
+
+
+#if 0
+	//今のinventoryの持つアイテム配列がいっぱいなら
 	if (inventories[inventoryNum]->inventory[9] != nullptr) {
 		//新しくinventoryのインスタンスを生成する
 		Inventory* newInventory = new Inventory();
@@ -45,6 +58,7 @@ void GameManager::AddItemToInventory(int itemId)
 	}
 	//debug itemId:2のアイテムをインベントリに追加
 	inventories[inventoryNum]->AddInventory(iManager->getItemData(itemId));
+#endif
 }
 
 Item* GameManager::GetItemData(int ItemId)
@@ -58,11 +72,24 @@ bool GameManager::OutOfRangeInItem(int ItemId)
 	if (ItemId > 0 && ItemId < iManager->itemSumNum + 1)return true;
 	return false;
 }
+void GameManager::PopDetectItem(Item* item, std::list<Item*>& list) {
 
+	for (auto itr = list.begin(); itr != list.end();) {
+		if ((*itr) == item) {
+			itr = list.erase(itr);
+		}
+		else {
+			itr++;
+		}
+	}
+}
 void GameManager::Update()
 {
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_I)) {
 		AddItemToInventory(2);
+	}
+	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_O)) {
+		AddItemToInventory(3);
 	}
 	SceneManager::Update();
 
@@ -141,6 +168,7 @@ void GameManager::initGameManager()
 	haveItemInit();*/
 
 }
+
 
 int GameManager::LoadGraphEx(std::string gh)
 {

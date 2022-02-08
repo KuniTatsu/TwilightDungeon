@@ -51,6 +51,15 @@ void Item::SetPos(t2k::Vector3 Pos)
 	pos = Pos;
 }
 
+bool Item::DetectOnPlayer(t2k::Vector3 Pos)
+{
+	t2k::Vector3 myMapPos = gManager->WorldToLocal(pos);
+	if (myMapPos.x == Pos.x && myMapPos.y == Pos.y) {
+		return true;
+	}
+	return false;
+}
+
 
 void Item::DrawItemData(int x, int y)
 {

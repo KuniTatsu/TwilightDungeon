@@ -17,6 +17,9 @@ public:
 	//マップの背景
 	vector<vector<int>> ground;
 
+	//チップ一つの大きさ
+	const int SIZE = 20;
+
 	//部屋の数
 
 	int sumRoomNum = 0;

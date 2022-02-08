@@ -4,6 +4,7 @@
 #include<unordered_map>
 #include "../library/t2klib.h"
 #include<memory>
+#include<list>
 class SceneManager;
 
 class Item;
@@ -61,6 +62,10 @@ public:
 
 	//ItemIdが存在するかどうか確認する関数
 	bool OutOfRangeInItem(int ItemId);
+
+
+	//ドロップアイテムリストから特定のアイテムをpopする関数
+	void PopDetectItem(Item* item, std::list<Item*>& list);
 
 	float deitatime_;
 

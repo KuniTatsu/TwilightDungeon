@@ -21,6 +21,8 @@ public:
 	std::string getItemName();
 
 	void SetPos(t2k::Vector3 Pos);
+
+	bool DetectOnPlayer(t2k::Vector3 Pos);
 	
 protected:
 
@@ -39,6 +41,8 @@ protected:
 	std::string itemDesc[2] = {};
 
 	t2k::Vector3 pos = { 0,0,0 };
+
+
 
 };
 

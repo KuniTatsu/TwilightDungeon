@@ -42,7 +42,7 @@ DungeonScene::DungeonScene()
 	}*/
 	RandEnemyCreate(5);
 	for (int i = 0; i < 5; ++i) {
-		int rand = GetRand(100) % 15;
+		int rand = GetRand(100) % 14;
 		SpawnItem(rand);
 	}
 }
@@ -80,6 +80,21 @@ void DungeonScene::Update()
 		MoveLevel(1);
 	}
 
+	//アイテム当たり判定感知
+	for (auto inventory : gManager->inventories) {
+		for (auto item : inventory->inventoryList) {
+			//アイテムとプレイヤーが重なったら
+			if (item->DetectOnPlayer(gManager->player->pos)) {
+				gManager->PopDetectItem(item, dropItems);
+				gManager->AddItemToInventory(item->GetItemId());
+			}
+		}
+	}
+
+
+
+
+
 	//isLiveがfalseな敵をリストから外したい
 	/*std::list<std::shared_ptr<Enemy>>::iterator hoge = eManager->liveEnemyList.begin();
 	for (int i = 0; i < eManager->liveEnemyList.size(); ++i) {
@@ -97,8 +112,9 @@ void DungeonScene::Update()
 void DungeonScene::Draw()
 {
 	gManager->map->MapDraw();
-	gManager->player->Draw();
 	DrawPopItem();
+	gManager->player->Draw();
+	
 	for (auto hoge : eManager->liveEnemyList) {
 		hoge->Draw();
 	}
@@ -159,8 +175,9 @@ void DungeonScene::MoveLevel(int addLevel)
 	dungeonLevel++;
 	gManager->ReCreate();
 	RandEnemyCreate(5);
+	dropItems.clear();
 	for (int i = 0; i < 5; ++i) {
-		int rand = GetRand(100) % 15;
+		int rand = GetRand(100) % 14;
 		SpawnItem(rand);
 	}
 }
@@ -361,7 +378,7 @@ void DungeonScene::DrawEnemyData()
 
 void DungeonScene::DrawInventory()
 {
-	if (gManager->inventories[inventoryPage]->inventory[0] == nullptr)return;
+	if (gManager->inventories[inventoryPage]->inventoryList.empty())return;
 	desc->Menu_Draw();
 	SetFontSize(25);
 	gManager->inventories[inventoryPage]->DrawInventory(inventory->menu_x, inventory->menu_y);
@@ -381,7 +398,7 @@ void DungeonScene::ChangeInventory()
 		inventoryPage = (inventoryPage + (gManager->inventoryNum)) % (gManager->inventoryNum + 1);
 		gManager->inventories[inventoryPage]->CursorReset();
 	}
-	if (gManager->inventories[inventoryPage]->inventory[0] == nullptr)return;
+	if (gManager->inventories[inventoryPage]->inventoryList.empty())return;
 	//上下移動
 	gManager->inventories[inventoryPage]->CursorMove();
 }

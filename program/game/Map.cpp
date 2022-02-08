@@ -57,16 +57,16 @@ void Map::DivideStart(int Width, int Height, Map* map)
 
 t2k::Vector3 Map::WorldToMap(int WorldX, int WorldY)
 {
-	int mapX = WorldX / 20;
-	int mapY = WorldY / 20;
+	int mapX = WorldX / SIZE;
+	int mapY = WorldY / SIZE;
 
 	return t2k::Vector3(mapX, mapY, 0);
 }
 
 t2k::Vector3 Map::MapToWorld(int MapX, int MapY)
 {
-	int worldX = MapX * 20;
-	int worldY = MapY * 20;
+	int worldX = MapX * SIZE;
+	int worldY = MapY * SIZE;
 
 	return t2k::Vector3(worldX, worldY, 0);
 }
