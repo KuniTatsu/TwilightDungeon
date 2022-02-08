@@ -72,16 +72,19 @@ bool GameManager::OutOfRangeInItem(int ItemId)
 	if (ItemId > 0 && ItemId < iManager->itemSumNum + 1)return true;
 	return false;
 }
-void GameManager::PopDetectItem(Item* item, std::list<Item*>& list) {
-
+bool GameManager::PopDetectItem(Item* item, std::list<Item*>& list) {
+	bool hoge = false;
 	for (auto itr = list.begin(); itr != list.end();) {
 		if ((*itr) == item) {
 			itr = list.erase(itr);
+			hoge = true;
+			break;
 		}
 		else {
 			itr++;
 		}
 	}
+	return hoge;
 }
 void GameManager::Update()
 {

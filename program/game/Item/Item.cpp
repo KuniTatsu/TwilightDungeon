@@ -60,6 +60,16 @@ bool Item::DetectOnPlayer(t2k::Vector3 Pos)
 	return false;
 }
 
+bool Item::GetIsLive()
+{
+	return isLive;
+}
+
+void Item::SetIsLiveFalse()
+{
+	isLive = false;
+}
+
 
 void Item::DrawItemData(int x, int y)
 {

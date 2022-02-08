@@ -23,6 +23,9 @@ public:
 	void SetPos(t2k::Vector3 Pos);
 
 	bool DetectOnPlayer(t2k::Vector3 Pos);
+
+	bool GetIsLive();
+	void SetIsLiveFalse();
 	
 protected:
 
@@ -42,7 +45,7 @@ protected:
 
 	t2k::Vector3 pos = { 0,0,0 };
 
-
+	bool isLive = true;
 
 };
 

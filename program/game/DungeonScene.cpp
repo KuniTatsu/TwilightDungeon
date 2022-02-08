@@ -81,14 +81,18 @@ void DungeonScene::Update()
 	}
 
 	//アイテム当たり判定感知
-	for (auto inventory : gManager->inventories) {
-		for (auto item : inventory->inventoryList) {
-			//アイテムとプレイヤーが重なったら
-			if (item->DetectOnPlayer(gManager->player->pos)) {
-				gManager->PopDetectItem(item, dropItems);
-				gManager->AddItemToInventory(item->GetItemId());
-			}
+
+	for (auto item : dropItems) {
+		//アイテムとプレイヤーが重なったら
+		if (item->DetectOnPlayer(playerPos)) {
+			gManager->AddItemToInventory(item->GetItemId());
+			item->SetIsLiveFalse();
+			//gManager->PopDetectItem(item, dropItems);
 		}
+	}
+	for (auto item : dropItems) {
+		if (item->GetIsLive())continue;
+		if (gManager->PopDetectItem(item, dropItems))break;
 	}
 
 
@@ -114,7 +118,7 @@ void DungeonScene::Draw()
 	gManager->map->MapDraw();
 	DrawPopItem();
 	gManager->player->Draw();
-	
+
 	for (auto hoge : eManager->liveEnemyList) {
 		hoge->Draw();
 	}
@@ -153,7 +157,7 @@ void DungeonScene::Draw()
 	else if (nowSeq == sequence::INVENTORY_OPEN) {
 		inventory->Menu_Draw();
 		DrawInventory();
-		
+
 	}
 
 }

@@ -65,7 +65,7 @@ public:
 
 
 	//ドロップアイテムリストから特定のアイテムをpopする関数
-	void PopDetectItem(Item* item, std::list<Item*>& list);
+	bool PopDetectItem(Item* item, std::list<Item*>& list);
 
 	float deitatime_;
 
