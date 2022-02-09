@@ -15,13 +15,15 @@ public:
 	//keyで引数t2k::Vector3,返り値なしの関数を検索し、実行する関数
 	std::function<void(t2k::Vector3)> DoPosEvent(std::string key);
 
-	//アイテムが今向いている方向に飛んでいく関数 dir 0:上,1:右,2:下,3:左
-	bool ThrowItem(int dir,t2k::Vector3 &Pos);
+	
 
 
 private:
 	ExEffectManager();
 	~ExEffectManager();
+
+
+	
 
 	std::vector<std::string>loadSkill;
 	//各種特殊処理の効果を実行する関数を入れたmap(引数返り値なし)

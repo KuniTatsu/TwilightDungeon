@@ -20,7 +20,7 @@
 //#include "FadeControl.h"
 #include "SoundManager.h"
 
-
+//コンストラクタの引数が一つの場合は頭に explicitをつけること
 
 GameManager::GameManager()
 {
@@ -421,6 +421,19 @@ bool GameManager::CheckNearByPlayerToAllEnemy(int range)
 	//range範囲内にいたらtrueを返す
 	if (isNear)return true;
 	return false;
+}
+
+bool GameManager::CheckIsThereEnemyToDir(t2k::Vector3 Pos)
+{
+	bool isThere = false;
+	for (auto enemy : hoge) {
+		t2k::Vector3 enemyPos = WorldToLocal(enemy->pos);
+		if (enemyPos.x == Pos.x && enemyPos.y == Pos.y) {
+			isThere = true;
+			break;
+		}
+	}
+	return isThere;
 }
 
 void GameManager::Zoom(double* zoomEx)

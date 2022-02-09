@@ -143,7 +143,8 @@ public:
 
 	//全てのenemyとplayerが一定範囲内にいるかどうか確認する関数
 	bool CheckNearByPlayerToAllEnemy(int range);
-
+	//特定の座標にenemyがいるかどうか確認する関数
+	bool CheckIsThereEnemyToDir(t2k::Vector3 Pos);
 
 	//debug切り替え
 	bool isDebug = true;

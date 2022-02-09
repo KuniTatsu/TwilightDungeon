@@ -161,9 +161,21 @@ bool Player::Move()
 	return false;
 }
 
+
+
 void Player::Draw()
 {
+	//t2k::Vector3 gp(0, 0, 0);
+	//t2k::Vector3 fix;
+	//fix.x = pos.x ;
+	//fix.y = pos.y ;
+	////gp += (fix - gp) * 0.1f;
+	//t2k::Vector3 move= (fix - gp) * 0.1f;//10fで全て移動完了
+	//gp += move;
+
 	DrawRotaGraph(pos.x - gManager->camera->cameraPos.x, pos.y - gManager->camera->cameraPos.y, 1, 0, p_gh, true);
+	//DrawRotaGraph(gp.x, gp.y, 1, 0, p_gh, true);
+	//DrawRotaGraph(gp.x - gManager->camera->cameraPos.x, gp.y - gManager->camera->cameraPos.y, 1, 0, p_gh, true);
 
 	//Hpバー関連
 

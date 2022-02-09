@@ -179,6 +179,13 @@ void DungeonScene::Draw()
 			else if (usetype == EQUIP)use_equip->All();
 		}
 	}
+	else if (nowSeq == sequence::THROWITEMMOVE) {
+		if (!throwItem.empty()) {
+			for (auto item : throwItem) {
+				item->DrawThrowItem();
+			}
+		}
+	}
 
 	if (t2k::Input::isKeyDown(t2k::Input::KEYBORD_P)) {
 		playerStatus->Menu_Draw();
@@ -375,6 +382,15 @@ bool DungeonScene::Seq_InventoryOpen(const float deltatime)
 
 bool DungeonScene::Seq_InventoryUse(const float deltatime)
 {
+	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_ESCAPE))
+	{
+		use_usable->menu_live = false;
+		use_equip->menu_live = false;
+		itemBuf = nullptr;
+		ChangeSequence(sequence::INVENTORY_OPEN);
+		return true;
+	}
+
 	int type = itemBuf->getItemData(1);
 	//消費アイテムなら
 	if (type < 2) {
@@ -388,7 +404,9 @@ bool DungeonScene::Seq_InventoryUse(const float deltatime)
 		}
 		//投げるでEnterを押したら
 		else if (use_usable->SelectNum == 1 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
-
+			ItemThrow(inventoryPage);
+			ChangeSequence(sequence::THROWITEMMOVE);
+			return true;
 		}
 		//やめるでEnterを押したら
 		else if (use_usable->SelectNum == 2 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
@@ -409,7 +427,9 @@ bool DungeonScene::Seq_InventoryUse(const float deltatime)
 			return true;
 		}//投げるでEnterを押したら
 		else if (use_equip->SelectNum == 1 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
-
+			ItemUse(inventoryPage);
+			ChangeSequence(sequence::THROWITEMMOVE);
+			return true;
 		}
 		//やめるでEnterを押したら
 		else if (use_equip->SelectNum == 2 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
@@ -418,6 +438,19 @@ bool DungeonScene::Seq_InventoryUse(const float deltatime)
 			ChangeSequence(sequence::INVENTORY_OPEN);
 			return true;
 		}
+	}
+	return true;
+}
+
+bool DungeonScene::Seq_ThrowItemMove(const float deltatime)
+{
+	if (throwItem.empty())return true;
+	auto itr = throwItem.begin();
+
+	if ((*itr)->ThrowItem(player->mydir)) {
+		throwItem.erase(itr);
+		ChangeSequence(sequence::MAIN);
+		return true;
 	}
 	return true;
 }
@@ -454,6 +487,9 @@ void DungeonScene::ChangeSequence(sequence seq)
 	else if (seq == sequence::INVENTORY_USE) {
 		main_sequence.change(&DungeonScene::Seq_InventoryUse);
 	}
+	else if (seq == sequence::THROWITEMMOVE) {
+		main_sequence.change(&DungeonScene::Seq_ThrowItemMove);
+	}
 	else if (seq == sequence::CAMERA) {
 		main_sequence.change(&DungeonScene::Seq_CameraMove);
 	}
@@ -476,6 +512,9 @@ void DungeonScene::DrawNowSequence(sequence seq)
 	}
 	else if (seq == sequence::INVENTORY_USE) {
 		DrawStringEx(800, 300, -1, "INVENTORYUSESequence");
+	}
+	else if (seq == sequence::THROWITEMMOVE) {
+		DrawStringEx(800, 300, -1, "ITEMMOVESequence");
 	}
 	else if (seq == sequence::CAMERA) {
 		DrawStringEx(800, 300, -1, "CAMERASequence");
@@ -563,6 +602,9 @@ void DungeonScene::ItemUse(/*int selectNum, Inventory* inventory,*/ int inventor
 	else if (type == 1) {
 		//投げるアイテムをpopアイテムとして描画する
 		//投げる関数を呼ぶ
+		ItemThrow(inventoryPage);
+
+
 		//投擲アイテムは使うでも投げるでもアイテムを射出する
 
 	}//装備アイテムだったらs
@@ -573,6 +615,17 @@ void DungeonScene::ItemUse(/*int selectNum, Inventory* inventory,*/ int inventor
 
 
 	}
+}
+
+void DungeonScene::ItemThrow(int inventoryPage)
+{
+	itemBuf->SetPos(player->pos);
+
+	Item* throwedItem = itemBuf;
+	throwedItem->SetGoalPos(player->mydir);
+	throwItem.emplace_back(throwedItem);
+	//インベントリからの消去
+	gManager->PopItemFromInventory(inventoryPage);
 }
 
 

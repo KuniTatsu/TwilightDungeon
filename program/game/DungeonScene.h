@@ -57,6 +57,8 @@ private:
 	MenuWindow* firstMenu = nullptr;
 	Player* player = nullptr;
 	
+	//飛んでいるアイテムリスト
+	std::list<Item*> throwItem;
 	/*
 	Menu* hoge=new Menu(30,50,175,390,gh(int))
 	Menu* hoge=new Menu(220,50,440,390,gh(int))
@@ -80,6 +82,8 @@ private:
 	bool Seq_InventoryOpen(const float deltatime);
 	//Inventoryアイテム使用確認シークエンス
 	bool Seq_InventoryUse(const float deltatime);
+	//物が飛んでいるシークエンス
+	bool Seq_ThrowItemMove(const float deltatime);
 
 	//debug
 	bool Seq_CameraMove(const float deltatime);
@@ -90,6 +94,7 @@ private:
 		FIRSTMENU,
 		INVENTORY_OPEN,
 		INVENTORY_USE,
+		THROWITEMMOVE,
 		CAMERA
 
 	};
@@ -125,5 +130,7 @@ private:
 
 	//アイテムの使用関数
 	void ItemUse(/*int selectNum,Inventory* inventory, */int inventoryPage);
+
+	void ItemThrow(int inventoryPage);
 
 };

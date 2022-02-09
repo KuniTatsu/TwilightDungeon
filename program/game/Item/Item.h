@@ -31,6 +31,14 @@ public:
 	void SetIsLiveFalse();
 	//アイテム座標の取得
 	t2k::Vector3 GetItemDrawPos();
+
+	//移動補完 移動先設定
+	void SetGoalPos(int dir);
+
+	bool ThrowItem(int dir);
+
+	//投げられているアイテムの描画関数
+	void DrawThrowItem();
 	
 protected:
 
@@ -54,6 +62,12 @@ protected:
 
 	bool isLive = true;
 
+	//移動補完系
+	t2k::Vector3 goalPos;
+	t2k::Vector3 nowPos;
+	t2k::Vector3 move;
+
+	bool init = false;
 	
 };
 

@@ -93,7 +93,7 @@ bool Enemy::Move()
 		//経路のlistがn個以上残っていれば行わない
 		if (willMove.size() < 5) {
 			//経路探索 今回は部屋内に障害物がないためまずは単純な経路探索を実装する
-			//MoveToPlayer();
+			MoveToPlayer();
 		}
 		//willMoveリストの一番初めのNodeに向かう
 
