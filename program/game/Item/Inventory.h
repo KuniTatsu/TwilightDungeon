@@ -30,6 +30,8 @@ private:
 	int selectCursor = 0;
 	//カーソルgh
 	int cursorGh = 0;
+	//選択中アイテムの背景
+	int selectItemBackGh = 0;
 	//インベントリ内のアイテム数
 	int itemNum = 0;
 

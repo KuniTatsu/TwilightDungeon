@@ -25,7 +25,7 @@ public:
 	void Draw()override;
 
 
-
+	void DrawPlayerStatus();
 private:
 
 	int p_gh = 0;
@@ -42,29 +42,32 @@ private:
 	};*/
 	equipItem* myEquip[6] = { nullptr,nullptr, nullptr, nullptr, nullptr, nullptr };
 
-		//std::string name = "Player";
+	const std::string equipName[6] = { "WEAPON","HEAD","CHEST","GLOVE","BOOTS","SHIELD" };
 
-		////装備,アイテム,その他要因による追加ステータス
-		//int exHp = 0;
-		//int exAtack = 0;
-		//int exHDefence = 0;
-		//int exSpeed = 0;
 
-		////基礎ステータス
-		//float hp = 100 + exHp;
-		//int atack = 10 + exAtack;
-		//int defence = 10 + exHDefence;
-		//int speed = 10 + exSpeed;
+	//std::string name = "Player";
 
-		/*float nowHp = hp;
+	////装備,アイテム,その他要因による追加ステータス
+	//int exHp = 0;
+	//int exAtack = 0;
+	//int exHDefence = 0;
+	//int exSpeed = 0;
 
-		int nowHpVar_gh = 0;
-		int hpVar_gh = 0;
+	////基礎ステータス
+	//float hp = 100 + exHp;
+	//int atack = 10 + exAtack;
+	//int defence = 10 + exHDefence;
+	//int speed = 10 + exSpeed;
 
-		const float VARWIDTH = 30;
-		double nowHpVarWidth = nowHp / hp;*/
+	/*float nowHp = hp;
 
-		//突き当りまで走るフラグ
+	int nowHpVar_gh = 0;
+	int hpVar_gh = 0;
+
+	const float VARWIDTH = 30;
+	double nowHpVarWidth = nowHp / hp;*/
+
+	//突き当りまで走るフラグ
 	bool left = false;
 	bool up = false;
 	bool right = false;
@@ -79,5 +82,7 @@ private:
 
 	void DashToDir(int dir, t2k::Vector3 mapPos);
 	void MoveToDir(int dir, t2k::Vector3 mapPos);
+
+
 
 };

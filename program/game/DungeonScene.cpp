@@ -22,6 +22,7 @@ DungeonScene::DungeonScene()
 	inventory = new Menu(255, 50, 420, 340, "graphics/WindowBase_01.png");
 	log = new Menu(10, 580, 1000, 180, "graphics/WindowBase_01.png");
 	desc = new Menu(680, 300, 320, 90, "graphics/WindowBase_01.png");
+	playerStatus = new Menu(10, 10, 500, 200, "graphics/WindowBase_01.png");
 
 	MenuWindow::MenuElement_t* menu_usable = new MenuWindow::MenuElement_t[]{
 		{670,450,"使う",0},
@@ -177,6 +178,11 @@ void DungeonScene::Draw()
 			if (usetype == USABLE)use_usable->All();
 			else if (usetype == EQUIP)use_equip->All();
 		}
+	}
+
+	if (t2k::Input::isKeyDown(t2k::Input::KEYBORD_P)) {
+		playerStatus->Menu_Draw();
+		player->DrawPlayerStatus();
 	}
 }
 
@@ -368,6 +374,10 @@ bool DungeonScene::Seq_InventoryUse(const float deltatime)
 		//使うでEnterを押したら
 		if (use_usable->SelectNum == 0 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
 			ItemUse(inventoryPage);
+			use_usable->menu_live = false;
+			itemBuf = nullptr;
+			ChangeSequence(sequence::INVENTORY_OPEN);
+			return true;
 		}
 		//投げるでEnterを押したら
 		else if (use_usable->SelectNum == 1 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
@@ -386,6 +396,10 @@ bool DungeonScene::Seq_InventoryUse(const float deltatime)
 		//使うでEnterを押したら
 		if (use_equip->SelectNum == 0 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
 			ItemUse(inventoryPage);
+			use_equip->menu_live = false;
+			itemBuf = nullptr;
+			ChangeSequence(sequence::INVENTORY_OPEN);
+			return true;
 		}//投げるでEnterを押したら
 		else if (use_equip->SelectNum == 1 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
 
@@ -533,29 +547,25 @@ void DungeonScene::ItemUse(/*int selectNum, Inventory* inventory,*/ int inventor
 	//アイテムの処理を行う
 	//もし使ったアイテムが回復消費アイテムだったら
 	if (type == 0) {
-		//usetype = USABLE;
 		int manpuku = itemBuf->getItemData(2);
 		int heal = itemBuf->getItemData(3);
 		player->ChangeBaseStatus(manpuku, heal);
-
+		//インベントリからの消去
+		gManager->PopItemFromInventory(inventoryPage);
 	}//投擲消費アイテムだったら
 	else if (type == 1) {
-		//usetype = USABLE;
 		//投げるアイテムをpopアイテムとして描画する
 		//投げる関数を呼ぶ
 		//投擲アイテムは使うでも投げるでもアイテムを射出する
 
 	}//装備アイテムだったらs
 	else if (type == 2 || type == 3) {
-		//usetype = EQUIP;
-
 		equipItem* item = (equipItem*)itemBuf;
 		player->ChangeEquipItem(item);
 		//サブIDごとにプレイヤーの装備欄を参照する
 
 
 	}
-	gManager->PopItemFromInventory(inventoryPage);
 }
 
 

@@ -50,17 +50,17 @@ protected:
 	int exSpeed = 0;
 
 	//基礎ステータス
-	int baseHp = hp + exHp;
-	int baseAtack = atack + exAtack;
-	int baseDefence = defence + exDefence;
-	int baseSpeed = speed + exSpeed;
+	int baseHp = 0;
+	int baseAtack = 0;
+	int baseDefence = 0;
+	int baseSpeed = 0;
 
 
 	//描画ステータス
-	int hp = hp + exHp;
-	int atack = atack + exAtack;
-	int defence = defence + exDefence;
-	int speed = speed + exSpeed;
+	int hp = 0;
+	int atack =0;
+	int defence = 0;
+	int speed = 0;
 
 	//上右下左の順で3枚ずつ
 	int gh[12];

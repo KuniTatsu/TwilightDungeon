@@ -9,6 +9,7 @@ extern GameManager* gManager;
 Inventory::Inventory()
 {
 	cursorGh = gManager->LoadGraphEx("graphics/menuCursor.png");
+	selectItemBackGh = gManager->LoadGraphEx("graphics/selectItemBack.png");
 }
 
 Inventory::~Inventory()
@@ -29,14 +30,14 @@ void Inventory::AddInventory(Item* item)
 		inventory[i] = item;
 		itemNum++;
 		break;
-	}
+}
 #endif
 }
 
 void Inventory::CursorMove()
 {
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_UP)) {
-		selectCursor = (selectCursor + (itemNum-1)) % itemNum;
+		selectCursor = (selectCursor + (itemNum - 1)) % itemNum;
 	}
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_DOWN)) {
 		selectCursor = (selectCursor + 1) % itemNum;
@@ -60,6 +61,9 @@ void Inventory::DrawInventory(int x, int y)
 		DrawStringEx(x + 50, y + 10 + 30 * i, -1, "%s", inventory[i]->getItemName().c_str());
 	}*/
 	DrawRotaGraph(x + 30, y + 20 + selectCursor * 30, 0.7, 0, cursorGh, true);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 30);
+	DrawRotaGraph(x + 220, y + 20 + selectCursor * 30, 1, 0, selectItemBackGh, true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 }
 
 void Inventory::DrawItemData(int x, int y)

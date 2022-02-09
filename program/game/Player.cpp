@@ -15,12 +15,18 @@ Player::Player(t2k::Vector3 StartPos, float Hp, int Atack, int Defence, int Spee
 
 	name = "Player";
 
-	hp = Hp;
-	atack = Atack;
-	defence = Defence;
-	speed = Speed;
+	baseHp = Hp;
+	baseAtack = Atack;
+	baseDefence = Defence;
+	baseSpeed = Speed;
+
+	hp = baseHp;
+	atack = baseAtack;
+	defence = baseDefence;
+	speed = baseSpeed;
 
 	nowHp = hp;
+	nowHpVarWidth = nowHp / hp;
 }
 
 Player::~Player()
@@ -51,27 +57,18 @@ void Player::ChangeEquipItem(equipItem* item)
 {
 	int subId = item->getItemData(9);
 	//1->武器,2->head,3->chest,4->glove,5->boots,6->shield
-	if (subId == 1) {
+
 		//もうすでに装備しているものがあれば
-		if (myEquip[0] != nullptr) {
-			//入れ替える
-			
-
-		}
-	}else if (subId == 2) {
-
+	if (myEquip[subId - 1] != nullptr) {
+		myEquip[subId - 1] = nullptr;
+		//入れ替える(本来はここでinventoryにあるアイテムの[E]マークを切り替えたい)
+		myEquip[subId - 1] = item;
 	}
-	else if (subId == 3) {
-
+	else {
+		myEquip[subId - 1] = item;
 	}
-	else if (subId == 4) {
-
-	}
-	else if (subId == 5) {
-
-	}
-	else if (subId == 6) {
-
+	for (int i = 0; i < 4; ++i) {
+		ChangeStatus(i, item->getItemData(i + 5));
 	}
 }
 
@@ -244,4 +241,25 @@ void Player::MoveToDir(int dir, t2k::Vector3 mapPos)
 	}
 
 	gManager->setPlayerRoomNum(gManager->CheckIsThere(mapPos));
+}
+
+void Player::DrawPlayerStatus()
+{
+	DrawStringEx(20, 30, -1, "現在のレベル:%d", level);
+	DrawStringEx(20, 50, -1, "体力:%.0f", nowHp);
+	DrawStringEx(20, 70, -1, "攻撃力:%d", atack);
+	DrawStringEx(20, 90, -1, "防御力:%d", defence);
+	DrawStringEx(20, 110, -1, "素早さ:%d", speed);
+	for (int i = 0; i < 6; ++i) {
+		DrawStringEx(170, 30 + 30 * i, -1, "%s:",equipName[i].c_str());
+	}
+	for (int i = 0; i < 6; ++i) {
+		if (myEquip[i] == nullptr) {
+			DrawStringEx(240, 30 + 30 * i, -1, "装備なし");
+		}
+		else {
+			DrawStringEx(240, 30 + 30 * i, -1, "%s", myEquip[i]->getItemName().c_str());
+		}
+	}
+
 }

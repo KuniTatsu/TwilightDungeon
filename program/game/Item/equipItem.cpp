@@ -25,4 +25,5 @@ int equipItem::getItemData(int ColumnId)
 	else if (ColumnId == 6)return attack;
 	else if (ColumnId == 7)return defence;
 	else if (ColumnId == 8)return speed;
+	else if (ColumnId == 9)return subId;
 }
