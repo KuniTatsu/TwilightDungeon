@@ -26,17 +26,17 @@ DungeonScene::DungeonScene()
 
 	MenuWindow::MenuElement_t* menu_usable = new MenuWindow::MenuElement_t[]{
 		{670,450,"使う",0},
-		{670,470,"投げる",1},
-		{670,490,"やめる",2}
+		{670,480,"投げる",1},
+		{670,510,"やめる",2}
 	};
-	use_usable = new MenuWindow(640, 440, 90, 80, "graphics/WindowBase_02.png", menu_usable, 3);
+	use_usable = new MenuWindow(640, 440, 90, 100, "graphics/WindowBase_02.png", menu_usable, 3, 0.15);
 
 	MenuWindow::MenuElement_t* menu_equip = new MenuWindow::MenuElement_t[]{
 		{670,450,"装備する",0},
-		{670,470,"投げる",1},
-		{670,490,"やめる",2}
+		{670,480,"投げる",1},
+		{670,510,"やめる",2}
 	};
-	use_equip = new MenuWindow(640, 440, 90, 80, "graphics/WindowBase_02.png", menu_equip, 3);
+	use_equip = new MenuWindow(640, 440, 90, 100, "graphics/WindowBase_02.png", menu_equip, 3, 0.15);
 
 	eManager = std::make_shared<EnemyManager>();
 
@@ -48,7 +48,7 @@ DungeonScene::DungeonScene()
 		{70,200,"Esc|メニューを閉じる",4}
 	};
 	// メニューウィンドウのインスタンス化
-	firstMenu = new MenuWindow(30, 50, 220, 210, "graphics/WindowBase_02.png", menu_0, 5);
+	firstMenu = new MenuWindow(30, 50, 220, 210, "graphics/WindowBase_02.png", menu_0, 5, 0.45);
 
 	//firstMenu->menu_live = true;
 	/*for (int i = 0; i < 5; ++i) {
@@ -236,7 +236,14 @@ bool DungeonScene::Seq_Main(const float deltatime)
 			t2k::debugTrace("\n押されたよ\n");//ok
 			firstMenu->Open();
 			ChangeSequence(sequence::FIRSTMENU);
+			return true;
 		}
+	}
+	//Eを押してもメニューが開く
+	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_E)) {
+		firstMenu->Open();
+		ChangeSequence(sequence::FIRSTMENU);
+		return true;
 	}
 
 	//足踏み(Playerは移動せずにターンは経過する

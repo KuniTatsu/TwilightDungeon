@@ -35,7 +35,7 @@ std::string Actor::GetName()
 {
 	return name;
 }
-
+//装備を変更するとこれが呼ばれるため、永遠にステータスが増えてしまう→装備品変更時は別の処理を行う必要あり exステータスを0にする
 void Actor::ChangeStatus(int StatusNum, int MoveNum)
 {
 	if (StatusNum == 0) {

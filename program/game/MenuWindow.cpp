@@ -34,7 +34,7 @@ void Menu::Menu_Draw()
 	DrawGraph(menu_x + menu_width - 16, menu_y + menu_height - 16, menu_gh[8], TRUE);
 }
 
-MenuWindow::MenuWindow(int menu_window_x, int menu_window_y, int menu_window_width, int menu_window_height, std::string gh_path, MenuElement_t* elements, int elements_num)
+MenuWindow::MenuWindow(int menu_window_x, int menu_window_y, int menu_window_width, int menu_window_height, std::string gh_path, MenuElement_t* elements, int elements_num, double BackWidth)
 
 	: Menu(menu_window_x, menu_window_y, menu_window_width, menu_window_height, gh_path)//メニューの大きさを決める(開始座標:左上,横幅,縦幅)
 
@@ -44,6 +44,7 @@ MenuWindow::MenuWindow(int menu_window_x, int menu_window_y, int menu_window_wid
 	, read_menu_y(menu_window_y)
 	, read_menu_element_num_(elements_num)
 	, read_menu_element(elements)
+	,backGhWidth(BackWidth)
 {
 
 
@@ -65,6 +66,9 @@ MenuWindow::MenuWindow(int menu_window_x, int menu_window_y, int menu_window_wid
 	String_Color_Black = GetColor(0, 0, 0);
 	cursor_gh = gManager->LoadGraphEx("graphics/menuCursor.png");
 	cursorX = MenuElement[0].x - 20;
+
+	selectItemBackGh = gManager->LoadGraphEx("graphics/selectItemBack.png");
+
 }
 
 MenuWindow::~MenuWindow()
@@ -145,10 +149,16 @@ void MenuWindow::Read() {
 
 		}
 	}
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 80);
+	//DrawRotaGraph(cursorX+50, cursorY, 1, 0, selectItemBackGh, true);
+	DrawRotaGraph3(cursorX+10 , cursorY-15, 0, 0, backGhWidth, 1, 0, selectItemBackGh, true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+
 	for (int i = 0; i < elements_num_; i++) {
 		DrawFormatString(MenuElement[i].x, MenuElement[i].y, GetColor(0, 0, 0), MenuElement[i].name.c_str());
 	}
 	DrawRotaGraph(cursorX, cursorY, 0.6, 0, cursor_gh, true);
+
 }
 
 
