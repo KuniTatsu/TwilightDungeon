@@ -8,6 +8,8 @@ class Menu;
 class MenuWindow;
 class EnemyManager;
 class Item;
+class Inventory;
+class Player;
 
 class DungeonScene :public BaseScene {
 
@@ -42,9 +44,17 @@ private:
 	Menu* inventory = nullptr;
 	Menu* log = nullptr;
 	Menu* desc = nullptr;
+	MenuWindow* use_usable = nullptr;
+	MenuWindow* use_equip = nullptr;
+
+	enum useType {
+		USABLE,
+		EQUIP
+	};
+	useType usetype = USABLE;
 
 	MenuWindow* firstMenu = nullptr;
-	
+	Player* player = nullptr;
 	
 	/*
 	Menu* hoge=new Menu(30,50,175,390,gh(int))
@@ -67,6 +77,8 @@ private:
 	bool Seq_FirstMenu(const float deltatime);
 	//Inventory描画シークエンス
 	bool Seq_InventoryOpen(const float deltatime);
+	//Inventoryアイテム使用確認シークエンス
+	bool Seq_InventoryUse(const float deltatime);
 
 	//debug
 	bool Seq_CameraMove(const float deltatime);
@@ -76,6 +88,7 @@ private:
 		ENEMYACT,
 		FIRSTMENU,
 		INVENTORY_OPEN,
+		INVENTORY_USE,
 		CAMERA
 
 	};
@@ -105,5 +118,11 @@ private:
 
 	//落ちているアイテムの描画
 	void DrawPopItem();
+
+	//インベントリで選んだアイテムを一時的に取得する変数
+	Item* itemBuf = nullptr;
+
+	//アイテムの使用関数
+	void ItemUse(/*int selectNum,Inventory* inventory, */int inventoryPage);
 
 };

@@ -153,6 +153,7 @@ void GameManager::initGameManager()
 	player = new Player(SetStartPos(0), 100, 10, 10, 10);
 	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
 	iManager = new ItemManager();
+	
 	haveItem = new HaveItem();
 	inventory = new Inventory();
 	inventories.emplace_back(inventory);
@@ -405,6 +406,18 @@ void GameManager::Zoom(double* zoomEx)
 	//	*zoomEx += 0.01;
 	//}
 
+}
+Player* GameManager::GetPlayer()
+{
+	return player;
+}
+int GameManager::GetItemNum()
+{
+	return itemNum;
+}
+void GameManager::SetItemNum(int num)
+{
+	itemNum = num;
 }
 //いずれexcelから階層だけのデータを読み込み、事前に全てのフロアを作成しておく
 void GameManager::ReCreate()

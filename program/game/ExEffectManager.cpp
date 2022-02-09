@@ -3,6 +3,7 @@
 #include"Map.h"
 #include"SceneManager.h"
 #include"DungeonScene.h"
+#include"Item/Item.h"
 
 extern GameManager* gManager;
 
@@ -11,7 +12,7 @@ void CreateWay(t2k::Vector3 Pos);
 ExEffectManager::ExEffectManager()
 {
 	//SetMap("Warp",Warp)
-	SetPosMap("CreateWay", CreateWay);
+	//SetPosMap("CreateWay", CreateWay);
 }
 
 ExEffectManager::~ExEffectManager()
@@ -45,6 +46,58 @@ std::function<void(t2k::Vector3)> ExEffectManager::DoPosEvent(std::string key)
 		return exPosEffect[key];
 	}
 	return std::function<void(t2k::Vector3)>();
+}
+bool ExEffectManager::ThrowItem(int dir, t2k::Vector3& Pos)
+{
+	//現在のitemの座標を取得する(描画座標)
+	//t2k::Vector3 drawPos = item->GetItemDrawPos();
+	// 
+	//投げた対象が向いている向きを取得する(dir)
+	//投げた向きに向かって毎フレーム少しずつ移動させる
+	//上
+	if (dir == 0) {
+		Pos.y -= 0.01;
+	}//右
+	else if (dir == 1) {
+		Pos.x += 0.01;
+	}//下
+	else if (dir == 2) {
+		Pos.y += 0.01;
+	}//左
+	else if (dir == 3) {
+		Pos.x -= 0.01;
+	}
+
+
+	//アイテムを描画する
+	//壁か敵にあたっていなければ再帰的に呼ぶ
+	//マップ座標
+	t2k::Vector3 mapPos = gManager->WorldToLocal(Pos);
+	t2k::Vector3 nextPos;
+
+	//上
+	if (dir == 0) {
+		nextPos = mapPos + t2k::Vector3(0, -1, 0);
+	}//右
+	else if (dir == 1) {
+		nextPos = mapPos + t2k::Vector3(1, 0, 0);
+
+	}//下
+	else if (dir == 2) {
+		nextPos = mapPos + t2k::Vector3(0, 1, 0);
+
+	}//左
+	else if (dir == 3) {
+		nextPos = mapPos + t2k::Vector3(-1, 0, 0);
+	}
+	//壁なら
+	if (gManager->GetMapChip(nextPos) ==0) {
+		return true;
+	}//敵なら
+
+
+
+		return false;
 }
 void ExEffectManager::Warp(t2k::Vector3& Pos)
 {

@@ -49,6 +49,7 @@ std::string Item::getItemName()
 void Item::SetPos(t2k::Vector3 Pos)
 {
 	pos = Pos;
+	mapPos = gManager->WorldToLocal(pos);
 }
 
 bool Item::DetectOnPlayer(t2k::Vector3 Pos)
@@ -70,11 +71,16 @@ void Item::SetIsLiveFalse()
 	isLive = false;
 }
 
+t2k::Vector3 Item::GetItemDrawPos()
+{
+	return pos;
+}
+
 
 void Item::DrawItemData(int x, int y)
 {
 	DrawStringEx(x, y, -1, "%s", itemDesc[0].c_str());
-	DrawStringEx(x, y+30, -1, "%s", itemDesc[1].c_str());
+	DrawStringEx(x, y + 30, -1, "%s", itemDesc[1].c_str());
 }
 
 void Item::DrawPopItem()

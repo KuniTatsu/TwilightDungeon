@@ -2,6 +2,7 @@
 #include"GameManager.h"
 #include"DxLib.h"
 #include"Camera.h"
+#include"Item/equipItem.h"
 
 extern GameManager* gManager;
 
@@ -34,6 +35,44 @@ void Player::TakeHpEffect(int HpMove)
 	if (nowHp > hp)nowHp = hp;
 
 	nowHpVarWidth = nowHp / hp;
+}
+
+void Player::ChangeBaseStatus(int ManpukuMove, int HpMove)
+{
+	manpuku += ManpukuMove;
+	if (manpuku < 0)manpuku = 0;
+	else if (manpuku > 100)manpuku = 100;
+
+	TakeHpEffect(HpMove);
+
+}
+
+void Player::ChangeEquipItem(equipItem* item)
+{
+	int subId = item->getItemData(9);
+	//1->•Ší,2->head,3->chest,4->glove,5->boots,6->shield
+	if (subId == 1) {
+		//‚à‚¤‚·‚Å‚É‘•”õ‚µ‚Ä‚¢‚é‚à‚Ì‚ª‚ ‚ê‚Î
+		if (myEquip[0] != nullptr) {
+			//“ü‚ê‘Ö‚¦‚é
+			
+
+		}
+	}else if (subId == 2) {
+
+	}
+	else if (subId == 3) {
+
+	}
+	else if (subId == 4) {
+
+	}
+	else if (subId == 5) {
+
+	}
+	else if (subId == 6) {
+
+	}
 }
 
 bool Player::Move()

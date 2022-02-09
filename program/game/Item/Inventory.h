@@ -22,6 +22,9 @@ public:
 	//カーソルで選択中のアイテムの説明を描画する関数
 	void DrawItemData(int x,int y);
 
+	//カーソルの位置を取得する関数
+	int GetCursorNum();
+
 private:
 	//選択中のアイテムを指すカーソルの位置
 	int selectCursor = 0;

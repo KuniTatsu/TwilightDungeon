@@ -10,10 +10,11 @@ public:
 	Item() {};
 	Item(int Id,int ItemType,std::string ItemName,int Saturation,int Heal,int HitDamage,std::string Gh,std::string Desc);
 	virtual ~Item();
-
+	//アイテムIDの取得
 	int GetItemId();
+	//アイテムデータの描画
 	void DrawItemData(int x,int y);
-
+	//popしているアイテムの描画
 	void DrawPopItem();
 	 
 	//ColumnId: 0->id,1->type,2->manpukudo,3->heal,4->hitdamage
@@ -21,11 +22,15 @@ public:
 	std::string getItemName();
 
 	void SetPos(t2k::Vector3 Pos);
-
+	//プレイヤーが踏んでいるかどうかの取得関数
 	bool DetectOnPlayer(t2k::Vector3 Pos);
 
+	//ポップ状態かどうか取得
 	bool GetIsLive();
+	//アイテムを取得した時にポップ状態ではなくする関数
 	void SetIsLiveFalse();
+	//アイテム座標の取得
+	t2k::Vector3 GetItemDrawPos();
 	
 protected:
 
@@ -42,10 +47,13 @@ protected:
 	std::string desc = {};
 	//名前と説明文の入った配列
 	std::string itemDesc[2] = {};
-
+	//描画座標
 	t2k::Vector3 pos = { 0,0,0 };
+	//マップ座標
+	t2k::Vector3 mapPos = { 0,0,0 };
 
 	bool isLive = true;
 
+	
 };
 

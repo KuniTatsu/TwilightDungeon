@@ -2,10 +2,11 @@
 #include"../library/t2klib.h"
 #include"Actor/Actor.h"
 
-class Player:public Actor
+class equipItem;
+class Player :public Actor
 {
 public:
-	Player(t2k::Vector3 StartPos,float Hp,int Atack,int Defence,int Speed);
+	Player(t2k::Vector3 StartPos, float Hp, int Atack, int Defence, int Speed);
 	~Player();
 
 	t2k::Vector3 pos = {};
@@ -13,36 +14,57 @@ public:
 	//Hpの変動が外部から与えられた時に使う関数
 	void TakeHpEffect(int HpMove);
 
+	//満腹度とHPの変更関数(主に食料アイテムの使用で使う)
+	void ChangeBaseStatus(int ManpukuMove, int HpMove);
+
+	//装備欄の変更関数
+	void ChangeEquipItem(equipItem* item);
+
 	bool Move()override;
 
 	void Draw()override;
+
+
+
 private:
 
 	int p_gh = 0;
 
-	//std::string name = "Player";
+	int manpuku = 100;
 
-	////装備,アイテム,その他要因による追加ステータス
-	//int exHp = 0;
-	//int exAtack = 0;
-	//int exHDefence = 0;
-	//int exSpeed = 0;
+	/*class EquipItem {
+		Item* Weapon = nullptr;
+		Item* Head = nullptr;
+		Item* Chest = nullptr;
+		Item* Glove = nullptr;
+		Item* Boots = nullptr;
+		Item* Shield = nullptr;
+	};*/
+	equipItem* myEquip[6] = { nullptr,nullptr, nullptr, nullptr, nullptr, nullptr };
 
-	////基礎ステータス
-	//float hp = 100 + exHp;
-	//int atack = 10 + exAtack;
-	//int defence = 10 + exHDefence;
-	//int speed = 10 + exSpeed;
+		//std::string name = "Player";
 
-	/*float nowHp = hp;
+		////装備,アイテム,その他要因による追加ステータス
+		//int exHp = 0;
+		//int exAtack = 0;
+		//int exHDefence = 0;
+		//int exSpeed = 0;
 
-	int nowHpVar_gh = 0;
-	int hpVar_gh = 0;
+		////基礎ステータス
+		//float hp = 100 + exHp;
+		//int atack = 10 + exAtack;
+		//int defence = 10 + exHDefence;
+		//int speed = 10 + exSpeed;
 
-	const float VARWIDTH = 30;
-	double nowHpVarWidth = nowHp / hp;*/
+		/*float nowHp = hp;
 
-	//突き当りまで走るフラグ
+		int nowHpVar_gh = 0;
+		int hpVar_gh = 0;
+
+		const float VARWIDTH = 30;
+		double nowHpVarWidth = nowHp / hp;*/
+
+		//突き当りまで走るフラグ
 	bool left = false;
 	bool up = false;
 	bool right = false;

@@ -148,7 +148,7 @@ void MenuWindow::Read() {
 	for (int i = 0; i < elements_num_; i++) {
 		DrawFormatString(MenuElement[i].x, MenuElement[i].y, GetColor(0, 0, 0), MenuElement[i].name.c_str());
 	}
-	DrawRotaGraph(cursorX, cursorY, 0.8, 0, cursor_gh, true);
+	DrawRotaGraph(cursorX, cursorY, 0.6, 0, cursor_gh, true);
 }
 
 

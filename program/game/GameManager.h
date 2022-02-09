@@ -149,13 +149,21 @@ public:
 
 	void setPlayerRoomNum(int roomNum);
 
+	Player* GetPlayer();
+
 	//短形とのマウスクリック感知
 	bool CheckMousePointToRect(int MouseX, int MouseY, int RectLeftTopX, int RectWidth, int RectTopY, int RectHeight);
+
+	//アイテム総数取得
+	void SetItemNum(int num);
+
+	int GetItemNum();
 
 private:
 
 	int test = 0;
-
+	//アイテムの総数
+	int itemNum=0;
 	//std::vector<int> haveItemList;
 
 	void Zoom(double* zoomEx);

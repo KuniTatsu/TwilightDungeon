@@ -23,6 +23,20 @@ DungeonScene::DungeonScene()
 	log = new Menu(10, 580, 1000, 180, "graphics/WindowBase_01.png");
 	desc = new Menu(680, 300, 320, 90, "graphics/WindowBase_01.png");
 
+	MenuWindow::MenuElement_t* menu_usable = new MenuWindow::MenuElement_t[]{
+		{670,450,"使う",0},
+		{670,470,"投げる",1},
+		{670,490,"やめる",2}
+	};
+	use_usable = new MenuWindow(640, 440, 90, 80, "graphics/WindowBase_02.png", menu_usable, 3);
+
+	MenuWindow::MenuElement_t* menu_equip = new MenuWindow::MenuElement_t[]{
+		{670,450,"装備する",0},
+		{670,470,"投げる",1},
+		{670,490,"やめる",2}
+	};
+	use_equip = new MenuWindow(640, 440, 90, 80, "graphics/WindowBase_02.png", menu_equip, 3);
+
 	eManager = std::make_shared<EnemyManager>();
 
 	MenuWindow::MenuElement_t* menu_0 = new MenuWindow::MenuElement_t[]{
@@ -42,9 +56,10 @@ DungeonScene::DungeonScene()
 	}*/
 	RandEnemyCreate(5);
 	for (int i = 0; i < 5; ++i) {
-		int rand = GetRand(100) % 14;
+		int rand = GetRand(100) % gManager->GetItemNum();
 		SpawnItem(rand);
 	}
+	player = gManager->GetPlayer();
 }
 
 DungeonScene::~DungeonScene()
@@ -151,15 +166,18 @@ void DungeonScene::Draw()
 	log->Menu_Draw();
 
 	firstMenu->All();
-	if (nowSeq == sequence::MAIN) {
+	if (nowSeq == sequence::MAIN || nowSeq == sequence::ENEMYACT) {
 		menuOpen->Menu_Draw();
+		DrawStringEx(menuOpen->menu_x + 10, menuOpen->menu_y + 10, -1, "Menuを開く");
 	}
-	else if (nowSeq == sequence::INVENTORY_OPEN) {
+	else if (nowSeq == sequence::INVENTORY_OPEN || nowSeq == sequence::INVENTORY_USE) {
 		inventory->Menu_Draw();
 		DrawInventory();
-
+		if (nowSeq == sequence::INVENTORY_USE) {
+			if (usetype == USABLE)use_usable->All();
+			else if (usetype == EQUIP)use_equip->All();
+		}
 	}
-
 }
 
 int DungeonScene::GetDungeonLevel()
@@ -181,7 +199,7 @@ void DungeonScene::MoveLevel(int addLevel)
 	RandEnemyCreate(5);
 	dropItems.clear();
 	for (int i = 0; i < 5; ++i) {
-		int rand = GetRand(100) % 14;
+		int rand = GetRand(100) % gManager->GetItemNum();
 		SpawnItem(rand);
 	}
 }
@@ -298,6 +316,7 @@ bool DungeonScene::Seq_FirstMenu(const float deltatime)
 
 bool DungeonScene::Seq_InventoryOpen(const float deltatime)
 {
+
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_ESCAPE))
 	{
 		firstMenu->manageSelectFlag = true;
@@ -305,8 +324,73 @@ bool DungeonScene::Seq_InventoryOpen(const float deltatime)
 		return true;
 	}
 	ChangeInventory();
+	if (gManager->inventories[inventoryPage]->inventoryList.empty())return true;
+	int selectNum = gManager->inventories[inventoryPage]->GetCursorNum();
+	//もしインベントリを開いている時にenterが押されたら
+	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+		//現在のカーソルの位置のアイテムを取得する
+		auto itr = gManager->inventories[inventoryPage]->inventoryList.begin();
+		for (int i = 0; i < selectNum; ++i) {
+			itr++;
+		}
+		Item* selectedItem = (*itr);
+		//一時的にアイテムデータを保管する
+		itemBuf = selectedItem;
+		//そのアイテムのtypeを取得する
+		int type = selectedItem->getItemData(1);
+		if (type < 2) {
+			use_usable->Open();
+			usetype = USABLE;
+			ChangeSequence(sequence::INVENTORY_USE);
+			return true;
+		}
+		else {
+			use_equip->Open();
+			usetype = EQUIP;
+			ChangeSequence(sequence::INVENTORY_USE);
+			return true;
+		}
+	}
 
+	return true;
+}
 
+bool DungeonScene::Seq_InventoryUse(const float deltatime)
+{
+	int type = itemBuf->getItemData(1);
+	//消費アイテムなら
+	if (type < 2) {
+		//使うでEnterを押したら
+		if (use_usable->SelectNum == 0 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+			ItemUse(inventoryPage);
+		}
+		//投げるでEnterを押したら
+		else if (use_usable->SelectNum == 1 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+
+		}
+		//やめるでEnterを押したら
+		else if (use_usable->SelectNum == 2 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+			use_usable->menu_live = false;
+			ChangeSequence(sequence::INVENTORY_OPEN);
+			return true;
+		}
+	}
+	//装備アイテムなら
+	else {
+		//使うでEnterを押したら
+		if (use_equip->SelectNum == 0 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+			ItemUse(inventoryPage);
+		}//投げるでEnterを押したら
+		else if (use_equip->SelectNum == 1 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+
+		}
+		//やめるでEnterを押したら
+		else if (use_equip->SelectNum == 2 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+			use_equip->menu_live = false;
+			ChangeSequence(sequence::INVENTORY_OPEN);
+			return true;
+		}
+	}
 	return true;
 }
 
@@ -339,6 +423,9 @@ void DungeonScene::ChangeSequence(sequence seq)
 	else if (seq == sequence::INVENTORY_OPEN) {
 		main_sequence.change(&DungeonScene::Seq_InventoryOpen);
 	}
+	else if (seq == sequence::INVENTORY_USE) {
+		main_sequence.change(&DungeonScene::Seq_InventoryUse);
+	}
 	else if (seq == sequence::CAMERA) {
 		main_sequence.change(&DungeonScene::Seq_CameraMove);
 	}
@@ -358,6 +445,9 @@ void DungeonScene::DrawNowSequence(sequence seq)
 	}
 	else if (seq == sequence::INVENTORY_OPEN) {
 		DrawStringEx(800, 300, -1, "INVENTORYOPENSequence");
+	}
+	else if (seq == sequence::INVENTORY_USE) {
+		DrawStringEx(800, 300, -1, "INVENTORYUSESequence");
 	}
 	else if (seq == sequence::CAMERA) {
 		DrawStringEx(800, 300, -1, "CAMERASequence");
@@ -423,6 +513,58 @@ void DungeonScene::DrawPopItem()
 	}
 }
 
+void DungeonScene::ItemUse(/*int selectNum, Inventory* inventory,*/ int inventoryPage)
+{
+	//auto itr = inventory->inventoryList.begin();
+	//for (int i = 0; i < selectNum; ++i) {
+	//	++itr;
+	//}
+	////使ったアイテム
+	//Item* useItem = (*itr);
+	int type = itemBuf->getItemData(1);
+
+	//アイテムの処理を行う
+	//もし使ったアイテムが回復消費アイテムだったら
+	if (type == 0) {
+		//usetype = USABLE;
+		int manpuku = itemBuf->getItemData(2);
+		int heal = itemBuf->getItemData(3);
+		player->ChangeBaseStatus(manpuku, heal);
+
+	}//投擲消費アイテムだったら
+	else if (type == 1) {
+		//usetype = USABLE;
+		//投げるアイテムをpopアイテムとして描画する
+		//投げる関数を呼ぶ
+		//投擲アイテムは使うでも投げるでもアイテムを射出する
+
+	}//装備アイテムだったらs
+	else if (type == 2 || type == 3) {
+		//usetype = EQUIP;
+
+		equipItem* item = (equipItem*)itemBuf;
+		player->ChangeEquipItem(item);
+		//サブIDごとにプレイヤーの装備欄を参照する
+
+
+	}
+	//使用したアイテムが存在するインベントリページが最後のページではなかった場合
+	if (inventoryPage != gManager->inventoryNum) {
+		// 使ったアイテムを消す
+
+
+		//そのアイテムがあったページの一つ後のページの一番最初のアイテムを前のページに移す
+		//その後最後のページになるまでこれを繰り返し、詰める
+	}
+	//そのアイテムが最後のページにある場合
+	else {
+
+		//何もしない
+	}
+
+
+
+}
 
 
 

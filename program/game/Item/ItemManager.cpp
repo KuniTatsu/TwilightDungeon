@@ -1,10 +1,12 @@
 #include "ItemManager.h"
 #include"Item.h"
 #include"equipItem.h"
+#include"../GameManager.h"
 
+extern GameManager* gManager;
 ItemManager::ItemManager()
 {
-	itemMaster.resize(3);
+	itemMaster.resize(4);
 	LoadItem();
 }
 
@@ -36,16 +38,18 @@ void ItemManager::LoadItem()
 		int equipAtack = std::atoi(loadItem[i][7].c_str());
 		int equipDefence = std::atoi(loadItem[i][8].c_str());
 		int equipSpeed = std::atoi(loadItem[i][9].c_str());
+		int subId = std::atoi(loadItem[i][11].c_str());
 
 		//Á”ïƒAƒCƒeƒ€‚È‚ç
 		if (type < 2) {
-			Item* newItem = new Item(id, type, loadItem[i][2], manpuku, heal, damage, loadItem[i][10], loadItem[i][11]);
+			Item* newItem = new Item(id, type, loadItem[i][2], manpuku, heal, damage, loadItem[i][10], loadItem[i][12]);
 			itemMaster[type].emplace_back(newItem);
 		}
 		else {
-			equipItem* newItem = new equipItem(id, type, loadItem[i][2], manpuku, heal, damage, loadItem[i][10], loadItem[i][11], equipHp, equipAtack, equipDefence, equipSpeed);
+			equipItem* newItem = new equipItem(id, type, loadItem[i][2], manpuku, heal, damage, loadItem[i][10], subId, loadItem[i][12], equipHp, equipAtack, equipDefence, equipSpeed);
 			itemMaster[type].emplace_back(newItem);
 		}
 		itemSumNum++;
 	}
+	gManager->SetItemNum(itemSumNum);
 }

@@ -72,3 +72,8 @@ void Inventory::DrawItemData(int x, int y)
 	(*itr)->DrawItemData(x, y);
 	//inventory[selectCursor]->DrawItemData(x, y);
 }
+
+int Inventory::GetCursorNum()
+{
+	return selectCursor;
+}
