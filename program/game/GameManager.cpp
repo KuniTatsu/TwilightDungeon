@@ -61,6 +61,32 @@ void GameManager::AddItemToInventory(int itemId)
 #endif
 }
 
+void GameManager::PopItemFromInventory(int NowInventoryId)
+{
+	int selectNum = inventories[NowInventoryId]->GetCursorNum();
+
+	auto itr = inventories[NowInventoryId]->inventoryList.begin();
+	for (int i = 0; i < selectNum; ++i) {
+		itr++;
+	}
+	itr = inventories[NowInventoryId]->inventoryList.erase(itr);
+	//popするアイテムがいる場所=今いるインベントリが最後のインベントリではない場合
+	if (NowInventoryId != inventoryNum) {
+		int checkInventoryNum = NowInventoryId;
+		while (1) {
+			//次のページの最初のアイテムをコピーして消したアイテムのリストの末尾に加える
+			auto item = inventories[checkInventoryNum + 1]->inventoryList.begin();
+			//アイテム追加
+			inventories[checkInventoryNum]->inventoryList.emplace_back((*item));
+			//次のページの最初のアイテムをpopする
+			inventories[checkInventoryNum + 1]->inventoryList.pop_front();
+			//最後のインベントリページにたどり着いたらbreak
+			if (checkInventoryNum + 1 == inventoryNum)break;
+			checkInventoryNum++;
+		}
+	}
+}
+
 Item* GameManager::GetItemData(int ItemId)
 {
 	Item* hoge = iManager->getItemData(ItemId);
@@ -153,7 +179,7 @@ void GameManager::initGameManager()
 	player = new Player(SetStartPos(0), 100, 10, 10, 10);
 	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
 	iManager = new ItemManager();
-	
+
 	haveItem = new HaveItem();
 	inventory = new Inventory();
 	inventories.emplace_back(inventory);

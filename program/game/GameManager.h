@@ -43,6 +43,9 @@ public:
 	//インベントリにアイテムを追加する関数
 	void AddItemToInventory(int itemId);
 
+	//インベントリからアイテムを削除する関数
+	void PopItemFromInventory(int NowInventoryId);
+
 	double graphEx = 1;
 
 	//マップの幅(チップ数)

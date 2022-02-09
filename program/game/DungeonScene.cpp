@@ -323,9 +323,14 @@ bool DungeonScene::Seq_InventoryOpen(const float deltatime)
 		ChangeSequence(sequence::FIRSTMENU);
 		return true;
 	}
+	//インベントリの操作
 	ChangeInventory();
+	//もしインベントリが空ならreturn
 	if (gManager->inventories[inventoryPage]->inventoryList.empty())return true;
+	//現在選択中のカーソル位置を取得
 	int selectNum = gManager->inventories[inventoryPage]->GetCursorNum();
+
+
 	//もしインベントリを開いている時にenterが押されたら
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
 		//現在のカーソルの位置のアイテムを取得する
@@ -371,6 +376,7 @@ bool DungeonScene::Seq_InventoryUse(const float deltatime)
 		//やめるでEnterを押したら
 		else if (use_usable->SelectNum == 2 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
 			use_usable->menu_live = false;
+			itemBuf = nullptr;
 			ChangeSequence(sequence::INVENTORY_OPEN);
 			return true;
 		}
@@ -387,6 +393,7 @@ bool DungeonScene::Seq_InventoryUse(const float deltatime)
 		//やめるでEnterを押したら
 		else if (use_equip->SelectNum == 2 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
 			use_equip->menu_live = false;
+			itemBuf = nullptr;
 			ChangeSequence(sequence::INVENTORY_OPEN);
 			return true;
 		}
@@ -548,22 +555,7 @@ void DungeonScene::ItemUse(/*int selectNum, Inventory* inventory,*/ int inventor
 
 
 	}
-	//使用したアイテムが存在するインベントリページが最後のページではなかった場合
-	if (inventoryPage != gManager->inventoryNum) {
-		// 使ったアイテムを消す
-
-
-		//そのアイテムがあったページの一つ後のページの一番最初のアイテムを前のページに移す
-		//その後最後のページになるまでこれを繰り返し、詰める
-	}
-	//そのアイテムが最後のページにある場合
-	else {
-
-		//何もしない
-	}
-
-
-
+	gManager->PopItemFromInventory(inventoryPage);
 }
 
 
