@@ -5,8 +5,9 @@
 #include"../Map.h"
 
 extern GameManager* gManager;
-Enemy::Enemy(int Id, int Type, std::string Name, int Hp, int Atack, int Defence, int Speed, std::string Gh, int Exp, int Floor)
+Enemy::Enemy(int Id, int Type, std::string Name, int Hp, int Atack, int Defence, int Speed, std::string Gh, int Exp, int Floor, int ActId)
 {
+	actId = ActId;
 	id = Id;
 	type = Type;
 	name = Name;
@@ -134,7 +135,7 @@ bool Enemy::Move()
 		isSetChasePoint = true;
 		//MoveChasePoint();
 		//return;
-	}
+}
 #endif
 
 

@@ -17,6 +17,7 @@ class Enemy;
 class ItemManager;
 class HaveItem;
 class Inventory;
+class Actor;
 
 class GameManager {
 
@@ -29,7 +30,10 @@ public:
 	FadeControl* fControl = nullptr;*/
 	Sound* sound = nullptr;
 	Map* map = nullptr;
-	Player* player = nullptr;
+
+	//Player* player = nullptr;
+	std::shared_ptr<Player>player = nullptr;
+
 	Camera* camera = nullptr;
 	ItemManager* iManager = nullptr;
 	HaveItem* haveItem = nullptr;
@@ -106,7 +110,7 @@ public:
 	int CheckIsThere(t2k::Vector3 Pos);
 
 	//カメラの移動
-	void CameraMove(Player* p);
+	void CameraMove(std::shared_ptr<Player>);
 
 	//マップ内のランダムな部屋を取得→部屋の中のランダムな座標を取得→座標を描画座標に変換して返す
 	//setType 0:プレイヤー初期座標,1:階段,2:enemy
@@ -145,6 +149,13 @@ public:
 	bool CheckNearByPlayerToAllEnemy(int range);
 	//特定の座標にenemyがいるかどうか確認する関数
 	bool CheckIsThereEnemyToDir(t2k::Vector3 Pos);
+	//特定の座標のenemyを取得する関数
+	std::shared_ptr<Enemy> GetIsThereEnemyToDir(t2k::Vector3 Pos);
+
+
+	//目の前の対象にダメージを与える
+	void TakeDamageToTarget(Actor* hoge, t2k::Vector3 Pos);
+
 
 	//debug切り替え
 	bool isDebug = true;
@@ -153,7 +164,7 @@ public:
 
 	void setPlayerRoomNum(int roomNum);
 
-	Player* GetPlayer();
+	std::shared_ptr<Player> GetPlayer();
 
 	//短形とのマウスクリック感知
 	bool CheckMousePointToRect(int MouseX, int MouseY, int RectLeftTopX, int RectWidth, int RectTopY, int RectHeight);
@@ -164,13 +175,16 @@ public:
 	int GetItemNum();
 
 	//ダメージ計算
-	float CalcDamage(int Attack,int Defence);
+	float CalcDamage(int Attack, int Defence);
+
+	//ダメージ処理
+	void RunDamageEvent(float Damage, std::shared_ptr<Actor>actor);
 
 private:
 
 	int test = 0;
 	//アイテムの総数
-	int itemNum=0;
+	int itemNum = 0;
 	//std::vector<int> haveItemList;
 
 	void Zoom(double* zoomEx);

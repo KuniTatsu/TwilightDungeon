@@ -6,8 +6,9 @@
 
 extern GameManager* gManager;
 
-Player::Player(t2k::Vector3 StartPos, float Hp, int Atack, int Defence, int Speed)
+Player::Player(t2k::Vector3 StartPos, float Hp, int Atack, int Defence, int Speed, int ActId)
 {
+	actId = ActId;
 	pos = StartPos;
 	p_gh = gManager->LoadGraphEx("graphics/PlayerTest.png");
 	nowHpVar_gh = gManager->LoadGraphEx("graphics/haveHpVar.png");
@@ -32,16 +33,16 @@ Player::Player(t2k::Vector3 StartPos, float Hp, int Atack, int Defence, int Spee
 Player::~Player()
 {
 }
-
-void Player::TakeHpEffect(int HpMove)
-{
-	if (nowHp <= 0)return;
-	nowHp += HpMove;
-	if (nowHp < 0)nowHp = 0;
-	if (nowHp > hp)nowHp = hp;
-
-	nowHpVarWidth = nowHp / hp;
-}
+//
+//void Player::TakeHpEffect(int HpMove)
+//{
+//	if (nowHp <= 0)return;
+//	nowHp += HpMove;
+//	if (nowHp < 0)nowHp = 0;
+//	if (nowHp > hp)nowHp = hp;
+//
+//	nowHpVarWidth = nowHp / hp;
+//}
 
 void Player::ChangeBaseStatus(int ManpukuMove, int HpMove)
 {

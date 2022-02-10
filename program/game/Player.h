@@ -6,7 +6,7 @@ class equipItem;
 class Player :public Actor
 {
 public:
-	Player(t2k::Vector3 StartPos, float Hp, int Atack, int Defence, int Speed);
+	Player(t2k::Vector3 StartPos, float Hp, int Atack, int Defence, int Speed,int ActId);
 	~Player();
 
 	t2k::Vector3 pos = {};

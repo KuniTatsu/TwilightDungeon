@@ -39,6 +39,12 @@ public:
 	//ステータス上昇のテスト関数 StatusNum:0->HP,1->Atack,2->Defence,3->Speed,StatusType->0:effect,1:equipment
 	void ChangeStatus(int StatusNum, int MoveNum, int StatusType);
 
+	inline int GetActId() {
+		return actId;
+	}
+	//Hpの変動が外部から与えられた時に使う関数
+	void TakeHpEffect(int HpMove);
+
 	virtual void Atack();
 	virtual bool Move();
 	void Anim();
@@ -46,6 +52,9 @@ public:
 	virtual void Update();
 	virtual void Draw();
 protected:
+	int actId;
+
+
 	int id = 0;
 	int type = 0;
 	std::string name = "";

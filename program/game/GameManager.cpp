@@ -11,11 +11,13 @@
 #include"Player.h"
 #include"Camera.h"
 #include"Actor/Enemy.h"
+#include"Actor/Actor.h"
 #include"Item/ItemManager.h"
 #include"Item/HaveItem.h"
 #include"Item/Item.h"
 #include"Item/equipItem.h"
 #include"Item//Inventory.h"
+
 //#include"game_main.h"
 
 //#include"Item.h"
@@ -196,8 +198,8 @@ void GameManager::initGameManager()
 	/*for (int i = 0; i < map->sumRoomNum; ++i) {
 		CheckRoomWayPoint(i);
 	}*/
-
-	player = new Player(SetStartPos(0), 100, 10, 10, 10);
+	//playerのactidは0
+	player = std::make_shared<Player>(SetStartPos(0), 100, 10, 10, 10, 0);
 	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
 	iManager = new ItemManager();
 
@@ -456,6 +458,18 @@ bool GameManager::CheckIsThereEnemyToDir(t2k::Vector3 Pos)
 	}
 	return isThere;
 }
+std::shared_ptr<Enemy> GameManager::GetIsThereEnemyToDir(t2k::Vector3 Pos)
+{
+	std::shared_ptr<Enemy>thereEnemy = nullptr;
+	for (auto enemy : hoge) {
+		t2k::Vector3 enemyPos = WorldToLocal(enemy->pos);
+		if (enemyPos.x == Pos.x && enemyPos.y == Pos.y) {
+			thereEnemy = enemy;
+			break;
+		}
+	}
+	return thereEnemy;
+}
 
 void GameManager::Zoom(double* zoomEx)
 {
@@ -467,7 +481,24 @@ void GameManager::Zoom(double* zoomEx)
 	//}
 
 }
-Player* GameManager::GetPlayer()
+void GameManager::TakeDamageToTarget(Actor* hoge, t2k::Vector3 Pos)
+{
+	//プレイヤーが攻撃するなら
+	if (hoge->GetActId() == 0) {
+		//全てのエネミーから前にいるエネミーを取得
+		std::shared_ptr<Enemy>hoge = GetIsThereEnemyToDir(Pos);
+
+		float damage = CalcDamage(player->GetStatus(1), hoge->GetStatus(2));
+		RunDamageEvent(damage, hoge);
+	}
+	//エネミーが攻撃するなら
+	else {
+		float damage = CalcDamage(hoge->GetStatus(1), player->GetStatus(2));
+		RunDamageEvent(damage, player);
+	}
+}
+
+std::shared_ptr<Player> GameManager::GetPlayer()
 {
 	return player;
 }
@@ -480,10 +511,15 @@ float GameManager::CalcDamage(int Attack, int Defence)
 	//ダメージ=攻撃側の攻撃力 ÷ 2^(攻撃を受ける側の防御力/10)
 	//std::pow(2,(enemyDef/10))
 
-	float rand = (float)GetRandEx(-5,5);
+	float rand = (float)GetRandEx(-5, 5);
 	float damage = Attack * std::pow(2, (Defence / 10)) + rand;
 
 	return damage;
+}
+
+void GameManager::RunDamageEvent(float damage, std::shared_ptr<Actor>actor)
+{
+	actor->TakeHpEffect(damage);
 }
 void GameManager::SetItemNum(int num)
 {
@@ -541,7 +577,7 @@ int GameManager::CheckIsThere(t2k::Vector3 Pos)
 	return map->CheckIsThere(Pos.x, Pos.y);
 }
 //なんか微妙
-void GameManager::CameraMove(Player* p)
+void GameManager::CameraMove(std::shared_ptr<Player>)
 {
 	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
 }

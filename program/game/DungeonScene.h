@@ -35,6 +35,13 @@ private:
 	int dungeonLevel = 1;
 
 	int alfa = 0;
+	//次のenemyの行動までのインターバルフレーム
+	const int ENEMYACTINTERVAL = 30;
+	//更新インターバルフレーム
+	int enemyActTimer = 0;
+
+	std::list<std::shared_ptr<Enemy>>atackEnemies;
+	std::list<std::shared_ptr<Enemy>>::iterator itr;
 
 	bool skip = false;
 
@@ -55,7 +62,7 @@ private:
 	useType usetype = USABLE;
 
 	MenuWindow* firstMenu = nullptr;
-	Player* player = nullptr;
+	std::shared_ptr<Player> player = nullptr;
 	
 	//飛んでいるアイテムリスト
 	std::list<Item*> throwItem;

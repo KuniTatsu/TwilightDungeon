@@ -291,19 +291,27 @@ bool DungeonScene::Seq_Main(const float deltatime)
 
 bool DungeonScene::Seq_EnemyAct(const float deltatime)
 {
-	//enemy‚ÌˆÚ“®/UŒ‚
-	for (auto hoge : eManager->liveEnemyList) {
-		//player‚Æenemy‚ª—×‚è‡‚Á‚Ä‚¢‚é‚È‚ç
-		if (gManager->CheckNearByPlayer(hoge))
-		{
-			//UŒ‚ŠÖ”‚ðŒÄ‚Ô
+	if (main_sequence.isStart()) {
+		for (auto liveEnemy : eManager->liveEnemyList) {
+			//player‚Æenemy‚ª—×‚è‡‚Á‚Ä‚¢‚é‚È‚ç
+			if (gManager->CheckNearByPlayer(liveEnemy))
+			{
+				//ƒŠƒXƒg‚É“ü‚ê‚é
+				atackEnemies.emplace_back(liveEnemy);
+			}
+			else {
+				liveEnemy->Move();
+			}
 		}
-		else {
-			//ˆÚ“®ŠÖ”‚ðŒÄ‚Ô
-			hoge->Move();
-		}
-		//hoge->Update();
+		itr = atackEnemies.begin();
 	}
+	if (++enemyActTimer > ENEMYACTINTERVAL) {
+		(*itr)->Atack();
+		enemyActTimer = 0;
+		itr = atackEnemies.erase(itr);
+	}
+	if (!atackEnemies.empty())return true;
+
 	ChangeSequence(sequence::MAIN);
 	return true;
 }
@@ -649,7 +657,7 @@ void DungeonScene::addLog(const std::string log)
 void DungeonScene::LogDraw()
 {
 	for (int i = 0; i < 9; ++i) {
-		
+
 		DrawStringEx(log->menu_x + 20, log->menu_y + 40 + (i * 20), -1, "%s", Log[i].c_str());
 	}
 }

@@ -76,16 +76,41 @@ void Actor::ChangeStatus(int StatusNum, int MoveNum, int StatusType)
 		}
 	}
 }
+void Actor::TakeHpEffect(int HpMove)
+{
+	if (nowHp <= 0)return;
+	nowHp += HpMove;
+	if (nowHp < 0)nowHp = 0;
+	if (nowHp > hp)nowHp = hp;
 
+	nowHpVarWidth = nowHp / hp;
+}
 void Actor::Atack()
 {
+	t2k::Vector3 front;
+	//目の前の対象を取得
+	if (mydir == dir::UP) {
+		front = gManager->WorldToLocal(pos) + t2k::Vector3(0, -1, 0);
+	}
+	else if (mydir == dir::RIGHT) {
+		front = gManager->WorldToLocal(pos) + t2k::Vector3(1, 0, 0);
+	}
+	else if (mydir == dir::DOWN) {
+		front = gManager->WorldToLocal(pos) + t2k::Vector3(0, -1, 0);
+	}
+	else if (mydir == dir::LEFT) {
+		front = gManager->WorldToLocal(pos) + t2k::Vector3(-1, 0, 0);
+	}
 
-
+	//前にダメージを与えられる対象がいるなら
+	//gManager->CalcDamage()
+	gManager->TakeDamageToTarget(this, front);
 
 }
 
 bool Actor::Move()
 {
+	return true;
 }
 
 void Actor::Update()

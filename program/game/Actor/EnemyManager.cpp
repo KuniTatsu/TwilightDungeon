@@ -94,5 +94,5 @@ std::shared_ptr<Enemy> EnemyManager::GetEnemyStatus(int num,int Floor)
 	int exp = std::atoi(enemyList[num][8].c_str());
 
 
-	return std::make_shared<Enemy>(id, type, enemyList[num][2], hp, atack, defence, speed, enemyList[num][7], exp, Floor);
+	return std::make_shared<Enemy>(id, type, enemyList[num][2], hp, atack, defence, speed, enemyList[num][7], exp, Floor,1);
 }
