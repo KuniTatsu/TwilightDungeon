@@ -9,6 +9,7 @@ class Item
 public:
 	Item() {};
 	Item(int Id,int ItemType,std::string ItemName,int Saturation,int Heal,int HitDamage,std::string Gh,std::string Desc);
+	explicit Item(int ItemId);
 	virtual ~Item();
 	//アイテムIDの取得
 	int GetItemId();
@@ -31,6 +32,7 @@ public:
 	void SetIsLiveFalse();
 	//アイテム座標の取得
 	t2k::Vector3 GetItemDrawPos();
+	
 
 	//移動補完 移動先設定
 	void SetGoalPos(int dir);

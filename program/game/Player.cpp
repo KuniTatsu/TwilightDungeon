@@ -60,15 +60,18 @@ void Player::ChangeEquipItem(equipItem* item)
 
 		//もうすでに装備しているものがあれば
 	if (myEquip[subId - 1] != nullptr) {
-		myEquip[subId - 1] = nullptr;
+		myEquip[subId - 1]->ChangeEquip();
+		//myEquip[subId - 1] = nullptr;
 		//入れ替える(本来はここでinventoryにあるアイテムの[E]マークを切り替えたい)
+		item->ChangeEquip();
 		myEquip[subId - 1] = item;
 	}
 	else {
+		item->ChangeEquip();
 		myEquip[subId - 1] = item;
 	}
 	for (int i = 0; i < 4; ++i) {
-		ChangeStatus(i, item->getItemData(i + 5));
+		ChangeStatus(i, item->getItemData(i + 5), 1);
 	}
 }
 
@@ -129,6 +132,8 @@ bool Player::Move()
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_LEFT)) {
 		//キャラのチップの左のチップがWALLなら移動しない
 		if ((gManager->GetMapChip(playerInMap + t2k::Vector3(-1, 0, 0))) == 0)return false;
+		//敵がその位置にいれば移動しない
+		if (gManager->CheckIsThereEnemyToDir(playerInMap + t2k::Vector3(-1, 0, 0)))return false;
 
 		//キャラのチップの左のチップがPASSWAYなら移動する
 		MoveToDir(LEFT, playerInMap);
@@ -138,6 +143,8 @@ bool Player::Move()
 
 		//キャラのチップの左のチップがWALLなら移動しない
 		if ((gManager->GetMapChip(playerInMap + t2k::Vector3(0, -1, 0))) == 0)return false;
+		//敵がその位置にいれば移動しない
+		if (gManager->CheckIsThereEnemyToDir(playerInMap + t2k::Vector3(0, -1, 0)))return false;
 
 		//キャラのチップの左のチップがPASSWAYなら移動する
 		MoveToDir(UP, playerInMap);
@@ -146,6 +153,8 @@ bool Player::Move()
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RIGHT)) {
 		//キャラのチップの左のチップがWALLなら移動しない
 		if ((gManager->GetMapChip(playerInMap + t2k::Vector3(1, 0, 0))) == 0)return false;
+		//敵がその位置にいれば移動しない
+		if (gManager->CheckIsThereEnemyToDir(playerInMap + t2k::Vector3(1, 0, 0)))return false;
 
 		//キャラのチップの左のチップがPASSWAYなら移動する
 		MoveToDir(RIGHT, playerInMap);
@@ -154,6 +163,8 @@ bool Player::Move()
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_DOWN)) {
 		//キャラのチップの左のチップがWALLなら移動しない
 		if ((gManager->GetMapChip(playerInMap + t2k::Vector3(0, 1, 0))) == 0)return false;
+		//敵がその位置にいれば移動しない
+		if (gManager->CheckIsThereEnemyToDir(playerInMap + t2k::Vector3(0, 1, 0)))return false;
 		//キャラのチップの左のチップがPASSWAYなら移動する
 		MoveToDir(DOWN, playerInMap);
 		return true;
@@ -263,7 +274,7 @@ void Player::DrawPlayerStatus()
 	DrawStringEx(20, 90, -1, "防御力:%d", defence);
 	DrawStringEx(20, 110, -1, "素早さ:%d", speed);
 	for (int i = 0; i < 6; ++i) {
-		DrawStringEx(170, 30 + 30 * i, -1, "%s:",equipName[i].c_str());
+		DrawStringEx(170, 30 + 30 * i, -1, "%s:", equipName[i].c_str());
 	}
 	for (int i = 0; i < 6; ++i) {
 		if (myEquip[i] == nullptr) {

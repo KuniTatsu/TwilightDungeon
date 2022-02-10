@@ -49,27 +49,7 @@ private:
 	//現在のマップ座標
 	t2k::Vector3 myNowPos = {};
 
-	//t2k::Sequence<Enemy*> main_sequence =
-	//	t2k::Sequence<Enemy*>(this, &Enemy::SeqMove);
-
-	////enemyが移動するシークエンス
-	//bool SeqMove(const float deltatime);
-
-	////enemyが攻撃するシークエンス
-	//bool SeqAttack(const float deltatime);
-
-	////シークエンスの列挙体
-	//enum class sequence {
-	//	MOVE,
-	//	ATTACK,
-
-	//};
-	//sequence nowSeq = sequence::MOVE;
-	////Sequenceを移動させる関数,enumも一緒に変更する
-	//void ChangeSequence(sequence seq);
-
-
-
+	
 	//設定された目的地に向かう関数
 	void MoveChasePoint();
 
@@ -97,8 +77,10 @@ private:
 	//自分のdirから見て特定の方向に1進んだマスが移動可能かどうか確認する関数
 	bool CheckCanMoveToDir(const int dir, const t2k::Vector3 nowPos, const int checkDir);
 
-	std::list<t2k::Vector3> willMove;
+	//std::list<t2k::Vector3> willMove;
 
+	//同じ部屋にいるフラグ
+	bool sameRoom = false;
 
 #if 0
 	//キャラクターに向かって移動するAI関数

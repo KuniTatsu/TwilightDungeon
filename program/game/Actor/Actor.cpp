@@ -31,28 +31,49 @@ int Actor::GetStatus(int StatusNum)
 	return -1;
 }
 
-std::string Actor::GetName()
-{
-	return name;
-}
 //装備を変更するとこれが呼ばれるため、永遠にステータスが増えてしまう→装備品変更時は別の処理を行う必要あり exステータスを0にする
-void Actor::ChangeStatus(int StatusNum, int MoveNum)
+void Actor::ChangeStatus(int StatusNum, int MoveNum, int StatusType)
 {
-	if (StatusNum == 0) {
-		exHp += MoveNum;
-		hp = baseHp + exHp;
+	if (StatusType == EFFECT) {
+		if (StatusNum == 0) {
+			exHp += MoveNum;
+			hp = baseHp + equipHp + exHp;
+		}
+		else if (StatusNum == 1) {
+			exAtack += MoveNum;
+			atack = baseAtack + equipAtack + exAtack;
+		}
+		else if (StatusNum == 2) {
+			exDefence += MoveNum;
+			defence = baseDefence + equipDefence + exDefence;
+		}
+		else if (StatusNum == 3) {
+			exSpeed += MoveNum;
+			speed = baseSpeed + equipSpeed + exSpeed;
+		}
 	}
-	else if (StatusNum == 1) {
-		exAtack += MoveNum;
-		atack = baseAtack + exAtack;
-	}
-	else if (StatusNum == 2) {
-		exDefence += MoveNum;
-		defence = baseDefence + exDefence;
-	}
-	else if (StatusNum == 3) {
-		exSpeed += MoveNum;
-		speed = baseSpeed + exSpeed;
+	else {
+		//装備アイテムを付け替える場合は装備アイテムによって付与されていたステータスを消去してから加算する
+		equipHp = 0;
+		equipAtack = 0;
+		equipDefence = 0;
+		equipSpeed = 0;
+		if (StatusNum == 0) {
+			equipHp += MoveNum;
+			hp = baseHp + equipHp + exHp;
+		}
+		else if (StatusNum == 1) {
+			equipAtack += MoveNum;
+			atack = baseAtack + equipAtack + exAtack;
+		}
+		else if (StatusNum == 2) {
+			equipDefence += MoveNum;
+			defence = baseDefence + equipDefence + exDefence;
+		}
+		else if (StatusNum == 3) {
+			equipSpeed += MoveNum;
+			speed = baseSpeed + equipSpeed + exSpeed;
+		}
 	}
 }
 
@@ -65,7 +86,7 @@ void Actor::Atack()
 
 bool Actor::Move()
 {
-	
+
 
 	return true;
 }

@@ -23,6 +23,8 @@ Item::Item(int Id, int ItemType, std::string ItemName, int Saturation, int Heal,
 	itemDesc[1] = desc;
 }
 
+
+
 Item::~Item()
 {
 }

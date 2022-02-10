@@ -27,10 +27,17 @@ public:
 	//外からステータスを取得する関数 StatusNum:0->HP,1->Atack,2->Defence,3->Speed,4->level
 	int GetStatus(int StatusNum);
 	//名前の取得関数
-	std::string GetName();
+	inline std::string GetName() {
+		return name;
+	};
 
-	//ステータス上昇のテスト関数 StatusNum:0->HP,1->Atack,2->Defence,3->Speed
-	void ChangeStatus(int StatusNum, int MoveNum);
+	const enum  ChangeStatusType {
+		EFFECT,
+		EQUIP
+	};
+
+	//ステータス上昇のテスト関数 StatusNum:0->HP,1->Atack,2->Defence,3->Speed,StatusType->0:effect,1:equipment
+	void ChangeStatus(int StatusNum, int MoveNum, int StatusType);
 
 	virtual void Atack();
 	virtual bool Move();
@@ -42,8 +49,13 @@ protected:
 	int id = 0;
 	int type = 0;
 	std::string name = "";
+	//装備, アイテムによる追加ステータス
+	int equipHp = 0;
+	int equipAtack = 0;
+	int equipDefence = 0;
+	int equipSpeed = 0;
 
-	//装備,アイテム,その他要因による追加ステータス
+	//その他要因による追加ステータス
 	int exHp = 0;
 	int exAtack = 0;
 	int exDefence = 0;
@@ -58,7 +70,7 @@ protected:
 
 	//描画ステータス
 	int hp = 0;
-	int atack =0;
+	int atack = 0;
 	int defence = 0;
 	int speed = 0;
 

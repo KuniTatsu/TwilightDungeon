@@ -228,9 +228,9 @@ bool DungeonScene::Seq_Main(const float deltatime)
 		gManager->player->TakeHpEffect(-20);
 	}
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_U)) {
-		gManager->player->ChangeStatus(1, 50);
+		gManager->player->ChangeStatus(1, 50, 0);
 		for (auto enemy : eManager->liveEnemyList) {
-			enemy->ChangeStatus(2, 10);
+			enemy->ChangeStatus(2, 10, 0);
 		}
 	}
 	//

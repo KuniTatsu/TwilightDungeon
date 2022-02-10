@@ -86,9 +86,33 @@ bool Enemy::Move()
 	//今いる場所が部屋のどこかなら部屋の番号を取得する
 	roomNum = gManager->CheckIsThere(myNowPos);
 
-#if 0
-	//enemyとplayerが同じ部屋にいるなら
+	//同じ部屋にいるかチェック
 	if (roomNum == gManager->playerRoomNum && roomNum != -1) {
+		sameRoom = true;
+	}
+	else {
+		sameRoom = false;
+	}
+
+
+	//目的地がセットされていればそちらへ向かう
+	if (isSetChasePoint && !sameRoom) {
+		MoveChasePoint();
+		return true;
+	}
+	else if (isSetChasePoint && sameRoom) {
+		ChasePoint = gManager->WorldToLocal(gManager->player->pos);
+		isSetChasePoint = true;
+
+		MoveChasePoint();
+		return true;
+	}
+
+#if 0
+	//enemyとplayerが同じ部屋にいるかつ通路ではないなら
+	if (sameRoom) {
+
+
 		//A*で経路探索
 		//経路のlistがn個以上残っていれば行わない
 		if (willMove.size() < 5) {
@@ -103,7 +127,7 @@ bool Enemy::Move()
 
 		t2k::Vector3 chasePoint = willMove.front();
 
-		
+
 		//リセット
 		ChasePoint = { 0,0,0 };
 		//ChasePointの更新
@@ -115,13 +139,8 @@ bool Enemy::Move()
 		//MoveChasePoint();
 		//return;
 	}
-
 #endif
-	//目的地がセットされていればそちらへ向かう
-	if (isSetChasePoint) {
-		MoveChasePoint();
-		return true;
-	}
+
 
 	//部屋のどこかにいるなら
 	if (roomNum != -1) {
@@ -170,25 +189,22 @@ void Enemy::MoveChasePoint()
 	int disX = abs(ChasePoint.x - myNowPos.x);
 	int disY = abs(ChasePoint.y - myNowPos.y);
 
-	////もし今の自分の位置と目的地が一致していれば
-	//if (myNowPos.x == ChasePoint.x && myNowPos.y == ChasePoint.y) {
-	//	//isSetChasePointをfalseにする
-	//	isSetChasePoint = false;
-	//	//目的地を破棄する
-	//	ChasePoint = { 0,0,0 };
-	//}
-
 	//xのほうが長い場合
 	if (disX > disY) {
 		//x方向に進む
 		//自分のx座標が目的地より左なら右に進む
 		if (myNowPos.x < ChasePoint.x) {
 			if (gManager->GetMapChip(myNowPos + t2k::Vector3(1, 0, 0)) == 0)return;
+			//敵がその位置にいれば移動しない
+			if (gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(1, 0, 0)))return;
 			pos.x += 20;
 			mydir = dir::RIGHT;
 		}//左に進む
 		else {
 			if (gManager->GetMapChip(myNowPos + t2k::Vector3(-1, 0, 0)) == 0)return;
+			//敵がその位置にいれば移動しない
+			if (gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(-1, 0, 0)))return;
+
 			pos.x -= 20;
 			mydir = dir::LEFT;
 		}
@@ -207,17 +223,26 @@ void Enemy::MoveChasePoint()
 				//自分のx座標が目的地より左なら右に進む
 				if (myNowPos.x < ChasePoint.x) {
 					if (gManager->GetMapChip(myNowPos + t2k::Vector3(1, 0, 0)) == 0)return;
+					//敵がその位置にいれば移動しない
+					if (gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(1, 0, 0)))return;
+
 					pos.x += 20;
 					mydir = dir::RIGHT;
 				}//左に進む
 				else {
 					if (gManager->GetMapChip(myNowPos + t2k::Vector3(-1, 0, 0)) == 0)return;
+					//敵がその位置にいれば移動しない
+					if (gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(-1, 0, 0)))return;
+
 					pos.x -= 20;
 					mydir = dir::LEFT;
 				}
 				return;
 			}
 			//if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, 1, 0)) == 0)return;
+			//敵がその位置にいれば移動しない
+			if (gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, 1, 0)))return;
+
 			pos.y += 20;
 			mydir = dir::DOWN;
 		}//上に進む
@@ -227,17 +252,26 @@ void Enemy::MoveChasePoint()
 				//自分のx座標が目的地より左なら右に進む
 				if (myNowPos.x < ChasePoint.x) {
 					if (gManager->GetMapChip(myNowPos + t2k::Vector3(1, 0, 0)) == 0)return;
+					//敵がその位置にいれば移動しない
+					if (gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(1, 0, 0)))return;
+
 					pos.x += 20;
 					mydir = dir::RIGHT;
 				}//左に進む
 				else {
 					if (gManager->GetMapChip(myNowPos + t2k::Vector3(-1, 0, 0)) == 0)return;
+					//敵がその位置にいれば移動しない
+					if (gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(-1, 0, 0)))return;
+
 					pos.x -= 20;
 					mydir = dir::LEFT;
 				}
 				return;
 			}
 			//if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, -1, 0)) == 0)return;
+						//敵がその位置にいれば移動しない
+			if (gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, -1, 0)))return;
+
 			pos.y -= 20;
 			mydir = dir::UP;
 		}
@@ -612,7 +646,7 @@ bool Enemy::aster(Node** _nodes, Node* _now, std::list<t2k::Vector3>* _route, t2
 				/*_route->push_back(p);*/
 				int x = p->pos.x + LeftTop.x;
 				int y = p->pos.y + LeftTop.y;
-				(*_route).push_back(t2k::Vector3(x,y,0));
+				(*_route).push_back(t2k::Vector3(x, y, 0));
 				p = p->parent;
 			}
 
@@ -651,6 +685,6 @@ bool Enemy::aster(Node** _nodes, Node* _now, std::list<t2k::Vector3>* _route, t2
 
 	// 再帰的に調べていく
 	return aster(_nodes, node, _route, LeftTop);
-}
+	}
 
 #endif

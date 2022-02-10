@@ -3,6 +3,7 @@
 #include"../../library/t2klib.h"
 #include"../../support/Support.h"
 #include"Item.h"
+#include"equipItem.h"
 #include"../GameManager.h"
 
 extern GameManager* gManager;
@@ -30,7 +31,7 @@ void Inventory::AddInventory(Item* item)
 		inventory[i] = item;
 		itemNum++;
 		break;
-}
+	}
 #endif
 }
 
@@ -53,7 +54,14 @@ void Inventory::DrawInventory(int x, int y)
 {
 	int i = 0;
 	for (auto item : inventoryList) {
-		DrawStringEx(x + 50, y + 10 + 30 * i, -1, "%s", item->getItemName().c_str());
+		if (item->getItemData(1) >= 2) {
+			equipItem* eItem = (equipItem*)item;
+			if(eItem->GetIsEquiped())DrawStringEx(x + 40, y + 10 + 30 * i, -1, "[E]");
+			DrawStringEx(x + 80, y + 10 + 30 * i, -1, "%s", item->getItemName().c_str());
+		}
+		else {
+			DrawStringEx(x + 80, y + 10 + 30 * i, -1, "%s", item->getItemName().c_str());
+		}
 		++i;
 	}
 	/*for (int i = 0; i < 10; ++i) {

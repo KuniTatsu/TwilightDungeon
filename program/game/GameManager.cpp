@@ -463,8 +463,11 @@ void GameManager::ReCreate()
 {
 	delete map;
 	map = nullptr;
+	//player‚ðnew‚·‚é‚Ì‚Í‚â‚ß‚é
+	/*
 	delete player;
 	player = nullptr;
+	*/
 	wayPoint.clear();
 
 	map = new Map(MAPWIDTH, MAPHEIGHT);
@@ -478,8 +481,8 @@ void GameManager::ReCreate()
 	/*for (int i = 0; i < map->sumRoomNum; ++i) {
 		CheckRoomWayPoint(i);
 	}*/
-
-	player = new Player(SetStartPos(0), 100, 10, 10, 10);
+	player->pos = SetStartPos(0);
+	//player = new Player(SetStartPos(0), 100, 10, 10, 10);
 	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
 }
 

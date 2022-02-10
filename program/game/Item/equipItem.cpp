@@ -27,3 +27,13 @@ int equipItem::getItemData(int ColumnId)
 	else if (ColumnId == 8)return speed;
 	else if (ColumnId == 9)return subId;
 }
+
+void equipItem::ChangeEquip()
+{
+
+	if (isEquiped)isEquiped = false;
+	else isEquiped = true;
+
+}
+
+
