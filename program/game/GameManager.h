@@ -158,10 +158,13 @@ public:
 	//短形とのマウスクリック感知
 	bool CheckMousePointToRect(int MouseX, int MouseY, int RectLeftTopX, int RectWidth, int RectTopY, int RectHeight);
 
-	//アイテム総数取得
+	//アイテム総数を入力
 	void SetItemNum(int num);
-
+	//ロードしたアイテムの総数を取得する関数
 	int GetItemNum();
+
+	//ダメージ計算
+	float CalcDamage(int Attack,int Defence);
 
 private:
 

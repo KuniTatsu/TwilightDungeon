@@ -40,10 +40,6 @@ Enemy::~Enemy()
 {
 }
 
-int Enemy::GetExp()
-{
-	return exp;
-}
 void Enemy::TimeUpdate()
 {
 	--moveTimer;
@@ -177,7 +173,7 @@ bool Enemy::Move()
 
 
 	return true;
-}
+	}
 
 
 void Enemy::MoveChasePoint()
@@ -685,6 +681,6 @@ bool Enemy::aster(Node** _nodes, Node* _now, std::list<t2k::Vector3>* _route, t2
 
 	// Ä‹A“I‚É’²‚×‚Ä‚¢‚­
 	return aster(_nodes, node, _route, LeftTop);
-	}
+}
 
 #endif

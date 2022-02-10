@@ -133,4 +133,9 @@ private:
 
 	void ItemThrow(int inventoryPage);
 
+	std::string Log[9] = {};
+	void addLog(const std::string log);
+	void LogDraw();
+	
+
 };

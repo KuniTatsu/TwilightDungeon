@@ -86,9 +86,6 @@ void Actor::Atack()
 
 bool Actor::Move()
 {
-
-
-	return true;
 }
 
 void Actor::Update()

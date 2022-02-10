@@ -20,7 +20,7 @@ public:
 	 
 	//ColumnId: 0->id,1->type,2->manpukudo,3->heal,4->hitdamage
 	virtual int getItemData(int ColumnId);
-	std::string getItemName();
+	const std::string getItemName();
 
 	//生成時に必要なint型アイテムデータをvectorで返す関数 Id,ItemType,Saturation,Heal,HitDamage
 	virtual std::vector<int> GetAllIntData();

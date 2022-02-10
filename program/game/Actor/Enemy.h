@@ -23,7 +23,9 @@ public:
 	//int exExp = 0;
 
 	//倒した時の経験値を取得する関数
-	int GetExp();
+	inline int GetExp() {
+		return exp;
+	};
 
 	//移動インターバル更新関数
 	void TimeUpdate();

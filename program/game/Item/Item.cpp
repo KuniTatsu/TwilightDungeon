@@ -45,7 +45,7 @@ int Item::getItemData(int ColumnId)
 	else if (ColumnId == 4)return hitDamage;
 }
 
-std::string Item::getItemName()
+const std::string Item::getItemName()
 {
 	return itemName;
 }

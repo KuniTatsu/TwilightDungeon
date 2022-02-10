@@ -475,6 +475,16 @@ int GameManager::GetItemNum()
 {
 	return itemNum;
 }
+float GameManager::CalcDamage(int Attack, int Defence)
+{
+	//ƒ_ƒ[ƒW=UŒ‚‘¤‚ÌUŒ‚—Í € 2^(UŒ‚‚ğó‚¯‚é‘¤‚Ì–hŒä—Í/10)
+	//std::pow(2,(enemyDef/10))
+
+	float rand = (float)GetRandEx(-5,5);
+	float damage = Attack * std::pow(2, (Defence / 10)) + rand;
+
+	return damage;
+}
 void GameManager::SetItemNum(int num)
 {
 	itemNum = num;

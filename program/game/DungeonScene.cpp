@@ -165,6 +165,7 @@ void DungeonScene::Draw()
 
 	DrawNowSequence(nowSeq);
 	log->Menu_Draw();
+	LogDraw();
 
 	firstMenu->All();
 	if (nowSeq == sequence::MAIN || nowSeq == sequence::ENEMYACT) {
@@ -582,12 +583,6 @@ void DungeonScene::DrawPopItem()
 
 void DungeonScene::ItemUse(/*int selectNum, Inventory* inventory,*/ int inventoryPage)
 {
-	//auto itr = inventory->inventoryList.begin();
-	//for (int i = 0; i < selectNum; ++i) {
-	//	++itr;
-	//}
-	////使ったアイテム
-	//Item* useItem = (*itr);
 	int type = itemBuf->getItemData(1);
 
 	//アイテムの処理を行う
@@ -596,6 +591,7 @@ void DungeonScene::ItemUse(/*int selectNum, Inventory* inventory,*/ int inventor
 		int manpuku = itemBuf->getItemData(2);
 		int heal = itemBuf->getItemData(3);
 		player->ChangeBaseStatus(manpuku, heal);
+		addLog(itemBuf->getItemName() + "を使った");
 		//インベントリからの消去
 		gManager->PopItemFromInventory(inventoryPage);
 	}//投擲消費アイテムだったら
@@ -611,9 +607,6 @@ void DungeonScene::ItemUse(/*int selectNum, Inventory* inventory,*/ int inventor
 	else if (type == 2 || type == 3) {
 		equipItem* item = (equipItem*)itemBuf;
 		player->ChangeEquipItem(item);
-		//サブIDごとにプレイヤーの装備欄を参照する
-
-
 	}
 }
 
@@ -627,6 +620,38 @@ void DungeonScene::ItemThrow(int inventoryPage)
 	//インベントリからの消去
 	gManager->PopItemFromInventory(inventoryPage);
 }
+//7つまでログを生成する関数,古い方から消える
+void DungeonScene::addLog(const std::string log)
+{
+	if (!Log[8].empty()) {
+		Log[0] = Log[1];
+		Log[1] = Log[2];
+		Log[2] = Log[3];
+		Log[3] = Log[4];
+		Log[4] = Log[5];
+		Log[5] = Log[6];
+		Log[6] = Log[7];
+		Log[7] = Log[8];
+		Log[8] = log;
+		return;
+	}
+	for (int i = 0; i < 10; i++) {
 
+		if (Log[i].empty()) {
+
+			Log[i] = log;
+			return;
+		}
+	}
+
+}
+//生成したログを表示する関数
+void DungeonScene::LogDraw()
+{
+	for (int i = 0; i < 9; ++i) {
+		
+		DrawStringEx(log->menu_x + 20, log->menu_y + 40 + (i * 20), -1, "%s", Log[i].c_str());
+	}
+}
 
 
