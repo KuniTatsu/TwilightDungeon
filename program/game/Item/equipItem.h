@@ -12,6 +12,9 @@ public:
 	//ColumnId: 0->id,1->type,2->manpukudo,3->heal,4->hitdamage,5->hp,6->attack,7->defence,8->speed,9->subid,
 	int getItemData(int ColumnId)override;
 
+	//生成時に必要なint型アイテムデータをvectorで返す関数 Id,ItemType,Saturation,Heal,HitDamage,subId,hp,attack,defence,speed,
+	std::vector<int> GetAllIntData()override;
+
 	//アイテムの装備状況を変更する関数
 	void ChangeEquip();
 	inline bool GetIsEquiped() {

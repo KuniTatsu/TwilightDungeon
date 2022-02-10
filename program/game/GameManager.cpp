@@ -2,6 +2,7 @@
 #include"SceneManager.h"
 #include"DxLib.h"
 #include<algorithm>
+#include<memory>
 
 #include"../support/Support.h"
 #include<string>
@@ -13,6 +14,7 @@
 #include"Item/ItemManager.h"
 #include"Item/HaveItem.h"
 #include"Item/Item.h"
+#include"Item/equipItem.h"
 #include"Item//Inventory.h"
 //#include"game_main.h"
 
@@ -43,8 +45,26 @@ void GameManager::AddItemToInventory(int itemId)
 		//登録するinventoryを更新する
 		inventoryNum++;
 	}
-	inventories[inventoryNum]->AddInventory(iManager->getItemData(itemId));
+	Item* item = iManager->getItemData(itemId);
+	//装備アイテムだったら
+	if (item->getItemData(1) >= 2) {
+		equipItem* eItem = (equipItem*)item;
+		std::vector<int> intData = eItem->GetAllIntData();
+		std::vector<std::string> stringData = item->GetAllStringData();
+		//int Id, int ItemType, std::string ItemName, int Saturation, int Heal, int HitDamage, std::string Gh, int SubId, std::string Desc, int Hp, int Attack, int Defence, int Speed
+		equipItem* newItem = new equipItem(intData[0], intData[1], stringData[0], intData[2], intData[3], intData[4],
+			stringData[1], intData[5], stringData[2], intData[6], intData[7], intData[8], intData[9]);
+		inventories[inventoryNum]->AddInventory(newItem);
+	}
+	else {
+		std::vector<int> intData = item->GetAllIntData();
+		std::vector<std::string> stringData = item->GetAllStringData();
 
+		Item* newItem = new Item(intData[0], intData[1], stringData[0], intData[2], intData[3], intData[4], stringData[1], stringData[2]);
+		//std::shared_ptr<Item>nItem= std::make_shared<Item>(intData[0], intData[1], stringData[0], intData[2], intData[3], intData[4], stringData[1], stringData[2]);
+
+		inventories[inventoryNum]->AddInventory(newItem);
+	}
 
 #if 0
 	//今のinventoryの持つアイテム配列がいっぱいなら
@@ -356,7 +376,7 @@ bool GameManager::CheckNearByPlayer(std::shared_ptr<Enemy>enemy)
 	if (enemyPos.x > 0)hidari = enemyPos + t2k::Vector3(-1, 0, 0);
 	if (enemyPos.y > 0)ue = enemyPos + t2k::Vector3(0, -1, 0);
 	if (enemyPos.x < MAPWIDTH)migi = enemyPos + t2k::Vector3(1, 0, 0);
-	if (enemyPos.y < MAPHEIGHT)shita = enemyPos + t2k::Vector3(0, -1, 0);
+	if (enemyPos.y < MAPHEIGHT)shita = enemyPos + t2k::Vector3(0, 1, 0);
 
 	t2k::Vector3 enemyPosNear[4] = { hidari,ue,migi,shita };
 

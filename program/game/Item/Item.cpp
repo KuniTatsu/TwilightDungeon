@@ -16,6 +16,8 @@ Item::Item(int Id, int ItemType, std::string ItemName, int Saturation, int Heal,
 	amountOfHeal = Heal;
 	hitDamage = HitDamage;
 
+	ghData = Gh;
+
 	gh = gManager->LoadGraphEx(Gh);
 	desc = Desc;
 
@@ -46,6 +48,28 @@ int Item::getItemData(int ColumnId)
 std::string Item::getItemName()
 {
 	return itemName;
+}
+
+std::vector<int> Item::GetAllIntData()
+{
+	std::vector<int>data;
+	data.emplace_back(id);
+	data.emplace_back(itemType);
+	data.emplace_back(amountOfSaturation);
+	data.emplace_back(amountOfHeal);
+	data.emplace_back(hitDamage);
+
+	return data;
+}
+
+std::vector<std::string> Item::GetAllStringData()
+{
+	std::vector<std::string>data;
+	data.emplace_back(itemName);
+	data.emplace_back(ghData);
+	data.emplace_back(desc);
+
+	return data;
 }
 
 void Item::SetPos(t2k::Vector3 Pos)

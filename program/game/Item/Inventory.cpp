@@ -35,6 +35,13 @@ void Inventory::AddInventory(Item* item)
 #endif
 }
 
+void Inventory::AddSharedInventory(std::shared_ptr<Item> item)
+{
+	if (inventoryList.size() == 10)return;
+	inventorySharedList.emplace_back(item);
+	itemNum++;
+}
+
 void Inventory::CursorMove()
 {
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_UP)) {

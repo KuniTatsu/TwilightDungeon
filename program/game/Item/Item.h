@@ -9,7 +9,7 @@ class Item
 public:
 	Item() {};
 	Item(int Id,int ItemType,std::string ItemName,int Saturation,int Heal,int HitDamage,std::string Gh,std::string Desc);
-	explicit Item(int ItemId);
+	
 	virtual ~Item();
 	//アイテムIDの取得
 	int GetItemId();
@@ -21,6 +21,11 @@ public:
 	//ColumnId: 0->id,1->type,2->manpukudo,3->heal,4->hitdamage
 	virtual int getItemData(int ColumnId);
 	std::string getItemName();
+
+	//生成時に必要なint型アイテムデータをvectorで返す関数 Id,ItemType,Saturation,Heal,HitDamage
+	virtual std::vector<int> GetAllIntData();
+	//生成時に必要なstringデータをvectorで返す関数 Name,Gh,Desc
+	std::vector<std::string>GetAllStringData();
 
 	void SetPos(t2k::Vector3 Pos);
 	//プレイヤーが踏んでいるかどうかの取得関数
@@ -52,7 +57,7 @@ protected:
 	int amountOfSaturation = 0;
 	int amountOfHeal = 0;
 	int hitDamage = 0;
-
+	std::string ghData;
 	int gh = 0;
 	std::string desc = {};
 	//名前と説明文の入った配列
