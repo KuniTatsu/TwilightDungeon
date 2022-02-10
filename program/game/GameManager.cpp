@@ -89,6 +89,7 @@ void GameManager::PopItemFromInventory(int NowInventoryId)
 	for (int i = 0; i < selectNum; ++i) {
 		itr++;
 	}
+	delete((*itr));
 	itr = inventories[NowInventoryId]->inventoryList.erase(itr);
 	//popするアイテムがいる場所=今いるインベントリが最後のインベントリではない場合
 	if (NowInventoryId != inventoryNum) {
