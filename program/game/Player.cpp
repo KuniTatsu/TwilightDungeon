@@ -10,7 +10,10 @@ Player::Player(t2k::Vector3 StartPos, float Hp, int Atack, int Defence, int Spee
 {
 	actId = ActId;
 	pos = StartPos;
-	p_gh = gManager->LoadGraphEx("graphics/PlayerTest.png");
+	//p_gh = gManager->LoadGraphEx("graphics/PlayerTest.png");
+
+	LoadDivGraph("graphics/Character_1.png", 12, 3, 4, 32, 32, gh);
+
 	nowHpVar_gh = gManager->LoadGraphEx("graphics/haveHpVar.png");
 	hpVar_gh = gManager->LoadGraphEx("graphics/AllHpVar.png");
 
@@ -131,6 +134,7 @@ bool Player::Move()
 
 
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_LEFT)) {
+		mydir = Actor::LEFT;
 		//キャラのチップの左のチップがWALLなら移動しない
 		if ((gManager->GetMapChip(playerInMap + t2k::Vector3(-1, 0, 0))) == 0)return false;
 		//敵がその位置にいれば移動しない
@@ -141,7 +145,7 @@ bool Player::Move()
 		return true;
 	}
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_UP)) {
-
+		mydir = Actor::UP;
 		//キャラのチップの左のチップがWALLなら移動しない
 		if ((gManager->GetMapChip(playerInMap + t2k::Vector3(0, -1, 0))) == 0)return false;
 		//敵がその位置にいれば移動しない
@@ -152,6 +156,7 @@ bool Player::Move()
 		return true;
 	}
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RIGHT)) {
+		mydir = Actor::RIGHT;
 		//キャラのチップの左のチップがWALLなら移動しない
 		if ((gManager->GetMapChip(playerInMap + t2k::Vector3(1, 0, 0))) == 0)return false;
 		//敵がその位置にいれば移動しない
@@ -162,6 +167,7 @@ bool Player::Move()
 		return true;
 	}
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_DOWN)) {
+		mydir = Actor::DOWN;
 		//キャラのチップの左のチップがWALLなら移動しない
 		if ((gManager->GetMapChip(playerInMap + t2k::Vector3(0, 1, 0))) == 0)return false;
 		//敵がその位置にいれば移動しない
@@ -174,7 +180,7 @@ bool Player::Move()
 }
 
 
-
+/*
 void Player::Draw()
 {
 	//t2k::Vector3 gp(0, 0, 0);
@@ -185,17 +191,19 @@ void Player::Draw()
 	//t2k::Vector3 move= (fix - gp) * 0.1f;//10fで全て移動完了
 	//gp += move;
 
-	DrawRotaGraph(pos.x - gManager->camera->cameraPos.x, pos.y - gManager->camera->cameraPos.y, 1, 0, p_gh, true);
+
+	//DrawRotaGraph(pos.x - gManager->camera->cameraPos.x, pos.y - gManager->camera->cameraPos.y, 1, 0, gh, true);
 	//DrawRotaGraph(gp.x, gp.y, 1, 0, p_gh, true);
 	//DrawRotaGraph(gp.x - gManager->camera->cameraPos.x, gp.y - gManager->camera->cameraPos.y, 1, 0, p_gh, true);
+}
+*/
 
-	//Hpバー関連
-
+void Player::HpVarDraw()
+{
 	DrawRotaGraph(pos.x - gManager->camera->cameraPos.x, pos.y - gManager->camera->cameraPos.y - 20, 1, 0, hpVar_gh, false);
 	DrawRotaGraph3(pos.x - gManager->camera->cameraPos.x - 15, pos.y - gManager->camera->cameraPos.y - 20 - 5, 0, 0,
 		nowHpVarWidth, 1, 0, nowHpVar_gh, false);
 	DrawStringEx(pos.x - gManager->camera->cameraPos.x - 10, pos.y - gManager->camera->cameraPos.y - 40, -1, "%.0f", nowHp);
-
 }
 
 void Player::DashToDir(int dir, t2k::Vector3 mapPos)
@@ -207,7 +215,7 @@ void Player::DashToDir(int dir, t2k::Vector3 mapPos)
 			return;
 		}
 		pos.x -= 20;
-		gManager->CameraMove(this);
+		gManager->CameraMove();
 	}
 	else if (dir == UP) {
 		if ((gManager->GetMapChip(mapPos + t2k::Vector3(0, -1, 0))) == 0 || gManager->CheckNearByPlayerToAllEnemy(2))
@@ -216,7 +224,7 @@ void Player::DashToDir(int dir, t2k::Vector3 mapPos)
 			return;
 		}
 		pos.y -= 20;
-		gManager->CameraMove(this);
+		gManager->CameraMove();
 	}
 	else if (dir == RIGHT) {
 		if ((gManager->GetMapChip(mapPos + t2k::Vector3(1, 0, 0))) == 0 || gManager->CheckNearByPlayerToAllEnemy(2))
@@ -225,7 +233,7 @@ void Player::DashToDir(int dir, t2k::Vector3 mapPos)
 			return;
 		}
 		pos.x += 20;
-		gManager->CameraMove(this);
+		gManager->CameraMove();
 	}
 	else if (dir == DOWN) {
 		if ((gManager->GetMapChip(mapPos + t2k::Vector3(0, 1, 0))) == 0 || gManager->CheckNearByPlayerToAllEnemy(2))
@@ -234,7 +242,7 @@ void Player::DashToDir(int dir, t2k::Vector3 mapPos)
 			return;
 		}
 		pos.y += 20;
-		gManager->CameraMove(this);
+		gManager->CameraMove();
 	}
 
 	gManager->setPlayerRoomNum(gManager->CheckIsThere(mapPos));
@@ -245,23 +253,23 @@ void Player::MoveToDir(int dir, t2k::Vector3 mapPos)
 	if (dir == LEFT) {
 		if ((gManager->GetMapChip(mapPos + t2k::Vector3(-1, 0, 0))) == 0)return;
 		pos.x -= 20;
-		gManager->CameraMove(this);
+		gManager->CameraMove();
 	}
 	else if (dir == UP) {
 		if ((gManager->GetMapChip(mapPos + t2k::Vector3(0, -1, 0))) == 0)return;
 
 		pos.y -= 20;
-		gManager->CameraMove(this);
+		gManager->CameraMove();
 	}
 	else if (dir == RIGHT) {
 		if ((gManager->GetMapChip(mapPos + t2k::Vector3(1, 0, 0))) == 0)return;
 		pos.x += 20;
-		gManager->CameraMove(this);
+		gManager->CameraMove();
 	}
 	else if (dir == DOWN) {
 		if ((gManager->GetMapChip(mapPos + t2k::Vector3(0, 1, 0))) == 0)return;
 		pos.y += 20;
-		gManager->CameraMove(this);
+		gManager->CameraMove();
 	}
 
 	gManager->setPlayerRoomNum(gManager->CheckIsThere(mapPos));

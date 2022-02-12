@@ -10,6 +10,7 @@ class EnemyManager;
 class Item;
 class Inventory;
 class Player;
+class Enemy;
 
 class DungeonScene :public BaseScene {
 
@@ -38,7 +39,7 @@ private:
 	//次のenemyの行動までのインターバルフレーム
 	const int ENEMYACTINTERVAL = 30;
 	//更新インターバルフレーム
-	int enemyActTimer = 0;
+	int enemyActTimer = 30;
 
 	std::list<std::shared_ptr<Enemy>>atackEnemies;
 	std::list<std::shared_ptr<Enemy>>::iterator itr;
@@ -66,6 +67,9 @@ private:
 	
 	//飛んでいるアイテムリスト
 	std::list<Item*> throwItem;
+
+	std::list<std::shared_ptr<Item>>throwedItemList;
+
 	/*
 	Menu* hoge=new Menu(30,50,175,390,gh(int))
 	Menu* hoge=new Menu(220,50,440,390,gh(int))

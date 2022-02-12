@@ -173,9 +173,6 @@ void GameManager::Draw()
 		DrawStringEx(500 + 100 * k, 120, -1, "ItemName:%s", haveItem->getItemName().c_str());
 		++k;
 	}
-
-
-
 }
 
 void GameManager::initGameManager()
@@ -493,7 +490,7 @@ void GameManager::TakeDamageToTarget(Actor* hoge, t2k::Vector3 Pos)
 	}
 	//エネミーが攻撃するなら
 	else {
-		float damage = CalcDamage(hoge->GetStatus(1), player->GetStatus(2));
+		float damage = (-1) * CalcDamage(hoge->GetStatus(1), player->GetStatus(2));
 		RunDamageEvent(damage, player);
 	}
 }
@@ -577,7 +574,7 @@ int GameManager::CheckIsThere(t2k::Vector3 Pos)
 	return map->CheckIsThere(Pos.x, Pos.y);
 }
 //なんか微妙
-void GameManager::CameraMove(std::shared_ptr<Player>)
+void GameManager::CameraMove()
 {
 	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
 }

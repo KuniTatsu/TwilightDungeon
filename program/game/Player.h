@@ -9,10 +9,9 @@ public:
 	Player(t2k::Vector3 StartPos, float Hp, int Atack, int Defence, int Speed,int ActId);
 	~Player();
 
-	t2k::Vector3 pos = {};
+	//t2k::Vector3 pos = {};
 
-	//Hpの変動が外部から与えられた時に使う関数
-	void TakeHpEffect(int HpMove);
+	
 
 	//満腹度とHPの変更関数(主に食料アイテムの使用で使う)
 	void ChangeBaseStatus(int ManpukuMove, int HpMove);
@@ -22,7 +21,8 @@ public:
 
 	bool Move()override;
 
-	void Draw()override;
+	//void Draw()override;
+	void HpVarDraw();
 
 
 	void DrawPlayerStatus();

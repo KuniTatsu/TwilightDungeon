@@ -134,6 +134,7 @@ void DungeonScene::Draw()
 	gManager->map->MapDraw();
 	DrawPopItem();
 	gManager->player->Draw();
+	gManager->player->HpVarDraw();
 
 	for (auto hoge : eManager->liveEnemyList) {
 		hoge->Draw();
@@ -181,8 +182,8 @@ void DungeonScene::Draw()
 		}
 	}
 	else if (nowSeq == sequence::THROWITEMMOVE) {
-		if (!throwItem.empty()) {
-			for (auto item : throwItem) {
+		if (!throwedItemList.empty()) {
+			for (auto item : throwedItemList) {
 				item->DrawThrowItem();
 			}
 		}
@@ -300,18 +301,25 @@ bool DungeonScene::Seq_EnemyAct(const float deltatime)
 				atackEnemies.emplace_back(liveEnemy);
 			}
 			else {
+				//動く関数は全て同時でいい
 				liveEnemy->Move();
 			}
 		}
 		itr = atackEnemies.begin();
 	}
-	if (++enemyActTimer > ENEMYACTINTERVAL) {
-		(*itr)->Atack();
-		enemyActTimer = 0;
-		itr = atackEnemies.erase(itr);
+	//攻撃する敵リストがからじゃないなら
+	if (!atackEnemies.empty()) {
+		//もし敵が一体だけならインターバルを0にする
+		if (atackEnemies.size() == 1)enemyActTimer = ENEMYACTINTERVAL;
+		//一体ずつ攻撃させるためのインターバル計測
+		if (++enemyActTimer > ENEMYACTINTERVAL) {
+			(*itr)->Atack();
+			enemyActTimer = 0;
+			itr = atackEnemies.erase(itr);
+		}
+		//すべての敵が攻撃し終えるまでこのシークエンスを出ない
+		if (!atackEnemies.empty())return true;
 	}
-	if (!atackEnemies.empty())return true;
-
 	ChangeSequence(sequence::MAIN);
 	return true;
 }
@@ -413,6 +421,7 @@ bool DungeonScene::Seq_InventoryUse(const float deltatime)
 		}
 		//投げるでEnterを押したら
 		else if (use_usable->SelectNum == 1 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+			firstMenu->menu_live = false;
 			ItemThrow(inventoryPage);
 			ChangeSequence(sequence::THROWITEMMOVE);
 			return true;
@@ -436,6 +445,7 @@ bool DungeonScene::Seq_InventoryUse(const float deltatime)
 			return true;
 		}//投げるでEnterを押したら
 		else if (use_equip->SelectNum == 1 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+			firstMenu->menu_live = false;
 			ItemUse(inventoryPage);
 			ChangeSequence(sequence::THROWITEMMOVE);
 			return true;
@@ -453,11 +463,11 @@ bool DungeonScene::Seq_InventoryUse(const float deltatime)
 
 bool DungeonScene::Seq_ThrowItemMove(const float deltatime)
 {
-	if (throwItem.empty())return true;
-	auto itr = throwItem.begin();
+	if (throwedItemList.empty())return true;
+	auto itr = throwedItemList.begin();
 
 	if ((*itr)->ThrowItem(player->mydir)) {
-		throwItem.erase(itr);
+		throwedItemList.erase(itr);
 		ChangeSequence(sequence::MAIN);
 		return true;
 	}
@@ -471,7 +481,7 @@ bool DungeonScene::Seq_CameraMove(const float deltatime)
 
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_ESCAPE)) {
 		ChangeSequence(sequence::MAIN);
-		gManager->CameraMove(gManager->player);
+		gManager->CameraMove();
 		return true;
 	}
 
@@ -620,11 +630,21 @@ void DungeonScene::ItemUse(/*int selectNum, Inventory* inventory,*/ int inventor
 
 void DungeonScene::ItemThrow(int inventoryPage)
 {
-	itemBuf->SetPos(player->pos);
+	//itemBuf->SetPos(player->pos);
 
-	Item* throwedItem = itemBuf;
+	//Item* throwedItem = itemBuf;
+	//ここで新しくitemBufと同じデータでアイテムを生成する
+	std::vector<int> intData = itemBuf->GetAllIntData();
+	std::vector<string> stringData = itemBuf->GetAllStringData();
+
+	//Item* throwedItem = new Item(intData[0], intData[1], stringData[0], intData[2], intData[3], intData[4], stringData[1], stringData[2]);
+	std::shared_ptr<Item>throwedItem = std::make_shared<Item>(intData[0], intData[1], stringData[0], intData[2], intData[3], intData[4], stringData[1], stringData[2]);
+
+	throwedItem->SetPos(player->pos);
 	throwedItem->SetGoalPos(player->mydir);
-	throwItem.emplace_back(throwedItem);
+	//throwItem.emplace_back(throwedItem);
+
+	throwedItemList.emplace_back(throwedItem);
 	//インベントリからの消去
 	gManager->PopItemFromInventory(inventoryPage);
 }

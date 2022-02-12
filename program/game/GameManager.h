@@ -110,7 +110,7 @@ public:
 	int CheckIsThere(t2k::Vector3 Pos);
 
 	//カメラの移動
-	void CameraMove(std::shared_ptr<Player>);
+	void CameraMove();
 
 	//マップ内のランダムな部屋を取得→部屋の中のランダムな座標を取得→座標を描画座標に変換して返す
 	//setType 0:プレイヤー初期座標,1:階段,2:enemy
