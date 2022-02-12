@@ -266,7 +266,7 @@ void Enemy::MoveChasePoint()
 		//自分のy座標が目的地より上なら下に進む
 		if (myNowPos.y < ChasePoint.y) {
 			//ひとつ下が壁のとき
-			if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, 1, 0)) == 0) {
+			if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, 1, 0)) == 0 || gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, 1, 0))) {
 				//自分のx座標が目的地より左なら右に進む
 				if (myNowPos.x < ChasePoint.x) {
 					if (gManager->GetMapChip(myNowPos + t2k::Vector3(1, 0, 0)) == 0)return;
@@ -295,7 +295,7 @@ void Enemy::MoveChasePoint()
 		}//上に進む
 		else {
 			//ひとつ上が壁のとき
-			if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, -1, 0)) == 0) {
+			if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, -1, 0)) == 0 || gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, -1, 0))) {
 				//自分のx座標が目的地より左なら右に進む
 				if (myNowPos.x < ChasePoint.x) {
 					if (gManager->GetMapChip(myNowPos + t2k::Vector3(1, 0, 0)) == 0)return;
@@ -439,7 +439,7 @@ bool Enemy::CheckCanMove(const int dir, const t2k::Vector3 nowPos)
 		nextPos = nowPos + t2k::Vector3(-1, 0, 0);
 	}
 	//壁ならfalseを返す
-	if (gManager->GetMapChip(nextPos) == 0||gManager->CheckIsThereEnemyToDir(nextPos))return false;
+	if (gManager->GetMapChip(nextPos) == 0 || gManager->CheckIsThereEnemyToDir(nextPos))return false;
 
 	return true;
 }

@@ -660,6 +660,6 @@ void GameManager::addLog(const std::string log)
 void GameManager::LogDraw(int x, int y)
 {
 	for (int i = 0; i < 9; ++i) {
-		DrawStringEx(x + 20, y + 40 + (i * 20), -1, "%s", Log[i].c_str());
+		DrawStringEx(x + 20, y+20 + (i * 20), -1, "%s", Log[i].c_str());
 	}
 }

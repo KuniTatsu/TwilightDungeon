@@ -106,6 +106,7 @@ bool Player::Move()
 
 	//もしshiftも一緒に押していたら壁か敵に当たるまでダッシュする
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_LEFT) && t2k::Input::isKeyDown(t2k::Input::KEYBORD_LSHIFT)) {
+		mydir = Actor::LEFT;
 		DashToDir(LEFT, playerInMap);
 		left = true;
 		gManager->setPlayerRoomNum(gManager->CheckIsThere(playerInMap));
@@ -113,19 +114,21 @@ bool Player::Move()
 		//もしshiftも一緒に押していたら壁か敵に当たるまでダッシュする
 	}
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_UP) && t2k::Input::isKeyDown(t2k::Input::KEYBORD_LSHIFT)) {
-
+		mydir = Actor::UP;
 		DashToDir(UP, playerInMap);
 		up = true;
 		gManager->setPlayerRoomNum(gManager->CheckIsThere(playerInMap));
 		return true;
 	}
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RIGHT) && t2k::Input::isKeyDown(t2k::Input::KEYBORD_LSHIFT)) {
+		mydir = Actor::RIGHT;
 		DashToDir(RIGHT, playerInMap);
 		right = true;
 		gManager->setPlayerRoomNum(gManager->CheckIsThere(playerInMap));
 		return true;
 	}
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_DOWN) && t2k::Input::isKeyDown(t2k::Input::KEYBORD_LSHIFT)) {
+		mydir = Actor::DOWN;
 		DashToDir(DOWN, playerInMap);
 		down = true;
 		gManager->setPlayerRoomNum(gManager->CheckIsThere(playerInMap));
