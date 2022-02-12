@@ -197,7 +197,7 @@ void GameManager::initGameManager()
 		CheckRoomWayPoint(i);
 	}*/
 	//playerのactidは0
-	player = std::make_shared<Player>(SetStartPos(0), 100, 10, 10, 10, 0);
+	player = std::make_shared<Player>(SetStartPos(0), 100, 30, 30, 30, 0);
 	camera->cameraPos = player->pos - WINDOWCENTER;
 	iManager = new ItemManager();
 
@@ -404,7 +404,7 @@ t2k::Vector3 GameManager::GetRoomStartPos(int roomNum)
 bool GameManager::CheckNearByPlayerToAllEnemy(int range)
 {
 	bool isNear = false;
-	for (auto enemy : hoge) {
+	for (auto enemy : liveEnemyList) {
 		//enemyPosはマップ座標
 		t2k::Vector3 enemyPos = WorldToLocal(enemy->pos);
 		t2k::Vector3 hidari;
@@ -446,7 +446,7 @@ bool GameManager::CheckNearByPlayerToAllEnemy(int range)
 bool GameManager::CheckIsThereEnemyToDir(t2k::Vector3 Pos)
 {
 	bool isThere = false;
-	for (auto enemy : hoge) {
+	for (auto enemy : liveEnemyList) {
 		t2k::Vector3 enemyPos = WorldToLocal(enemy->pos);
 		if (enemyPos.x == Pos.x && enemyPos.y == Pos.y) {
 			isThere = true;
@@ -458,7 +458,7 @@ bool GameManager::CheckIsThereEnemyToDir(t2k::Vector3 Pos)
 std::shared_ptr<Enemy> GameManager::GetIsThereEnemyToDir(t2k::Vector3 Pos)
 {
 	std::shared_ptr<Enemy>thereEnemy = nullptr;
-	for (auto enemy : hoge) {
+	for (auto enemy : liveEnemyList) {
 		t2k::Vector3 enemyPos = WorldToLocal(enemy->pos);
 		if (enemyPos.x == Pos.x && enemyPos.y == Pos.y) {
 			thereEnemy = enemy;
@@ -466,6 +466,12 @@ std::shared_ptr<Enemy> GameManager::GetIsThereEnemyToDir(t2k::Vector3 Pos)
 		}
 	}
 	return thereEnemy;
+}
+
+void GameManager::SetLiveEnemyList(std::list<std::shared_ptr<Enemy>> list)
+{
+	liveEnemyList = list;
+
 }
 
 void GameManager::Zoom(double* zoomEx)
@@ -516,7 +522,7 @@ float GameManager::CalcDamage(int Attack, int Defence)
 	//std::pow(2,(enemyDef/10))
 
 	float rand = (float)GetRandEx(-5, 5);
-	float damage = Attack * std::pow(2, (Defence / 10)) + rand;
+	float damage = Attack / std::pow(2, (Defence / 10)) + rand;
 	//最低保証ダメージ
 	if (damage < 0)damage = 1;
 

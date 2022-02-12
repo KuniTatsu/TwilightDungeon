@@ -56,6 +56,7 @@ DungeonScene::DungeonScene()
 		eManager->CreateEnemy(rand);
 	}*/
 	RandEnemyCreate(5);
+
 	for (int i = 0; i < 5; ++i) {
 		int rand = GetRand(100) % gManager->GetItemNum();
 		SpawnItem(rand);
@@ -73,6 +74,7 @@ void DungeonScene::RandEnemyCreate(int num)
 		int rand = GetRand(100) % 6 + 100;
 		eManager->CreateEnemy(rand, dungeonLevel);
 	}
+	gManager->SetLiveEnemyList(eManager->liveEnemyList);
 }
 
 void DungeonScene::Update()
@@ -203,7 +205,7 @@ void DungeonScene::SetDungeonLevel(int addLevel)
 void DungeonScene::MoveLevel(int addLevel)
 {
 	if (!eManager->liveEnemyList.empty())eManager->liveEnemyList.clear();
-	if (!gManager->hoge.empty())gManager->hoge.clear();
+	if (!gManager->liveEnemyList.empty())gManager->liveEnemyList.clear();
 	dungeonLevel++;
 	gManager->ReCreate();
 	RandEnemyCreate(5);
@@ -687,9 +689,12 @@ void DungeonScene::DeleteDeadEnemy()
 	auto itr = eManager->liveEnemyList.begin();
 
 	for (int i = 0; i < eManager->liveEnemyList.size(); ++i) {
-		if (!(*itr)->isLive) {
+		if ((*itr)->isLive == false) {
 			itr = eManager->liveEnemyList.erase(itr);
-			--i;
+			gManager->SetLiveEnemyList(eManager->liveEnemyList);
+		}
+		else {
+			itr++;
 		}
 	}
 

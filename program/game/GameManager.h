@@ -145,7 +145,10 @@ public:
 	t2k::Vector3 GetRoomStartPos(int roomNum);
 
 	//enemylist
-	std::list<std::shared_ptr<Enemy>> hoge;
+	std::list<std::shared_ptr<Enemy>> liveEnemyList;
+
+	//¶‘¶‚µ‚Ä‚¢‚éenemy‚ğ“¯Šú‚·‚éŠÖ”
+	void SetLiveEnemyList(std::list<std::shared_ptr<Enemy>> list);
 
 	//‘S‚Ä‚Ìenemy‚Æplayer‚ªˆê’è”ÍˆÍ“à‚É‚¢‚é‚©‚Ç‚¤‚©Šm”F‚·‚éŠÖ”
 	bool CheckNearByPlayerToAllEnemy(int range);

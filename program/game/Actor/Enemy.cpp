@@ -39,6 +39,7 @@ Enemy::Enemy(int Id, int Type, std::string Name, int Hp, int Atack, int Defence,
 
 Enemy::~Enemy()
 {
+	t2k::debugTrace("\n“G‚ªŽ€–S‚µ‚Ü‚µ‚½\n");
 }
 
 void Enemy::TimeUpdate()

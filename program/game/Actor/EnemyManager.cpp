@@ -60,7 +60,7 @@ void EnemyManager::CreateEnemy(int Id, int Floor)
 		if (canCreateEnemy)break;
 	}
 	liveEnemyList.emplace_back(enemy);
-	gManager->hoge.emplace_back(enemy);
+	//gManager->hoge.emplace_back(enemy);
 }
 
 void EnemyManager::LoadEnemyData()
