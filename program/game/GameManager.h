@@ -139,6 +139,8 @@ public:
 
 	//特定のEnemyとPlayerが隣り合っているか確認する関数
 	bool CheckNearByPlayer(std::shared_ptr<Enemy>enemy);
+	//隣り合ったPlayerとの相対位置を取得する関数 0:上,1:右,2:下,3:左
+	int GetPlayerVec(std::shared_ptr<Enemy>enemy);
 
 	t2k::Vector3 GetRoomStartPos(int roomNum);
 
@@ -180,7 +182,15 @@ public:
 	//ダメージ処理
 	void RunDamageEvent(float Damage, std::shared_ptr<Actor>actor);
 
+	//ログ関連
+
+	void addLog(const std::string log);
+	void LogDraw(int x, int y);
+
 private:
+	std::string Log[9] = {};
+
+	const t2k::Vector3 WINDOWCENTER = t2k::Vector3(512, 384, 0);
 
 	int test = 0;
 	//アイテムの総数

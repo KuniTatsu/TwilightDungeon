@@ -21,6 +21,8 @@ public:
 	};
 	dir mydir = UP;
 
+	void setDir(int dir);
+
 	t2k::Vector3 pos = {};
 	t2k::Vector3 skill = {};
 

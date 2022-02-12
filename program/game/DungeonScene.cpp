@@ -110,11 +110,6 @@ void DungeonScene::Update()
 		if (item->GetIsLive())continue;
 		if (gManager->PopDetectItem(item, dropItems))break;
 	}
-
-
-
-
-
 	//isLiveがfalseな敵をリストから外したい
 	/*std::list<std::shared_ptr<Enemy>>::iterator hoge = eManager->liveEnemyList.begin();
 	for (int i = 0; i < eManager->liveEnemyList.size(); ++i) {
@@ -166,7 +161,7 @@ void DungeonScene::Draw()
 
 	DrawNowSequence(nowSeq);
 	log->Menu_Draw();
-	LogDraw();
+	gManager->LogDraw(log->menu_x, log->menu_y);
 
 	firstMenu->All();
 	if (nowSeq == sequence::MAIN || nowSeq == sequence::ENEMYACT) {
@@ -255,9 +250,11 @@ bool DungeonScene::Seq_Main(const float deltatime)
 		return true;
 	}
 
+
+
 	//足踏み(Playerは移動せずにターンは経過する
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_SPACE)) {
-		skip = true;
+		player->skip = true;
 	}
 
 	//もしplayerが階段の上にいたら
@@ -272,18 +269,29 @@ bool DungeonScene::Seq_Main(const float deltatime)
 			RandEnemyCreate(5);
 		}
 	}
-	////enemyの移動インターバル更新
-	//for (auto hoge : eManager->liveEnemyList) {
-	//	hoge->TimeUpdate();
-	//}
+	//左クリックかRボタンで攻撃
+	//プレイヤーの攻撃は目の前に対象がいなかった場合skipと同じ処理を行う
+	if (t2k::Input::isMouseTrigger(t2k::Input::MOUSE_RELEASED_LEFT) || t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_R)) {
+		player->Atack();
+		//死亡チェック
+		for (auto enemy : eManager->liveEnemyList) {
+			if (enemy->GetStatus(0) <= 0)enemy->isLive = false;
+		}
+
+		DeleteDeadEnemy();
+		if (!player->skip) {
+			ChangeSequence(sequence::ENEMYACT);
+			return true;
+		}
+	}
 
 	//もしPlayerが動いたら もしくはスキップしたら
-	if (gManager->player->Move() || skip) {
+	if (gManager->player->Move() || player->skip) {
 
 		playerPos = gManager->WorldToLocal(gManager->player->pos);
 
 		ChangeSequence(sequence::ENEMYACT);
-		if (skip)skip = false;
+		if (player->skip)player->skip = false;
 		return true;
 	}
 
@@ -297,6 +305,11 @@ bool DungeonScene::Seq_EnemyAct(const float deltatime)
 			//playerとenemyが隣り合っているなら
 			if (gManager->CheckNearByPlayer(liveEnemy))
 			{
+				//もしプレイヤーの方向を向いていない場合は向かせる
+				//プレイヤーの位置とenemyの位置との相対方向を取得する
+				int vec = gManager->GetPlayerVec(liveEnemy);
+
+				if (liveEnemy->mydir != vec)liveEnemy->setDir(vec);
 				//リストに入れる
 				atackEnemies.emplace_back(liveEnemy);
 			}
@@ -586,7 +599,28 @@ void DungeonScene::ChangeInventory()
 void DungeonScene::SpawnItem(int ItemId)
 {
 	Item* popItem = gManager->GetItemData(ItemId);
-	t2k::Vector3 popPos = gManager->SetStartPos(0);
+	t2k::Vector3 popPos;
+	if (dropItems.empty()) {
+		popPos = gManager->SetStartPos(0);
+	}
+	else {
+		//すでにリスト内にあるアイテムのポジションとかぶっていたらもう一度座標を取得する
+		while (1) {
+			popPos = gManager->SetStartPos(0);
+			bool set = false;
+			for (auto item : dropItems) {
+				t2k::Vector3 alreadySetPos = item->GetPos();
+				if (popPos.x == alreadySetPos.x && popPos.y == alreadySetPos.y) {
+					continue;
+				}
+				else {
+					set = true;
+					break;
+				}
+			}
+			if (set)break;
+		}
+	}
 	popItem->SetPos(popPos);
 	dropItems.emplace_back(popItem);
 }
@@ -609,7 +643,7 @@ void DungeonScene::ItemUse(/*int selectNum, Inventory* inventory,*/ int inventor
 		int manpuku = itemBuf->getItemData(2);
 		int heal = itemBuf->getItemData(3);
 		player->ChangeBaseStatus(manpuku, heal);
-		addLog(itemBuf->getItemName() + "を使った");
+		gManager->addLog(itemBuf->getItemName() + "を使った");
 		//インベントリからの消去
 		gManager->PopItemFromInventory(inventoryPage);
 	}//投擲消費アイテムだったら
@@ -648,38 +682,55 @@ void DungeonScene::ItemThrow(int inventoryPage)
 	//インベントリからの消去
 	gManager->PopItemFromInventory(inventoryPage);
 }
-//7つまでログを生成する関数,古い方から消える
-void DungeonScene::addLog(const std::string log)
+void DungeonScene::DeleteDeadEnemy()
 {
-	if (!Log[8].empty()) {
-		Log[0] = Log[1];
-		Log[1] = Log[2];
-		Log[2] = Log[3];
-		Log[3] = Log[4];
-		Log[4] = Log[5];
-		Log[5] = Log[6];
-		Log[6] = Log[7];
-		Log[7] = Log[8];
-		Log[8] = log;
-		return;
-	}
-	for (int i = 0; i < 10; i++) {
+	auto itr = eManager->liveEnemyList.begin();
 
-		if (Log[i].empty()) {
-
-			Log[i] = log;
-			return;
+	for (int i = 0; i < eManager->liveEnemyList.size(); ++i) {
+		if (!(*itr)->isLive) {
+			itr = eManager->liveEnemyList.erase(itr);
+			--i;
 		}
 	}
 
-}
-//生成したログを表示する関数
-void DungeonScene::LogDraw()
-{
-	for (int i = 0; i < 9; ++i) {
+	/*for (auto liveEnemy : eManager->liveEnemyList) {
+		if(!liveEnemy->isLive)
+	}*/
 
-		DrawStringEx(log->menu_x + 20, log->menu_y + 40 + (i * 20), -1, "%s", Log[i].c_str());
-	}
 }
+
+////ログを生成する関数,古い方から消える
+//void DungeonScene::addLog(const std::string log)
+//{
+//	if (!Log[8].empty()) {
+//		Log[0] = Log[1];
+//		Log[1] = Log[2];
+//		Log[2] = Log[3];
+//		Log[3] = Log[4];
+//		Log[4] = Log[5];
+//		Log[5] = Log[6];
+//		Log[6] = Log[7];
+//		Log[7] = Log[8];
+//		Log[8] = log;
+//		return;
+//	}
+//	for (int i = 0; i < 10; i++) {
+//
+//		if (Log[i].empty()) {
+//
+//			Log[i] = log;
+//			return;
+//		}
+//	}
+//
+//}
+////生成したログを表示する関数
+//void DungeonScene::LogDraw()
+//{
+//	for (int i = 0; i < 9; ++i) {
+//
+//		DrawStringEx(log->menu_x + 20, log->menu_y + 40 + (i * 20), -1, "%s", Log[i].c_str());
+//	}
+//}
 
 

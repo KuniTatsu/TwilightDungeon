@@ -44,8 +44,6 @@ private:
 	std::list<std::shared_ptr<Enemy>>atackEnemies;
 	std::list<std::shared_ptr<Enemy>>::iterator itr;
 
-	bool skip = false;
-
 	//Ÿ‚Ì‰ñ‚És‚¯‚éwindow
 	Menu* nextLevelWindow = nullptr;
 	Menu* menuOpen = nullptr;
@@ -144,9 +142,11 @@ private:
 
 	void ItemThrow(int inventoryPage);
 
-	std::string Log[9] = {};
+	void DeleteDeadEnemy();
+
+	/*std::string Log[9] = {};
 	void addLog(const std::string log);
-	void LogDraw();
+	void LogDraw();*/
 	
 
 };

@@ -13,6 +13,14 @@ Actor::~Actor()
 {
 }
 
+void Actor::setDir(int dir)
+{
+	if (dir == 0)mydir = dir::UP;
+	else if (dir == 1)mydir = dir::RIGHT;
+	else if (dir == 2)mydir = dir::DOWN;
+	else if (dir == 3)mydir = dir::LEFT;
+}
+
 int Actor::GetStatus(int StatusNum)
 {
 	//StatusNum:0->HP,1->Atack,2->Defence,3->Speed,4->Name
@@ -96,7 +104,7 @@ void Actor::Atack()
 		front = gManager->WorldToLocal(pos) + t2k::Vector3(1, 0, 0);
 	}
 	else if (mydir == dir::DOWN) {
-		front = gManager->WorldToLocal(pos) + t2k::Vector3(0, -1, 0);
+		front = gManager->WorldToLocal(pos) + t2k::Vector3(0, 1, 0);
 	}
 	else if (mydir == dir::LEFT) {
 		front = gManager->WorldToLocal(pos) + t2k::Vector3(-1, 0, 0);

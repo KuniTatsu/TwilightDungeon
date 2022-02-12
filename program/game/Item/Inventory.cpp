@@ -96,3 +96,8 @@ int Inventory::GetCursorNum()
 {
 	return selectCursor;
 }
+
+void Inventory::SetCursorNum(int MoveNum)
+{
+	selectCursor += MoveNum;
+}

@@ -79,6 +79,11 @@ void Item::SetPos(t2k::Vector3 Pos)
 	mapPos = gManager->WorldToLocal(pos);
 }
 
+t2k::Vector3& Item::GetPos()
+{
+	return pos;
+}
+
 bool Item::DetectOnPlayer(t2k::Vector3 Pos)
 {
 	t2k::Vector3 myMapPos = gManager->WorldToLocal(pos);

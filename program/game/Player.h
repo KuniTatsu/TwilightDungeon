@@ -10,7 +10,7 @@ public:
 	~Player();
 
 	//t2k::Vector3 pos = {};
-
+	bool skip = false;
 	
 
 	//満腹度とHPの変更関数(主に食料アイテムの使用で使う)

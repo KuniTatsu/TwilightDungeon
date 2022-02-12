@@ -32,6 +32,9 @@ public:
 	//カーソルの位置を取得する関数
 	int GetCursorNum();
 
+	//カーソルの位置を変更する関数
+	void SetCursorNum(int MoveNum);
+
 private:
 	//選択中のアイテムを指すカーソルの位置
 	int selectCursor = 0;

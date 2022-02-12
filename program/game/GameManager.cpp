@@ -93,6 +93,7 @@ void GameManager::PopItemFromInventory(int NowInventoryId)
 	}
 	delete((*itr));
 	itr = inventories[NowInventoryId]->inventoryList.erase(itr);
+	inventories[NowInventoryId]->SetCursorNum(-1);
 	//popするアイテムがいる場所=今いるインベントリが最後のインベントリではない場合
 	if (NowInventoryId != inventoryNum) {
 		int checkInventoryNum = NowInventoryId;
@@ -197,7 +198,7 @@ void GameManager::initGameManager()
 	}*/
 	//playerのactidは0
 	player = std::make_shared<Player>(SetStartPos(0), 100, 10, 10, 10, 0);
-	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
+	camera->cameraPos = player->pos - WINDOWCENTER;
 	iManager = new ItemManager();
 
 	haveItem = new HaveItem();
@@ -439,8 +440,7 @@ bool GameManager::CheckNearByPlayerToAllEnemy(int range)
 		}
 	}
 	//range範囲内にいたらtrueを返す
-	if (isNear)return true;
-	return false;
+	return isNear;
 }
 
 bool GameManager::CheckIsThereEnemyToDir(t2k::Vector3 Pos)
@@ -484,14 +484,21 @@ void GameManager::TakeDamageToTarget(Actor* hoge, t2k::Vector3 Pos)
 	if (hoge->GetActId() == 0) {
 		//全てのエネミーから前にいるエネミーを取得
 		std::shared_ptr<Enemy>hoge = GetIsThereEnemyToDir(Pos);
+		//もし空振りなら
+		if (hoge == nullptr) {
+			player->skip = true;
+			return;
+		}
 
 		float damage = CalcDamage(player->GetStatus(1), hoge->GetStatus(2));
-		RunDamageEvent(damage, hoge);
+		RunDamageEvent((-1) * damage, hoge);
+		addLog(hoge->GetName() + "が" + std::to_string(static_cast<int>(damage)) + "ダメージを受けた");
 	}
 	//エネミーが攻撃するなら
 	else {
-		float damage = (-1) * CalcDamage(hoge->GetStatus(1), player->GetStatus(2));
-		RunDamageEvent(damage, player);
+		float damage = CalcDamage(hoge->GetStatus(1), player->GetStatus(2));
+		RunDamageEvent((-1) * damage, player);
+		addLog("Playerが" + std::to_string(static_cast<int>(damage)) + "ダメージを受けた");
 	}
 }
 
@@ -510,6 +517,8 @@ float GameManager::CalcDamage(int Attack, int Defence)
 
 	float rand = (float)GetRandEx(-5, 5);
 	float damage = Attack * std::pow(2, (Defence / 10)) + rand;
+	//最低保証ダメージ
+	if (damage < 0)damage = 1;
 
 	return damage;
 }
@@ -586,4 +595,65 @@ bool GameManager::CheckMousePointToRect(int MouseX, int MouseY, int RectLeftTopX
 		return true;
 	}
 	return false;
+}
+//0:上, 1 : 右, 2 : 下, 3 : 左
+int GameManager::GetPlayerVec(std::shared_ptr<Enemy> enemy)
+{
+	int playerVec = -1;
+
+	t2k::Vector3 enemyPos = WorldToLocal(enemy->pos);
+	t2k::Vector3 hidari = { 0,0,0 };
+	t2k::Vector3 ue = { 0,0,0 };
+	t2k::Vector3 migi = { 0,0,0 };
+	t2k::Vector3 shita = { 0,0,0 };
+
+	if (enemyPos.x > 0)hidari = enemyPos + t2k::Vector3(-1, 0, 0);
+	if (enemyPos.y > 0)ue = enemyPos + t2k::Vector3(0, -1, 0);
+	if (enemyPos.x < MAPWIDTH)migi = enemyPos + t2k::Vector3(1, 0, 0);
+	if (enemyPos.y < MAPHEIGHT)shita = enemyPos + t2k::Vector3(0, 1, 0);
+
+	t2k::Vector3 enemyPosNear[4] = { ue,migi,shita,hidari };
+
+	t2k::Vector3 playerPos = WorldToLocal(player->pos);
+
+	for (int i = 0; i < 4; ++i) {
+		if (playerPos.x == enemyPosNear[i].x && playerPos.y == enemyPosNear[i].y) {
+			playerVec = i;
+			break;
+		}
+	}
+	return playerVec;
+}
+
+//ログを生成する関数,古い方から消える
+void GameManager::addLog(const std::string log)
+{
+	if (!Log[8].empty()) {
+		Log[0] = Log[1];
+		Log[1] = Log[2];
+		Log[2] = Log[3];
+		Log[3] = Log[4];
+		Log[4] = Log[5];
+		Log[5] = Log[6];
+		Log[6] = Log[7];
+		Log[7] = Log[8];
+		Log[8] = log;
+		return;
+	}
+	for (int i = 0; i < 10; i++) {
+
+		if (Log[i].empty()) {
+
+			Log[i] = log;
+			return;
+		}
+	}
+
+}
+//生成したログを表示する関数
+void GameManager::LogDraw(int x, int y)
+{
+	for (int i = 0; i < 9; ++i) {
+		DrawStringEx(x + 20, y + 40 + (i * 20), -1, "%s", Log[i].c_str());
+	}
 }

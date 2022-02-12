@@ -28,6 +28,8 @@ public:
 	std::vector<std::string>GetAllStringData();
 
 	void SetPos(t2k::Vector3 Pos);
+
+	t2k::Vector3& GetPos();
 	//ƒvƒŒƒCƒ„[‚ª“¥‚ñ‚Å‚¢‚é‚©‚Ç‚¤‚©‚Ìæ“¾ŠÖ”
 	bool DetectOnPlayer(t2k::Vector3 Pos);
 
