@@ -19,6 +19,14 @@ public:
 	//装備欄の変更関数
 	void ChangeEquipItem(equipItem* item);
 
+	//装備を外す関数
+	void RemoveEquipItem(equipItem* item);
+
+	//装備によるステータス上昇値を獲得する関数
+	void GetSumStatusFromEquipment();
+
+
+
 	bool Move()override;
 
 	//void Draw()override;
@@ -43,7 +51,8 @@ private:
 	equipItem* myEquip[6] = { nullptr,nullptr, nullptr, nullptr, nullptr, nullptr };
 
 	const std::string equipName[6] = { "WEAPON","HEAD","CHEST","GLOVE","BOOTS","SHIELD" };
-
+	//hp,attack,defence,speed
+	int statuses[4] = { 0,0,0,0 };
 
 	//std::string name = "Player";
 

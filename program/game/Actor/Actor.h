@@ -77,8 +77,6 @@ protected:
 	int baseAtack = 0;
 	int baseDefence = 0;
 	int baseSpeed = 0;
-
-
 	//描画ステータス
 	int hp = 0;
 	int atack = 0;

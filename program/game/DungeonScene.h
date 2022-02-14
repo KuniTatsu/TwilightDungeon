@@ -54,9 +54,12 @@ private:
 	MenuWindow* use_usable = nullptr;
 	MenuWindow* use_equip = nullptr;
 
+	MenuWindow* use_nowEquip = nullptr;
+
 	enum useType {
 		USABLE,
-		EQUIP
+		EQUIP,
+		NOWEQUIP
 	};
 	useType usetype = USABLE;
 

@@ -9,6 +9,7 @@
 #include"Actor/Enemy.h"
 #include"Camera.h"
 #include"Item/Item.h"
+#include"Item/equipItem.h"
 #include"Item/Inventory.h"
 
 
@@ -37,6 +38,14 @@ DungeonScene::DungeonScene()
 		{670,510,"やめる",2}
 	};
 	use_equip = new MenuWindow(640, 440, 90, 100, "graphics/WindowBase_02.png", menu_equip, 3, 0.15);
+
+	MenuWindow::MenuElement_t* menu_nowEquip = new MenuWindow::MenuElement_t[]{
+		{670,450,"はずす",0},
+		{670,480,"投げる",1},
+		{670,510,"やめる",2}
+	};
+	use_nowEquip = new MenuWindow(640, 440, 90, 100, "graphics/WindowBase_02.png", menu_nowEquip, 3, 0.15);
+
 
 	eManager = std::make_shared<EnemyManager>();
 
@@ -177,6 +186,7 @@ void DungeonScene::Draw()
 		if (nowSeq == sequence::INVENTORY_USE) {
 			if (usetype == USABLE)use_usable->All();
 			else if (usetype == EQUIP)use_equip->All();
+			else if (usetype == NOWEQUIP)use_nowEquip->All();
 		}
 	}
 	else if (nowSeq == sequence::THROWITEMMOVE) {
@@ -400,6 +410,13 @@ bool DungeonScene::Seq_InventoryOpen(const float deltatime)
 			return true;
 		}
 		else {
+			equipItem* eItem = (equipItem*)itemBuf;
+			if (eItem->GetIsEquiped()) {
+				use_nowEquip->Open();
+				usetype = NOWEQUIP;
+				ChangeSequence(sequence::INVENTORY_USE);
+				return true;
+			}
 			use_equip->Open();
 			usetype = EQUIP;
 			ChangeSequence(sequence::INVENTORY_USE);
@@ -416,6 +433,7 @@ bool DungeonScene::Seq_InventoryUse(const float deltatime)
 	{
 		use_usable->menu_live = false;
 		use_equip->menu_live = false;
+		use_nowEquip->menu_live = false;
 		itemBuf = nullptr;
 		ChangeSequence(sequence::INVENTORY_OPEN);
 		return true;
@@ -449,27 +467,54 @@ bool DungeonScene::Seq_InventoryUse(const float deltatime)
 	}
 	//装備アイテムなら
 	else {
-		//使うでEnterを押したら
-		if (use_equip->SelectNum == 0 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
-			ItemUse(inventoryPage);
-			use_equip->menu_live = false;
-			itemBuf = nullptr;
-			ChangeSequence(sequence::INVENTORY_OPEN);
-			return true;
-		}//投げるでEnterを押したら
-		else if (use_equip->SelectNum == 1 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
-
-			firstMenu->menu_live = false;
-			ItemThrow(inventoryPage);
-			ChangeSequence(sequence::THROWITEMMOVE);
-			return true;
+		equipItem* eItem = (equipItem*)itemBuf;
+		//装備している時
+		if (eItem->GetIsEquiped()) {
+			//使うでEnterを押したら
+			if (use_nowEquip->SelectNum == 0 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+				ItemUse(inventoryPage);
+				use_equip->menu_live = false;
+				itemBuf = nullptr;
+				ChangeSequence(sequence::INVENTORY_OPEN);
+				return true;
+			}
+			//装備している　かつ　投げるでEnterを押したら
+			else if (use_nowEquip->SelectNum == 1 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+				gManager->addLog("装備中のアイテムは投げられません");
+				ChangeSequence(sequence::INVENTORY_OPEN);
+				return true;
+			}
+			//やめるでEnterを押したら
+			else if (use_nowEquip->SelectNum == 2 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+				use_equip->menu_live = false;
+				itemBuf = nullptr;
+				ChangeSequence(sequence::INVENTORY_OPEN);
+				return true;
+			}
 		}
-		//やめるでEnterを押したら
-		else if (use_equip->SelectNum == 2 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
-			use_equip->menu_live = false;
-			itemBuf = nullptr;
-			ChangeSequence(sequence::INVENTORY_OPEN);
-			return true;
+		else {
+			//使うでEnterを押したら
+			if (use_equip->SelectNum == 0 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+				ItemUse(inventoryPage);
+				use_equip->menu_live = false;
+				itemBuf = nullptr;
+				ChangeSequence(sequence::INVENTORY_OPEN);
+				return true;
+			}//投げるでEnterを押したら
+			//装備していない　かつ　投げるでEnterを押したら
+			else if (use_equip->SelectNum == 1 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+				firstMenu->menu_live = false;
+				ItemThrow(inventoryPage);
+				ChangeSequence(sequence::THROWITEMMOVE);
+				return true;
+			}
+			//やめるでEnterを押したら
+			else if (use_equip->SelectNum == 2 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+				use_equip->menu_live = false;
+				itemBuf = nullptr;
+				ChangeSequence(sequence::INVENTORY_OPEN);
+				return true;
+			}
 		}
 	}
 	return true;
@@ -659,6 +704,10 @@ void DungeonScene::ItemUse(/*int selectNum, Inventory* inventory,*/ int inventor
 	}//装備アイテムだったらs
 	else if (type == 2 || type == 3) {
 		equipItem* item = (equipItem*)itemBuf;
+		if (item->GetIsEquiped()) {
+			player->RemoveEquipItem(item);
+			return;
+		}
 		player->ChangeEquipItem(item);
 	}
 }

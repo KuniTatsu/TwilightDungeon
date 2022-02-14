@@ -79,6 +79,34 @@ void Player::ChangeEquipItem(equipItem* item)
 	}
 }
 
+void Player::RemoveEquipItem(equipItem* item)
+{
+	int subId = item->getItemData(9);
+	//1->武器,2->head,3->chest,4->glove,5->boots,6->shield
+	myEquip[subId - 1]->ChangeEquip();
+	myEquip[subId - 1] = nullptr;
+
+	GetSumStatusFromEquipment();
+	for (int i = 0; i < 4; ++i) {
+		ChangeStatus(i, statuses[i], 1);
+	}
+}
+
+void Player::GetSumStatusFromEquipment()
+{
+	//自分が装備しているアイテムの HP/atack/defence/speedをそれぞれ合計して配列にしまいたい
+	//0に戻す
+	for (int k = 0; k < 4; ++k) {
+		statuses[k] = 0;
+	}
+	for (int i = 0; i < 4; ++i) {
+		for (int k = 0; k < 6; ++k) {
+			if (myEquip[k] == nullptr)continue;
+			statuses[i] = myEquip[k]->getItemData(i + 5);
+		}
+	}
+}
+
 bool Player::Move()
 {
 	//キャラの位置がマップ上のどのチップか特定する
