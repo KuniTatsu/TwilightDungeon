@@ -575,6 +575,14 @@ t2k::Vector3 GameManager::LocalToWorld(int MapX, int MapY)
 	return map->MapToWorld(MapX, MapY);
 }
 
+void GameManager::MapDraw()
+{
+	map->MapDraw();
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+	map->MiniMapDraw();
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+}
+
 int GameManager::GetMapChip(t2k::Vector3 PInChip)
 {
 	return map->GetChip(PInChip.x, PInChip.y);

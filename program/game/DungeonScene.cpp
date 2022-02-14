@@ -128,7 +128,8 @@ void DungeonScene::Update()
 
 void DungeonScene::Draw()
 {
-	gManager->map->MapDraw();
+	gManager->MapDraw();
+
 	DrawPopItem();
 	gManager->player->Draw();
 	gManager->player->HpVarDraw();
@@ -265,10 +266,7 @@ bool DungeonScene::Seq_Main(const float deltatime)
 	if (gManager->GetMapChip(playerPos) == 3) {
 
 		if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
-			dungeonLevel += 1;
-			if (!eManager->liveEnemyList.empty())eManager->liveEnemyList.clear();
-			gManager->ReCreate();
-			RandEnemyCreate(5);
+			MoveLevel(1);
 		}
 	}
 	//左クリックかRボタンで攻撃

@@ -12,6 +12,9 @@ Map::Map(int Width, int Height)
 	mapChip[2] = gManager->LoadGraphEx("graphics/Stairs_.png");
 	mapChip[3] = gManager->LoadGraphEx("graphics/EXPASSWAY.png");
 
+	miniMapChip[0] = gManager->LoadGraphEx("graphics/mini_PassWay.png");
+	miniMapChip[1] = gManager->LoadGraphEx("graphics/mini_Stair.png");
+
 	width = Width;
 	height = Height;
 
@@ -224,6 +227,26 @@ void Map::MapDraw()
 
 void Map::MiniMapDraw()
 {
+	int x = 0;
+	int y = 0;
+	for (auto i : ground) {
+		for (auto k : i) {
+			if (k == PASSWAY) {
+				DrawRotaGraph(x , y , 0.5, 0, miniMapChip[0], false);
+			}
+			else if (k == STAIRS) {
+				DrawRotaGraph(x , y , 0.5, 0, miniMapChip[0], false);
+				DrawRotaGraph(x , y , 0.5, 0, miniMapChip[1], false);
+			}
+			else if (k == EXPASSWAY) {
+				DrawRotaGraph(x , y , 0.5, 0, miniMapChip[0], false);
+			}
+
+			x += 10;
+		}
+		x = 0;
+		y += 10;
+	}
 }
 
 bool Map::IsOutOfRange(int x, int y)

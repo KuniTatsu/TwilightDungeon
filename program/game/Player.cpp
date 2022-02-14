@@ -203,10 +203,10 @@ void Player::Draw()
 
 void Player::HpVarDraw()
 {
-	DrawRotaGraph(pos.x - gManager->camera->cameraPos.x, pos.y - gManager->camera->cameraPos.y - 20, 1, 0, hpVar_gh, false);
-	DrawRotaGraph3(pos.x - gManager->camera->cameraPos.x - 15, pos.y - gManager->camera->cameraPos.y - 20 - 5, 0, 0,
+	DrawRotaGraph(pos.x - gManager->camera->cameraPos.x, pos.y - gManager->camera->cameraPos.y - 30, 1, 0, hpVar_gh, false);
+	DrawRotaGraph3(pos.x - gManager->camera->cameraPos.x - 15, pos.y - gManager->camera->cameraPos.y - 30 - 5, 0, 0,
 		nowHpVarWidth, 1, 0, nowHpVar_gh, false);
-	DrawStringEx(pos.x - gManager->camera->cameraPos.x - 10, pos.y - gManager->camera->cameraPos.y - 40, -1, "%.0f", nowHp);
+	DrawStringEx(pos.x - gManager->camera->cameraPos.x - 10, pos.y - gManager->camera->cameraPos.y - 50, -1, "%.0f", nowHp);
 }
 
 void Player::DashToDir(int dir, t2k::Vector3 mapPos)

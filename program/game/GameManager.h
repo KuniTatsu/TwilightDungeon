@@ -79,6 +79,8 @@ public:
 
 	void Update();
 	void Draw();
+	//ƒ}ƒbƒv‚Ì•`‰æ
+	void MapDraw();
 
 	//GameManager‚Ì‰Šú‰»
 	void initGameManager();

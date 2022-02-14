@@ -104,6 +104,8 @@ private:
 	//マップチップ
 	int mapChip[4] = {};
 
+	//ミニマップ描画用マップチップ
+	int miniMapChip[3] = {};
 
 
 	//区間分割(区間)
