@@ -20,6 +20,7 @@ public:
 	inline bool GetIsEquiped() {
 		return isEquiped;
 	}
+	
 private:
 
 	int hp = 0;

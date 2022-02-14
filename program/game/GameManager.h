@@ -5,6 +5,7 @@
 #include "../library/t2klib.h"
 #include<memory>
 #include<list>
+#include<string>
 class SceneManager;
 
 class Item;
@@ -191,6 +192,7 @@ public:
 
 	void addLog(const std::string log);
 	void LogDraw(int x, int y);
+	void DrawStringLows(int lowNum);
 
 private:
 	std::string Log[9] = {};
@@ -204,4 +206,13 @@ private:
 
 	void Zoom(double* zoomEx);
 
+
+	std::string strings[5][3]{
+		{"‚±‚ñ‚É‚¿‚Í","Ž„‚Ì–¼‘O‚Í","hogehoge‚Å‚·"},
+		{"","",""},
+		{"","",""},
+		{"","",""},
+		{"","",""}
+	};
+	
 };

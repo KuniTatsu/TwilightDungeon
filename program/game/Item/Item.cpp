@@ -142,7 +142,7 @@ void Item::SetGoalPos(int dir)
 		}
 	}
 	//1フレームあたりの移動量
-	move = (goalPos - nowPos) * 0.05f;//50フレームで移動完了
+	move = (goalPos - nowPos) * moveSpeed;
 }
 
 bool Item::ThrowItem(int dir)

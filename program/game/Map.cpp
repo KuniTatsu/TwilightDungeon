@@ -2,6 +2,7 @@
 #include"GameManager.h"
 #include"DxLib.h"
 #include"Camera.h"
+#include"Player.h"	
 
 extern GameManager* gManager;
 
@@ -15,6 +16,7 @@ Map::Map(int Width, int Height)
 	miniMapChip[0] = gManager->LoadGraphEx("graphics/mini_PassWay.png");
 	miniMapChip[1] = gManager->LoadGraphEx("graphics/mini_Stair.png");
 
+	miniPlayer = gManager->LoadGraphEx("graphics/PlayerTest.png");
 	width = Width;
 	height = Height;
 
@@ -30,7 +32,6 @@ Map::Map(int Width, int Height)
 			ground[i][k] = WALL;
 		}
 	}
-
 }
 
 void Map::SetAllChip(int Left, int Up, int Right, int Down)
@@ -227,26 +228,28 @@ void Map::MapDraw()
 
 void Map::MiniMapDraw()
 {
-	int x = 0;
-	int y = 0;
+	int x = 50;
+	int y = 50;
 	for (auto i : ground) {
 		for (auto k : i) {
 			if (k == PASSWAY) {
-				DrawRotaGraph(x , y , 0.5, 0, miniMapChip[0], false);
+				DrawRotaGraph(x, y, 0.5, 0, miniMapChip[0], false);
 			}
 			else if (k == STAIRS) {
-				DrawRotaGraph(x , y , 0.5, 0, miniMapChip[0], false);
-				DrawRotaGraph(x , y , 0.5, 0, miniMapChip[1], false);
+				DrawRotaGraph(x, y, 0.5, 0, miniMapChip[0], false);
+				DrawRotaGraph(x, y, 0.5, 0, miniMapChip[1], false);
 			}
 			else if (k == EXPASSWAY) {
-				DrawRotaGraph(x , y , 0.5, 0, miniMapChip[0], false);
+				DrawRotaGraph(x, y, 0.5, 0, miniMapChip[0], false);
 			}
 
 			x += 10;
 		}
-		x = 0;
+		x = 50;
 		y += 10;
 	}
+	t2k::Vector3 PlayerPos = gManager->WorldToLocal(player->pos);
+	DrawRotaGraph(PlayerPos.x*10+50, PlayerPos.y*10+50, 0.5, 0, miniPlayer, true);
 }
 
 bool Map::IsOutOfRange(int x, int y)

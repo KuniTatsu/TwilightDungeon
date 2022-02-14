@@ -99,13 +99,7 @@ void MenuWindow::Read() {
 
 
 	if (menuInit == false) {
-		//if (SelectNum == 0) {
-		//	MenuElement[0].x = read_menu_x + 10;
-		//	for (int i = 1; i < elements_num_; ++i) {
-		//		MenuElement[i].x = read_menu_x + 20;
-		//	}
-		//	//MenuElement[2].x = read_menu_x + 20;
-		//}
+
 		cursorY = MenuElement[0].y+8;
 		menuInit = true;
 	}

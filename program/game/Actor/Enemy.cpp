@@ -158,6 +158,7 @@ bool Enemy::Move()
 	else {
 		//進めるなら自分のdirの方向に進む
 		bool canMove = MoveToDir(mydir, myNowPos);
+
 		//もし進めなければdirから見て左側に行けないか確認する
 		if (!canMove) {
 			//もし左右にすすめるならランダムで進む
@@ -173,8 +174,9 @@ bool Enemy::Move()
 			else if (CheckCanMoveToDir(mydir, myNowPos, CheckDir::RIGHT))DegradedMoveToDir(GetDir(mydir, CheckDir::RIGHT));
 			//それでも進めないなら
 			else {
-				//足踏みさせる
-				return true;
+				////足踏みさせる
+				//return true;
+				DegradedMoveToDir(GetDir(mydir, CheckDir::DOWN));
 			}
 		}
 	}
@@ -340,28 +342,33 @@ int Enemy::GetDir(const int dir, const int getDir)
 		//左は左側
 		if (getDir == CheckDir::LEFT)return CheckDir::LEFT;
 		//右は右側
-		if (getDir == CheckDir::RIGHT)return CheckDir::RIGHT;
+		else if (getDir == CheckDir::RIGHT)return CheckDir::RIGHT;
+
+		else if (getDir == CheckDir::DOWN)return CheckDir::DOWN;
 	}
 	//今の向きが右
 	else if (dir == 1) {
 		//左は上側
 		if (getDir == CheckDir::LEFT)return CheckDir::UP;
 		//右は下側
-		if (getDir == CheckDir::RIGHT)return CheckDir::DOWN;
+		else if (getDir == CheckDir::RIGHT)return CheckDir::DOWN;
+		else if (getDir == CheckDir::DOWN)return CheckDir::LEFT;
 	}
 	//今の向きが下
 	else if (dir == 2) {
 		//左は右側
 		if (getDir == CheckDir::LEFT)return CheckDir::RIGHT;
 		//右は左側
-		if (getDir == CheckDir::RIGHT)return CheckDir::LEFT;
+		else if (getDir == CheckDir::RIGHT)return CheckDir::LEFT;
+		else if (getDir == CheckDir::DOWN)return CheckDir::UP;
 	}
 	//今の向きが左
 	else if (dir == 3) {
 		//左は下側
 		if (getDir == CheckDir::LEFT)return CheckDir::DOWN;
 		//右は上側
-		if (getDir == CheckDir::RIGHT)return CheckDir::UP;
+		else if (getDir == CheckDir::RIGHT)return CheckDir::UP;
+		else if (getDir == CheckDir::DOWN)return CheckDir::RIGHT;
 	}
 	return -1;
 }

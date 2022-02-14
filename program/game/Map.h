@@ -3,10 +3,12 @@
 #include<vector>
 #include"../library/t2klib.h"
 #include"DxLib.h"
+#include<memory>
 
 using namespace std;
 
 class Camera;
+class Player;
 
 class Map {
 
@@ -16,6 +18,8 @@ public:
 
 	//マップの背景
 	vector<vector<int>> ground;
+
+	std::shared_ptr<Player> player = nullptr;
 
 	//チップ一つの大きさ
 	const int SIZE = 20;
@@ -74,6 +78,7 @@ public:
 	void DrawAllRoomPos(vector<vector<int>>RoomList);
 
 private:
+	
 
 	int color_red = GetColor(255, 0, 0);
 	int color_green = GetColor(0, 255, 0);
@@ -85,6 +90,7 @@ private:
 
 
 	bool doneFirstDivide = false;
+
 
 	//部屋の最小幅
 	const int roomMinWidth = 8;
@@ -106,7 +112,8 @@ private:
 
 	//ミニマップ描画用マップチップ
 	int miniMapChip[3] = {};
-
+	//ミニマッププレイヤーgh
+	int miniPlayer = 0;
 
 	//区間分割(区間)
 	vector<vector<int>> divideArea;
@@ -160,16 +167,19 @@ private:
 	bool CheckPassWay(int roomPos_set, int roomPos_moveStart, int roomPos_moveGoal,int dir);
 
 	//最初と最後の部屋から特定の分割線方向への入り口を作る関数 
-	t2k::Vector3 Map::RandomPoint(int roomId, int& dir);
+	t2k::Vector3 RandomPoint(int roomId, int& dir);
 	//t2k::Vector3 Map::RandomPoint(int roomId, int& dir,vector<int>setDivideLine);
 
 	//入り口から隣接する部屋へと通路を伸ばす関数
-	bool Map::CreateSecondWay(int x, int y, int dir, int roomId);
+	bool CreateSecondWay(int x, int y, int dir, int roomId);
 
 	//セル(x,y)からみてdir方向に垂直なセル2つとdir方向のセルが壁か通路か確認する関数
-	bool Map::CheckChip(int x, int y, int nextDir);
+	bool CheckChip(int x, int y, int nextDir);
 
 	//色コードからstringを返す関数
 	std::string GetColorName(int code);
 	
+	//セルから見て周囲に通路があるかどうか確かめる関数
+	bool CheckAround();
+
 };

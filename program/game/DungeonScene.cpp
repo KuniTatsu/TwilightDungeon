@@ -458,8 +458,9 @@ bool DungeonScene::Seq_InventoryUse(const float deltatime)
 			return true;
 		}//“Š‚°‚é‚ÅEnter‚ð‰Ÿ‚µ‚½‚ç
 		else if (use_equip->SelectNum == 1 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+
 			firstMenu->menu_live = false;
-			ItemUse(inventoryPage);
+			ItemThrow(inventoryPage);
 			ChangeSequence(sequence::THROWITEMMOVE);
 			return true;
 		}

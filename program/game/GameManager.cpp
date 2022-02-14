@@ -198,6 +198,8 @@ void GameManager::initGameManager()
 	}*/
 	//player‚Ìactid‚Í0
 	player = std::make_shared<Player>(SetStartPos(0), 100, 30, 30, 30, 0);
+	map->player = player;
+
 	camera->cameraPos = player->pos - WINDOWCENTER;
 	iManager = new ItemManager();
 
@@ -664,10 +666,18 @@ void GameManager::addLog(const std::string log)
 	}
 
 }
+void GameManager::DrawStringLows(int lowNum)
+{
+	for (int i = 0; i < 3; ++i) {
+		DrawStringEx(100, 100 * i + 20, -1, (char*)strings[lowNum][i].c_str());
+	}
+}
 //¶¬‚µ‚½ƒƒO‚ð•\Ž¦‚·‚éŠÖ”
 void GameManager::LogDraw(int x, int y)
 {
 	for (int i = 0; i < 9; ++i) {
-		DrawStringEx(x + 20, y+20 + (i * 20), -1, "%s", Log[i].c_str());
+		DrawStringEx(x + 20, y + 20 + (i * 20), -1, "%s", Log[i].c_str());
 	}
 }
+
+
