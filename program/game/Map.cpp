@@ -191,7 +191,9 @@ void Map::MapDraw()
 		for (int k = 0; k < ground[i].size(); ++k) {
 			if (ground[i][k] == WALL) {
 				if (!CheckAround(i, k))continue;
-				DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
+				//DrawRotaGraphF(k * gManager->nowGraphicSize - gManager->camera->cameraPos.x, i * gManager->nowGraphicSize - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
+				DrawRotaGraph(k *20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
+
 			}
 			else if (ground[i][k] == PASSWAY)DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[0], false);
 			else if (ground[i][k] == STAIRS)DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[2], false);
@@ -199,37 +201,7 @@ void Map::MapDraw()
 
 		}
 	}
-	/*
-	int x = 0;
-	int y = 0;
-	for (auto i : ground) {
-		for (auto k : i) {
-			if (k == WALL) {
-				//ŽüˆÍ‚Ì‚Ç‚ÌƒuƒƒbƒN‚É‚à’Ê˜H‚ª‚È‚©‚Á‚½ê‡‚Í•`‰æ‚µ‚È‚¢‚æ‚¤‚É‚µ‚½‚¢
 
-				DrawRotaGraph(x - gManager->camera->cameraPos.x, y - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
-			}
-			else if (k == PASSWAY) {
-				DrawRotaGraph(x - gManager->camera->cameraPos.x, y - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[0], false);
-			}
-			else if (k == STAIRS) {
-				DrawRotaGraph(x - gManager->camera->cameraPos.x, y - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[2], false);
-			}
-			else if (k == EXPASSWAY) {
-				DrawRotaGraph(x - gManager->camera->cameraPos.x, y - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[3], false);
-			}
-			/*if (k == WALL) {
-				DrawRotaGraph(x, y, gManager->graphEx, 0, mapChip[1], false);
-			}
-			else {
-				DrawRotaGraph(x, y, gManager->graphEx, 0, mapChip[0], false);
-			}
-			x += 20;
-		}
-		x = 0;
-		y += 20;
-	}
-	*/
 	//debug
 	if (gManager->isDebug) {
 		DrawAllRoomPos(divideRoom);

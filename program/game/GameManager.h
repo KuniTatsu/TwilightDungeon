@@ -51,6 +51,9 @@ public:
 	//インベントリからアイテムを削除する関数
 	void PopItemFromInventory(int NowInventoryId);
 
+	const int graphicSize = 20;
+	float nowGraphicSize = graphicSize;
+
 	double graphEx = 1;
 
 	//マップの幅(チップ数)
@@ -204,7 +207,7 @@ private:
 	int itemNum = 0;
 	//std::vector<int> haveItemList;
 
-	void Zoom(double* zoomEx);
+	void Zoom();
 
 
 	std::string strings[5][3]{
@@ -214,5 +217,5 @@ private:
 		{"","",""},
 		{"","",""}
 	};
-	
+
 };

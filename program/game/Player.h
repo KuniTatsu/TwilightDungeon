@@ -6,12 +6,12 @@ class equipItem;
 class Player :public Actor
 {
 public:
-	Player(t2k::Vector3 StartPos, float Hp, int Atack, int Defence, int Speed,int ActId);
+	Player(t2k::Vector3 StartPos, float Hp, int Atack, int Defence, int Speed, int ActId);
 	~Player();
 
 	//t2k::Vector3 pos = {};
 	bool skip = false;
-	
+
 
 	//満腹度とHPの変更関数(主に食料アイテムの使用で使う)
 	void ChangeBaseStatus(int ManpukuMove, int HpMove);
@@ -32,13 +32,22 @@ public:
 	//void Draw()override;
 	void HpVarDraw();
 
+	//経験値の獲得関数
+	void AddExp(int num);
 
+	//debug
 	void DrawPlayerStatus();
 private:
 
 	int p_gh = 0;
 
 	int manpuku = 100;
+
+	int nowExp = 0;
+	int nextLevelExp = 100;
+
+	void SetLevelStatus();
+	void SetNextExp();
 
 	/*class EquipItem {
 		Item* Weapon = nullptr;

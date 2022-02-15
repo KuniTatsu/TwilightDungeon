@@ -476,15 +476,15 @@ void GameManager::SetLiveEnemyList(std::list<std::shared_ptr<Enemy>> list)
 
 }
 
-void GameManager::Zoom(double* zoomEx)
+void GameManager::Zoom()
 {
-	//if (t2k::Input::isKeyDown(t2k::Input::KEYBORD_Z)) {
-	//	*zoomEx -= 0.01;
-	//}
-	//else if (t2k::Input::isKeyDown(t2k::Input::KEYBORD_X)) {
-	//	*zoomEx += 0.01;
-	//}
-
+	if (t2k::Input::isKeyDown(t2k::Input::KEYBORD_Z)) {
+		nowGraphicSize -= 0.01;
+	}
+	else if (t2k::Input::isKeyDown(t2k::Input::KEYBORD_X)) {
+		nowGraphicSize += 0.01;
+	}
+	graphEx = nowGraphicSize / graphicSize;
 }
 void GameManager::TakeDamageToTarget(Actor* hoge, t2k::Vector3 Pos)
 {

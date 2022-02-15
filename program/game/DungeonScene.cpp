@@ -285,7 +285,10 @@ bool DungeonScene::Seq_Main(const float deltatime)
 		player->Atack();
 		//死亡チェック
 		for (auto enemy : eManager->liveEnemyList) {
-			if (enemy->GetStatus(0) <= 0)enemy->isLive = false;
+			if (enemy->GetStatus(0) <= 0) {
+				player->AddExp(enemy->GetExp());
+				enemy->isLive = false;
+			}
 		}
 
 		DeleteDeadEnemy();
@@ -440,6 +443,7 @@ bool DungeonScene::Seq_InventoryUse(const float deltatime)
 	}
 
 	int type = itemBuf->getItemData(1);
+	//投擲アイテムと分けるべき
 	//消費アイテムなら
 	if (type < 2) {
 		//使うでEnterを押したら

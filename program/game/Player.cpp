@@ -237,6 +237,17 @@ void Player::HpVarDraw()
 	DrawStringEx(pos.x - gManager->camera->cameraPos.x - 10, pos.y - gManager->camera->cameraPos.y - 50, -1, "%.0f", nowHp);
 }
 
+void Player::AddExp(int num)
+{
+	nowExp += num;
+	if (nowExp >= nextLevelExp) {
+		level++;
+		nowExp = nowExp - nextLevelExp;
+		SetLevelStatus();
+		SetNextExp();
+	}
+}
+
 void Player::DashToDir(int dir, t2k::Vector3 mapPos)
 {
 	if (dir == LEFT) {
@@ -325,4 +336,24 @@ void Player::DrawPlayerStatus()
 		}
 	}
 
+	DrawStringEx(20, 130, -1, "経験値:%d/%d", nowExp,nextLevelExp);
+
+}
+
+void Player::SetLevelStatus()
+{
+	int lvHp = (level - 1) * 20;
+	int lvAttack = (level - 1) * 2;
+	int lvDefence = (level - 1) * 2;
+	int lvSpeed = (level - 1) * 2;
+	int lvStatus[4] = { lvHp,lvAttack,lvDefence,lvSpeed };
+
+	for (int i = 0; i < 4; ++i) {
+		ChangeStatus(i, lvStatus[i], 0);
+	}
+}
+
+void Player::SetNextExp()
+{
+	nextLevelExp = 100 + (level - 1) * 50; //1lv上がるごとに必要経験値が50増える
 }

@@ -43,6 +43,10 @@ int Actor::GetStatus(int StatusNum)
 void Actor::ChangeStatus(int StatusNum, int MoveNum, int StatusType)
 {
 	if (StatusType == EFFECT) {
+		exHp = 0;
+		exAtack = 0;
+		exDefence = 0;
+		exSpeed = 0;
 		if (StatusNum == 0) {
 			exHp += MoveNum;
 			hp = baseHp + equipHp + exHp;
