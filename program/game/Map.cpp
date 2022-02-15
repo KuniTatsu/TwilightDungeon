@@ -187,17 +187,26 @@ void Map::MapDraw()
 		}
 		//**
 	}
-	/*for (int i = -200; i < 1424; ++i) {
-		for (int k = -200; k < 968; ++k) {
-			DrawRotaGraph(i * 20 - gManager->camera->cameraPos.x, k * 20 - gManager->camera->cameraPos.y, 1, 0, mapChip[1], false);
-		}
-	}*/
+	for (int i = 0; i < ground.size(); ++i) {
+		for (int k = 0; k < ground[i].size(); ++k) {
+			if (ground[i][k] == WALL) {
+				if (!CheckAround(i, k))continue;
+				DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
+			}
+			else if (ground[i][k] == PASSWAY)DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[0], false);
+			else if (ground[i][k] == STAIRS)DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[2], false);
+			else if (ground[i][k] == EXPASSWAY)DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[3], false);
 
+		}
+	}
+	/*
 	int x = 0;
 	int y = 0;
 	for (auto i : ground) {
 		for (auto k : i) {
 			if (k == WALL) {
+				//周囲のどのブロックにも通路がなかった場合は描画しないようにしたい
+
 				DrawRotaGraph(x - gManager->camera->cameraPos.x, y - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
 			}
 			else if (k == PASSWAY) {
@@ -214,12 +223,13 @@ void Map::MapDraw()
 			}
 			else {
 				DrawRotaGraph(x, y, gManager->graphEx, 0, mapChip[0], false);
-			}*/
+			}
 			x += 20;
 		}
 		x = 0;
 		y += 20;
 	}
+	*/
 	//debug
 	if (gManager->isDebug) {
 		DrawAllRoomPos(divideRoom);
@@ -249,7 +259,7 @@ void Map::MiniMapDraw()
 		y += 10;
 	}
 	t2k::Vector3 PlayerPos = gManager->WorldToLocal(player->pos);
-	DrawRotaGraph(PlayerPos.x*10+50, PlayerPos.y*10+50, 0.5, 0, miniPlayer, true);
+	DrawRotaGraph(PlayerPos.x * 10 + 50, PlayerPos.y * 10 + 50, 0.5, 0, miniPlayer, true);
 }
 
 bool Map::IsOutOfRange(int x, int y)
@@ -1058,6 +1068,36 @@ std::string Map::GetColorName(int code)
 	else if (code == color_purple)return "紫";
 
 	else return "エラー";
+}
+
+bool Map::CheckAround(int x, int y)
+{
+	int ue = 0;
+	int migi = 0;
+	int shita = 0;
+	int hidari = 0;
+
+	int hidariue = 0;
+	int hidarishita = 0;
+	int migiue = 0;
+	int migishita = 0;
+
+	if (x > 0) {
+		if (y > 0)hidariue = ground[x - 1][y - 1];
+		hidari = ground[x - 1][y];
+		if (y + 1 < gManager->MAPWIDTH)hidarishita = ground[x - 1][y + 1];
+	}
+
+	if (y > 0)ue = ground[x][y - 1];
+	if (y + 1 < gManager->MAPWIDTH)shita = ground[x][y + 1];
+
+	if (x + 1 < gManager->MAPHEIGHT) {
+		if (y > 0)migiue = ground[x + 1][y - 1];
+		migi = ground[x + 1][y];
+		if (y + 1 < gManager->MAPWIDTH)migishita = ground[x + 1][y + 1];
+	}
+	if (ue + migi + shita + hidari + hidariue + hidarishita + migiue + migishita >= 1)return true;
+	else return false;
 }
 
 void Map::DrawAllRoomPos(vector<vector<int>>RoomList)

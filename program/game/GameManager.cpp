@@ -563,6 +563,7 @@ void GameManager::ReCreate()
 		CheckRoomWayPoint(i);
 	}*/
 	player->pos = SetStartPos(0);
+	map->player = player;
 	//player = new Player(SetStartPos(0), 100, 10, 10, 10);
 	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
 }

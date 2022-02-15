@@ -173,13 +173,15 @@ private:
 	//入り口から隣接する部屋へと通路を伸ばす関数
 	bool CreateSecondWay(int x, int y, int dir, int roomId);
 
+
+	//セルから見て周囲に通路があるかどうか確かめる関数
+	bool CheckAround(int x,int y);
+
 	//セル(x,y)からみてdir方向に垂直なセル2つとdir方向のセルが壁か通路か確認する関数
 	bool CheckChip(int x, int y, int nextDir);
 
 	//色コードからstringを返す関数
 	std::string GetColorName(int code);
 	
-	//セルから見て周囲に通路があるかどうか確かめる関数
-	bool CheckAround();
 
 };
