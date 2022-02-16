@@ -162,13 +162,13 @@ void DungeonScene::Draw()
 		nextLevelWindow->Menu_Draw();
 		DrawStringEx(nextLevelWindow->menu_x + 10, nextLevelWindow->menu_y + 100, -1, "Enter‚ÅŽŸ‚ÌŠK‚Ö");
 	}
-	for (auto hoge : gManager->wayPoint) {
-		for (auto hage : hoge) {
-			int X = (int)hage.x;
-			int Y = (int)hage.y;
-			DrawCircle(X * 20 - gManager->camera->cameraPos.x, Y * 20 - gManager->camera->cameraPos.y, 10, -1, true);
-		}
-	}
+	//for (auto hoge : gManager->wayPoint) {
+	//	for (auto hage : hoge) {
+	//		int X = (int)hage.x;
+	//		int Y = (int)hage.y;
+	//		DrawCircle(X * 20 - gManager->camera->cameraPos.x, Y * 20 - gManager->camera->cameraPos.y, 10, -1, true);
+	//	}
+	//}
 
 	/*SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
 	DrawRotaGraph(gManager->player->pos.x - gManager->camera->cameraPos.x, gManager->player->pos.y - gManager->camera->cameraPos.y, 1, 0, alfa, true);

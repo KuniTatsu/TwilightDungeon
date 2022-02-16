@@ -9,15 +9,15 @@ extern GameManager* gManager;
 Map::Map(int Width, int Height)
 {
 	mapChip[0] = gManager->LoadGraphEx("graphics/floor.png");//床
-	mapChip[1] = gManager->LoadGraphEx("graphics/Wall.png");
+	mapChip[1] = gManager->LoadGraphEx("graphics/Wall.png");//ただの壁
 	mapChip[2] = gManager->LoadGraphEx("graphics/Stairs_.png");//階段
 
-	mapChip[3] = gManager->LoadGraphEx("graphics/Wall_top.png");//top
-	mapChip[4] = gManager->LoadGraphEx("graphics/Wall_bottom.png");//bottom
-	mapChip[5] = gManager->LoadGraphEx("graphics/Wall_leftside.png");//left
-	mapChip[6] = gManager->LoadGraphEx("graphics/Wall_rightside.png");//right
+	ue = gManager->LoadGraphEx("graphics/Wall_top.png");//top
+	shita = gManager->LoadGraphEx("graphics/Wall_bottom.png");//bottom
+	hidari = gManager->LoadGraphEx("graphics/Wall_leftside.png");//left
+	migi = gManager->LoadGraphEx("graphics/Wall_rightside.png");//right
 
-	//mapChip[3] = gManager->LoadGraphEx("graphics/floor.png");
+	//mapChip[7] = gManager->LoadGraphEx("graphics/EXPASSWAY.png");//debug
 
 	miniMapChip[0] = gManager->LoadGraphEx("graphics/mini_PassWay.png");
 	miniMapChip[1] = gManager->LoadGraphEx("graphics/mini_Stair.png");
@@ -65,32 +65,6 @@ void Map::DivideStart(int Width, int Height, Map* map)
 	sumRoomNum = divideRoom.size();
 }
 
-t2k::Vector3 Map::WorldToMap(int WorldX, int WorldY)
-{
-	int mapX = WorldX / SIZE;
-	int mapY = WorldY / SIZE;
-
-	return t2k::Vector3(mapX, mapY, 0);
-}
-
-t2k::Vector3 Map::MapToWorld(int MapX, int MapY)
-{
-	int worldX = MapX * SIZE;
-	int worldY = MapY * SIZE;
-
-	return t2k::Vector3(worldX, worldY, 0);
-}
-
-int Map::GetRoomNum()
-{
-	return divideRoom.size() - 1;
-}
-
-vector<int> Map::GetRoom(int roomNum)
-{
-	return divideRoom[roomNum];
-}
-
 t2k::Vector3 Map::GetRoomValue(int roomNum)
 {
 	int x = abs(divideRoom[roomNum][2] - divideRoom[roomNum][0]);
@@ -120,11 +94,6 @@ int Map::CheckIsThere(int x, int y)
 	}
 	if (!isThere)return -1;
 
-}
-int Map::GetChip(int x, int y)
-{
-	if (IsOutOfRange(x, y))return outOfRange;
-	return ground[y][x];
 }
 
 void Map::GetAllChip(int roomNum, std::vector<std::vector<int>>& chips)
@@ -198,34 +167,17 @@ void Map::MapDraw()
 			if (ground[i][k] == WALL) {
 				if (!CheckAround(i, k))continue;
 				//DrawRotaGraphF(k * gManager->nowGraphicSize - gManager->camera->cameraPos.x, i * gManager->nowGraphicSize - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
-				/*
-				{
-		ROOMTOP,
-		ROOMRIGHT,
-		ROOMBOTTOM,
-		ROOMLEFT,
-		ROOMLEFTTOP,
-		ROOMRIGHTTOP,
-		ROOMLEFTBOTTOM,
-		ROOMRIGHTBOTTOM,
-		WALL
-	};*/
-				if (i == 14 && k == 10) {
-					int a = 0;
-					a++;
-				}
 
-				if (CheckAroundWay(i, k) == ROOMWALL)				DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
-				else if (CheckAroundWay(i, k) == ROOMTOP)			DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[5], false);
-				else if (CheckAroundWay(i, k) == ROOMRIGHT)		DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[4], true);
-				else if (CheckAroundWay(i, k) == ROOMBOTTOM)	DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[6], true);
-				else if (CheckAroundWay(i, k) == ROOMLEFT)		DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[3], true);
-				else if (CheckAroundWay(i, k) == ROOMLEFTTOP)	DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
-				else if (CheckAroundWay(i, k) == ROOMRIGHTTOP)	DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
-				else if (CheckAroundWay(i, k) == ROOMLEFTBOTTOM)DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
-				else if (CheckAroundWay(i, k) == ROOMRIGHTBOTTOM)DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
-				//DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
-				DrawStringEx(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, -1, "%d", k);
+				int iti = CheckAroundWay(i, k);
+				if (iti == ROOMWALL)				DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
+				else if (iti == ROOMTOP)			DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, ue, false);
+				else if (iti == ROOMRIGHT)			DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, migi, true);
+				else if (iti == ROOMBOTTOM)			DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, shita, true);
+				else if (iti == ROOMLEFT)			DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, hidari, true);
+				else if (iti == ROOMLEFTTOP)		DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
+				else if (iti == ROOMRIGHTTOP)		DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
+				else if (iti == ROOMLEFTBOTTOM)		DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
+				else if (iti == ROOMRIGHTBOTTOM)	DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
 			}
 			else if (ground[i][k] == PASSWAY)DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[0], false);
 			else if (ground[i][k] == STAIRS)DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[2], false);
@@ -1119,33 +1071,34 @@ int Map::CheckAroundWay(int x, int y)
 	//8近傍のセルが通路ならtrue,そうでなければfalseを代入
 	if (x > 0) {
 		if (y > 0)hidariue = CheckThisCell(x - 1, y - 1);
-		hidari = CheckThisCell(x - 1, y);
+		hidari = CheckThisCell(x, y - 1);
 		if (y + 1 < gManager->MAPWIDTH)hidarishita = CheckThisCell(x - 1, y + 1);
 	}
 
-	if (y > 0)ue = CheckThisCell(x, y - 1);
-	if (y + 1 < gManager->MAPWIDTH)shita = CheckThisCell(x, y + 1);
+	if (x > 0)ue = CheckThisCell(x - 1, y);
+	if (x + 1 < gManager->MAPHEIGHT)shita = CheckThisCell(x + 1, y);
 
 	if (x + 1 < gManager->MAPHEIGHT) {
 		if (y > 0)migiue = CheckThisCell(x + 1, y - 1);
-		migi = CheckThisCell(x + 1, y);
+		migi = CheckThisCell(x, y + 1);
 		if (y + 1 < gManager->MAPWIDTH)migishita = CheckThisCell(x + 1, y + 1);
 	}
 	if (hidari && hidarishita && hidariue && migi && migiue && migishita)return ROOMWALL;//8 ただのブロック
 
+	else if (ue && migishita)return ROOMWALL;
+	else if (ue && hidari)return ROOMWALL;
 
 	//下,右下,左下がtrue->通路なら 部屋の上側
-	else if (shita && migishita && hidarishita)return ROOMTOP;//0
-	//左,左上,左下がtrueかつ上と下がfalseなら　部屋の右側
-	//else if (hidari && hidariue && hidarishita && !ue&& !shita)return ROOMRIGHT;//1
-	else if (hidari && hidariue && hidarishita && ue == false && shita == false)return ROOMRIGHT;//1
-	else if (ue && migiue && hidariue)return ROOMBOTTOM;//2
-	else if (migi && migiue && migishita && ue == false && shita == false)return ROOMLEFT;//3
+	else if (shita)return ROOMTOP;//0
 
-	else if (migishita)return ROOMLEFTTOP;//4
-	else if (hidarishita)return ROOMRIGHTTOP;//5
-	else if (migiue)return ROOMLEFTBOTTOM;//6
-	else if (hidariue)return ROOMRIGHTBOTTOM;//7
+	else if (hidari)return ROOMRIGHT;//1
+	else if (ue)return ROOMBOTTOM;//2
+	else if (migi)return ROOMLEFT;//3
+
+	else if (migishita && !ue && !shita && !migi && !hidari && !migiue && !hidariue && !hidarishita)return ROOMLEFTTOP;//4
+	else if (hidarishita && !ue && !shita && !migi && !hidari && !migiue && !hidariue && !migishita)return ROOMRIGHTTOP;//5
+	else if (migiue && !ue && !shita && !migi && !hidari && !hidarishita && !hidariue && !migishita)return ROOMLEFTBOTTOM;//6
+	else if (hidariue && !ue && !shita && !migi && !hidari && !migiue && !migishita && !hidarishita)return ROOMRIGHTBOTTOM;//7
 
 
 
@@ -1154,7 +1107,7 @@ int Map::CheckAroundWay(int x, int y)
 
 bool Map::CheckThisCell(int x, int y)
 {
-	if (ground[x][y] == PASSWAY|| ground[x][y] == STAIRS)return true;
+	if (ground[x][y] == PASSWAY || ground[x][y] == STAIRS)return true;
 	else return false;
 }
 

@@ -14,7 +14,7 @@ class Map {
 
 public:
 	//マップ情報の初期化(すべてを壁にする)
-	Map(int Width, int Height);
+	Map(const int Width, const int Height);
 
 	//マップの背景
 	vector<vector<int>> ground;
@@ -37,36 +37,53 @@ public:
 	};
 
 	//マップチップを取得
-	int GetChip(int x, int y);
+	inline int GetChip(const int x, const int y) {
+		if (IsOutOfRange(x, y))return outOfRange;
+		return ground[y][x];
+	}
 
 	//範囲内のマップチップを取得
-	void GetAllChip(int roomNum, std::vector<std::vector<int>>& chips);
+	void GetAllChip(const int roomNum, std::vector<std::vector<int>>& chips);
 
 	//マップチップをSetChipで書き換え
-	void SetChip(int x, int y, int SetChip);
+	void SetChip(const int x, const int y, const int SetChip);
 	//一定範囲すべてを道で書き換え
-	void SetAllChip(int Left, int Up, int Right, int Down);
+	void SetAllChip(const int Left, const int Up, const int Right, const int Down);
 
-	void DivideStart(int Width, int Height, Map* map);
+	void DivideStart(const int Width, const int Height, Map* map);
 
-	t2k::Vector3 WorldToMap(int WorldX, int WorldY);
-	t2k::Vector3 MapToWorld(int MapX, int MapY);
+	inline t2k::Vector3 WorldToMap(const int WorldX, const int WorldY) {
+		int mapX = WorldX / SIZE;
+		int mapY = WorldY / SIZE;
+
+		return t2k::Vector3(mapX, mapY, 0);
+	}
+	inline t2k::Vector3 MapToWorld(const int MapX, const int MapY) {
+		int worldX = MapX * SIZE;
+		int worldY = MapY * SIZE;
+
+		return t2k::Vector3(worldX, worldY, 0);
+	}
 
 	//外部から"部屋の数"を取得するときの関数
-	int GetRoomNum();
+	inline int GetRoomNum() {
+		return divideRoom.size() - 1;
+	}
 
 	//外部から"特定の部屋"を取得するときの関数
-	vector<int> GetRoom(int roomNum);
+	inline vector<int> GetRoom(int roomNum) {
+		return divideRoom[roomNum];
+	}
 
 	//外部から"特定の部屋の大きさ"を取得するときの関数
-	t2k::Vector3 GetRoomValue(int roomNum);
+	t2k::Vector3 GetRoomValue(const int roomNum);
 
 	//部屋座標系の0,0を取得する関数
-	t2k::Vector3 GetRoomStartPos(int roomNum);
+	t2k::Vector3 GetRoomStartPos(const int roomNum);
 
 
 	//特定のマップ座標が部屋のどこかに存在するか確認する関数
-	int CheckIsThere(int x, int y);
+	int CheckIsThere(const int x, const int y);
 
 	//マップ全体の描画
 	void MapDraw();
@@ -75,10 +92,10 @@ public:
 	void MiniMapDraw();
 
 	//今表示されている全ての部屋の上下左右座標をする描画するDebug関数
-	void DrawAllRoomPos(vector<vector<int>>RoomList);
+	void DrawAllRoomPos(const vector<vector<int>>RoomList);
 
 private:
-	
+
 
 	int color_red = GetColor(255, 0, 0);
 	int color_green = GetColor(0, 255, 0);
@@ -110,6 +127,11 @@ private:
 	//マップチップ
 	int mapChip[9] = {};
 
+	int ue = 0;
+	int migi = 0;
+	int shita = 0;
+	int hidari = 0;
+
 	//ミニマップ描画用マップチップ
 	int miniMapChip[3] = {};
 	//ミニマッププレイヤーgh
@@ -133,21 +155,21 @@ private:
 		HORIZONTAL,
 	};
 
-	bool IsOutOfRange(int x, int y);
+	bool IsOutOfRange(const int x, const int y);
 
 	//区間分割法
 	//上下左右の座標と部屋番号を取得してvectorに格納
-	void SetDivideArea(int Left, int Up, int Right, int Down, int Id);
+	void SetDivideArea(const int Left, const int Up, const int Right, const int Down, const int Id);
 
 	//分割したエリアの大きい方を格納する関数
-	void SetLargeDivideArea(int Left, int Up, int Right, int Down, int Id);
+	void SetLargeDivideArea(const int Left, const int Up, const int Right, const int Down, const int Id);
 
 	//全エリアを線で分割
 	//始点,終点のxy,方向
-	void SetDivideLine(int Start_x, int Start_y, int Goal_x, int Goal_y, int Dir);
+	void SetDivideLine(const int Start_x, const int Start_y, const int Goal_x, const int Goal_y, const int Dir);
 
 	//部屋の格納
-	void SetDivideRoom(int Left, int Up, int Right, int Down,int RoomId);
+	void SetDivideRoom(const int Left, const int Up, const int Right, const int Down, const int RoomId);
 
 
 	//区画の分割
@@ -158,20 +180,20 @@ private:
 	void CreatePassWay();
 
 
-	
+
 	//引数の辺に通路があるかどうか確認する関数
 	//arg1:動かさない座標(縦に検索ならx座標,横に検索ならy座標
 	//arg2:検索する辺の最小の座標
 	//arg3:検索する辺の最大の座標
 	//arg4:部屋のどっち方向の壁か 0:上,1:右,2:下,3:左
-	bool CheckPassWay(int roomPos_set, int roomPos_moveStart, int roomPos_moveGoal,int dir);
+	bool CheckPassWay(const int roomPos_set, const int roomPos_moveStart, const int roomPos_moveGoal, const int dir);
 
 	//最初と最後の部屋から特定の分割線方向への入り口を作る関数 
-	t2k::Vector3 RandomPoint(int roomId, int& dir);
+	t2k::Vector3 RandomPoint(const int roomId, int& dir);
 	//t2k::Vector3 Map::RandomPoint(int roomId, int& dir,vector<int>setDivideLine);
 
 	//入り口から隣接する部屋へと通路を伸ばす関数
-	bool CreateSecondWay(int x, int y, int dir, int roomId);
+	bool CreateSecondWay(const int x, const int y, const int dir, const int roomId);
 	enum graphicPattern
 	{
 		ROOMTOP,
@@ -186,18 +208,18 @@ private:
 	};
 
 	//セルから周囲の通路を確認し、描画すべき画像が何番か取得する関数 
-	int CheckAroundWay(int x, int y);
+	int CheckAroundWay(const int x, const int y);
 
 	//セルから見て周囲に通路があるかどうか確かめる関数
-	bool CheckAround(int x,int y);
+	bool CheckAround(const int x, const int y);
 	//この座標のセルが通路だったらtrueを返す関数
-	bool CheckThisCell(int x, int y);
+	bool CheckThisCell(const int x, const int y);
 
 	//セル(x,y)からみてdir方向に垂直なセル2つとdir方向のセルが壁か通路か確認する関数
-	bool CheckChip(int x, int y, int nextDir);
+	bool CheckChip(const int x, const int y, const int nextDir);
 
 	//色コードからstringを返す関数
-	std::string GetColorName(int code);
-	
+	std::string GetColorName(const int code);
+
 
 };

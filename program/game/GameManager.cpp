@@ -202,14 +202,14 @@ void GameManager::Update()
 }
 void GameManager::Draw()
 {
-	for (int i = 0; i < map->GetRoomNum() + 1; ++i) {
+	/*for (int i = 0; i < map->GetRoomNum() + 1; ++i) {
 		for (int k = 0; k < wayPoint[i].size(); ++k) {
 
 			DrawStringEx(100 + 100 * k, 400 + 80 * i, -1, "•”‰®”Ô†:%d", i);
 			DrawStringEx(100 + 100 * k, 420 + 80 * i, -1, "x:%.1f", wayPoint[i][k].x);
 			DrawStringEx(100 + 100 * k, 440 + 80 * i, -1, "y:%.1f", wayPoint[i][k].y);
 		}
-	}
+	}*/
 
 	SceneManager::Render();
 
