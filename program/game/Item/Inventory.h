@@ -6,7 +6,7 @@ class Item;
 class Inventory
 {
 public:
-	Inventory();
+	Inventory(int MyInventoryNum);
 	~Inventory();
 
 	//Item* inventory[10] = { nullptr,nullptr ,nullptr ,nullptr ,nullptr ,nullptr ,nullptr ,nullptr ,nullptr ,nullptr };
@@ -32,8 +32,17 @@ public:
 	//カーソルの位置を取得する関数
 	int GetCursorNum();
 
-	//カーソルの位置を変更する関数
+	//カーソルの位置を変更する関数 type:0->加算移動,1->指定位置移動
 	void SetCursorNum(int MoveNum);
+
+	//インベントリ番号を取得する関数
+	inline int GetInventoryNum() {
+		return myInventoryNum;
+	}
+
+	inline void SetItemNum(int num) {
+		itemNum += num;
+	}
 
 private:
 	//選択中のアイテムを指すカーソルの位置
@@ -44,6 +53,9 @@ private:
 	int selectItemBackGh = 0;
 	//インベントリ内のアイテム数
 	int itemNum = 0;
+
+	//インベントリ番号
+	int myInventoryNum = 0;
 
 
 };

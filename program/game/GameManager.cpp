@@ -40,10 +40,18 @@ void GameManager::AddItemToInventory(int itemId)
 {
 	//今のinventoryの持つアイテム配列がいっぱいなら
 	if (inventories[inventoryNum]->inventoryList.size() >= 10) {
-		//新しくinventoryのインスタンスを生成する
-		Inventory* newInventory = new Inventory();
+		//if (sharedInventories[inventoryNum]->inventoryList.size() >= 10) {
+
+			//新しくinventoryのインスタンスを生成する
+		Inventory* newInventory = new Inventory(inventoryNum + 1);
 		//inventory配列に登録
 		inventories.emplace_back(newInventory);
+
+		/*
+		std::shared_ptr<Inventory> newShared_inventory = std::make_shared<Inventory>(inventoryNum+1);
+		sharedInventories.emplace_back(newShared_inventory);
+		*/
+
 		//登録するinventoryを更新する
 		inventoryNum++;
 	}
@@ -57,6 +65,8 @@ void GameManager::AddItemToInventory(int itemId)
 		equipItem* newItem = new equipItem(intData[0], intData[1], stringData[0], intData[2], intData[3], intData[4],
 			stringData[1], intData[5], stringData[2], intData[6], intData[7], intData[8], intData[9]);
 		inventories[inventoryNum]->AddInventory(newItem);
+
+		//sharedInventories[inventoryNum]->AddInventory(newItem);
 	}
 	else {
 		std::vector<int> intData = item->GetAllIntData();
@@ -66,6 +76,9 @@ void GameManager::AddItemToInventory(int itemId)
 		//std::shared_ptr<Item>nItem= std::make_shared<Item>(intData[0], intData[1], stringData[0], intData[2], intData[3], intData[4], stringData[1], stringData[2]);
 
 		inventories[inventoryNum]->AddInventory(newItem);
+
+		//sharedInventories[inventoryNum]->AddInventory(newItem);
+
 	}
 
 #if 0
@@ -87,28 +100,65 @@ void GameManager::PopItemFromInventory(int NowInventoryId)
 {
 	int selectNum = inventories[NowInventoryId]->GetCursorNum();
 
+	//int selectNum = sharedInventories[NowInventoryId]->GetCursorNum();
+
 	auto itr = inventories[NowInventoryId]->inventoryList.begin();
+
+	//auto itr = sharedInventories[NowInventoryId]->inventoryList.begin();
+
 	for (int i = 0; i < selectNum; ++i) {
 		itr++;
 	}
 	delete((*itr));
 	itr = inventories[NowInventoryId]->inventoryList.erase(itr);
+
+	//itr = sharedInventories[NowInventoryId]->inventoryList.erase(itr);
+
 	inventories[NowInventoryId]->SetCursorNum(-1);
-	//popするアイテムがいる場所=今いるインベントリが最後のインベントリではない場合
+	inventories[NowInventoryId]->SetItemNum(-1);
+
+	//sharedInventories[NowInventoryId]->SetCursorNum(-1);
+
+//popするアイテムがいる場所=今いるインベントリが最後のインベントリではない場合
 	if (NowInventoryId != inventoryNum) {
 		int checkInventoryNum = NowInventoryId;
 		while (1) {
-			//次のページの最初のアイテムをコピーして消したアイテムのリストの末尾に加える
+			if (inventories[checkInventoryNum + 1]->inventoryList.empty())break;
+
+			//if (sharedInventories[checkInventoryNum + 1]->inventoryList.empty())break;
+
+		//次のページの最初のアイテムをコピーして消したアイテムのリストの末尾に加える
 			auto item = inventories[checkInventoryNum + 1]->inventoryList.begin();
-			//アイテム追加
+
+			//auto item = sharedInventories[checkInventoryNum + 1]->inventoryList.begin();
+
+		//アイテム追加
 			inventories[checkInventoryNum]->inventoryList.emplace_back((*item));
-			//次のページの最初のアイテムをpopする
+
+			//sharedInventories[checkInventoryNum]->inventoryList.emplace_back((*item));
+
+		//次のページの最初のアイテムをpopする
 			inventories[checkInventoryNum + 1]->inventoryList.pop_front();
-			//最後のインベントリページにたどり着いたらbreak
+
+			//sharedInventories[checkInventoryNum + 1]->inventoryList.pop_front();
+
+		//最後のインベントリページにたどり着いたらbreak
 			if (checkInventoryNum + 1 == inventoryNum)break;
 			checkInventoryNum++;
 		}
 	}
+	if (inventories[inventoryNum]->inventoryList.empty()) {
+		if (inventoryNum != 0) {
+			delete inventories[inventoryNum];
+			inventories[inventoryNum] = nullptr;
+			inventories.pop_back();
+			inventoryNum--;
+			isDeleteInventory = true;
+		}
+	}
+	if (isDeleteInventory)return;
+	if (inventories[NowInventoryId]->inventoryList.empty())inventories[NowInventoryId]->CursorReset();
+	//if (sharedInventories[NowInventoryId]->inventoryList.empty())sharedInventories[NowInventoryId]->CursorReset();
 }
 
 Item* GameManager::GetItemData(int ItemId)
@@ -178,7 +228,7 @@ void GameManager::Draw()
 
 void GameManager::initGameManager()
 {
-	SRand(time(0));
+	//SRand(time(0));
 	// 
 	//debug
 	//SRand(1);
@@ -197,15 +247,20 @@ void GameManager::initGameManager()
 		CheckRoomWayPoint(i);
 	}*/
 	//playerのactidは0
-	player = std::make_shared<Player>(SetStartPos(0), 100, 30, 30, 30, 0);
+	player = std::make_shared<Player>(SetStartPos(0), 100.0f, 30, 30, 30, 0);
 	map->player = player;
 
 	camera->cameraPos = player->pos - WINDOWCENTER;
 	iManager = new ItemManager();
 
 	haveItem = new HaveItem();
-	inventory = new Inventory();
+	inventory = new Inventory(0);
 	inventories.emplace_back(inventory);
+
+	/*
+	shared_inventory = std::make_shared<Inventory>(0);
+	sharedInventories.emplace_back(shared_inventory);
+	*/
 
 	sound = new Sound();
 	//fControl = new FadeControl();
@@ -244,12 +299,14 @@ int GameManager::GetRandEx(int a, int b)
 {
 	if (a > b) {
 		int hoge = a - b;
-		int random = GetRand(hoge) + b;
+		//		int random = GetRand(hoge) + b;
+		int random = (hoge)? rand() % hoge + b : b ;
 		return random;
 	}
 	else {
 		int hoge = b - a;
-		int random = GetRand(hoge) + a;
+		//		int random = GetRand(hoge) + a;
+		int random = (hoge) ? rand() % hoge + a : a ;
 		return random;
 	}
 	return 0;
@@ -265,9 +322,9 @@ void GameManager::setPlayerRoomNum(int roomNum)
 t2k::Vector3 GameManager::SetStartPos(int setType)
 {
 	//ランダムな部屋番号を取得
-	int rand = GetRand(map->GetRoomNum());
+	int random = rand() % (map->GetRoomNum());
 	//部屋番号から部屋を取得 0:左 1:上 2:右 3:下 帰ってくるのはマップ座標
-	vector<int> room = map->GetRoom(rand);
+	vector<int> room = map->GetRoom(random);
 	//部屋の中のランダムなマップ座標を取得する
 	int x = GetRandEx(room[0], room[2]);
 	int y = GetRandEx(room[1], room[3]);
@@ -580,7 +637,10 @@ t2k::Vector3 GameManager::LocalToWorld(int MapX, int MapY)
 
 void GameManager::MapDraw()
 {
+
 	map->MapDraw();
+
+	if (!minimapDraw)return;
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
 	map->MiniMapDraw();
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);

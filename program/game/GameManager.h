@@ -39,9 +39,18 @@ public:
 	ItemManager* iManager = nullptr;
 	HaveItem* haveItem = nullptr;
 	Inventory* inventory = nullptr;
+	//std::shared_ptr<Inventory>shared_inventory;
+
+	//debug
+	bool minimapDraw = true;
+	//
+
 
 	//インベントリが入った配列
 	std::vector<Inventory*> inventories;
+
+	//std::vector<std::shared_ptr<Inventory>>sharedInventories;
+
 	//アイテムを追加する際の格納可能なインベントリ配列番号
 	int inventoryNum = 0;
 
@@ -162,6 +171,12 @@ public:
 	bool CheckIsThereEnemyToDir(t2k::Vector3 Pos);
 	//特定の座標のenemyを取得する関数
 	std::shared_ptr<Enemy> GetIsThereEnemyToDir(t2k::Vector3 Pos);
+
+	inline void ForceInventoryChange(int& num) {
+		num--;
+		isDeleteInventory = false;
+	}
+	bool isDeleteInventory = false;
 
 
 	//目の前の対象にダメージを与える

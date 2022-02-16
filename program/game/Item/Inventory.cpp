@@ -7,10 +7,11 @@
 #include"../GameManager.h"
 
 extern GameManager* gManager;
-Inventory::Inventory()
+Inventory::Inventory(int MyInventoryNum)
 {
 	cursorGh = gManager->LoadGraphEx("graphics/menuCursor.png");
 	selectItemBackGh = gManager->LoadGraphEx("graphics/selectItemBack.png");
+	myInventoryNum = MyInventoryNum+1;
 }
 
 Inventory::~Inventory()
@@ -63,7 +64,7 @@ void Inventory::DrawInventory(int x, int y)
 	for (auto item : inventoryList) {
 		if (item->getItemData(1) >= 2) {
 			equipItem* eItem = (equipItem*)item;
-			if(eItem->GetIsEquiped())DrawStringEx(x + 40, y + 10 + 30 * i, -1, "[E]");
+			if (eItem->GetIsEquiped())DrawStringEx(x + 40, y + 10 + 30 * i, -1, "[E]");
 			DrawStringEx(x + 80, y + 10 + 30 * i, -1, "%s", item->getItemName().c_str());
 		}
 		else {
@@ -86,6 +87,9 @@ void Inventory::DrawItemData(int x, int y)
 	if (inventoryList.empty())return;
 	auto itr = inventoryList.begin();
 	for (int i = 0; i < selectCursor; ++i) {
+		if (itr == inventoryList.end()) {
+			break;
+		}
 		itr++;
 	}
 	(*itr)->DrawItemData(x, y);
@@ -100,4 +104,6 @@ int Inventory::GetCursorNum()
 void Inventory::SetCursorNum(int MoveNum)
 {
 	selectCursor += MoveNum;
+	if (selectCursor < 0)selectCursor = 0;
+
 }

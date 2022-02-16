@@ -164,7 +164,7 @@ bool Enemy::Move()
 			//もし左右にすすめるならランダムで進む
 			if (CheckCanMoveToDir(mydir, myNowPos, CheckDir::LEFT) && CheckCanMoveToDir(mydir, myNowPos, CheckDir::RIGHT))
 			{
-				if (GetRand(10) % 2 == 0)DegradedMoveToDir(GetDir(mydir, CheckDir::LEFT));
+				if (rand() % 2 == 0)DegradedMoveToDir(GetDir(mydir, CheckDir::LEFT));
 				else DegradedMoveToDir(GetDir(mydir, CheckDir::RIGHT));
 			}
 			//左にすすめるか確認

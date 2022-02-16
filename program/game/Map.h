@@ -108,7 +108,7 @@ private:
 	int outOfRange = -1;
 
 	//マップチップ
-	int mapChip[4] = {};
+	int mapChip[9] = {};
 
 	//ミニマップ描画用マップチップ
 	int miniMapChip[3] = {};
@@ -172,10 +172,26 @@ private:
 
 	//入り口から隣接する部屋へと通路を伸ばす関数
 	bool CreateSecondWay(int x, int y, int dir, int roomId);
+	enum graphicPattern
+	{
+		ROOMTOP,
+		ROOMRIGHT,
+		ROOMBOTTOM,
+		ROOMLEFT,
+		ROOMLEFTTOP,
+		ROOMRIGHTTOP,
+		ROOMLEFTBOTTOM,
+		ROOMRIGHTBOTTOM,
+		ROOMWALL
+	};
 
+	//セルから周囲の通路を確認し、描画すべき画像が何番か取得する関数 
+	int CheckAroundWay(int x, int y);
 
 	//セルから見て周囲に通路があるかどうか確かめる関数
 	bool CheckAround(int x,int y);
+	//この座標のセルが通路だったらtrueを返す関数
+	bool CheckThisCell(int x, int y);
 
 	//セル(x,y)からみてdir方向に垂直なセル2つとdir方向のセルが壁か通路か確認する関数
 	bool CheckChip(int x, int y, int nextDir);

@@ -3,10 +3,11 @@
 #include"Actor/Actor.h"
 
 class equipItem;
-class Player :public Actor
+class Player : public Actor
 {
 public:
-	Player(t2k::Vector3 StartPos, float Hp, int Atack, int Defence, int Speed, int ActId);
+	Player(){}
+	Player(const t2k::Vector3& StartPos, float Hp, int Atack, int Defence, int Speed, int ActId);
 	~Player();
 
 	//t2k::Vector3 pos = {};
@@ -24,7 +25,6 @@ public:
 
 	//装備によるステータス上昇値を獲得する関数
 	void GetSumStatusFromEquipment();
-
 
 
 	bool Move()override;

@@ -119,7 +119,7 @@ private:
 	//enemyのデータの確認関数
 	void DrawEnemyData();
 	//描画中のインベントリページ
-	int inventoryPage = 0;
+	int drawInventoryPage = 0;
 	//選択中のインベントリを描画する関数
 	void DrawInventory();
 	//インベントリの別ページに移動する関数

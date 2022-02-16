@@ -6,7 +6,7 @@
 
 extern GameManager* gManager;
 
-Player::Player(t2k::Vector3 StartPos, float Hp, int Atack, int Defence, int Speed, int ActId)
+Player::Player(const t2k::Vector3& StartPos, float Hp, int Atack, int Defence, int Speed, int ActId)
 {
 	actId = ActId;
 	pos = StartPos;

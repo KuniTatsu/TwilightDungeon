@@ -67,8 +67,9 @@ DungeonScene::DungeonScene()
 	RandEnemyCreate(5);
 
 	for (int i = 0; i < 5; ++i) {
-		int rand = GetRand(100) % gManager->GetItemNum();
-		SpawnItem(rand);
+		//int rand = GetRand(100) % gManager->GetItemNum();
+		int random = rand() % gManager->GetItemNum();
+		SpawnItem(random);
 	}
 	player = gManager->GetPlayer();
 }
@@ -80,8 +81,8 @@ DungeonScene::~DungeonScene()
 void DungeonScene::RandEnemyCreate(int num)
 {
 	for (int i = 0; i < num; ++i) {
-		int rand = GetRand(100) % 6 + 100;
-		eManager->CreateEnemy(rand, dungeonLevel);
+		int random = rand() % 6 + 100;
+		eManager->CreateEnemy(random, dungeonLevel);
 	}
 	gManager->SetLiveEnemyList(eManager->liveEnemyList);
 }
@@ -106,7 +107,10 @@ void DungeonScene::Update()
 		}*/
 		MoveLevel(1);
 	}
-
+	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_M)) {
+		if (gManager->minimapDraw)gManager->minimapDraw = false;
+		else gManager->minimapDraw = true;
+	}
 	//アイテム当たり判定感知
 
 	for (auto item : dropItems) {
@@ -166,9 +170,10 @@ void DungeonScene::Draw()
 		}
 	}
 
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+	/*SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
 	DrawRotaGraph(gManager->player->pos.x - gManager->camera->cameraPos.x, gManager->player->pos.y - gManager->camera->cameraPos.y, 1, 0, alfa, true);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);*/
+
 	//gManager->map->DrawAllRoomPos(gManager->map.)
 
 	DrawNowSequence(nowSeq);
@@ -222,21 +227,24 @@ void DungeonScene::MoveLevel(int addLevel)
 	RandEnemyCreate(5);
 	dropItems.clear();
 	for (int i = 0; i < 5; ++i) {
-		int rand = GetRand(100) % gManager->GetItemNum();
-		SpawnItem(rand);
+		int random = rand() % gManager->GetItemNum();
+		SpawnItem(random);
 	}
 }
 
 bool DungeonScene::Seq_Main(const float deltatime)
 {
 	//debug
+	//カメラ移動モード
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_ESCAPE)) {
 		ChangeSequence(sequence::CAMERA);
 		return true;
 	}
+	//ダメージを受ける
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_D)) {
 		gManager->player->TakeHpEffect(-20);
 	}
+	//ステータス上昇
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_U)) {
 		gManager->player->ChangeStatus(1, 50, 0);
 		for (auto enemy : eManager->liveEnemyList) {
@@ -352,6 +360,7 @@ bool DungeonScene::Seq_EnemyAct(const float deltatime)
 
 bool DungeonScene::Seq_FirstMenu(const float deltatime)
 {
+	//インベントリを開く
 	if (firstMenu->SelectNum == 0 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
 		//menuの上下を操作出来なくする
 		firstMenu->manageSelectFlag = false;
@@ -361,13 +370,14 @@ bool DungeonScene::Seq_FirstMenu(const float deltatime)
 		ChangeSequence(sequence::INVENTORY_OPEN);
 		return true;
 	}
+	//メニューを閉じる
 	else if (firstMenu->SelectNum == 4 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
 		firstMenu->menu_live = false;
 		ChangeSequence(sequence::MAIN);
 		return true;
 	}
 
-
+	//Escキーでもメニューを閉じる
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_ESCAPE))
 	{
 		firstMenu->menu_live = false;
@@ -389,15 +399,15 @@ bool DungeonScene::Seq_InventoryOpen(const float deltatime)
 	//インベントリの操作
 	ChangeInventory();
 	//もしインベントリが空ならreturn
-	if (gManager->inventories[inventoryPage]->inventoryList.empty())return true;
+	if (gManager->inventories[drawInventoryPage]->inventoryList.empty())return true;
 	//現在選択中のカーソル位置を取得
-	int selectNum = gManager->inventories[inventoryPage]->GetCursorNum();
+	int selectNum = gManager->inventories[drawInventoryPage]->GetCursorNum();
 
 
 	//もしインベントリを開いている時にenterが押されたら
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
 		//現在のカーソルの位置のアイテムを取得する
-		auto itr = gManager->inventories[inventoryPage]->inventoryList.begin();
+		auto itr = gManager->inventories[drawInventoryPage]->inventoryList.begin();
 		for (int i = 0; i < selectNum; ++i) {
 			itr++;
 		}
@@ -448,7 +458,7 @@ bool DungeonScene::Seq_InventoryUse(const float deltatime)
 	if (type < 2) {
 		//使うでEnterを押したら
 		if (use_usable->SelectNum == 0 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
-			ItemUse(inventoryPage);
+			ItemUse(drawInventoryPage);
 			use_usable->menu_live = false;
 			itemBuf = nullptr;
 			ChangeSequence(sequence::INVENTORY_OPEN);
@@ -457,7 +467,7 @@ bool DungeonScene::Seq_InventoryUse(const float deltatime)
 		//投げるでEnterを押したら
 		else if (use_usable->SelectNum == 1 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
 			firstMenu->menu_live = false;
-			ItemThrow(inventoryPage);
+			ItemThrow(drawInventoryPage);
 			ChangeSequence(sequence::THROWITEMMOVE);
 			return true;
 		}
@@ -476,7 +486,7 @@ bool DungeonScene::Seq_InventoryUse(const float deltatime)
 		if (eItem->GetIsEquiped()) {
 			//使うでEnterを押したら
 			if (use_nowEquip->SelectNum == 0 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
-				ItemUse(inventoryPage);
+				ItemUse(drawInventoryPage);
 				use_equip->menu_live = false;
 				itemBuf = nullptr;
 				ChangeSequence(sequence::INVENTORY_OPEN);
@@ -499,7 +509,7 @@ bool DungeonScene::Seq_InventoryUse(const float deltatime)
 		else {
 			//使うでEnterを押したら
 			if (use_equip->SelectNum == 0 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
-				ItemUse(inventoryPage);
+				ItemUse(drawInventoryPage);
 				use_equip->menu_live = false;
 				itemBuf = nullptr;
 				ChangeSequence(sequence::INVENTORY_OPEN);
@@ -508,7 +518,7 @@ bool DungeonScene::Seq_InventoryUse(const float deltatime)
 			//装備していない　かつ　投げるでEnterを押したら
 			else if (use_equip->SelectNum == 1 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
 				firstMenu->menu_live = false;
-				ItemThrow(inventoryPage);
+				ItemThrow(drawInventoryPage);
 				ChangeSequence(sequence::THROWITEMMOVE);
 				return true;
 			}
@@ -621,11 +631,12 @@ void DungeonScene::DrawEnemyData()
 
 void DungeonScene::DrawInventory()
 {
-	if (gManager->inventories[inventoryPage]->inventoryList.empty())return;
+	DrawStringEx(inventory->menu_x + 300, inventory->menu_y + 10, -1, "ページ:%d", gManager->inventories[drawInventoryPage]->GetInventoryNum());
+	if (gManager->inventories[drawInventoryPage]->inventoryList.empty())return;
 	desc->Menu_Draw();
 	SetFontSize(25);
-	gManager->inventories[inventoryPage]->DrawInventory(inventory->menu_x, inventory->menu_y);
-	gManager->inventories[inventoryPage]->DrawItemData(desc->menu_x + 10, desc->menu_y + 10);
+	gManager->inventories[drawInventoryPage]->DrawInventory(inventory->menu_x, inventory->menu_y);
+	gManager->inventories[drawInventoryPage]->DrawItemData(desc->menu_x + 10, desc->menu_y + 10);
 
 	SetFontSize(16);
 }
@@ -634,16 +645,16 @@ void DungeonScene::ChangeInventory()
 {
 	//インベントリを切り替える
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RIGHT)) {
-		inventoryPage = (inventoryPage + 1) % (gManager->inventoryNum + 1);
-		gManager->inventories[inventoryPage]->CursorReset();
+		drawInventoryPage = (drawInventoryPage + 1) % (gManager->inventoryNum + 1);
+		gManager->inventories[drawInventoryPage]->CursorReset();
 	}
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_LEFT)) {
-		inventoryPage = (inventoryPage + (gManager->inventoryNum)) % (gManager->inventoryNum + 1);
-		gManager->inventories[inventoryPage]->CursorReset();
+		drawInventoryPage = (drawInventoryPage + (gManager->inventoryNum)) % (gManager->inventoryNum + 1);
+		gManager->inventories[drawInventoryPage]->CursorReset();
 	}
-	if (gManager->inventories[inventoryPage]->inventoryList.empty())return;
+	if (gManager->inventories[drawInventoryPage]->inventoryList.empty())return;
 	//上下移動
-	gManager->inventories[inventoryPage]->CursorMove();
+	gManager->inventories[drawInventoryPage]->CursorMove();
 }
 
 void DungeonScene::SpawnItem(int ItemId)
@@ -696,6 +707,12 @@ void DungeonScene::ItemUse(/*int selectNum, Inventory* inventory,*/ int inventor
 		gManager->addLog(itemBuf->getItemName() + "を使った");
 		//インベントリからの消去
 		gManager->PopItemFromInventory(inventoryPage);
+		//ページ内のアイテムを全て消費してページを消去したあとだったら
+		if (gManager->isDeleteInventory) {
+			//gManager->ForceInventoryChange(inventoryPage);
+			drawInventoryPage--;
+			gManager->isDeleteInventory = false;
+		}
 	}//投擲消費アイテムだったら
 	else if (type == 1) {
 		//投げるアイテムをpopアイテムとして描画する
@@ -735,6 +752,10 @@ void DungeonScene::ItemThrow(int inventoryPage)
 	throwedItemList.emplace_back(throwedItem);
 	//インベントリからの消去
 	gManager->PopItemFromInventory(inventoryPage);
+	//ページ内のアイテムを全て消費してページを消去したあとだったら
+	if (gManager->isDeleteInventory) {
+		gManager->ForceInventoryChange(inventoryPage);
+	}
 }
 void DungeonScene::DeleteDeadEnemy()
 {
