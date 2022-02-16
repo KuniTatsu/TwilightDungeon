@@ -92,7 +92,7 @@ int Map::CheckIsThere(int x, int y)
 			isThere = true;
 		}
 	}
-	if (!isThere)return -1;
+	/*if (!isThere)*/return -1;
 
 }
 

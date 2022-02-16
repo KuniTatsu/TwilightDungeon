@@ -241,11 +241,6 @@ void GameManager::initGameManager()
 	//ŠK’iÝ’u
 	map->SetChip(stairsPos.x, stairsPos.y, map->STAIRS);
 
-	//wayPoint.resize(map->GetRoomNum() + 1);
-
-	/*for (int i = 0; i < map->sumRoomNum; ++i) {
-		CheckRoomWayPoint(i);
-	}*/
 	//player‚Ìactid‚Í0
 	player = std::make_shared<Player>(SetStartPos(0), 100.0f, 30, 30, 30, 0);
 	map->player = player;
@@ -267,14 +262,6 @@ void GameManager::initGameManager()
 
 	deitatime_ = 0;
 	SceneManager::ChangeScene(SceneManager::SCENE::DUNGEON);
-
-	/*itemList.resize(3);
-	loadItem();
-
-	haveItem.resize(38);
-
-	haveItemInit();*/
-
 }
 
 

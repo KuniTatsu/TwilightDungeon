@@ -15,12 +15,6 @@ public:
 
 	Enemy(int Id, int Type, std::string Name, int Hp, int Atack, int Defence, int Speed, std::string Gh, int Exp,int Floor, int ActId);
 	~Enemy()override;
-	////階層やその他による上昇ステータス
-	//int exHp = 0;
-	//int exAtack = 0;
-	//int exDefence = 0;
-	//int exSpeed = 0;
-	//int exExp = 0;
 
 	//倒した時の経験値を取得する関数
 	inline int GetExp() {
@@ -51,7 +45,6 @@ private:
 	//現在のマップ座標
 	t2k::Vector3 myNowPos = {};
 
-	
 	//設定された目的地に向かう関数
 	void MoveChasePoint();
 
@@ -84,6 +77,7 @@ private:
 	//同じ部屋にいるフラグ
 	bool sameRoom = false;
 
+	//A*の実装は必要ないため一旦中止
 #if 0
 	//キャラクターに向かって移動するAI関数
 	void MoveToPlayer();

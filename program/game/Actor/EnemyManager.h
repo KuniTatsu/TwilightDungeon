@@ -19,13 +19,13 @@ public:
 	std::list<std::shared_ptr<Enemy>> liveEnemyList;
 
 
-	void CreateEnemy(int Id,int Floor);
+	void CreateEnemy(const int Id, const int Floor);
 
 private:
 	void LoadEnemyData();
 
 	bool canCreateEnemy = true;
 
-	std::shared_ptr<Enemy> GetEnemyStatus(int num, int Floor);
+	std::shared_ptr<Enemy> GetEnemyStatus(const int num, const int Floor);
 
 };

@@ -20,16 +20,16 @@ public:
 
 
 	//num体敵を作る関数
-	void RandEnemyCreate(int num);
+	void RandEnemyCreate(const int num);
 
 	void Update();
 
 	void Draw();
 
 	int GetDungeonLevel();
-	void SetDungeonLevel(int addLevel);
+	void SetDungeonLevel(const int addLevel);
 
-	void MoveLevel(int addLevel);
+	void MoveLevel(const int addLevel);
 
 private:
 	//階層
@@ -65,7 +65,7 @@ private:
 
 	MenuWindow* firstMenu = nullptr;
 	std::shared_ptr<Player> player = nullptr;
-	
+
 	//飛んでいるアイテムリスト
 	std::list<Item*> throwItem;
 
@@ -112,9 +112,9 @@ private:
 	};
 	sequence nowSeq = sequence::MAIN;
 	//Sequenceを移動させる関数,enumも一緒に変更する
-	void ChangeSequence(sequence seq);
+	void ChangeSequence(const sequence seq);
 	//シーケンス確認関数
-	void DrawNowSequence(sequence seq);
+	void DrawNowSequence(const sequence seq);
 
 	//enemyのデータの確認関数
 	void DrawEnemyData();
@@ -129,7 +129,7 @@ private:
 	int mouseY = 0;
 
 	//アイテムをスポーンさせる関数
-	void SpawnItem(int ItemId);
+	void SpawnItem(const int ItemId);
 
 	//落ちているアイテムリスト
 	std::list<Item*>dropItems;
@@ -141,15 +141,10 @@ private:
 	Item* itemBuf = nullptr;
 
 	//アイテムの使用関数
-	void ItemUse(/*int selectNum,Inventory* inventory, */int inventoryPage);
+	void ItemUse(const int inventoryPage);
 
-	void ItemThrow(int inventoryPage);
+	void ItemThrow(const int inventoryPage);
 
 	void DeleteDeadEnemy();
-
-	/*std::string Log[9] = {};
-	void addLog(const std::string log);
-	void LogDraw();*/
-	
 
 };

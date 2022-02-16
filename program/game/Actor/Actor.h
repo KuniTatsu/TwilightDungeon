@@ -8,9 +8,6 @@ public:
 	Actor();
 	virtual ~Actor();
 
-	//id(int)	EnemyType(int)	Enemy_Name(std::string)	HP(int)	Atack(int)	Defence(int)	Speed(int)	Gh(std::string)	Exp(int)
-
-
 	bool isLive = true;
 
 	enum dir {
@@ -21,13 +18,13 @@ public:
 	};
 	dir mydir = UP;
 
-	void setDir(int dir);
+	void setDir(const int dir);
 
 	t2k::Vector3 pos = {};
 	t2k::Vector3 skill = {};
 
 	//外からステータスを取得する関数 StatusNum:0->HP,1->Atack,2->Defence,3->Speed,4->level
-	int GetStatus(int StatusNum);
+	int GetStatus(const int StatusNum);
 	//名前の取得関数
 	inline std::string GetName() {
 		return name;
@@ -38,14 +35,14 @@ public:
 		EQUIP
 	};
 
-	//ステータス上昇のテスト関数 StatusNum:0->HP,1->Atack,2->Defence,3->Speed,StatusType->0:effect,1:equipment
-	void ChangeStatus(int StatusNum, int MoveNum, int StatusType);
+	//ステータス上昇の関数 StatusNum:0->HP,1->Atack,2->Defence,3->Speed,StatusType->0:effect,1:equipment
+	void ChangeStatus(const int StatusNum, const int MoveNum, const int StatusType);
 
 	inline int GetActId() {
 		return actId;
 	}
 	//Hpの変動が外部から与えられた時に使う関数
-	void TakeHpEffect(int HpMove);
+	void TakeHpEffect(const int HpMove);
 
 	virtual void Atack();
 	virtual bool Move();

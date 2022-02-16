@@ -7,6 +7,8 @@
 
 class Item;
 
+//**********まだ使用しないクラスのため一旦更新停止*********//
+
 class ExEffectManager
 {
 public:
@@ -15,15 +17,9 @@ public:
 	//keyで引数t2k::Vector3,返り値なしの関数を検索し、実行する関数
 	std::function<void(t2k::Vector3)> DoPosEvent(std::string key);
 
-	
-
-
 private:
 	ExEffectManager();
 	~ExEffectManager();
-
-
-	
 
 	std::vector<std::string>loadSkill;
 	//各種特殊処理の効果を実行する関数を入れたmap(引数返り値なし)

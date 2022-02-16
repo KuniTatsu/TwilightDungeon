@@ -14,33 +14,34 @@ public:
 	//std::shared_ptr<Item>inventory[10] = { nullptr,nullptr ,nullptr ,nullptr ,nullptr ,nullptr ,nullptr ,nullptr ,nullptr ,nullptr };
 
 	std::list<Item*> inventoryList;
-	std::list<std::shared_ptr<Item>> inventorySharedList;
+	//std::list<std::shared_ptr<Item>> inventorySharedList;
 
 	//インベントリにアイテムを追加する関数
 	void AddInventory(Item* item);
 
-	void AddSharedInventory(std::shared_ptr<Item>item);
+	//void AddSharedInventory(std::shared_ptr<Item>item);
+	// 
 	//カーソルを上下に動かす関数
 	void CursorMove();
 	//カーソルを一番上に戻す関数
 	void CursorReset();
 	//インベントリ内のアイテム名を描画する関数
-	void DrawInventory(int x, int y);
+	void DrawInventory(const int x, const int y);
 	//カーソルで選択中のアイテムの説明を描画する関数
-	void DrawItemData(int x, int y);
+	void DrawItemData(const int x, const int y);
 
 	//カーソルの位置を取得する関数
 	int GetCursorNum();
 
 	//カーソルの位置を変更する関数 type:0->加算移動,1->指定位置移動
-	void SetCursorNum(int MoveNum);
+	void SetCursorNum(const int MoveNum);
 
 	//インベントリ番号を取得する関数
 	inline int GetInventoryNum() {
 		return myInventoryNum;
 	}
 
-	inline void SetItemNum(int num) {
+	inline void SetItemNum(const int num) {
 		itemNum += num;
 	}
 

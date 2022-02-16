@@ -44,6 +44,7 @@ int Item::getItemData(int ColumnId)
 	else if (ColumnId == 2)return amountOfSaturation;
 	else if (ColumnId == 3)return amountOfHeal;
 	else if (ColumnId == 4)return hitDamage;
+	else return -1;
 }
 
 const std::string Item::getItemName()

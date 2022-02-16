@@ -15,7 +15,7 @@ public:
 
 
 	//満腹度とHPの変更関数(主に食料アイテムの使用で使う)
-	void ChangeBaseStatus(int ManpukuMove, int HpMove);
+	void ChangeBaseStatus(const int ManpukuMove, const int HpMove);
 
 	//装備欄の変更関数
 	void ChangeEquipItem(equipItem* item);
@@ -33,7 +33,7 @@ public:
 	void HpVarDraw();
 
 	//経験値の獲得関数
-	void AddExp(int num);
+	void AddExp(const int num);
 
 	//debug
 	void DrawPlayerStatus();
@@ -49,41 +49,11 @@ private:
 	void SetLevelStatus();
 	void SetNextExp();
 
-	/*class EquipItem {
-		Item* Weapon = nullptr;
-		Item* Head = nullptr;
-		Item* Chest = nullptr;
-		Item* Glove = nullptr;
-		Item* Boots = nullptr;
-		Item* Shield = nullptr;
-	};*/
 	equipItem* myEquip[6] = { nullptr,nullptr, nullptr, nullptr, nullptr, nullptr };
 
 	const std::string equipName[6] = { "WEAPON","HEAD","CHEST","GLOVE","BOOTS","SHIELD" };
 	//hp,attack,defence,speed
 	int statuses[4] = { 0,0,0,0 };
-
-	//std::string name = "Player";
-
-	////装備,アイテム,その他要因による追加ステータス
-	//int exHp = 0;
-	//int exAtack = 0;
-	//int exHDefence = 0;
-	//int exSpeed = 0;
-
-	////基礎ステータス
-	//float hp = 100 + exHp;
-	//int atack = 10 + exAtack;
-	//int defence = 10 + exHDefence;
-	//int speed = 10 + exSpeed;
-
-	/*float nowHp = hp;
-
-	int nowHpVar_gh = 0;
-	int hpVar_gh = 0;
-
-	const float VARWIDTH = 30;
-	double nowHpVarWidth = nowHp / hp;*/
 
 	//突き当りまで走るフラグ
 	bool left = false;
@@ -98,8 +68,8 @@ private:
 		DOWN
 	};
 
-	void DashToDir(int dir, t2k::Vector3 mapPos);
-	void MoveToDir(int dir, t2k::Vector3 mapPos);
+	void DashToDir(const int dir, const t2k::Vector3 mapPos);
+	void MoveToDir(const int dir, const t2k::Vector3 mapPos);
 
 
 
