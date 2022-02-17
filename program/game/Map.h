@@ -38,7 +38,7 @@ public:
 
 	//マップチップを取得
 	inline int GetChip(const int x, const int y) {
-		if (IsOutOfRange(x, y))return outOfRange;
+		if (IsOutOfRange(x, y))return OUTOFRANGE;
 		return ground[y][x];
 	}
 
@@ -122,10 +122,28 @@ private:
 	//マップの高さ(コンストラクタで使用)
 	int height = 0;
 	//範囲外判定用
-	int outOfRange = -1;
+	const int OUTOFRANGE = -1;
 
 	//マップチップ
-	int mapChip[9] = {};
+	int mapChip[3] = {};
+
+	//オートタイル用列挙体
+	enum graphicPattern
+	{
+		ROOMWALL,
+		ROOMTOP,
+		ROOMRIGHT,
+		ROOMBOTTOM,
+		ROOMLEFT,
+		ROOMLEFTTOP,
+		ROOMRIGHTTOP,
+		ROOMLEFTBOTTOM,
+		ROOMRIGHTBOTTOM,
+		MAXNUM
+	};
+
+	//オートタイル用チップ
+	int autoTileChip[graphicPattern::MAXNUM];
 
 	int ue = 0;
 	int migi = 0;
@@ -198,18 +216,7 @@ private:
 
 	//入り口から隣接する部屋へと通路を伸ばす関数
 	bool CreateSecondWay(const int x, const int y, const int dir, const int roomId);
-	enum graphicPattern
-	{
-		ROOMTOP,
-		ROOMRIGHT,
-		ROOMBOTTOM,
-		ROOMLEFT,
-		ROOMLEFTTOP,
-		ROOMRIGHTTOP,
-		ROOMLEFTBOTTOM,
-		ROOMRIGHTBOTTOM,
-		ROOMWALL
-	};
+
 
 	//セルから周囲の通路を確認し、描画すべき画像が何番か取得する関数 
 	int CheckAroundWay(const int x, const int y);

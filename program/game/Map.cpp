@@ -8,6 +8,8 @@ extern GameManager* gManager;
 
 Map::Map(int Width, int Height)
 {
+
+	//kabe,ue,migi,shita,hidari,kabe,kabe,kabe,kabe
 	mapChip[0] = gManager->LoadGraphEx("graphics/floor.png");//床
 	mapChip[1] = gManager->LoadGraphEx("graphics/Wall.png");//ただの壁
 	mapChip[2] = gManager->LoadGraphEx("graphics/Stairs_.png");//階段
@@ -16,6 +18,16 @@ Map::Map(int Width, int Height)
 	shita = gManager->LoadGraphEx("graphics/Wall_bottom.png");//bottom
 	hidari = gManager->LoadGraphEx("graphics/Wall_leftside.png");//left
 	migi = gManager->LoadGraphEx("graphics/Wall_rightside.png");//right
+
+	autoTileChip[0] = mapChip[1];
+	autoTileChip[1] = ue;
+	autoTileChip[2] = migi;
+	autoTileChip[3] = shita;
+	autoTileChip[4] = hidari;
+	autoTileChip[5] = mapChip[1];
+	autoTileChip[6] = mapChip[1];
+	autoTileChip[7] = mapChip[1];
+	autoTileChip[8] = mapChip[1];
 
 	voidGh = gManager->LoadGraphEx("graphics/void.png");
 
@@ -94,7 +106,7 @@ int Map::CheckIsThere(int x, int y)
 			isThere = true;
 		}
 	}
-	/*if (!isThere)*/return -1;
+	/*if (!isThere)*/return OUTOFRANGE;
 
 }
 
@@ -120,14 +132,6 @@ void Map::GetAllChip(int roomNum, std::vector<std::vector<int>>& chips)
 		}
 		++g;
 	}
-	/*t2k::Vector3 hoge = GetRoomValue(roomNum);
-	for (int i = 0; i < hoge.x; ++i) {
-		for (int k = 0; k < hoge.y; ++k) {
-
-			chips[k][i] = ground[divideRoom[roomNum][0] + i][divideRoom[roomNum][1] + k];
-			chips[k][i] = ground[divideRoom[roomNum][0] + i][divideRoom[roomNum][1] + k];
-		}
-	}*/
 
 }
 
@@ -166,20 +170,13 @@ void Map::MapDraw()
 	}
 	for (int i = 0; i < ground.size(); ++i) {
 		for (int k = 0; k < ground[i].size(); ++k) {
+			//壁ならオートタイルで選ぶ
 			if (ground[i][k] == WALL) {
-				if (!CheckAround(i, k))continue; //DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, voidGh, false);
+				if (!CheckAround(i, k))continue;
 				//DrawRotaGraphF(k * gManager->nowGraphicSize - gManager->camera->cameraPos.x, i * gManager->nowGraphicSize - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
 
 				int iti = CheckAroundWay(i, k);
-				if (iti == ROOMWALL)				DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
-				else if (iti == ROOMTOP)			DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, ue, false);
-				else if (iti == ROOMRIGHT)			DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, migi, true);
-				else if (iti == ROOMBOTTOM)			DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, shita, true);
-				else if (iti == ROOMLEFT)			DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, hidari, true);
-				else if (iti == ROOMLEFTTOP)		DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
-				else if (iti == ROOMRIGHTTOP)		DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
-				else if (iti == ROOMLEFTBOTTOM)		DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
-				else if (iti == ROOMRIGHTBOTTOM)	DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
+				DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, autoTileChip[iti], false);
 			}
 			else if (ground[i][k] == PASSWAY)DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[0], false);
 			else if (ground[i][k] == STAIRS)DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[2], false);
@@ -493,7 +490,7 @@ void Map::AreaDivide()
 			t2k::debugTrace("\nroonId:%d\n", roomId);
 			continue;
 		}
-		
+
 	}
 }
 
@@ -871,19 +868,19 @@ bool Map::CheckChip(int x, int y, int nextDir)
 		else if (GetChip(x, y - 1) == 1)isThere = true;
 
 		int num = 0;
-		if (num = CheckIsThere(x - 1, y) != -1)
+		if (num = CheckIsThere(x - 1, y) != OUTOFRANGE)
 		{
 			//if (num != 0)gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num - 1);
 			//else gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num);
 			isThere = true;
 		}
-		else if (num = CheckIsThere(x + 1, y) != -1)
+		else if (num = CheckIsThere(x + 1, y) != OUTOFRANGE)
 		{
 			//if (num != 0)gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num - 1);
 			//else gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num);
 			isThere = true;
 		}
-		else if (num = CheckIsThere(x, y - 1) != -1)
+		else if (num = CheckIsThere(x, y - 1) != OUTOFRANGE)
 		{
 			//if (num != 0)gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num - 1);
 			//else gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num);
@@ -896,19 +893,19 @@ bool Map::CheckChip(int x, int y, int nextDir)
 		else if (GetChip(x + 1, y) == 1)isThere = true;
 
 		int num = 0;
-		if (num = CheckIsThere(x, y - 1) != -1)
+		if (num = CheckIsThere(x, y - 1) != OUTOFRANGE)
 		{
 			//if (num != 0)gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num - 1);
 			//else gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num);
 			isThere = true;
 		}
-		else if (num = CheckIsThere(x, y + 1) != -1)
+		else if (num = CheckIsThere(x, y + 1) != OUTOFRANGE)
 		{
 			//if (num != 0)gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num - 1);
 			//else gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num);
 			isThere = true;
 		}
-		else if (num = CheckIsThere(x + 1, y) != -1)
+		else if (num = CheckIsThere(x + 1, y) != OUTOFRANGE)
 		{
 			//if (num != 0)gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num - 1);
 			//else gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num);
@@ -921,19 +918,19 @@ bool Map::CheckChip(int x, int y, int nextDir)
 		else if (GetChip(x, y + 1) == 1)isThere = true;
 
 		int num = 0;
-		if (num = CheckIsThere(x - 1, y) != -1)
+		if (num = CheckIsThere(x - 1, y) != OUTOFRANGE)
 		{
 			//if (num != 0)gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num - 1);
 			//else gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num);
 			isThere = true;
 		}
-		else if (num = CheckIsThere(x + 1, y) != -1)
+		else if (num = CheckIsThere(x + 1, y) != OUTOFRANGE)
 		{
 			//if (num != 0)gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num - 1);
 			//else gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num);
 			isThere = true;
 		}
-		else if (num = CheckIsThere(x, y + 1) != -1)
+		else if (num = CheckIsThere(x, y + 1) != OUTOFRANGE)
 		{
 			//if (num != 0)gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num - 1);
 			//else gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num);
@@ -946,19 +943,19 @@ bool Map::CheckChip(int x, int y, int nextDir)
 		else if (GetChip(x - 1, y) == 1)isThere = true;
 
 		int num = 0;
-		if (num = CheckIsThere(x, y - 1) != -1)
+		if (num = CheckIsThere(x, y - 1) != OUTOFRANGE)
 		{
 			//if (num != 0)gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num - 1);
 			//else gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num);
 			isThere = true;
 		}
-		else if (num = CheckIsThere(x, y + 1) != -1)
+		else if (num = CheckIsThere(x, y + 1) != OUTOFRANGE)
 		{
 			//if (num != 0)gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num - 1);
 			//else gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num);
 			isThere = true;
 		}
-		else if (num = CheckIsThere(x - 1, y) != -1)
+		else if (num = CheckIsThere(x - 1, y) != OUTOFRANGE)
 		{
 			//if (num != 0)gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num - 1);
 			//else gManager->SetRoomWayPoint(t2k::Vector3(x, y, 0), num);
@@ -1096,7 +1093,7 @@ int Map::CheckAroundWay(int x, int y)
 
 
 
-	else return -1;
+	else return OUTOFRANGE;
 }
 
 bool Map::CheckThisCell(int x, int y)

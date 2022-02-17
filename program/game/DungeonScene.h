@@ -84,36 +84,48 @@ private:
 	//**debug
 	t2k::Vector3 playerPos = {};
 
-	t2k::Sequence<DungeonScene*> main_sequence =
-		t2k::Sequence<DungeonScene*>(this, &DungeonScene::Seq_Main);
+	t2k::Sequence<DungeonScene*> mainSequence =
+		t2k::Sequence<DungeonScene*>(this, &DungeonScene::SeqMain);
 
 	//プレイヤー動作シークエンス
-	bool Seq_Main(const float deltatime);
+	bool SeqMain(const float deltatime);
+	//プレイヤー攻撃シークエンス
+	bool SeqPlayerAttack(const float deltatime);
 	//エネミー動作シークエンス
-	bool Seq_EnemyAct(const float deltatime);
+	bool SeqEnemyAct(const float deltatime);
+	//エネミー攻撃シークエンス
+	bool SeqEnemyAttack(const float deltatime);
 	//１つ目のメニュー操作
-	bool Seq_FirstMenu(const float deltatime);
+	bool SeqFirstMenu(const float deltatime);
 	//Inventory描画シークエンス
-	bool Seq_InventoryOpen(const float deltatime);
+	bool SeqInventoryOpen(const float deltatime);
 	//Inventoryアイテム使用確認シークエンス
-	bool Seq_InventoryUse(const float deltatime);
+	bool SeqInventoryUse(const float deltatime);
 	//物が飛んでいるシークエンス
-	bool Seq_ThrowItemMove(const float deltatime);
+	bool SeqThrowItemMove(const float deltatime);
+	//アニメーションシークエンス
+	bool SeqAnimation(const float deltatime);
+
 
 	//debug
-	bool Seq_CameraMove(const float deltatime);
+	bool SeqCameraMove(const float deltatime);
 	//シークエンスの列挙体
 	enum class sequence {
 		MAIN,
+		PLAYERATTACK,
 		ENEMYACT,
+		ENEMYATTACK,
 		FIRSTMENU,
 		INVENTORY_OPEN,
 		INVENTORY_USE,
 		THROWITEMMOVE,
+		ANIMATION,
 		CAMERA
 
 	};
 	sequence nowSeq = sequence::MAIN;
+	sequence lastSeq = sequence::MAIN;
+
 	//Sequenceを移動させる関数,enumも一緒に変更する
 	void ChangeSequence(const sequence seq);
 	//シーケンス確認関数

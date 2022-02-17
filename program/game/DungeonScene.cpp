@@ -91,7 +91,7 @@ void DungeonScene::Update()
 {
 	GetMousePoint(&mouseX, &mouseY);
 
-	main_sequence.update(gManager->deitatime_);
+	mainSequence.update(gManager->deitatime_);
 
 	//デバッグ切り替え
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_F2)) {
@@ -227,7 +227,7 @@ void DungeonScene::MoveLevel(int addLevel)
 	}
 }
 
-bool DungeonScene::Seq_Main(const float deltatime)
+bool DungeonScene::SeqMain(const float deltatime)
 {
 	//debug
 	//カメラ移動モード
@@ -286,20 +286,28 @@ bool DungeonScene::Seq_Main(const float deltatime)
 	//左クリックかRボタンで攻撃
 	//プレイヤーの攻撃は目の前に対象がいなかった場合skipと同じ処理を行う
 	if (t2k::Input::isMouseTrigger(t2k::Input::MOUSE_RELEASED_LEFT) || t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_R)) {
-		player->Atack();
-		//死亡チェック
-		for (auto enemy : eManager->liveEnemyList) {
-			if (enemy->GetStatus(0) <= 0) {
-				player->AddExp(enemy->GetExp());
-				enemy->isLive = false;
-			}
-		}
+		//ここをアニメーションシークエンスに飛ばす
 
-		DeleteDeadEnemy();
-		if (!player->skip) {
-			ChangeSequence(sequence::ENEMYACT);
-			return true;
-		}
+		ChangeSequence(sequence::PLAYERATTACK);
+		return true;
+
+		//攻撃エフェクトをアニメーションさせたい
+		//アニメーションが終わったらAtack関数を呼びたい
+
+		//player->Atack();
+		////死亡チェック
+		//for (auto enemy : eManager->liveEnemyList) {
+		//	if (enemy->GetStatus(0) <= 0) {
+		//		player->AddExp(enemy->GetExp());
+		//		enemy->isLive = false;
+		//	}
+		//}
+
+		//DeleteDeadEnemy();
+		//if (!player->skip) {
+		//	ChangeSequence(sequence::ENEMYACT);
+		//	return true;
+		//}
 	}
 
 	//もしPlayerが動いたら もしくはスキップしたら
@@ -315,9 +323,29 @@ bool DungeonScene::Seq_Main(const float deltatime)
 	return true;
 }
 
-bool DungeonScene::Seq_EnemyAct(const float deltatime)
+bool DungeonScene::SeqPlayerAttack(const float deltatime)
 {
-	if (main_sequence.isStart()) {
+	player->Atack();
+	//死亡チェック
+	for (auto enemy : eManager->liveEnemyList) {
+		if (enemy->GetStatus(0) <= 0) {
+			player->AddExp(enemy->GetExp());
+			enemy->isLive = false;
+		}
+	}
+
+	DeleteDeadEnemy();
+	if (!player->skip) {
+		ChangeSequence(sequence::ENEMYACT);
+		return true;
+	}
+	ChangeSequence(sequence::ENEMYACT);
+	return true;
+}
+
+bool DungeonScene::SeqEnemyAct(const float deltatime)
+{
+	if (mainSequence.isStart()) {
 		for (auto liveEnemy : eManager->liveEnemyList) {
 			//playerとenemyが隣り合っているなら
 			if (gManager->CheckNearByPlayer(liveEnemy))
@@ -339,22 +367,31 @@ bool DungeonScene::Seq_EnemyAct(const float deltatime)
 	}
 	//攻撃する敵リストがからじゃないなら
 	if (!atackEnemies.empty()) {
-		//もし敵が一体だけならインターバルを0にする
-		if (atackEnemies.size() == 1)enemyActTimer = ENEMYACTINTERVAL;
-		//一体ずつ攻撃させるためのインターバル計測
-		if (++enemyActTimer > ENEMYACTINTERVAL) {
-			(*itr)->Atack();
-			enemyActTimer = 0;
-			itr = atackEnemies.erase(itr);
-		}
-		//すべての敵が攻撃し終えるまでこのシークエンスを出ない
-		if (!atackEnemies.empty())return true;
+
+		//アニメーションシークエンスに飛ばす
+		ChangeSequence(sequence::ANIMATION);
+		return true;
+
+		//*****enemyAttackSeqに処理を移動
+		
+		////もし敵が一体だけならインターバルを0にする
+		//if (atackEnemies.size() == 1)enemyActTimer = ENEMYACTINTERVAL;
+		////一体ずつ攻撃させるためのインターバル計測
+		//if (++enemyActTimer > ENEMYACTINTERVAL) {
+		//	(*itr)->Atack();
+		//	enemyActTimer = 0;
+		//	itr = atackEnemies.erase(itr);
+		//}
+		////すべての敵が攻撃し終えるまでこのシークエンスを出ない
+		//if (!atackEnemies.empty())return true;
+
+		//*****
 	}
 	ChangeSequence(sequence::MAIN);
 	return true;
 }
 
-bool DungeonScene::Seq_FirstMenu(const float deltatime)
+bool DungeonScene::SeqFirstMenu(const float deltatime)
 {
 	//インベントリを開く
 	if (firstMenu->SelectNum == 0 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
@@ -383,7 +420,7 @@ bool DungeonScene::Seq_FirstMenu(const float deltatime)
 	return true;
 }
 
-bool DungeonScene::Seq_InventoryOpen(const float deltatime)
+bool DungeonScene::SeqInventoryOpen(const float deltatime)
 {
 
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_ESCAPE))
@@ -436,7 +473,7 @@ bool DungeonScene::Seq_InventoryOpen(const float deltatime)
 	return true;
 }
 
-bool DungeonScene::Seq_InventoryUse(const float deltatime)
+bool DungeonScene::SeqInventoryUse(const float deltatime)
 {
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_ESCAPE))
 	{
@@ -530,7 +567,7 @@ bool DungeonScene::Seq_InventoryUse(const float deltatime)
 	return true;
 }
 
-bool DungeonScene::Seq_ThrowItemMove(const float deltatime)
+bool DungeonScene::SeqThrowItemMove(const float deltatime)
 {
 	if (throwedItemList.empty())return true;
 	auto itr = throwedItemList.begin();
@@ -543,10 +580,35 @@ bool DungeonScene::Seq_ThrowItemMove(const float deltatime)
 	return true;
 }
 
-bool DungeonScene::Seq_CameraMove(const float deltatime)
+bool DungeonScene::SeqAnimation(const float deltatime)
+{
+	//アニメーションさせる関数を実行する
+	//アニメーションが終わり次第誰から呼ばれたかを確認してシークエンスを移動する
+	//プレイヤーの攻撃なら
+	if (lastSeq == sequence::MAIN) {
+		//プレイヤーのアニメーション関数を呼ぶ
+
+		//もしアニメーションが終わっているなら
+		ChangeSequence(sequence::PLAYERATTACK);
+		return true;
+
+	}
+	//エネミーの攻撃なら
+	else if (lastSeq == sequence::ENEMYACT) {
+
+
+
+		//もしアニメーションが終わっているなら
+		ChangeSequence(sequence::ENEMYATTACK);
+		return true;
+	}
+
+	return true;
+}
+
+bool DungeonScene::SeqCameraMove(const float deltatime)
 {
 	gManager->camera->CameraMove();
-
 
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_ESCAPE)) {
 		ChangeSequence(sequence::MAIN);
@@ -559,27 +621,28 @@ bool DungeonScene::Seq_CameraMove(const float deltatime)
 
 void DungeonScene::ChangeSequence(sequence seq)
 {
+	lastSeq = nowSeq;
 	nowSeq = seq;
 	if (seq == sequence::MAIN) {
-		main_sequence.change(&DungeonScene::Seq_Main);
+		mainSequence.change(&DungeonScene::SeqMain);
 	}
 	else if (seq == sequence::ENEMYACT) {
-		main_sequence.change(&DungeonScene::Seq_EnemyAct);
+		mainSequence.change(&DungeonScene::SeqEnemyAct);
 	}
 	else if (seq == sequence::FIRSTMENU) {
-		main_sequence.change(&DungeonScene::Seq_FirstMenu);
+		mainSequence.change(&DungeonScene::SeqFirstMenu);
 	}
 	else if (seq == sequence::INVENTORY_OPEN) {
-		main_sequence.change(&DungeonScene::Seq_InventoryOpen);
+		mainSequence.change(&DungeonScene::SeqInventoryOpen);
 	}
 	else if (seq == sequence::INVENTORY_USE) {
-		main_sequence.change(&DungeonScene::Seq_InventoryUse);
+		mainSequence.change(&DungeonScene::SeqInventoryUse);
 	}
 	else if (seq == sequence::THROWITEMMOVE) {
-		main_sequence.change(&DungeonScene::Seq_ThrowItemMove);
+		mainSequence.change(&DungeonScene::SeqThrowItemMove);
 	}
 	else if (seq == sequence::CAMERA) {
-		main_sequence.change(&DungeonScene::Seq_CameraMove);
+		mainSequence.change(&DungeonScene::SeqCameraMove);
 	}
 
 }
