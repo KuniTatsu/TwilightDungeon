@@ -16,6 +16,15 @@ void EnemyManager::CreateEnemy(int Id, int Floor)
 {
 	std::shared_ptr<Enemy> enemy;
 
+	////ロードしたエネミーの数分だけループさせてIDが一致する敵を選び出すようにへんこうする　
+	//for (int i = 0; i < enemyList.size(); ++i) {
+	//	//もしIdが一緒ならenemyに入れる
+	//	if (Id == std::atoi(enemyList[i][0].c_str())) {
+	//		enemy = GetEnemyStatus(i, Floor);
+	//		break;
+	//	}
+	//}
+
 	switch (Id)
 	{
 	case 100:
@@ -40,12 +49,14 @@ void EnemyManager::CreateEnemy(int Id, int Floor)
 	default:
 		break;
 	}
+
 	//敵同士の座標被りチェック
 	while (1) {
 		//座標セット
-		enemy->pos = gManager->SetStartPos(2);
+		enemy->pos = gManager->SetStartPos(GameManager::setStatrPosType::ENEMY);
 		//まだenemyが一体も作られていなければすぐ抜ける
 		if (liveEnemyList.empty())break;
+		//全ての生成済みのenemyと比べる
 		for (auto liveEnemy : liveEnemyList) {
 			//座標被りしていなければtrueにする
 			if (liveEnemy->pos.x != enemy->pos.x && liveEnemy->pos.y != enemy->pos.y&&

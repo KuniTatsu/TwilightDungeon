@@ -121,9 +121,17 @@ public:
 	//カメラの移動
 	void CameraMove();
 
+	enum class setStatrPosType {
+		PLAYER,
+		STAIR,
+		ENEMY,
+		ITEM
+	};
+
 	//マップ内のランダムな部屋を取得→部屋の中のランダムな座標を取得→座標を描画座標に変換して返す
 	//setType 0:プレイヤー初期座標,1:階段,2:enemy
-	t2k::Vector3 SetStartPos(const int setType);
+	t2k::Vector3 SetStartPos(setStatrPosType num);
+
 
 	//部屋番号ごとの通路の座標を格納するvector
 	std::vector< std::vector<t2k::Vector3>>wayPoint;
@@ -207,7 +215,7 @@ public:
 	void DrawStringLows(const int lowNum);
 
 private:
-	std::string Log[9] = {};
+	std::string Log[7] = {};
 
 	const t2k::Vector3 WINDOWCENTER = t2k::Vector3(512, 384, 0);
 

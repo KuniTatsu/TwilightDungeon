@@ -11,7 +11,7 @@ Enemy::Enemy(int Id, int Type, std::string Name, int Hp, int Atack, int Defence,
 	id = Id;
 	type = Type;
 	name = Name;
-	//補正値
+	//補正値 constにする
 	exHp = (Floor - 1) * 10;
 	exAtack = (Floor - 1) * 2;
 	exDefence = (Floor - 1) * 2;
@@ -47,37 +47,9 @@ void Enemy::TimeUpdate()
 	--moveTimer;
 	if (moveTimer < 0)moveTimer = 0;
 }
-//void Enemy::Update() {
-//	main_sequence.update(gManager->deitatime_);
-//}
-//
-//bool Enemy::SeqMove(const float deltatime)
-//{
-//	//移動処理
-//	Move();
-//
-//	//もし隣にplayerがいるなら攻撃シークエンスに映る
-//
-//	return true;
-//}
-//
-//bool Enemy::SeqAttack(const float deltatime)
-//{
-//	//隣のplayerに向かって攻撃するシークエンス
-//
-//	//攻撃関数を実行
-//	//アニメーションを実行
-//
-//
-//
-//	return true;
-//}
+
 bool Enemy::Move()
 {
-	////動ける状態じゃなければ動かない
-	//if (moveTimer > 0)return;
-	/*moveTimer = MOVETIME;*/
-
 	//キャラの位置がマップ上のどのチップか特定する
 	myNowPos = gManager->WorldToLocal(pos);
 
@@ -174,8 +146,7 @@ bool Enemy::Move()
 			else if (CheckCanMoveToDir(mydir, myNowPos, CheckDir::RIGHT))DegradedMoveToDir(GetDir(mydir, CheckDir::RIGHT));
 			//それでも進めないなら
 			else {
-				////足踏みさせる
-				//return true;
+				//戻る
 				DegradedMoveToDir(GetDir(mydir, CheckDir::DOWN));
 			}
 		}

@@ -17,6 +17,8 @@ Map::Map(int Width, int Height)
 	hidari = gManager->LoadGraphEx("graphics/Wall_leftside.png");//left
 	migi = gManager->LoadGraphEx("graphics/Wall_rightside.png");//right
 
+	voidGh = gManager->LoadGraphEx("graphics/void.png");
+
 	//mapChip[7] = gManager->LoadGraphEx("graphics/EXPASSWAY.png");//debug
 
 	miniMapChip[0] = gManager->LoadGraphEx("graphics/mini_PassWay.png");
@@ -165,7 +167,7 @@ void Map::MapDraw()
 	for (int i = 0; i < ground.size(); ++i) {
 		for (int k = 0; k < ground[i].size(); ++k) {
 			if (ground[i][k] == WALL) {
-				if (!CheckAround(i, k))continue;
+				if (!CheckAround(i, k))continue; //DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, voidGh, false);
 				//DrawRotaGraphF(k * gManager->nowGraphicSize - gManager->camera->cameraPos.x, i * gManager->nowGraphicSize - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
 
 				int iti = CheckAroundWay(i, k);
@@ -302,17 +304,6 @@ void Map::AreaDivide()
 			break;
 		}
 
-		////部屋の最低幅より狭かったら分割しない
-		//if (upperWidth - lowerWidth < 2 * roomMinWidth + 4) {
-		//	break;
-		//}
-		//if (upperHeight - lowerHeight < 2 * roomMinHeight + 4) {
-		//	break;
-		//}
-		////最大部屋数に達したら分割をやめる
-		//if (roomId > roomMaxNum) {
-		//	break;
-		//}
 
 		//分割座標
 		int dividePoint = 0;
@@ -369,6 +360,7 @@ void Map::AreaDivide()
 			//最初の分割を終了する　以降はSetLargeDivideAreaに登録された部屋を更に分割していく
 			doneFirstDivide = true;
 			++roomId;
+			t2k::debugTrace("\nroonId:%d\n", roomId);
 			continue;
 		}
 
@@ -498,8 +490,10 @@ void Map::AreaDivide()
 				SetDivideLine(left + 1, dividePoint, right - 1, dividePoint, HORIZONTAL);
 			}
 			++roomId;
+			t2k::debugTrace("\nroonId:%d\n", roomId);
 			continue;
 		}
+		
 	}
 }
 
@@ -530,7 +524,7 @@ void Map::CreatePassWay()
 	int size = divideLine.size() - 1;
 
 	for (auto line : divideLine) {
-
+		t2k::debugTrace("\n通過%d回目\n", count);
 		if (count >= size)break;
 
 		int startX = line[0];
@@ -621,7 +615,7 @@ void Map::CreatePassWay()
 		}
 		count++;
 	}
-
+	///////////ここで無限ループに入ってる/////////////
 	//0:上, 1 : 右, 2 : 下, 3 : 左
 	int dir = 0;
 	//最初の部屋の出発点を取得する
@@ -1071,7 +1065,7 @@ int Map::CheckAroundWay(int x, int y)
 	//8近傍のセルが通路ならtrue,そうでなければfalseを代入
 	if (x > 0) {
 		if (y > 0)hidariue = CheckThisCell(x - 1, y - 1);
-		hidari = CheckThisCell(x, y - 1);
+		if (y > 0)hidari = CheckThisCell(x, y - 1);
 		if (y + 1 < gManager->MAPWIDTH)hidarishita = CheckThisCell(x - 1, y + 1);
 	}
 
@@ -1080,7 +1074,7 @@ int Map::CheckAroundWay(int x, int y)
 
 	if (x + 1 < gManager->MAPHEIGHT) {
 		if (y > 0)migiue = CheckThisCell(x + 1, y - 1);
-		migi = CheckThisCell(x, y + 1);
+		if (y + 1 < gManager->MAPWIDTH) migi = CheckThisCell(x, y + 1);
 		if (y + 1 < gManager->MAPWIDTH)migishita = CheckThisCell(x + 1, y + 1);
 	}
 	if (hidari && hidarishita && hidariue && migi && migiue && migishita)return ROOMWALL;//8 ただのブロック

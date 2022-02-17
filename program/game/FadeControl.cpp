@@ -18,23 +18,18 @@ void FadeControl::imageFadeIn(int x, int y, double rate, int gh)
 		DrawRotaGraph(x, y, rate, 0, gh, true);
 
 		imageFade += FADESPEED;//imageFadeをカウントアップ
-
-
 	}
 	else {
 		//設定を元に戻す。
 
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-
 		return;
 	}
-
-
 }
 
 void FadeControl::imageFadeOut()
 {
-	
+
 
 }
 
@@ -53,7 +48,7 @@ void FadeControl::FadeOut()
 
 void FadeControl::FadeIn()
 {
-	
+
 	if (screenFade >= 0 && screenFade < 256) {
 		SetDrawBright(screenFade, screenFade, screenFade);
 

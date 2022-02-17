@@ -132,6 +132,10 @@ private:
 	int shita = 0;
 	int hidari = 0;
 
+	int voidGh = 0;
+
+	//
+
 	//ミニマップ描画用マップチップ
 	int miniMapChip[3] = {};
 	//ミニマッププレイヤーgh

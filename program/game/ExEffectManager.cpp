@@ -51,7 +51,7 @@ std::function<void(t2k::Vector3)> ExEffectManager::DoPosEvent(std::string key)
 
 void ExEffectManager::Warp(t2k::Vector3& Pos)
 {
-	Pos = gManager->SetStartPos(0);
+	Pos = gManager->SetStartPos(GameManager::setStatrPosType::PLAYER);
 }
 
 void ExEffectManager::NextFloor()

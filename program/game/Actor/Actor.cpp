@@ -15,6 +15,8 @@ Actor::~Actor()
 
 void Actor::setDir(int dir)
 {
+	//dir”z—ñ‚ÉŠi”[‚µ‚Ä•Ô‚·
+	//mydir=dirs[dir];
 	if (dir == 0)mydir = dir::UP;
 	else if (dir == 1)mydir = dir::RIGHT;
 	else if (dir == 2)mydir = dir::DOWN;
@@ -99,6 +101,8 @@ void Actor::TakeHpEffect(int HpMove)
 }
 void Actor::Atack()
 {
+	//•ûŒü‚ğˆø”‚ÉVector3‚ğ•Ô‚·ŠÖ”‚ğ—pˆÓ‚·‚é
+
 	t2k::Vector3 front;
 	//–Ú‚Ì‘O‚Ì‘ÎÛ‚ğæ“¾
 	if (mydir == dir::UP) {

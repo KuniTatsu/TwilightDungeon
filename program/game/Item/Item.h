@@ -76,7 +76,8 @@ protected:
 	t2k::Vector3 nowPos;
 	t2k::Vector3 move;
 
-	float moveSpeed = 0.08;
+	//”ò‚ñ‚Å‚¢‚­‘¬‚³
+	float moveSpeed = 0.08f;
 
 	bool init = false;
 	

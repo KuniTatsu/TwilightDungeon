@@ -101,11 +101,8 @@ void DungeonScene::Update()
 
 	//デバッグ用マップ再生成
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_F5)) {
-
-		/*for (auto enemy : eManager->liveEnemyList) {
-			enemy->isLive = false;
-		}*/
 		MoveLevel(1);
+		return;
 	}
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_M)) {
 		if (gManager->minimapDraw)gManager->minimapDraw = false;
@@ -125,18 +122,6 @@ void DungeonScene::Update()
 		if (item->GetIsLive())continue;
 		if (gManager->PopDetectItem(item, dropItems))break;
 	}
-	//isLiveがfalseな敵をリストから外したい
-	/*std::list<std::shared_ptr<Enemy>>::iterator hoge = eManager->liveEnemyList.begin();
-	for (int i = 0; i < eManager->liveEnemyList.size(); ++i) {
-		if ((*it)->isLive == false) {
-			eManager->liveEnemyList.erase(it);
-		}
-		it++;
-	}*/
-
-
-	////スクリーン全体をズーム,ズームアウトしたかった
-
 }
 
 void DungeonScene::Draw()
@@ -162,6 +147,7 @@ void DungeonScene::Draw()
 		nextLevelWindow->Menu_Draw();
 		DrawStringEx(nextLevelWindow->menu_x + 10, nextLevelWindow->menu_y + 100, -1, "Enterで次の階へ");
 	}
+	//wayPointDebug
 	//for (auto hoge : gManager->wayPoint) {
 	//	for (auto hage : hoge) {
 	//		int X = (int)hage.x;
@@ -169,7 +155,9 @@ void DungeonScene::Draw()
 	//		DrawCircle(X * 20 - gManager->camera->cameraPos.x, Y * 20 - gManager->camera->cameraPos.y, 10, -1, true);
 	//	}
 	//}
+	//
 
+	//視界システムテスト
 	/*SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
 	DrawRotaGraph(gManager->player->pos.x - gManager->camera->cameraPos.x, gManager->player->pos.y - gManager->camera->cameraPos.y, 1, 0, alfa, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);*/
@@ -220,13 +208,20 @@ void DungeonScene::SetDungeonLevel(int addLevel)
 
 void DungeonScene::MoveLevel(int addLevel)
 {
+	//空じゃないならenemyを全て消去する
 	if (!eManager->liveEnemyList.empty())eManager->liveEnemyList.clear();
 	if (!gManager->liveEnemyList.empty())gManager->liveEnemyList.clear();
-	dungeonLevel++;
-	gManager->ReCreate();
-	RandEnemyCreate(5);
+	//アイテムの消去
 	dropItems.clear();
-	for (int i = 0; i < 5; ++i) {
+
+	//ダンジョンの階層を移動する
+	dungeonLevel += addLevel;
+	//mapの再生成
+	gManager->ReCreate();
+	//敵の再生成
+	RandEnemyCreate(5);
+	//アイテムの再生成
+	for (int i = 0; i < spawnItemNum; ++i) {
 		int random = rand() % gManager->GetItemNum();
 		SpawnItem(random);
 	}
@@ -285,6 +280,7 @@ bool DungeonScene::Seq_Main(const float deltatime)
 
 		if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
 			MoveLevel(1);
+			return true;
 		}
 	}
 	//左クリックかRボタンで攻撃
@@ -660,18 +656,27 @@ void DungeonScene::ChangeInventory()
 void DungeonScene::SpawnItem(int ItemId)
 {
 	Item* popItem = gManager->GetItemData(ItemId);
+	if (popItem == nullptr)return;
+	//ポップさせる座標
 	t2k::Vector3 popPos;
+	//設置済みのアイテムがない
 	if (dropItems.empty()) {
-		popPos = gManager->SetStartPos(0);
+		popPos = gManager->SetStartPos(GameManager::setStatrPosType::ITEM);
 	}
+	//すでに設置済みのアイテムがある
 	else {
+		bool set = false;
+		int count = 0;//debug
 		//すでにリスト内にあるアイテムのポジションとかぶっていたらもう一度座標を取得する
-		while (1) {
-			popPos = gManager->SetStartPos(0);
-			bool set = false;
+		while (!set) {
+			popPos = gManager->SetStartPos(GameManager::setStatrPosType::ITEM);
+			//bool set = false;
+			//設置済みの全てのアイテムと比べる
 			for (auto item : dropItems) {
 				t2k::Vector3 alreadySetPos = item->GetPos();
 				if (popPos.x == alreadySetPos.x && popPos.y == alreadySetPos.y) {
+					t2k::debugTrace("\nポジションかぶり%d回目\n", count);
+					count++;
 					continue;
 				}
 				else {
@@ -679,7 +684,8 @@ void DungeonScene::SpawnItem(int ItemId)
 					break;
 				}
 			}
-			if (set)break;
+			//if (set)break;
+
 		}
 	}
 	popItem->SetPos(popPos);
@@ -710,6 +716,10 @@ void DungeonScene::ItemUse(/*int selectNum, Inventory* inventory,*/ int inventor
 		//ページ内のアイテムを全て消費してページを消去したあとだったら
 		if (gManager->isDeleteInventory) {
 			//gManager->ForceInventoryChange(inventoryPage);
+			if (drawInventoryPage == 0) {
+				gManager->isDeleteInventory = false;
+				return;
+			}
 			drawInventoryPage--;
 			gManager->isDeleteInventory = false;
 		}

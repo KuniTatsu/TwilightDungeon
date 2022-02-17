@@ -35,6 +35,9 @@ private:
 	//階層
 	int dungeonLevel = 1;
 
+	//1階層に設置するアイテム数
+	const int spawnItemNum = 5;
+
 	int alfa = 0;
 	//次のenemyの行動までのインターバルフレーム
 	const int ENEMYACTINTERVAL = 30;
