@@ -57,10 +57,9 @@ void ExEffectManager::Warp(t2k::Vector3& Pos)
 void ExEffectManager::NextFloor()
 {
 	//ŠK‘w‚ðˆê‚ÂˆÚ“®‚³‚¹‚½‚©‚Á‚½
-	DungeonScene* hoge = SceneManager::CastScene<DungeonScene>();
-	if (hoge == nullptr)return;
-	//hoge->SetDungeonLevel(1);
-	hoge->MoveLevel(1);
+	DungeonScene* dungeon = SceneManager::CastScene<DungeonScene>();
+	if (dungeon == nullptr)return;
+	dungeon->MoveLevel(1);
 }
 
 void CreateWay(t2k::Vector3 Pos)

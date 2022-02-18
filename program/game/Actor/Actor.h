@@ -3,7 +3,6 @@
 #include<string>
 
 class Actor {
-
 public:
 	Actor();
 	virtual ~Actor();
@@ -25,6 +24,7 @@ public:
 
 	//外からステータスを取得する関数 StatusNum:0->HP,1->Atack,2->Defence,3->Speed,4->level
 	int GetStatus(const int StatusNum);
+
 	//名前の取得関数
 	inline std::string GetName() {
 		return name;
@@ -37,10 +37,17 @@ public:
 
 	//ステータス上昇の関数 StatusNum:0->HP,1->Atack,2->Defence,3->Speed,StatusType->0:effect,1:equipment
 	void ChangeStatus(const int StatusNum, const int MoveNum, const int StatusType);
-
+	//actId取得
 	inline int GetActId() {
 		return actId;
 	}
+	////mydir取得
+	//inline dir getDir() {
+	//	return mydir;
+	//}
+	
+	//攻撃アニメーション
+	void DrawAttackAnim();
 	//Hpの変動が外部から与えられた時に使う関数
 	void TakeHpEffect(const int HpMove);
 
@@ -52,7 +59,13 @@ public:
 	virtual void Draw();
 protected:
 	int actId;
-
+	//enum dir {
+	//	UP,
+	//	RIGHT,
+	//	DOWN,
+	//	LEFT
+	//};
+	//dir mydir = UP;
 
 	int id = 0;
 	int type = 0;
@@ -104,5 +117,7 @@ protected:
 
 	int moveTimer = 0;
 	const int MOVETIME = 60;
+
+
 
 };

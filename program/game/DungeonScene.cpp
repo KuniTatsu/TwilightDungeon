@@ -372,8 +372,9 @@ bool DungeonScene::SeqEnemyAct(const float deltatime)
 		ChangeSequence(sequence::ANIMATION);
 		return true;
 
+		/*
 		//*****enemyAttackSeqに処理を移動
-		
+
 		////もし敵が一体だけならインターバルを0にする
 		//if (atackEnemies.size() == 1)enemyActTimer = ENEMYACTINTERVAL;
 		////一体ずつ攻撃させるためのインターバル計測
@@ -384,9 +385,28 @@ bool DungeonScene::SeqEnemyAct(const float deltatime)
 		//}
 		////すべての敵が攻撃し終えるまでこのシークエンスを出ない
 		//if (!atackEnemies.empty())return true;
-
 		//*****
+		*/
 	}
+	ChangeSequence(sequence::MAIN);
+	return true;
+}
+
+bool DungeonScene::SeqEnemyAttack(const float deltatime)
+{
+	//もし敵が一体だけならインターバルを0にする
+	if (atackEnemies.size() == 1)enemyActTimer = ENEMYACTINTERVAL;
+	//一体ずつ攻撃させるためのインターバル計測
+	if (++enemyActTimer > ENEMYACTINTERVAL) {
+		(*itr)->Atack();
+		enemyActTimer = 0;
+		itr = atackEnemies.erase(itr);
+	}
+	//すべての敵が攻撃し終えるまでこのシークエンスを出ない
+	if (!atackEnemies.empty())return true;
+
+
+	//すべての攻撃を終えたらMainSequenceに戻る
 	ChangeSequence(sequence::MAIN);
 	return true;
 }
@@ -587,6 +607,11 @@ bool DungeonScene::SeqAnimation(const float deltatime)
 	//プレイヤーの攻撃なら
 	if (lastSeq == sequence::MAIN) {
 		//プレイヤーのアニメーション関数を呼ぶ
+		//今向いている向きに,特定のエフェクトを発生させる
+		//プレイヤーの座標を一定分方向の向きに移動し、その後もとに戻る
+
+
+
 
 		//もしアニメーションが終わっているなら
 		ChangeSequence(sequence::PLAYERATTACK);
@@ -626,8 +651,14 @@ void DungeonScene::ChangeSequence(sequence seq)
 	if (seq == sequence::MAIN) {
 		mainSequence.change(&DungeonScene::SeqMain);
 	}
+	else if (seq == sequence::PLAYERATTACK) {
+		mainSequence.change(&DungeonScene::SeqPlayerAttack);
+	}
 	else if (seq == sequence::ENEMYACT) {
 		mainSequence.change(&DungeonScene::SeqEnemyAct);
+	}
+	else if (seq == sequence::ENEMYATTACK) {
+		mainSequence.change(&DungeonScene::SeqEnemyAttack);
 	}
 	else if (seq == sequence::FIRSTMENU) {
 		mainSequence.change(&DungeonScene::SeqFirstMenu);
@@ -641,6 +672,9 @@ void DungeonScene::ChangeSequence(sequence seq)
 	else if (seq == sequence::THROWITEMMOVE) {
 		mainSequence.change(&DungeonScene::SeqThrowItemMove);
 	}
+	else if (seq == sequence::ANIMATION) {
+		mainSequence.change(&DungeonScene::SeqAnimation);
+	}
 	else if (seq == sequence::CAMERA) {
 		mainSequence.change(&DungeonScene::SeqCameraMove);
 	}
@@ -653,7 +687,13 @@ void DungeonScene::DrawNowSequence(sequence seq)
 		DrawStringEx(800, 300, -1, "MAINSequence");
 	}
 	else if (seq == sequence::ENEMYACT) {
+		DrawStringEx(800, 300, -1, "PLAYERATTACKSequence");
+	}
+	else if (seq == sequence::ENEMYACT) {
 		DrawStringEx(800, 300, -1, "ENEMYACTSequence");
+	}
+	else if (seq == sequence::ENEMYACT) {
+		DrawStringEx(800, 300, -1, "ENEMYATTACKSequence");
 	}
 	else if (seq == sequence::FIRSTMENU) {
 		DrawStringEx(800, 300, -1, "FIRSTMENUSequence");
@@ -666,6 +706,9 @@ void DungeonScene::DrawNowSequence(sequence seq)
 	}
 	else if (seq == sequence::THROWITEMMOVE) {
 		DrawStringEx(800, 300, -1, "ITEMMOVESequence");
+	}
+	else if (seq == sequence::ANIMATION) {
+		DrawStringEx(800, 300, -1, "ANIMATIONSequence");
 	}
 	else if (seq == sequence::CAMERA) {
 		DrawStringEx(800, 300, -1, "CAMERASequence");
@@ -843,45 +886,8 @@ void DungeonScene::DeleteDeadEnemy()
 			itr++;
 		}
 	}
-
-	/*for (auto liveEnemy : eManager->liveEnemyList) {
-		if(!liveEnemy->isLive)
-	}*/
-
 }
 
-////ログを生成する関数,古い方から消える
-//void DungeonScene::addLog(const std::string log)
-//{
-//	if (!Log[8].empty()) {
-//		Log[0] = Log[1];
-//		Log[1] = Log[2];
-//		Log[2] = Log[3];
-//		Log[3] = Log[4];
-//		Log[4] = Log[5];
-//		Log[5] = Log[6];
-//		Log[6] = Log[7];
-//		Log[7] = Log[8];
-//		Log[8] = log;
-//		return;
-//	}
-//	for (int i = 0; i < 10; i++) {
-//
-//		if (Log[i].empty()) {
-//
-//			Log[i] = log;
-//			return;
-//		}
-//	}
-//
-//}
-////生成したログを表示する関数
-//void DungeonScene::LogDraw()
-//{
-//	for (int i = 0; i < 9; ++i) {
-//
-//		DrawStringEx(log->menu_x + 20, log->menu_y + 40 + (i * 20), -1, "%s", Log[i].c_str());
-//	}
-//}
+
 
 

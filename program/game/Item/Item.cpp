@@ -113,35 +113,10 @@ void Item::SetGoalPos(int dir)
 {
 	if (!init) {
 		nowPos = pos;
-		//上
-		if (dir == 0) {
-			goalPos = pos + t2k::Vector3(0, -20, 0);
-		}//右
-		else if (dir == 1) {
-			goalPos = pos + t2k::Vector3(20, 0, 0);
-		}//下
-		else if (dir == 2) {
-			goalPos = pos + t2k::Vector3(0, 20, 0);
-		}//左
-		else if (dir == 3) {
-			goalPos = pos + t2k::Vector3(-20, 0, 0);
-		}
+		goalPos = pos + gManager->GetMultipleVector(dir, 20);
 		init = true;
 	}
-	else {
-		if (dir == 0) {
-			goalPos = nowPos + t2k::Vector3(0, -20, 0);
-		}//右
-		else if (dir == 1) {
-			goalPos = nowPos + t2k::Vector3(20, 0, 0);
-		}//下
-		else if (dir == 2) {
-			goalPos = nowPos + t2k::Vector3(0, 20, 0);
-		}//左
-		else if (dir == 3) {
-			goalPos = nowPos + t2k::Vector3(-20, 0, 0);
-		}
-	}
+	else goalPos = nowPos + gManager->GetMultipleVector(dir, 20);
 	//1フレームあたりの移動量
 	move = (goalPos - nowPos) * moveSpeed;
 }
@@ -155,21 +130,9 @@ bool Item::ThrowItem(int dir)
 	t2k::Vector3 mapPos = gManager->WorldToLocal(nowPos);
 	t2k::Vector3 nextPos;
 
-	//上
-	if (dir == 0) {
-		nextPos = mapPos + t2k::Vector3(0, -1, 0);
-	}//右
-	else if (dir == 1) {
-		nextPos = mapPos + t2k::Vector3(1, 0, 0);
 
-	}//下
-	else if (dir == 2) {
-		nextPos = mapPos + t2k::Vector3(0, 1, 0);
+	nextPos = mapPos + gManager->GetVecter(dir);
 
-	}//左
-	else if (dir == 3) {
-		nextPos = mapPos + t2k::Vector3(-1, 0, 0);
-	}
 	//壁なら
 	if (gManager->GetMapChip(nextPos) == 0) {
 		return true;

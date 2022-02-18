@@ -90,6 +90,12 @@ void Actor::ChangeStatus(int StatusNum, int MoveNum, int StatusType)
 		}
 	}
 }
+void Actor::DrawAttackAnim()
+{
+
+
+
+}
 void Actor::TakeHpEffect(int HpMove)
 {
 	if (nowHp <= 0)return;

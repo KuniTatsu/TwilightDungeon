@@ -214,6 +214,23 @@ public:
 	void LogDraw(const int x, const int y);
 	void DrawStringLows(const int lowNum);
 
+	const t2k::Vector3 Vectores[4]{
+		t2k::Vector3(0,-1,0),//è„
+		t2k::Vector3(1,0,0),//âE
+		t2k::Vector3(0,1,0),//â∫
+		t2k::Vector3(-1,0,0),//ç∂
+	};
+
+	inline const t2k::Vector3& GetVecter(int vec) {
+		return Vectores[vec];
+	}
+	inline const t2k::Vector3 GetMultipleVector(int vec,int multiple) {
+		const float x = Vectores[vec].x * multiple;
+		const float y = Vectores[vec].y * multiple;
+		return t2k::Vector3(x, y, 0);
+	}
+
+
 private:
 	std::string Log[7] = {};
 

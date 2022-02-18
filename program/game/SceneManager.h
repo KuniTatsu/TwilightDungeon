@@ -16,7 +16,7 @@ public:
 
 	static BaseScene* m_pScene;               //
 
-
+	//BaseScene*型から派生クラス*型を取得する関数
 	 template<class T >
 	 static T* CastScene() {
 		T* scene = dynamic_cast<T*>(m_pScene);

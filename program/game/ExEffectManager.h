@@ -1,3 +1,8 @@
+///Description
+///特殊な効果を処理する関数をひとまとめにしたクラス
+///アイテムやスキルなどをここから呼ぶ(予定だった)
+///
+
 #pragma once
 #include<vector>
 #include<string>

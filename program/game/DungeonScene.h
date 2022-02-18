@@ -1,3 +1,10 @@
+///*****Description*****
+///ダンジョン内の全てを行うシーンクラス
+///UpdateとDraw関数がSceneManagerで行われる
+///UpdateとDraw関数の中ではシークエンスで毎フレーム行われる処理が分岐する
+///各シークエンス間はChangeSequence関数によって次フレームから走るシークエンスを移動する
+///*********************
+
 #pragma once
 #include"Scene.h"
 #include "../library/t2klib.h"
@@ -18,9 +25,6 @@ public:
 	DungeonScene();
 	~DungeonScene();
 
-
-	//num体敵を作る関数
-	void RandEnemyCreate(const int num);
 
 	void Update();
 
@@ -130,6 +134,9 @@ private:
 	void ChangeSequence(const sequence seq);
 	//シーケンス確認関数
 	void DrawNowSequence(const sequence seq);
+
+	//num体敵を作る関数
+	void RandEnemyCreate(const int num);
 
 	//enemyのデータの確認関数
 	void DrawEnemyData();
