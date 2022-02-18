@@ -21,7 +21,7 @@
 using namespace std;
 
 //#include"Item.h"
-//#include "FadeControl.h"
+#include "FadeControl.h"
 #include "SoundManager.h"
 
 //コンストラクタの引数が一つの場合は頭に explicitをつけること
@@ -245,7 +245,7 @@ void GameManager::initGameManager()
 	*/
 
 	sound = new Sound();
-	//fControl = new FadeControl();
+	fControl = new FadeControl();
 
 	deitatime_ = 0;
 	SceneManager::ChangeScene(SceneManager::SCENE::DUNGEON);

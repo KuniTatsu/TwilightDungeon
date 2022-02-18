@@ -27,7 +27,7 @@ public:
 	GameManager();
 	~GameManager();
 
-	//FadeControl* fControl = nullptr;
+	FadeControl* fControl = nullptr;
 	Sound* sound = nullptr;
 	Map* map = nullptr;
 
