@@ -53,7 +53,7 @@ void EnemyManager::CreateEnemy(int Id, int Floor)
 	//敵同士の座標被りチェック
 	while (1) {
 		//座標セット
-		enemy->pos = gManager->SetStartPos(GameManager::setStatrPosType::ENEMY);
+		enemy->pos = gManager->SetStartPos(GameManager::setStartPosType::ENEMY);
 		//まだenemyが一体も作られていなければすぐ抜ける
 		if (liveEnemyList.empty())break;
 		//全ての生成済みのenemyと比べる

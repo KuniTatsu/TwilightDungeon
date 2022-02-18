@@ -17,6 +17,8 @@ public:
 	};
 	dir mydir = UP;
 
+	const dir dires[4]{ dir::UP,dir::RIGHT,dir::DOWN,dir::LEFT };
+
 	void setDir(const int dir);
 
 	t2k::Vector3 pos = {};
@@ -45,15 +47,30 @@ public:
 	//inline dir getDir() {
 	//	return mydir;
 	//}
-	
-	//攻撃アニメーション
+
+	//アニメーション座標の設定
+	void SetAnimPos();
+
+	t2k::Vector3 effectPos;
+
+	//攻撃アニメーションの決定
+	bool SetDrawAnim();
+	//攻撃アニメーションの描画
 	void DrawAttackAnim();
+
 	//Hpの変動が外部から与えられた時に使う関数
 	void TakeHpEffect(const int HpMove);
 
 	virtual void Atack();
 	virtual bool Move();
-	void Anim();
+
+	const enum class AnimPattern {
+		WALK,
+		EFFECT
+	};
+
+	//アニメーションさせたいgh配列,描画スピード,描画最大枚数を引数に持つアニメーション関数
+	void Anim(int* DrawGhArr, int Speed, int MaxIndex, int& DrawGh);
 
 	virtual void Update();
 	virtual void Draw();
@@ -93,8 +110,11 @@ protected:
 	int defence = 0;
 	int speed = 0;
 
-	//上右下左の順で3枚ずつ
+	//上右下左の順で3枚ずつ キャラ画像
 	int gh[12];
+
+	//攻撃エフェクト
+	int effectGh[5];
 
 	int level = 1;
 
@@ -107,12 +127,16 @@ protected:
 	double nowHpVarWidth = nowHp / hp;
 
 
-	const int ACT_SPEED = 20;
-	const int MAX_MOTION_INDEX = 3;
-	int act_wait = ACT_SPEED;
-	int act_index = 0;
+	int actSpeed = 20;
+	int maxMotionIndex = 3;
 
+
+	//通常時の描画するアニメーション画像
 	int drawGh = 0;
+	int actWait = actSpeed;
+	int actIndex = 0;
+
+	t2k::Vector3 animPos = { 0,0,0 };
 
 
 	int moveTimer = 0;

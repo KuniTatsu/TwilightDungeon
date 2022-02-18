@@ -13,6 +13,8 @@ Player::Player(const t2k::Vector3& StartPos, float Hp, int Atack, int Defence, i
 	//p_gh = gManager->LoadGraphEx("graphics/PlayerTest.png");
 
 	LoadDivGraph("graphics/Character_1.png", 12, 3, 4, 32, 32, gh);
+	LoadDivGraph("graphics/AttackAnim_30.png", 5, 5, 1, 30, 30, effectGh);
+
 
 	nowHpVar_gh = gManager->LoadGraphEx("graphics/haveHpVar.png");
 	hpVar_gh = gManager->LoadGraphEx("graphics/AllHpVar.png");
@@ -31,6 +33,7 @@ Player::Player(const t2k::Vector3& StartPos, float Hp, int Atack, int Defence, i
 
 	nowHp = hp;
 	nowHpVarWidth = nowHp / hp;
+	maxMotionIndex = gManager->GetMaxIndex(GameManager::index::PLAYER);
 }
 
 Player::~Player()

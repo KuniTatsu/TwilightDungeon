@@ -18,7 +18,7 @@
 #include"Item/equipItem.h"
 #include"Item//Inventory.h"
 
-//#include"game_main.h"
+using namespace std;
 
 //#include"Item.h"
 //#include "FadeControl.h"
@@ -148,6 +148,11 @@ void GameManager::PopItemFromInventory(int NowInventoryId)
 	//if (sharedInventories[NowInventoryId]->inventoryList.empty())sharedInventories[NowInventoryId]->CursorReset();
 }
 
+void GameManager::LoadMaxIndex()
+{
+	maxIndex = t2k::loadCsv("Csv/GraphicMaxIndex.csv");
+}
+
 Item* GameManager::GetItemData(int ItemId)
 {
 	Item* item = iManager->getItemData(ItemId);
@@ -189,15 +194,6 @@ void GameManager::Update()
 }
 void GameManager::Draw()
 {
-	/*for (int i = 0; i < map->GetRoomNum() + 1; ++i) {
-		for (int k = 0; k < wayPoint[i].size(); ++k) {
-
-			DrawStringEx(100 + 100 * k, 400 + 80 * i, -1, "部屋番号:%d", i);
-			DrawStringEx(100 + 100 * k, 420 + 80 * i, -1, "x:%.1f", wayPoint[i][k].x);
-			DrawStringEx(100 + 100 * k, 440 + 80 * i, -1, "y:%.1f", wayPoint[i][k].y);
-		}
-	}*/
-
 	SceneManager::Render();
 
 	//debug
@@ -226,12 +222,14 @@ void GameManager::initGameManager()
 	map = new Map(MAPWIDTH, MAPHEIGHT);
 	map->DivideStart(MAPWIDTH, MAPHEIGHT, map);
 	//階段のマップ座標の取得
-	t2k::Vector3 stairsPos = SetStartPos(setStatrPosType::STAIR);
+	t2k::Vector3 stairsPos = SetStartPos(setStartPosType::STAIR);
 	//階段設置
 	map->SetChip(stairsPos.x, stairsPos.y, map->STAIRS);
 
+
+	LoadMaxIndex();
 	//playerのactidは0
-	player = std::make_shared<Player>(SetStartPos(setStatrPosType::PLAYER), 100.0f, 30, 30, 30, 0);
+	player = std::make_shared<Player>(SetStartPos(setStartPosType::PLAYER), 100.0f, 30, 30, 30, 0);
 	map->player = player;
 
 	camera->cameraPos = player->pos - WINDOWCENTER;
@@ -240,7 +238,7 @@ void GameManager::initGameManager()
 	haveItem = new HaveItem();
 	inventory = new Inventory(0);
 	inventories.emplace_back(inventory);
-
+	
 	/*
 	shared_inventory = std::make_shared<Inventory>(0);
 	sharedInventories.emplace_back(shared_inventory);
@@ -273,25 +271,16 @@ int GameManager::LoadGraphEx(std::string gh)
 //aからbまでの値からランダムに取得する
 int GameManager::GetRandEx(int a, int b)
 {
-	//int hoge = abs(a - b);
-	//2->8のとき
-	//hoge=6
-
-
-
-
-
-
 	if (a > b) {
 		int hoge = a - b;
-				int random = GetRand(hoge) + b;
+		int random = GetRand(hoge) + b;
 		//int random = (hoge) ? ( rand() % hoge ) + b : b ;
 		//
 		return random;
 	}
 	else {
 		int hoge = b - a;
-				int random = GetRand(hoge) + a;
+		int random = GetRand(hoge) + a;
 		//int random = (hoge) ? ( rand() % hoge ) + a : a ;
 		return random;
 	}
@@ -305,7 +294,7 @@ void GameManager::setPlayerRoomNum(int roomNum)
 	playerRoomNum = roomNum;
 }
 
-t2k::Vector3 GameManager::SetStartPos(setStatrPosType num)
+t2k::Vector3 GameManager::SetStartPos(setStartPosType num)
 {
 	//ランダムな部屋番号を取得
 	int random = rand() % (map->GetRoomNum());
@@ -315,7 +304,7 @@ t2k::Vector3 GameManager::SetStartPos(setStatrPosType num)
 	int x = GetRandEx(room[0], room[2]);
 	int y = GetRandEx(room[1], room[3]);
 	//敵の生成だったら座標被りチェックを行う
-	if (num == setStatrPosType::ENEMY) {
+	if (num == setStartPosType::ENEMY) {
 		int player_x = player->pos.x;
 		int player_y = player->pos.y;
 		int debugBreak = 0;
@@ -330,7 +319,7 @@ t2k::Vector3 GameManager::SetStartPos(setStatrPosType num)
 	}
 
 	//階段ならマップ座標を返す
-	if (num == setStatrPosType::STAIR)return t2k::Vector3(x, y, 0);
+	if (num == setStartPosType::STAIR)return t2k::Vector3(x, y, 0);
 
 	//取得したマップ座標を描画座標に変換する
 	t2k::Vector3 Pos = map->MapToWorld(x, y);
@@ -343,25 +332,6 @@ void GameManager::InitWayPointVector(int initroomNum)
 	wayPoint.resize(initroomNum + 1);
 }
 
-//void GameManager::CheckRoomWayPoint(int roomId)
-//{
-//	//roomIdの部屋の左上から右下まで見て通路があればemplase_backする
-//	std::vector<int> room = map->GetRoom(roomId);
-//	for (int k = room[1] - 1; k < room[3] + 2; ++k) {
-//		for (int i = room[0] - 1; i < room[2] + 2; ++i) {
-//
-//			t2k::Vector3 chip = t2k::Vector3(i, k, 0);
-//			//壁だったらcontinue
-//			if (GetMapChip(chip) == 0)continue;
-//			test++;//通ってる
-//			//もし部屋の中ならcontinue
-//			if (chip.x >= room[0] && chip.x <= room[2])continue;
-//			if (chip.y >= room[1] && chip.y <= room[3])continue;
-//			wayPoint[roomId].emplace_back(chip);//増えない
-//
-//		}
-//	}
-//}
 
 void GameManager::SetRoomWayPoint(t2k::Vector3 pos, int roomId)
 {
@@ -418,15 +388,16 @@ bool GameManager::CheckNearByPlayer(std::shared_ptr<Enemy>enemy)
 {
 	//enemyPosはマップ座標
 	t2k::Vector3 enemyPos = WorldToLocal(enemy->pos);
+
 	t2k::Vector3 hidari;
 	t2k::Vector3 ue;
 	t2k::Vector3 migi;
 	t2k::Vector3 shita;
 
-	if (enemyPos.x > 0)hidari = enemyPos + t2k::Vector3(-1, 0, 0);
-	if (enemyPos.y > 0)ue = enemyPos + t2k::Vector3(0, -1, 0);
-	if (enemyPos.x < MAPWIDTH)migi = enemyPos + t2k::Vector3(1, 0, 0);
-	if (enemyPos.y < MAPHEIGHT)shita = enemyPos + t2k::Vector3(0, 1, 0);
+	if (enemyPos.y > 0)ue = enemyPos + GetVecter(UP);
+	if (enemyPos.x < MAPWIDTH)migi = enemyPos + GetVecter(RIGHT);
+	if (enemyPos.y < MAPHEIGHT)shita = enemyPos + GetVecter(DOWN);
+	if (enemyPos.x > 0)hidari = enemyPos + GetVecter(LEFT);
 
 	t2k::Vector3 enemyPosNear[4] = { hidari,ue,migi,shita };
 
@@ -440,8 +411,7 @@ bool GameManager::CheckNearByPlayer(std::shared_ptr<Enemy>enemy)
 			break;
 		}
 	}
-	if (isNear)return true;
-	return false;
+	return isNear;
 }
 
 t2k::Vector3 GameManager::GetRoomStartPos(int roomNum)
@@ -528,7 +498,7 @@ void GameManager::Zoom()
 	else if (t2k::Input::isKeyDown(t2k::Input::KEYBORD_X)) {
 		nowGraphicSize += 0.01;
 	}
-	graphEx = nowGraphicSize / graphicSize;
+	graphEx = nowGraphicSize / GRAPHICSIZE;
 }
 void GameManager::TakeDamageToTarget(Actor* hoge, t2k::Vector3 Pos)
 {
@@ -599,14 +569,14 @@ void GameManager::ReCreate()
 	map->DivideStart(MAPWIDTH, MAPHEIGHT, map);
 
 	//階段のマップ座標の取得
-	t2k::Vector3 stairsPos = SetStartPos(setStatrPosType::STAIR);
+	t2k::Vector3 stairsPos = SetStartPos(setStartPosType::STAIR);
 	//階段設置
 	map->SetChip(stairsPos.x, stairsPos.y, map->STAIRS);
 
 	/*for (int i = 0; i < map->sumRoomNum; ++i) {
 		CheckRoomWayPoint(i);
 	}*/
-	player->pos = SetStartPos(setStatrPosType::PLAYER);
+	player->pos = SetStartPos(setStartPosType::PLAYER);
 	map->player = player;
 	//player = new Player(SetStartPos(0), 100, 10, 10, 10);
 	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
@@ -714,6 +684,7 @@ void GameManager::addLog(const std::string log)
 	}
 
 }
+
 void GameManager::DrawStringLows(int lowNum)
 {
 	for (int i = 0; i < 3; ++i) {

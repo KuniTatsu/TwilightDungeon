@@ -44,6 +44,21 @@ public:
 	bool minimapDraw = true;
 	//
 
+	//LoadDivGraphのMaxIndexデータ attack,player,enemy
+	std::vector<std::vector<std::string>>maxIndex;
+	//各LoadDivGraphのMaxIndex読み込み
+	void LoadMaxIndex();
+
+	enum class index : uint32_t {
+		ATTACK,
+		PLAYER,
+		ENEMY
+	};
+
+	inline const int& GetMaxIndex(index IndexName) {
+		std::string hoge = maxIndex[static_cast<uint32_t>(IndexName)][1].c_str();
+		return std::atoi(maxIndex[static_cast<uint32_t>(IndexName)][1].c_str());
+	}
 
 	//インベントリが入った配列
 	std::vector<Inventory*> inventories;
@@ -59,8 +74,8 @@ public:
 	//インベントリからアイテムを削除する関数
 	void PopItemFromInventory(const int NowInventoryId);
 
-	const int graphicSize = 20;
-	float nowGraphicSize = graphicSize;
+	const int GRAPHICSIZE = 20;
+	float nowGraphicSize = GRAPHICSIZE;
 
 	double graphEx = 1;
 
@@ -121,7 +136,7 @@ public:
 	//カメラの移動
 	void CameraMove();
 
-	enum class setStatrPosType {
+	enum class setStartPosType {
 		PLAYER,
 		STAIR,
 		ENEMY,
@@ -130,7 +145,7 @@ public:
 
 	//マップ内のランダムな部屋を取得→部屋の中のランダムな座標を取得→座標を描画座標に変換して返す
 	//setType 0:プレイヤー初期座標,1:階段,2:enemy
-	t2k::Vector3 SetStartPos(setStatrPosType num);
+	t2k::Vector3 SetStartPos(setStartPosType num);
 
 
 	//部屋番号ごとの通路の座標を格納するvector
@@ -221,15 +236,24 @@ public:
 		t2k::Vector3(-1,0,0),//左
 	};
 
+	enum Vec {
+		UP,
+		RIGHT,
+		DOWN,
+		LEFT
+	};
+
 	inline const t2k::Vector3& GetVecter(int vec) {
 		return Vectores[vec];
 	}
-	inline const t2k::Vector3 GetMultipleVector(int vec,int multiple) {
+	inline const t2k::Vector3 GetMultipleVector(int vec, int multiple) {
 		const float x = Vectores[vec].x * multiple;
 		const float y = Vectores[vec].y * multiple;
 		return t2k::Vector3(x, y, 0);
 	}
-
+	inline Camera* GetCamera() {
+		return camera;
+	}
 
 private:
 	std::string Log[7] = {};

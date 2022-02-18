@@ -15,12 +15,7 @@ Actor::~Actor()
 
 void Actor::setDir(int dir)
 {
-	//dir配列に格納して返す
-	//mydir=dirs[dir];
-	if (dir == 0)mydir = dir::UP;
-	else if (dir == 1)mydir = dir::RIGHT;
-	else if (dir == 2)mydir = dir::DOWN;
-	else if (dir == 3)mydir = dir::LEFT;
+	mydir = dires[dir];
 }
 
 int Actor::GetStatus(int StatusNum)
@@ -90,12 +85,35 @@ void Actor::ChangeStatus(int StatusNum, int MoveNum, int StatusType)
 		}
 	}
 }
-void Actor::DrawAttackAnim()
+//今の向きの1マス先の座標を取得する
+void Actor::SetAnimPos()
 {
+	//ローカル座標の取得
+	t2k::Vector3 localEffectPos = gManager->WorldToLocal(pos) + gManager->GetVecter(mydir);
 
-
-
+	//描画座標がほしい posは描画座標
+	effectPos = gManager->LocalToWorld(localEffectPos.x, localEffectPos.y);
 }
+//bool Actor::SetDrawAnim()
+//{
+//	//プレイヤーの座標を一定分方向の向きに移動し、その後もとに戻る
+//
+//	//今向いている向きに発生させるエフェクトを取得
+//	Anim(effectGh, 5, 5, attackDrawGh, AnimPattern::EFFECT);
+//	//もしアニメーションが終わっていれば
+//	if (attackDrawGh == effectGh[4])
+//	{
+//		actIndexEffect = 0;
+//		return true;
+//	}
+//
+//	return false;
+//}
+//void Actor::DrawAttackAnim()
+//{
+//	DrawRotaGraph(effectPos.x - gManager->camera->cameraPos.x, effectPos.y - gManager->camera->cameraPos.y, 1, 0, attackDrawGh, true);
+//
+//}
 void Actor::TakeHpEffect(int HpMove)
 {
 	if (nowHp <= 0)return;
@@ -111,21 +129,9 @@ void Actor::Atack()
 
 	t2k::Vector3 front;
 	//目の前の対象を取得
-	if (mydir == dir::UP) {
-		front = gManager->WorldToLocal(pos) + t2k::Vector3(0, -1, 0);
-	}
-	else if (mydir == dir::RIGHT) {
-		front = gManager->WorldToLocal(pos) + t2k::Vector3(1, 0, 0);
-	}
-	else if (mydir == dir::DOWN) {
-		front = gManager->WorldToLocal(pos) + t2k::Vector3(0, 1, 0);
-	}
-	else if (mydir == dir::LEFT) {
-		front = gManager->WorldToLocal(pos) + t2k::Vector3(-1, 0, 0);
-	}
+	front = gManager->WorldToLocal(pos) + gManager->GetVecter(mydir);
 
-	//前にダメージを与えられる対象がいるなら
-	//gManager->CalcDamage()
+	//目の前の対象を取得,ダメージ処理を行う
 	gManager->TakeDamageToTarget(this, front);
 
 }
@@ -142,16 +148,17 @@ void Actor::Update()
 
 void Actor::Draw()
 {
-	Anim();
-	DrawRotaGraph(pos.x - gManager->camera->cameraPos.x, pos.y - 10 - gManager->camera->cameraPos.y, 1, 0, drawGh, true);
+	Anim(gh, actSpeed, maxMotionIndex, drawGh);
+	//描画座標+アニメーション位置補正(補完座標)-カメラ補正
+	DrawRotaGraph(pos.x + animPos.x - gManager->camera->cameraPos.x, pos.y + animPos.y - 10 - gManager->camera->cameraPos.y, 1, 0, drawGh, true);
 }
 
-void Actor::Anim()
+void Actor::Anim(int* DrawGhArr, int Speed, int MaxIndex, int& DrawGh)
 {
-	if (--act_wait <= 0) {
-		act_index++;
-		act_wait = ACT_SPEED;
-		act_index %= MAX_MOTION_INDEX;
+	if (--actWait <= 0) {
+		actIndex++;
+		actWait = Speed;
+		actIndex %= MaxIndex;
 	}
-	drawGh = gh[act_index + 3 * mydir];
+	DrawGh = DrawGhArr[actIndex + 3 * mydir];
 }

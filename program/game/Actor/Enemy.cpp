@@ -31,10 +31,13 @@ Enemy::Enemy(int Id, int Type, std::string Name, int Hp, int Atack, int Defence,
 	speed = baseSpeed + exSpeed;
 
 	LoadDivGraph(Gh.c_str(), 12, 3, 4, 24, 32, gh);
+	LoadDivGraph("graphics/AttackAnim_30.png", 5, 5, 1, 30, 30, effectGh);
 
 	baseExp = Exp;
 	exp = baseExp + exExp;
 	nowHp = hp;
+
+	maxMotionIndex = gManager->GetMaxIndex(GameManager::index::ENEMY);
 }
 
 Enemy::~Enemy()
@@ -178,7 +181,7 @@ void Enemy::MoveChasePoint()
 				//enemyが上にいるなら
 				if (ChasePoint.y > myNowPos.y) {
 					if (!gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, 1, 0))) {
-						pos.y -= 20;
+						pos.y -= gManager->GRAPHICSIZE;
 						mydir = dir::DOWN;
 					}
 					else {
@@ -188,7 +191,7 @@ void Enemy::MoveChasePoint()
 				//enemyが下にいるなら
 				else {
 					if (!gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, -1, 0))) {
-						pos.y -= 20;
+						pos.y -= gManager->GRAPHICSIZE;
 						mydir = dir::UP;
 					}
 					else {
@@ -196,7 +199,7 @@ void Enemy::MoveChasePoint()
 					}
 				}
 			}
-			pos.x += 20;
+			pos.x += gManager->GRAPHICSIZE;
 			mydir = dir::RIGHT;
 		}//左に進む
 		else {
@@ -207,7 +210,7 @@ void Enemy::MoveChasePoint()
 				//enemyが上にいるなら
 				if (ChasePoint.y > myNowPos.y) {
 					if (!gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, 1, 0))) {
-						pos.y += 20;
+						pos.y += gManager->GRAPHICSIZE;
 						mydir = dir::DOWN;
 					}
 					else {
@@ -217,7 +220,7 @@ void Enemy::MoveChasePoint()
 				//enemyが下にいるなら
 				else {
 					if (!gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, -1, 0))) {
-						pos.y -= 20;
+						pos.y -= gManager->GRAPHICSIZE;
 						mydir = dir::UP;
 					}
 					else {
@@ -225,7 +228,7 @@ void Enemy::MoveChasePoint()
 					}
 				}
 			}
-			pos.x -= 20;
+			pos.x -= gManager->GRAPHICSIZE;
 			mydir = dir::LEFT;
 		}
 	}//yのほうが長い場合
@@ -246,7 +249,7 @@ void Enemy::MoveChasePoint()
 					//敵がその位置にいれば移動しない
 					if (gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(1, 0, 0)))return;
 
-					pos.x += 20;
+					pos.x += gManager->GRAPHICSIZE;
 					mydir = dir::RIGHT;
 				}//左に進む
 				else {
@@ -254,7 +257,7 @@ void Enemy::MoveChasePoint()
 					//敵がその位置にいれば移動しない
 					if (gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(-1, 0, 0)))return;
 
-					pos.x -= 20;
+					pos.x -= gManager->GRAPHICSIZE;
 					mydir = dir::LEFT;
 				}
 				return;
@@ -263,7 +266,7 @@ void Enemy::MoveChasePoint()
 			//敵がその位置にいれば移動しない
 			if (gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, 1, 0)))return;
 
-			pos.y += 20;
+			pos.y += gManager->GRAPHICSIZE;
 			mydir = dir::DOWN;
 		}//上に進む
 		else {
@@ -275,7 +278,7 @@ void Enemy::MoveChasePoint()
 					//敵がその位置にいれば移動しない
 					if (gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(1, 0, 0)))return;
 
-					pos.x += 20;
+					pos.x += gManager->GRAPHICSIZE;
 					mydir = dir::RIGHT;
 				}//左に進む
 				else {
@@ -283,7 +286,7 @@ void Enemy::MoveChasePoint()
 					//敵がその位置にいれば移動しない
 					if (gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(-1, 0, 0)))return;
 
-					pos.x -= 20;
+					pos.x -= gManager->GRAPHICSIZE;
 					mydir = dir::LEFT;
 				}
 				return;
@@ -292,13 +295,13 @@ void Enemy::MoveChasePoint()
 						//敵がその位置にいれば移動しない
 			if (gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, -1, 0)))return;
 
-			pos.y -= 20;
+			pos.y -= gManager->GRAPHICSIZE;
 			mydir = dir::UP;
 		}
 	}
 
 	//もし今の自分の位置と目的地が一致していれば
-	if (pos.x / 20 == ChasePoint.x && pos.y / 20 == ChasePoint.y) {
+	if (pos.x / gManager->GRAPHICSIZE == ChasePoint.x && pos.y / gManager->GRAPHICSIZE == ChasePoint.y) {
 		//isSetChasePointをfalseにする
 		isSetChasePoint = false;
 		//目的地を破棄する
@@ -350,19 +353,19 @@ bool Enemy::MoveToDir(const int dir, t2k::Vector3& nowPos)
 	if (!CheckCanMove(dir, nowPos))return false;
 	//上
 	if (dir == 0) {
-		pos.y -= 20;
+		pos.y -= gManager->GRAPHICSIZE;
 	}
 	//右
 	else if (dir == 1) {
-		pos.x += 20;
+		pos.x += gManager->GRAPHICSIZE;
 	}
 	//下
 	else if (dir == 2) {
-		pos.y += 20;
+		pos.y += gManager->GRAPHICSIZE;
 	}
 	//左
 	else if (dir == 3) {
-		pos.x -= 20;
+		pos.x -= gManager->GRAPHICSIZE;
 	}
 	else {
 		t2k::debugTrace("\n移動エラー\n");
@@ -374,22 +377,22 @@ void Enemy::DegradedMoveToDir(const int dir)
 {
 	//上
 	if (dir == 0) {
-		pos.y -= 20;
+		pos.y -= gManager->GRAPHICSIZE;
 		mydir = dir::UP;
 	}
 	//右
 	else if (dir == 1) {
-		pos.x += 20;
+		pos.x += gManager->GRAPHICSIZE;
 		mydir = dir::RIGHT;
 	}
 	//下
 	else if (dir == 2) {
-		pos.y += 20;
+		pos.y += gManager->GRAPHICSIZE;
 		mydir = dir::DOWN;
 	}
 	//左
 	else if (dir == 3) {
-		pos.x -= 20;
+		pos.x -= gManager->GRAPHICSIZE;
 		mydir = dir::LEFT;
 	}
 	else {

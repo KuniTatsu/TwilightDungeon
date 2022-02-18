@@ -61,6 +61,14 @@ void Inventory::CursorReset()
 void Inventory::DrawInventory(int x, int y)
 {
 	int i = 0;
+
+	/*
+	ƒ\[ƒg
+	inventoryList.sort([](Item* l, Item* r) {
+		return (l->getItemData(0) > r->getItemData(0));
+	});
+	*/
+
 	for (auto item : inventoryList) {
 		if (item->getItemData(1) >= 2) {
 			equipItem* eItem = (equipItem*)item;

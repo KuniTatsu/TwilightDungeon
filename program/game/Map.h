@@ -1,11 +1,10 @@
 #pragma once
-#define _HAS_STD_BYTE 0
+//#define _HAS_STD_BYTE 0
 #include<vector>
 #include"../library/t2klib.h"
 #include"DxLib.h"
 #include<memory>
 
-using namespace std;
 
 class Camera;
 class Player;
@@ -17,7 +16,7 @@ public:
 	Map(const int Width, const int Height);
 
 	//マップの背景
-	vector<vector<int>> ground;
+	std::vector<std::vector<int>> ground;
 
 	std::shared_ptr<Player> player = nullptr;
 
@@ -71,7 +70,7 @@ public:
 	}
 
 	//外部から"特定の部屋"を取得するときの関数
-	inline vector<int> GetRoom(int roomNum) {
+	inline std::vector<int> GetRoom(int roomNum) {
 		return divideRoom[roomNum];
 	}
 
@@ -92,7 +91,7 @@ public:
 	void MiniMapDraw();
 
 	//今表示されている全ての部屋の上下左右座標をする描画するDebug関数
-	void DrawAllRoomPos(const vector<vector<int>>RoomList);
+	void DrawAllRoomPos(const std::vector<std::vector<int>>RoomList);
 
 private:
 
@@ -160,15 +159,15 @@ private:
 	int miniPlayer = 0;
 
 	//区間分割(区間)
-	vector<vector<int>> divideArea;
+	std::vector<std::vector<int>> divideArea;
 
 	//分割した区間を一旦保存するvector
-	vector<vector<int>> dumpDivideArea;
+	std::vector<std::vector<int>> dumpDivideArea;
 
 	//区間分割(区分線)
-	vector<vector<int>> divideLine;
+	std::vector<std::vector<int>> divideLine;
 	//区間分割(部屋) 左,上,右,下,id
-	vector<vector<int>> divideRoom;
+	std::vector<std::vector<int>> divideRoom;
 
 
 

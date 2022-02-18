@@ -18,6 +18,7 @@ class Item;
 class Inventory;
 class Player;
 class Enemy;
+class Animation;
 
 class DungeonScene :public BaseScene {
 
@@ -85,6 +86,16 @@ private:
 
 	std::shared_ptr<EnemyManager>eManager = nullptr;
 
+	std::list<std::shared_ptr<Animation>>drawAnimationList;
+
+	void UpdateAnimation();
+	void DrawAnimation();
+
+	void CheckAnimLive();
+	const int ATTACKEFFECTSPEED = 10;
+	//int ATTACKEFFECTINDEX = 5;
+
+
 	//**debug
 	t2k::Vector3 playerPos = {};
 
@@ -107,9 +118,10 @@ private:
 	bool SeqInventoryUse(const float deltatime);
 	//物が飛んでいるシークエンス
 	bool SeqThrowItemMove(const float deltatime);
-	//アニメーションシークエンス
-	bool SeqAnimation(const float deltatime);
-
+	//アニメーションシークエンス(前半)
+	bool SeqAnimationFirst(const float deltatime);
+	//アニメーションシークエンス(後半)
+	bool SeqAnimationSecond(const float deltatime);
 
 	//debug
 	bool SeqCameraMove(const float deltatime);

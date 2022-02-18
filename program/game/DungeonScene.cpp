@@ -11,7 +11,9 @@
 #include"Item/Item.h"
 #include"Item/equipItem.h"
 #include"Item/Inventory.h"
+#include"Animation.h"
 
+using namespace std;
 
 extern GameManager* gManager;
 
@@ -122,6 +124,8 @@ void DungeonScene::Update()
 		if (item->GetIsLive())continue;
 		if (gManager->PopDetectItem(item, dropItems))break;
 	}
+	UpdateAnimation();
+	CheckAnimLive();
 }
 
 void DungeonScene::Draw()
@@ -152,7 +156,7 @@ void DungeonScene::Draw()
 	//	for (auto hage : hoge) {
 	//		int X = (int)hage.x;
 	//		int Y = (int)hage.y;
-	//		DrawCircle(X * 20 - gManager->camera->cameraPos.x, Y * 20 - gManager->camera->cameraPos.y, 10, -1, true);
+	//		DrawCircle(X * gManager->GRAPHICSIZE - gManager->camera->cameraPos.x, Y * gManager->GRAPHICSIZE - gManager->camera->cameraPos.y, 10, -1, true);
 	//	}
 	//}
 	//
@@ -165,8 +169,10 @@ void DungeonScene::Draw()
 	//gManager->map->DrawAllRoomPos(gManager->map.)
 
 	DrawNowSequence(nowSeq);
-	log->Menu_Draw();
-	gManager->LogDraw(log->menu_x, log->menu_y);
+
+	DrawAnimation();
+
+	//ここから下はシークエンスごとの描画
 
 	firstMenu->All();
 	if (nowSeq == sequence::MAIN || nowSeq == sequence::ENEMYACT) {
@@ -189,11 +195,19 @@ void DungeonScene::Draw()
 			}
 		}
 	}
+	else if (nowSeq == sequence::ANIMATION) {
+		
+	}
+	log->Menu_Draw();
+	gManager->LogDraw(log->menu_x, log->menu_y);
 
+	//debug
 	if (t2k::Input::isKeyDown(t2k::Input::KEYBORD_P)) {
 		playerStatus->Menu_Draw();
 		player->DrawPlayerStatus();
 	}
+
+
 }
 
 int DungeonScene::GetDungeonLevel()
@@ -226,6 +240,35 @@ void DungeonScene::MoveLevel(int addLevel)
 		SpawnItem(random);
 	}
 }
+
+void DungeonScene::UpdateAnimation()
+{
+	if (drawAnimationList.empty())return;
+	for (auto anim : drawAnimationList) {
+		anim->Update();
+	}
+}
+
+void DungeonScene::DrawAnimation()
+{
+	if (drawAnimationList.empty())return;
+	for (auto anim : drawAnimationList) {
+		anim->Draw();
+	}
+}
+void DungeonScene::CheckAnimLive()
+{
+	auto itr = drawAnimationList.begin();
+	while (itr != drawAnimationList.end()) {
+		if (!(*itr)->GetIsAlive()) {
+			itr = drawAnimationList.erase(itr);
+			continue;
+		}
+		++itr;
+	}
+}
+
+
 
 bool DungeonScene::SeqMain(const float deltatime)
 {
@@ -288,26 +331,9 @@ bool DungeonScene::SeqMain(const float deltatime)
 	if (t2k::Input::isMouseTrigger(t2k::Input::MOUSE_RELEASED_LEFT) || t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_R)) {
 		//ここをアニメーションシークエンスに飛ばす
 
-		ChangeSequence(sequence::PLAYERATTACK);
+		ChangeSequence(sequence::ANIMATION);
 		return true;
 
-		//攻撃エフェクトをアニメーションさせたい
-		//アニメーションが終わったらAtack関数を呼びたい
-
-		//player->Atack();
-		////死亡チェック
-		//for (auto enemy : eManager->liveEnemyList) {
-		//	if (enemy->GetStatus(0) <= 0) {
-		//		player->AddExp(enemy->GetExp());
-		//		enemy->isLive = false;
-		//	}
-		//}
-
-		//DeleteDeadEnemy();
-		//if (!player->skip) {
-		//	ChangeSequence(sequence::ENEMYACT);
-		//	return true;
-		//}
 	}
 
 	//もしPlayerが動いたら もしくはスキップしたら
@@ -600,23 +626,29 @@ bool DungeonScene::SeqThrowItemMove(const float deltatime)
 	return true;
 }
 
-bool DungeonScene::SeqAnimation(const float deltatime)
+bool DungeonScene::SeqAnimationFirst(const float deltatime)
 {
 	//アニメーションさせる関数を実行する
 	//アニメーションが終わり次第誰から呼ばれたかを確認してシークエンスを移動する
 	//プレイヤーの攻撃なら
 	if (lastSeq == sequence::MAIN) {
-		//プレイヤーのアニメーション関数を呼ぶ
-		//今向いている向きに,特定のエフェクトを発生させる
-		//プレイヤーの座標を一定分方向の向きに移動し、その後もとに戻る
-
-
-
-
+		//最初のフレームのみ実行
+		if (mainSequence.isStart()) {
+			//アニメーションポジションの決定
+			player->SetAnimPos();
+			//アニメーション画像の最大Index番号の取得
+			int index = gManager->GetMaxIndex(GameManager::index::ATTACK);
+			//Animationクラスをnew
+			std::shared_ptr<Animation>anim = std::make_shared<Animation>("graphics/AttackAnim_30.png", player->effectPos, ATTACKEFFECTSPEED, index);
+			//描画リストに登録
+			drawAnimationList.emplace_back(anim);
+		}
 		//もしアニメーションが終わっているなら
-		ChangeSequence(sequence::PLAYERATTACK);
-		return true;
-
+		if (drawAnimationList.empty()) {
+			//攻撃シークエンスに移動
+			ChangeSequence(sequence::PLAYERATTACK);
+			return true;
+		}
 	}
 	//エネミーの攻撃なら
 	else if (lastSeq == sequence::ENEMYACT) {
@@ -629,6 +661,11 @@ bool DungeonScene::SeqAnimation(const float deltatime)
 	}
 
 	return true;
+}
+
+bool DungeonScene::SeqAnimationSecond(const float deltatime)
+{
+	return false;
 }
 
 bool DungeonScene::SeqCameraMove(const float deltatime)
@@ -673,7 +710,7 @@ void DungeonScene::ChangeSequence(sequence seq)
 		mainSequence.change(&DungeonScene::SeqThrowItemMove);
 	}
 	else if (seq == sequence::ANIMATION) {
-		mainSequence.change(&DungeonScene::SeqAnimation);
+		mainSequence.change(&DungeonScene::SeqAnimationFirst);
 	}
 	else if (seq == sequence::CAMERA) {
 		mainSequence.change(&DungeonScene::SeqCameraMove);
@@ -767,7 +804,7 @@ void DungeonScene::SpawnItem(int ItemId)
 	t2k::Vector3 popPos;
 	//設置済みのアイテムがない
 	if (dropItems.empty()) {
-		popPos = gManager->SetStartPos(GameManager::setStatrPosType::ITEM);
+		popPos = gManager->SetStartPos(GameManager::setStartPosType::ITEM);
 	}
 	//すでに設置済みのアイテムがある
 	else {
@@ -775,7 +812,7 @@ void DungeonScene::SpawnItem(int ItemId)
 		int count = 0;//debug
 		//すでにリスト内にあるアイテムのポジションとかぶっていたらもう一度座標を取得する
 		while (!set) {
-			popPos = gManager->SetStartPos(GameManager::setStatrPosType::ITEM);
+			popPos = gManager->SetStartPos(GameManager::setStartPosType::ITEM);
 			//bool set = false;
 			//設置済みの全てのアイテムと比べる
 			for (auto item : dropItems) {

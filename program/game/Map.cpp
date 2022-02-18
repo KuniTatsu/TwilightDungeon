@@ -4,6 +4,8 @@
 #include"Camera.h"
 #include"Player.h"	
 
+using namespace std;
+
 extern GameManager* gManager;
 
 Map::Map(int Width, int Height)
@@ -148,20 +150,20 @@ void Map::MapDraw()
 		int count = 0;
 		for (auto hoge : divideArea) {
 
-			int x1 = (hoge[0] - 1) * 20 - gManager->camera->cameraPos.x;
-			int y1 = (hoge[1] - 1) * 20 - gManager->camera->cameraPos.y;
-			int x2 = (hoge[2] + 1) * 20 - gManager->camera->cameraPos.x;
-			int y2 = (hoge[3] + 1) * 20 - gManager->camera->cameraPos.y;
+			int x1 = (hoge[0] - 1) * SIZE - gManager->camera->cameraPos.x;
+			int y1 = (hoge[1] - 1) * SIZE - gManager->camera->cameraPos.y;
+			int x2 = (hoge[2] + 1) * SIZE - gManager->camera->cameraPos.x;
+			int y2 = (hoge[3] + 1) * SIZE - gManager->camera->cameraPos.y;
 
 			DrawBox(x1, y1, x2, y2, colors[count], true);
 
 			count = (count + 1) % 5;
 		}
 		for (auto hoge : divideLine) {
-			int x1 = hoge[0] * 20 - gManager->camera->cameraPos.x;
-			int y1 = hoge[1] * 20 - gManager->camera->cameraPos.y;
-			int x2 = hoge[2] * 20 - gManager->camera->cameraPos.x;
-			int y2 = hoge[3] * 20 - gManager->camera->cameraPos.y;
+			int x1 = hoge[0] * SIZE - gManager->camera->cameraPos.x;
+			int y1 = hoge[1] * SIZE - gManager->camera->cameraPos.y;
+			int x2 = hoge[2] * SIZE - gManager->camera->cameraPos.x;
+			int y2 = hoge[3] * SIZE - gManager->camera->cameraPos.y;
 
 
 			DrawLine(x1, y1, x2, y2, -1);
@@ -176,11 +178,11 @@ void Map::MapDraw()
 				//DrawRotaGraphF(k * gManager->nowGraphicSize - gManager->camera->cameraPos.x, i * gManager->nowGraphicSize - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
 
 				int iti = CheckAroundWay(i, k);
-				DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, autoTileChip[iti], false);
+				DrawRotaGraph(k * SIZE - gManager->camera->cameraPos.x, i * SIZE - gManager->camera->cameraPos.y, gManager->graphEx, 0, autoTileChip[iti], false);
 			}
-			else if (ground[i][k] == PASSWAY)DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[0], false);
-			else if (ground[i][k] == STAIRS)DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[2], false);
-			//else if (ground[i][k] == EXPASSWAY)DrawRotaGraph(k * 20 - gManager->camera->cameraPos.x, i * 20 - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[3], false);
+			else if (ground[i][k] == PASSWAY)DrawRotaGraph(k * SIZE - gManager->camera->cameraPos.x, i * SIZE - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[0], false);
+			else if (ground[i][k] == STAIRS)DrawRotaGraph(k * SIZE - gManager->camera->cameraPos.x, i * SIZE - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[2], false);
+			//else if (ground[i][k] == EXPASSWAY)DrawRotaGraph(k * SIZE - gManager->camera->cameraPos.x, i * SIZE - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[3], false);
 
 		}
 	}
@@ -506,7 +508,7 @@ void Map::CreateRoom()
 
 		int roomLeft = gManager->GetRandEx(left, right - roomMinWidth + 2);
 		int roomRight = gManager->GetRandEx(roomLeft + roomMinWidth - 2, right);
-		int roomUp = gManager->GetRandEx(up, down - roomMinHeight + 2);
+		int roomUp = gManager->GetRandEx(up+2, down - roomMinHeight + 2);
 		int roomDown = gManager->GetRandEx(roomUp + roomMinHeight - 2, down);
 
 		SetDivideRoom(roomLeft, roomUp, roomRight, roomDown, id);
@@ -1078,6 +1080,7 @@ int Map::CheckAroundWay(int x, int y)
 
 	else if (ue && migishita)return ROOMWALL;
 	else if (ue && hidari)return ROOMWALL;
+	else if (hidari && migi)return ROOMWALL;
 
 	//‰º,‰E‰º,¶‰º‚ªtrue->’Ê˜H‚È‚ç •”‰®‚Ìã‘¤
 	else if (shita)return ROOMTOP;//0
