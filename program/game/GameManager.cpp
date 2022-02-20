@@ -239,18 +239,15 @@ void GameManager::initGameManager()
 	//loadDivGraph‚ÌindexŽæ“¾
 	LoadMaxIndex();
 
-	//player‚Ìactid‚Í0
-	//MakePlayer(SpawnScene::Dungeon);
-	//player = std::make_shared<Player>(SetStartPos(setStartPosType::PLAYER), 100.0f, 30, 30, 30, 0);
-	//map->player = player;
-	SceneManager::ChangeScene(SceneManager::SCENE::CAMP);
-	camera->cameraPos = player->pos - WINDOWCENTER;
 	iManager = new ItemManager();
 
 	haveItem = new HaveItem();
 	inventory = new Inventory(0);
 	inventories.emplace_back(inventory);
 
+	SceneManager::ChangeScene(SceneManager::SCENE::DUNGEON);
+	camera->cameraPos = player->pos - WINDOWCENTER;
+	
 
 	//shared_inventory = std::make_shared<Inventory>(0);
 	//sharedInventories.emplace_back(shared_inventory);

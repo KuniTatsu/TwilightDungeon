@@ -223,22 +223,7 @@ void Player::TownMove(dir nextDir)
 	pos.x += nextPos.x;
 	pos.y += nextPos.y;
 
-	/*if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_LEFT)) {
-		mydir = Actor::LEFT;
-		
-	}
-	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_UP)) {
-		mydir = Actor::UP;
-		
-	}
-	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RIGHT)) {
-		mydir = Actor::RIGHT;
-		
-	}
-	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_DOWN)) {
-		mydir = Actor::DOWN;
-		
-	}*/
+	
 }
 
 
@@ -288,7 +273,8 @@ void Player::DashToDir(int dir, t2k::Vector3 mapPos)
 			return;
 		}
 		pos.x -= 20;
-		gManager->CameraMove(gManager->MAPWIDTH * 20, gManager->MAPHEIGHT * 20,dir);
+		//gManager->CameraMove(gManager->MAPWIDTH * 20, gManager->MAPHEIGHT * 20,dir);
+		gManager->CameraReset();
 	}
 	else if (dir == UP) {
 		if ((gManager->GetMapChip(mapPos + t2k::Vector3(0, -1, 0))) == 0 || gManager->CheckNearByPlayerToAllEnemy(2))
@@ -297,7 +283,8 @@ void Player::DashToDir(int dir, t2k::Vector3 mapPos)
 			return;
 		}
 		pos.y -= 20;
-		gManager->CameraMove(gManager->MAPWIDTH * 20, gManager->MAPHEIGHT * 20, dir);
+		//gManager->CameraMove(gManager->MAPWIDTH * 20, gManager->MAPHEIGHT * 20, dir);
+		gManager->CameraReset();
 	}
 	else if (dir == RIGHT) {
 		if ((gManager->GetMapChip(mapPos + t2k::Vector3(1, 0, 0))) == 0 || gManager->CheckNearByPlayerToAllEnemy(2))
@@ -306,7 +293,8 @@ void Player::DashToDir(int dir, t2k::Vector3 mapPos)
 			return;
 		}
 		pos.x += 20;
-		gManager->CameraMove(gManager->MAPWIDTH * 20, gManager->MAPHEIGHT * 20, dir);
+		//gManager->CameraMove(gManager->MAPWIDTH * 20, gManager->MAPHEIGHT * 20, dir);
+		gManager->CameraReset();
 	}
 	else if (dir == DOWN) {
 		if ((gManager->GetMapChip(mapPos + t2k::Vector3(0, 1, 0))) == 0 || gManager->CheckNearByPlayerToAllEnemy(2))
@@ -315,7 +303,8 @@ void Player::DashToDir(int dir, t2k::Vector3 mapPos)
 			return;
 		}
 		pos.y += 20;
-		gManager->CameraMove(gManager->MAPWIDTH * 20, gManager->MAPHEIGHT * 20, dir);
+		//gManager->CameraMove(gManager->MAPWIDTH * 20, gManager->MAPHEIGHT * 20, dir);
+		gManager->CameraReset();
 	}
 
 	gManager->setPlayerRoomNum(gManager->CheckIsThere(mapPos));
@@ -326,23 +315,27 @@ void Player::MoveToDir(int dir, t2k::Vector3 mapPos)
 	if (dir == LEFT) {
 		if ((gManager->GetMapChip(mapPos + t2k::Vector3(-1, 0, 0))) == 0)return;
 		pos.x -= 20;
-		gManager->CameraMove(gManager->MAPWIDTH * 20, gManager->MAPHEIGHT * 20, dir);
+		//gManager->CameraMove(gManager->MAPWIDTH * 20, gManager->MAPHEIGHT * 20, dir);
+		gManager->CameraReset();
 	}
 	else if (dir == UP) {
 		if ((gManager->GetMapChip(mapPos + t2k::Vector3(0, -1, 0))) == 0)return;
 
 		pos.y -= 20;
-		gManager->CameraMove(gManager->MAPWIDTH * 20, gManager->MAPHEIGHT * 20, dir);
+		//gManager->CameraMove(gManager->MAPWIDTH * 20, gManager->MAPHEIGHT * 20, dir);
+		gManager->CameraReset();
 	}
 	else if (dir == RIGHT) {
 		if ((gManager->GetMapChip(mapPos + t2k::Vector3(1, 0, 0))) == 0)return;
 		pos.x += 20;
-		gManager->CameraMove(gManager->MAPWIDTH * 20, gManager->MAPHEIGHT * 20, dir);
+		//gManager->CameraMove(gManager->MAPWIDTH * 20, gManager->MAPHEIGHT * 20, dir);
+		gManager->CameraReset();
 	}
 	else if (dir == DOWN) {
 		if ((gManager->GetMapChip(mapPos + t2k::Vector3(0, 1, 0))) == 0)return;
 		pos.y += 20;
-		gManager->CameraMove(gManager->MAPWIDTH * 20, gManager->MAPHEIGHT * 20, dir);
+		//gManager->CameraMove(gManager->MAPWIDTH * 20, gManager->MAPHEIGHT * 20, dir);
+		gManager->CameraReset();
 	}
 
 	gManager->setPlayerRoomNum(gManager->CheckIsThere(mapPos));

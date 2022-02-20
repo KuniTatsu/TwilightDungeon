@@ -61,12 +61,7 @@ DungeonScene::DungeonScene()
 	};
 	// メニューウィンドウのインスタンス化
 	firstMenu = new MenuWindow(30, 50, 220, 210, "graphics/WindowBase_02.png", menu_0, 5, 0.45);
-
-	//firstMenu->menu_live = true;
-	/*for (int i = 0; i < 5; ++i) {
-		int rand = GetRand(100) % 6+100;
-		eManager->CreateEnemy(rand);
-	}*/
+	gManager->MakePlayer(GameManager::SpawnScene::Dungeon);
 	RandEnemyCreate(5);
 
 	for (int i = 0; i < 5; ++i) {
