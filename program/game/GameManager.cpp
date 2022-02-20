@@ -219,7 +219,7 @@ void GameManager::initGameManager()
 	//SRand(1);
 	resource = new ResourceManager();
 	resource->LoadResource();
-	
+
 	camera = new Camera();
 
 	CreateDungeon(Dungeon::FOREST);
@@ -238,7 +238,7 @@ void GameManager::initGameManager()
 
 	//loadDivGraphのindex取得
 	LoadMaxIndex();
-	
+
 	//playerのactidは0
 	//MakePlayer(SpawnScene::Dungeon);
 	//player = std::make_shared<Player>(SetStartPos(setStartPosType::PLAYER), 100.0f, 30, 30, 30, 0);
@@ -259,9 +259,9 @@ void GameManager::initGameManager()
 	sound = new Sound();
 	fControl = new FadeControl();
 
-	
+
 	deitatime_ = 0;
-	
+
 }
 
 
@@ -580,10 +580,10 @@ void GameManager::ReCreate()
 
 	CreateDungeon(nowDungeon);
 
-	
+
 	player->pos = SetStartPos(setStartPosType::PLAYER);
 	map->player = player;
-	
+
 	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
 }
 
@@ -622,7 +622,7 @@ void GameManager::CreateDungeon(Dungeon dungeonName) {
 void GameManager::CreateMap(Dungeon dungeonName)
 {
 	std::vector<int> handles = GetGraphicHandles(dungeonName);
-	map = new Map(MAPWIDTH, MAPHEIGHT,handles);
+	map = new Map(MAPWIDTH, MAPHEIGHT, handles);
 
 }
 
@@ -657,10 +657,22 @@ int GameManager::CheckIsThere(t2k::Vector3 Pos)
 {
 	return map->CheckIsThere(Pos.x, Pos.y);
 }
-//なんか微妙
-void GameManager::CameraMove()
-{
+//カメラをキャラを中心にリセット
+void GameManager::CameraReset() {
 	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
+}
+//なんか微妙
+void GameManager::CameraMove(int width, int height, int dir)
+{
+	//	if (player->pos.x+ width / 2 > width)return;
+	//	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
+	//	//camera->cameraPos = player->pos - GetMultipleVector(dir, 20);
+	if (player->pos.x > 1024 / 2 && player->pos.x < width - 1024 / 2 ) {
+		camera->cameraPos.x = player->pos.x - (1024 / 2);
+	}
+	if (player->pos.y > 768 / 2 && player->pos.y < height - 768 / 2 ) {
+		camera->cameraPos.y = player->pos.y - (768 / 2);
+	}
 }
 
 bool GameManager::CheckMousePointToRect(int MouseX, int MouseY, int RectLeftTopX, int RectWidth, int RectTopY, int RectHeight)

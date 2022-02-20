@@ -675,7 +675,8 @@ bool DungeonScene::SeqCameraMove(const float deltatime)
 
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_ESCAPE)) {
 		ChangeSequence(sequence::MAIN);
-		gManager->CameraMove();
+		//gManager->CameraMove(gManager->MAPWIDTH*20, gManager->MAPHEIGHT * 20,);
+		gManager->CameraReset();
 		return true;
 	}
 

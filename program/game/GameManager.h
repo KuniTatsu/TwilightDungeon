@@ -166,8 +166,14 @@ public:
 	//特定のマップ座標が部屋のどこかにあるか確認する関数
 	int CheckIsThere(const t2k::Vector3 Pos);
 
+	//カメラをキャラを中心にリセット
+	void CameraReset();
+
 	//カメラの移動
-	void CameraMove();
+	void CameraMove(int width,int height,int dir);
+
+	
+
 
 	enum class setStartPosType {
 		PLAYER,
@@ -180,7 +186,7 @@ public:
 	//setType 0:プレイヤー初期座標,1:階段,2:enemy
 	t2k::Vector3 SetStartPos(setStartPosType num);
 
-	const t2k::Vector3 spawnPos = { 360,300,0 };
+	const t2k::Vector3 spawnPos = { 720,360,0 };
 
 	//campの特定の座標にプレイヤーを設置
 	inline const t2k::Vector3& SpawnPlayerCamp() {
