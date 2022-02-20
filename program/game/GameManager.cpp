@@ -217,15 +217,21 @@ void GameManager::initGameManager()
 	//debug
 	//SRand(1);
 
-
+	/*
 	camera = new Camera();
+
+	
+
 	map = new Map(MAPWIDTH, MAPHEIGHT);
+
 	map->DivideStart(MAPWIDTH, MAPHEIGHT, map);
+
 	//階段のマップ座標の取得
 	t2k::Vector3 stairsPos = SetStartPos(setStartPosType::STAIR);
 	//階段設置
 	map->SetChip(stairsPos.x, stairsPos.y, map->STAIRS);
 
+	
 
 	LoadMaxIndex();
 	//playerのactidは0
@@ -239,16 +245,17 @@ void GameManager::initGameManager()
 	inventory = new Inventory(0);
 	inventories.emplace_back(inventory);
 	
-	/*
-	shared_inventory = std::make_shared<Inventory>(0);
-	sharedInventories.emplace_back(shared_inventory);
-	*/
+	
+	//shared_inventory = std::make_shared<Inventory>(0);
+	//sharedInventories.emplace_back(shared_inventory);
+	
 
 	sound = new Sound();
 	fControl = new FadeControl();
 
+	*/
 	deitatime_ = 0;
-	SceneManager::ChangeScene(SceneManager::SCENE::DUNGEON);
+	SceneManager::ChangeScene(SceneManager::SCENE::CAMP);
 }
 
 

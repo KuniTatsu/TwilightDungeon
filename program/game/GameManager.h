@@ -74,6 +74,7 @@ public:
 	//インベントリからアイテムを削除する関数
 	void PopItemFromInventory(const int NowInventoryId);
 
+	//マップチップの一枚の大きさ
 	const int GRAPHICSIZE = 20;
 	float nowGraphicSize = GRAPHICSIZE;
 

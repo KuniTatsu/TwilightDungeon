@@ -92,6 +92,7 @@
     <ClCompile Include="program\game\Item\HaveItem.cpp" />
     <ClCompile Include="program\game\Item\Inventory.cpp" />
     <ClCompile Include="program\game\Animation.cpp" />
+    <ClCompile Include="program\game\CampScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="program\support\FrameRateController.h">
@@ -195,5 +196,6 @@
     <ClInclude Include="program\game\Item\HaveItem.h" />
     <ClInclude Include="program\game\Item\Inventory.h" />
     <ClInclude Include="program\game\Animation.h" />
+    <ClInclude Include="program\game\CampScene.h" />
   </ItemGroup>
 </Project>

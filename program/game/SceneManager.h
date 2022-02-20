@@ -7,6 +7,7 @@ class SceneManager {
 public:
 	enum SCENE {
 		TITLE,
+		CAMP,
 		DUNGEON,
 	};
 

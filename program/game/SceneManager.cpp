@@ -3,6 +3,7 @@
 #include"DxLib.h"
 #include"TitleScene.h"
 #include"DungeonScene.h"
+#include"CampScene.h"
 
 BaseScene* SceneManager::m_pScene = NULL;       //始めはシーンは空
 
@@ -19,9 +20,9 @@ void SceneManager::ChangeScene(SCENE scene) {
     case SCENE::DUNGEON:
         m_pScene = new DungeonScene();       //ダンジョンシーンを現在のシーンにする
         break;
-    //case SCENE::TRAINING:
-    //    m_pScene = new TrainingScene();     //バトルシーンを現在のシーンにする
-    //    break;
+    case SCENE::CAMP:
+        m_pScene = new CampScene();     //バトルシーンを現在のシーンにする
+        break;
     //case SCENE::BATTLE:
     //    m_pScene = new BattleScene();     //バトルシーンを現在のシーンにする
     //    break;
