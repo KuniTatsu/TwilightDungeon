@@ -10,6 +10,7 @@
 #include<time.h>
 #include"Player.h"
 #include"Camera.h"
+#include"ResourcesManager.h"
 #include"Actor/Enemy.h"
 #include"Actor/Actor.h"
 #include"Item/ItemManager.h"
@@ -216,46 +217,51 @@ void GameManager::initGameManager()
 	// 
 	//debug
 	//SRand(1);
-
-	/*
+	resource = new ResourceManager();
+	resource->LoadResource();
+	
 	camera = new Camera();
 
-	
+	CreateDungeon(Dungeon::FOREST);
 
-	map = new Map(MAPWIDTH, MAPHEIGHT);
+	//map = new Map(MAPWIDTH, MAPHEIGHT);
+	//ここにCampシーンから入ってきたどのダンジョンかを入れる
+	/*
+	CreateMap(Dungeon::TOWER);
 
 	map->DivideStart(MAPWIDTH, MAPHEIGHT, map);
-
 	//階段のマップ座標の取得
 	t2k::Vector3 stairsPos = SetStartPos(setStartPosType::STAIR);
 	//階段設置
 	map->SetChip(stairsPos.x, stairsPos.y, map->STAIRS);
+	*/
 
-	
-
+	//loadDivGraphのindex取得
 	LoadMaxIndex();
+	
 	//playerのactidは0
-	player = std::make_shared<Player>(SetStartPos(setStartPosType::PLAYER), 100.0f, 30, 30, 30, 0);
-	map->player = player;
-
+	//MakePlayer(SpawnScene::Dungeon);
+	//player = std::make_shared<Player>(SetStartPos(setStartPosType::PLAYER), 100.0f, 30, 30, 30, 0);
+	//map->player = player;
+	SceneManager::ChangeScene(SceneManager::SCENE::CAMP);
 	camera->cameraPos = player->pos - WINDOWCENTER;
 	iManager = new ItemManager();
 
 	haveItem = new HaveItem();
 	inventory = new Inventory(0);
 	inventories.emplace_back(inventory);
-	
-	
+
+
 	//shared_inventory = std::make_shared<Inventory>(0);
 	//sharedInventories.emplace_back(shared_inventory);
-	
+
 
 	sound = new Sound();
 	fControl = new FadeControl();
 
-	*/
+	
 	deitatime_ = 0;
-	SceneManager::ChangeScene(SceneManager::SCENE::CAMP);
+	
 }
 
 
@@ -535,6 +541,10 @@ std::shared_ptr<Player> GameManager::GetPlayer()
 {
 	return player;
 }
+t2k::Vector3 GameManager::GetPlayerLocalPos()
+{
+	return player->GetPlayerLocalPos();
+}
 int GameManager::GetItemNum()
 {
 	return itemNum;
@@ -565,27 +575,15 @@ void GameManager::ReCreate()
 {
 	delete map;
 	map = nullptr;
-	//playerをnewするのはやめる
-	/*
-	delete player;
-	player = nullptr;
-	*/
+
 	wayPoint.clear();
 
-	map = new Map(MAPWIDTH, MAPHEIGHT);
-	map->DivideStart(MAPWIDTH, MAPHEIGHT, map);
+	CreateDungeon(nowDungeon);
 
-	//階段のマップ座標の取得
-	t2k::Vector3 stairsPos = SetStartPos(setStartPosType::STAIR);
-	//階段設置
-	map->SetChip(stairsPos.x, stairsPos.y, map->STAIRS);
-
-	/*for (int i = 0; i < map->sumRoomNum; ++i) {
-		CheckRoomWayPoint(i);
-	}*/
+	
 	player->pos = SetStartPos(setStartPosType::PLAYER);
 	map->player = player;
-	//player = new Player(SetStartPos(0), 100, 10, 10, 10);
+	
 	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
 }
 
@@ -608,6 +606,42 @@ void GameManager::MapDraw()
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
 	map->MiniMapDraw();
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+}
+void GameManager::CreateDungeon(Dungeon dungeonName) {
+
+	nowDungeon = dungeonName;
+	CreateMap(dungeonName);
+	//マップ自動生成
+	map->DivideStart(MAPWIDTH, MAPHEIGHT, map);
+	//階段のマップ座標の取得
+	t2k::Vector3 stairsPos = SetStartPos(setStartPosType::STAIR);
+	//階段設置
+	map->SetChip(stairsPos.x, stairsPos.y, map->STAIRS);
+
+}
+void GameManager::CreateMap(Dungeon dungeonName)
+{
+	std::vector<int> handles = GetGraphicHandles(dungeonName);
+	map = new Map(MAPWIDTH, MAPHEIGHT,handles);
+
+}
+
+void GameManager::MakePlayer(SpawnScene nowScene)
+{
+	if (nowScene == SpawnScene::Camp) {
+		player = std::make_shared<Player>(SpawnPlayerCamp(), 100.0f, 30, 30, 30, 0);
+		map->player = player;
+	}
+	else if (nowScene == SpawnScene::Dungeon) {
+		player = std::make_shared<Player>(SetStartPos(setStartPosType::PLAYER), 100.0f, 30, 30, 30, 0);
+		map->player = player;
+	}
+}
+
+std::vector<int>& GameManager::GetGraphicHandles(Dungeon dungeonName)
+{
+	//ダンジョンネームに対応する画像ハンドルの2次元配列から画像ハンドル配列を取得する
+	return resource->dungeonMapChipGh[static_cast<uint32_t>(dungeonName)];
 }
 
 int GameManager::GetMapChip(t2k::Vector3 PInChip)

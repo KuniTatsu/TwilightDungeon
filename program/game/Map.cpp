@@ -8,32 +8,35 @@ using namespace std;
 
 extern GameManager* gManager;
 
-Map::Map(int Width, int Height)
+Map::Map(int Width, int Height, std::vector<int>Handles)
 {
 
-	//kabe,ue,migi,shita,hidari,kabe,kabe,kabe,kabe
-	mapChip[0] = gManager->LoadGraphEx("graphics/floor.png");//床
-	mapChip[1] = gManager->LoadGraphEx("graphics/Wall.png");//ただの壁
-	mapChip[2] = gManager->LoadGraphEx("graphics/Stairs_.png");//階段
+	//mapChip[0] = gManager->LoadGraphEx("graphics/floor.png");//床
+	//mapChip[1] = gManager->LoadGraphEx("graphics/Wall.png");//ただの壁
+	
+	floor = Handles[0];//床
+	wall = Handles[1];//ただの壁
 
-	ue = gManager->LoadGraphEx("graphics/Wall_top.png");//top
-	shita = gManager->LoadGraphEx("graphics/Wall_bottom.png");//bottom
-	hidari = gManager->LoadGraphEx("graphics/Wall_leftside.png");//left
-	migi = gManager->LoadGraphEx("graphics/Wall_rightside.png");//right
 
-	autoTileChip[0] = mapChip[1];
+	ue = Handles[2];//top
+	shita = Handles[3];//bottom
+	hidari = Handles[4];//left
+	migi = Handles[5];//right
+
+	//オートタイル用配列
+	autoTileChip[0] = wall;
 	autoTileChip[1] = ue;
 	autoTileChip[2] = migi;
 	autoTileChip[3] = shita;
 	autoTileChip[4] = hidari;
-	autoTileChip[5] = mapChip[1];
-	autoTileChip[6] = mapChip[1];
-	autoTileChip[7] = mapChip[1];
-	autoTileChip[8] = mapChip[1];
+	autoTileChip[5] = wall;
+	autoTileChip[6] = wall;
+	autoTileChip[7] = wall;
+	autoTileChip[8] = wall;
+	//
+	stair= gManager->LoadGraphEx("graphics/Stairs_.png");//階段
 
 	voidGh = gManager->LoadGraphEx("graphics/void.png");
-
-	//mapChip[7] = gManager->LoadGraphEx("graphics/EXPASSWAY.png");//debug
 
 	miniMapChip[0] = gManager->LoadGraphEx("graphics/mini_PassWay.png");
 	miniMapChip[1] = gManager->LoadGraphEx("graphics/mini_Stair.png");
@@ -180,8 +183,8 @@ void Map::MapDraw()
 				int iti = CheckAroundWay(i, k);
 				DrawRotaGraph(k * SIZE - gManager->camera->cameraPos.x, i * SIZE - gManager->camera->cameraPos.y, gManager->graphEx, 0, autoTileChip[iti], false);
 			}
-			else if (ground[i][k] == PASSWAY)DrawRotaGraph(k * SIZE - gManager->camera->cameraPos.x, i * SIZE - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[0], false);
-			else if (ground[i][k] == STAIRS)DrawRotaGraph(k * SIZE - gManager->camera->cameraPos.x, i * SIZE - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[2], false);
+			else if (ground[i][k] == PASSWAY)DrawRotaGraph(k * SIZE - gManager->camera->cameraPos.x, i * SIZE - gManager->camera->cameraPos.y, gManager->graphEx, 0, floor, false);
+			else if (ground[i][k] == STAIRS)DrawRotaGraph(k * SIZE - gManager->camera->cameraPos.x, i * SIZE - gManager->camera->cameraPos.y, gManager->graphEx, 0,stair, false);
 			//else if (ground[i][k] == EXPASSWAY)DrawRotaGraph(k * SIZE - gManager->camera->cameraPos.x, i * SIZE - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[3], false);
 
 		}
@@ -508,7 +511,7 @@ void Map::CreateRoom()
 
 		int roomLeft = gManager->GetRandEx(left, right - roomMinWidth + 2);
 		int roomRight = gManager->GetRandEx(roomLeft + roomMinWidth - 2, right);
-		int roomUp = gManager->GetRandEx(up+2, down - roomMinHeight + 2);
+		int roomUp = gManager->GetRandEx(up + 2, down - roomMinHeight + 2);
 		int roomDown = gManager->GetRandEx(roomUp + roomMinHeight - 2, down);
 
 		SetDivideRoom(roomLeft, roomUp, roomRight, roomDown, id);

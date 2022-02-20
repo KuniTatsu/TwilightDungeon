@@ -34,6 +34,7 @@ Player::Player(const t2k::Vector3& StartPos, float Hp, int Atack, int Defence, i
 	nowHp = hp;
 	nowHpVarWidth = nowHp / hp;
 	maxMotionIndex = gManager->GetMaxIndex(GameManager::index::PLAYER);
+	playerInMap = gManager->WorldToLocal(pos);
 }
 
 Player::~Player()
@@ -52,9 +53,9 @@ Player::~Player()
 
 void Player::ChangeBaseStatus(int ManpukuMove, int HpMove)
 {
-	manpuku += ManpukuMove;
-	if (manpuku < 0)manpuku = 0;
-	else if (manpuku > 100)manpuku = 100;
+	manPuku += ManpukuMove;
+	if (manPuku < 0)manPuku = 0;
+	else if (manPuku > 100)manPuku = 100;
 
 	TakeHpEffect(HpMove);
 
@@ -213,6 +214,33 @@ bool Player::Move()
 	return false;
 }
 
+void Player::TownMove(dir nextDir)
+{	
+	playerInMap = gManager->WorldToLocal(pos);
+	mydir = nextDir;
+	//MoveToDir(nextDir, playerInMap);
+	t2k::Vector3 nextPos = gManager->GetMultipleVector(nextDir, 20);
+	pos.x += nextPos.x;
+	pos.y += nextPos.y;
+
+	/*if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_LEFT)) {
+		mydir = Actor::LEFT;
+		
+	}
+	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_UP)) {
+		mydir = Actor::UP;
+		
+	}
+	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RIGHT)) {
+		mydir = Actor::RIGHT;
+		
+	}
+	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_DOWN)) {
+		mydir = Actor::DOWN;
+		
+	}*/
+}
+
 
 /*
 void Player::Draw()
@@ -339,7 +367,7 @@ void Player::DrawPlayerStatus()
 		}
 	}
 
-	DrawStringEx(20, 130, -1, "経験値:%d/%d", nowExp,nextLevelExp);
+	DrawStringEx(20, 130, -1, "経験値:%d/%d", nowExp, nextLevelExp);
 
 }
 

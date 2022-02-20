@@ -26,8 +26,12 @@ public:
 	//装備によるステータス上昇値を獲得する関数
 	void GetSumStatusFromEquipment();
 
+	inline t2k::Vector3 GetPlayerLocalPos() {
+		return playerInMap;
+	}
 
 	bool Move()override;
+	void TownMove(dir nextDir);
 
 	//void Draw()override;
 	void HpVarDraw();
@@ -39,9 +43,9 @@ public:
 	void DrawPlayerStatus();
 private:
 
-	int p_gh = 0;
+	t2k::Vector3 playerInMap;
 
-	int manpuku = 100;
+	int manPuku = 100;
 
 	int nowExp = 0;
 	int nextLevelExp = 100;
@@ -61,12 +65,12 @@ private:
 	bool right = false;
 	bool down = false;
 
-	enum Dir {
+	/*enum Dir {
 		LEFT,
 		UP,
 		RIGHT,
 		DOWN
-	};
+	};*/
 
 	void DashToDir(const int dir, const t2k::Vector3 mapPos);
 	void MoveToDir(const int dir, const t2k::Vector3 mapPos);

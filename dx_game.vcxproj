@@ -30,6 +30,7 @@
     <ClCompile Include="program\game\MapManager.cpp" />
     <ClCompile Include="program\game\MenuWindow.cpp" />
     <ClCompile Include="program\game\Player.cpp" />
+    <ClCompile Include="program\game\ResourcesManager.cpp" />
     <ClCompile Include="program\game\SceneManager.cpp" />
     <ClCompile Include="program\game\SoundManager.cpp" />
     <ClCompile Include="program\game\TitleScene.cpp" />
@@ -71,6 +72,7 @@
     <ClInclude Include="program\game\MapManager.h" />
     <ClInclude Include="program\game\MenuWindow.h" />
     <ClInclude Include="program\game\Player.h" />
+    <ClInclude Include="program\game\ResourcesManager.h" />
     <ClInclude Include="program\game\Scene.h" />
     <ClInclude Include="program\game\SceneManager.h" />
     <ClInclude Include="program\game\SoundManager.h" />

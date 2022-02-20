@@ -20,6 +20,7 @@ extern GameManager* gManager;
 DungeonScene::DungeonScene()
 {
 	alfa = gManager->LoadGraphEx("graphics/old/test.png");
+
 	nextLevelWindow = new Menu(300, 300, 300, 200, "graphics/WindowBase_01.png");
 	menuOpen = new Menu(20, 20, 100, 100, "graphics/WindowBase_01.png");
 	inventory = new Menu(255, 50, 420, 340, "graphics/WindowBase_01.png");

@@ -19,6 +19,7 @@ class ItemManager;
 class HaveItem;
 class Inventory;
 class Actor;
+class ResourceManager;
 
 class GameManager {
 
@@ -37,12 +38,25 @@ public:
 	ItemManager* iManager = nullptr;
 	HaveItem* haveItem = nullptr;
 	Inventory* inventory = nullptr;
+	ResourceManager* resource = nullptr;
 
 	//std::shared_ptr<Inventory>shared_inventory;
 
 	//debug
 	bool minimapDraw = true;
 	//
+
+	//マップチップの一枚の大きさ
+	const int GRAPHICSIZE = 20;
+	float nowGraphicSize = GRAPHICSIZE;
+
+	double graphEx = 1;
+
+	//マップの幅(チップ数)
+	const int MAPWIDTH = 60;//default:50
+	//マップの縦幅
+	const int MAPHEIGHT = 48;//default:36
+
 
 	//LoadDivGraphのMaxIndexデータ attack,player,enemy
 	std::vector<std::vector<std::string>>maxIndex;
@@ -56,7 +70,7 @@ public:
 	};
 
 	inline const int& GetMaxIndex(index IndexName) {
-		std::string hoge = maxIndex[static_cast<uint32_t>(IndexName)][1].c_str();
+		//std::string hoge = maxIndex[static_cast<uint32_t>(IndexName)][1].c_str();
 		return std::atoi(maxIndex[static_cast<uint32_t>(IndexName)][1].c_str());
 	}
 
@@ -74,16 +88,7 @@ public:
 	//インベントリからアイテムを削除する関数
 	void PopItemFromInventory(const int NowInventoryId);
 
-	//マップチップの一枚の大きさ
-	const int GRAPHICSIZE = 20;
-	float nowGraphicSize = GRAPHICSIZE;
 
-	double graphEx = 1;
-
-	//マップの幅(チップ数)
-	const int MAPWIDTH = 60;//default:50
-	//マップの縦幅
-	const int MAPHEIGHT = 48;//default:36
 
 	//一度読み込んだghを保存するmap
 	std::unordered_map<std::string, int> ghmap;
@@ -102,6 +107,33 @@ public:
 
 	void Update();
 	void Draw();
+
+	enum class SpawnScene {
+		Camp,
+		Dungeon
+	};
+
+	//プレイヤーの生成
+	void MakePlayer(SpawnScene nowScene); 
+
+	
+
+	enum class Dungeon {
+		TOWER,
+		FOREST,
+		WATERWAY,
+		DUNGEONMAX
+	};
+	Dungeon nowDungeon;
+
+	//ダンジョンマップ内で使う画像ハンドルの取得
+	std::vector<int>& GetGraphicHandles(Dungeon dungeonName);
+	//ダンジョンの生成
+	void CreateDungeon(Dungeon dungeonName);
+
+	//ダンジョンマップの生成
+	void CreateMap(Dungeon dungeonName);
+
 	//マップの描画
 	void MapDraw();
 
@@ -147,6 +179,13 @@ public:
 	//マップ内のランダムな部屋を取得→部屋の中のランダムな座標を取得→座標を描画座標に変換して返す
 	//setType 0:プレイヤー初期座標,1:階段,2:enemy
 	t2k::Vector3 SetStartPos(setStartPosType num);
+
+	const t2k::Vector3 spawnPos = { 360,300,0 };
+
+	//campの特定の座標にプレイヤーを設置
+	inline const t2k::Vector3& SpawnPlayerCamp() {
+		return spawnPos;
+	}
 
 
 	//部屋番号ごとの通路の座標を格納するvector
@@ -207,8 +246,9 @@ public:
 	int playerRoomNum = 0;
 
 	void setPlayerRoomNum(const int roomNum);
-
+	//プレイヤーの取得
 	std::shared_ptr<Player> GetPlayer();
+	t2k::Vector3 GetPlayerLocalPos();
 
 	//短形とのマウスクリック感知
 	bool CheckMousePointToRect(const int MouseX, const int MouseY, const int RectLeftTopX, const  int RectWidth, const int RectTopY, const int RectHeight);

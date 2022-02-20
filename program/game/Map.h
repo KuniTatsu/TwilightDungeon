@@ -13,7 +13,7 @@ class Map {
 
 public:
 	//マップ情報の初期化(すべてを壁にする)
-	Map(const int Width, const int Height);
+	Map(const int Width, const int Height, std::vector<int>Handles);
 
 	//マップの背景
 	std::vector<std::vector<int>> ground;
@@ -124,7 +124,9 @@ private:
 	const int OUTOFRANGE = -1;
 
 	//マップチップ
-	int mapChip[3] = {};
+	int wall = 0;
+	int floor = 0;
+	int stair = 0;
 
 	//オートタイル用列挙体
 	enum graphicPattern
