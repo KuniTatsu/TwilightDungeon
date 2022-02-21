@@ -37,6 +37,8 @@ public:
 	void MoveLevel(const int addLevel);
 
 private:
+	bool firstIn = true;
+
 	//階層
 	int dungeonLevel = 1;
 
@@ -100,7 +102,7 @@ private:
 	t2k::Vector3 playerPos = {};
 
 	t2k::Sequence<DungeonScene*> mainSequence =
-		t2k::Sequence<DungeonScene*>(this, &DungeonScene::SeqFadeIn);
+		t2k::Sequence<DungeonScene*>(this, &DungeonScene::SeqDescFade);
 
 	//プレイヤー動作シークエンス
 	bool SeqMain(const float deltatime);
@@ -124,6 +126,8 @@ private:
 	bool SeqFadeIn(const float deltatime);
 	//フェードアウトシークエンス
 	bool SeqFadeOut(const float deltatime);
+	//エリア移動時の文字フェードシークエンス
+	bool SeqDescFade(const float deltatime);
 
 	//debug
 	bool SeqCameraMove(const float deltatime);
@@ -140,11 +144,31 @@ private:
 		ANIMATION,
 		FADEIN,
 		FADEOUT,
+		FADEDESC,
 		CAMERA
 
 	};
-	sequence nowSeq = sequence::MAIN;
-	sequence lastSeq = sequence::MAIN;
+	sequence nowSeq = sequence::FADEDESC;
+	sequence lastSeq = sequence::FADEDESC;
+
+	enum class DescType {
+		DUNGEONIN,
+		MOVELEVEL
+
+	};
+
+	//毎秒デルタタイムを足す
+	float descFadeCount = 0;
+	//文字を描画する時間
+	const float DESCFADETIME = 5;
+	//今のダンジョン文字列
+	std::string nowDungeonName = "";
+
+
+
+	//fadeDescシークエンスで文字を描画する関数
+	void DrawFadeDesc();
+
 
 	//Sequenceを移動させる関数,enumも一緒に変更する
 	void ChangeSequence(const sequence seq);

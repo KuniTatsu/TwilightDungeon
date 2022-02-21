@@ -127,47 +127,35 @@ void DungeonScene::Update()
 
 void DungeonScene::Draw()
 {
-	gManager->MapDraw();
+	//階層間のフェード中でなければ描画する
+	if (nowSeq != sequence::FADEDESC) {
+		gManager->MapDraw();
 
-	DrawPopItem();
-	gManager->player->Draw();
-	gManager->player->HpVarDraw();
+		DrawPopItem();
+		gManager->player->Draw();
+		gManager->player->HpVarDraw();
 
-	for (auto hoge : eManager->liveEnemyList) {
-		hoge->Draw();
+		for (auto hoge : eManager->liveEnemyList) {
+			hoge->Draw();
+		}
+
+		if (gManager->isDebug) {
+			DrawStringEx(100, 280, -1, "現在の階層:%d", dungeonLevel);
+
+			DrawStringEx(100, 300, -1, "PlayerMapChipX:%d", (int)playerPos.x);
+			DrawStringEx(100, 320, -1, "PlayerMapChipY:%d", (int)playerPos.y);
+			DrawEnemyData();
+		}
+		if (gManager->GetMapChip(playerPos) == 3) {
+			nextLevelWindow->Menu_Draw();
+			DrawStringEx(nextLevelWindow->menu_x + 10, nextLevelWindow->menu_y + 100, -1, "Enterで次の階へ");
+		}
+
+
+		DrawNowSequence(nowSeq);
+
+		DrawAnimation();
 	}
-
-	if (gManager->isDebug) {
-		DrawStringEx(100, 280, -1, "現在の階層:%d", dungeonLevel);
-
-		DrawStringEx(100, 300, -1, "PlayerMapChipX:%d", (int)playerPos.x);
-		DrawStringEx(100, 320, -1, "PlayerMapChipY:%d", (int)playerPos.y);
-		DrawEnemyData();
-	}
-	if (gManager->GetMapChip(playerPos) == 3) {
-		nextLevelWindow->Menu_Draw();
-		DrawStringEx(nextLevelWindow->menu_x + 10, nextLevelWindow->menu_y + 100, -1, "Enterで次の階へ");
-	}
-	//wayPointDebug
-	//for (auto hoge : gManager->wayPoint) {
-	//	for (auto hage : hoge) {
-	//		int X = (int)hage.x;
-	//		int Y = (int)hage.y;
-	//		DrawCircle(X * gManager->GRAPHICSIZE - gManager->camera->cameraPos.x, Y * gManager->GRAPHICSIZE - gManager->camera->cameraPos.y, 10, -1, true);
-	//	}
-	//}
-	//
-
-	//視界システムテスト
-	/*SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
-	DrawRotaGraph(gManager->player->pos.x - gManager->camera->cameraPos.x, gManager->player->pos.y - gManager->camera->cameraPos.y, 1, 0, alfa, true);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);*/
-
-	//gManager->map->DrawAllRoomPos(gManager->map.)
-
-	DrawNowSequence(nowSeq);
-
-	DrawAnimation();
 
 	//ここから下はシークエンスごとの描画
 
@@ -192,9 +180,12 @@ void DungeonScene::Draw()
 			}
 		}
 	}
-	else if (nowSeq == sequence::ANIMATION) {
-
+	else if (nowSeq == sequence::FADEDESC) {
+		SetFontSize(30);
+		DrawFadeDesc();
+		SetFontSize(16);
 	}
+	if (nowSeq == sequence::FADEDESC)return;
 	log->Menu_Draw();
 	gManager->LogDraw(log->menu_x, log->menu_y);
 
@@ -662,6 +653,35 @@ bool DungeonScene::SeqAnimation(const float deltatime)
 }
 
 
+//階層移動時などに文字を描画するシークエンス
+bool DungeonScene::SeqDescFade(const float deltatime)
+{
+	//文字描画時間が終わるまでフェードアウトを始めない
+	if (descFadeCount < DESCFADETIME) {
+		//***フェードイン処理
+		if (gManager->fControl->doneFade) {
+			gManager->fControl->FadeIn();
+			return true;
+		}
+		//***
+		//文字描画時間の更新
+		descFadeCount += deltatime;
+	}
+	else {
+		//if (descFadeCount < DESCFADETIME)return true;
+
+		if (!gManager->fControl->doneFade) {
+			gManager->fControl->FadeOut();
+			return true;
+		}
+		else {
+			ChangeSequence(sequence::FADEIN);
+			descFadeCount = 0;
+			return true;
+		}
+	}
+	return true;
+}
 
 bool DungeonScene::SeqCameraMove(const float deltatime)
 {
@@ -676,7 +696,22 @@ bool DungeonScene::SeqCameraMove(const float deltatime)
 
 	return true;
 }
+void DungeonScene::DrawFadeDesc() {
 
+
+	if (mainSequence.isStart()) {
+		nowDungeonName = gManager->GetDungeonName(gManager->nowDungeon);
+	}
+	if (firstIn) {
+		DrawStringEx(gManager->WINDOWCENTER.x, gManager->WINDOWCENTER.y, -1, "%s", nowDungeonName.c_str());
+	}
+	else {
+		DrawStringEx(gManager->WINDOWCENTER.x, gManager->WINDOWCENTER.y, -1, "%s", nowDungeonName.c_str());
+		DrawStringEx(gManager->WINDOWCENTER.x, gManager->WINDOWCENTER.y + 50, -1, "%d階", dungeonLevel);
+	}
+
+
+}
 bool DungeonScene::SeqFadeIn(const float deltatime)
 {
 	if (gManager->fControl->doneFade) {
@@ -687,8 +722,6 @@ bool DungeonScene::SeqFadeIn(const float deltatime)
 		ChangeSequence(sequence::MAIN);
 		return true;
 	}
-
-
 	return true;
 }
 
@@ -741,6 +774,9 @@ void DungeonScene::ChangeSequence(sequence seq)
 	}
 	else if (seq == sequence::FADEOUT) {
 		mainSequence.change(&DungeonScene::SeqFadeOut);
+	}
+	else if (seq == sequence::FADEDESC) {
+		mainSequence.change(&DungeonScene::SeqDescFade);
 	}
 	else if (seq == sequence::CAMERA) {
 		mainSequence.change(&DungeonScene::SeqCameraMove);

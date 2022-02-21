@@ -51,6 +51,8 @@ public:
 	float nowGraphicSize = GRAPHICSIZE;
 
 	double graphEx = 1;
+	//画面中心
+	const t2k::Vector3 WINDOWCENTER = t2k::Vector3(512, 384, 0);
 
 	//マップの幅(チップ数)
 	const int MAPWIDTH = 60;//default:50
@@ -114,11 +116,11 @@ public:
 	};
 
 	//プレイヤーの生成
-	void MakePlayer(SpawnScene nowScene); 
+	void MakePlayer(SpawnScene nowScene);
 
-	
 
-	enum class Dungeon {
+
+	enum class Dungeon : uint32_t {
 		TOWER,
 		FOREST,
 		WATERWAY,
@@ -126,6 +128,12 @@ public:
 	};
 	Dungeon nowDungeon;
 
+	const std::string DUNGEONNAME[3] = { "塔のダンジョン","森のダンジョン","灼熱のダンジョン" };
+
+	inline std::string GetDungeonName(Dungeon dungeonEnum) {
+		//if (dungeonEnum > Dungeon::DUNGEONMAX)return "範囲外";
+		return DUNGEONNAME[static_cast<uint32_t>(dungeonEnum)];
+	}
 	//ダンジョンマップ内で使う画像ハンドルの取得
 	std::vector<int>& GetGraphicHandles(Dungeon dungeonName);
 	//ダンジョンの生成
@@ -170,9 +178,9 @@ public:
 	void CameraReset();
 
 	//カメラの移動
-	void CameraMove(int width,int height,int dir);
+	void CameraMove(int width, int height, int dir);
 
-	
+
 
 
 	enum class setStartPosType {
@@ -304,8 +312,6 @@ public:
 
 private:
 	std::string Log[7] = {};
-
-	const t2k::Vector3 WINDOWCENTER = t2k::Vector3(512, 384, 0);
 
 	int test = 0;
 	//アイテムの総数
