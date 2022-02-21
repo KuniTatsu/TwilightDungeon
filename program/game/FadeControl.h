@@ -18,7 +18,7 @@ public:
 	//‰æ–Ê‚ğ™X‚Éo‚·ŠÖ”
 	void FadeIn();
 	//true‚Í^‚ÁˆÃ,false‚Í–¾‚é‚¢
-	bool doneFade = true;
+	bool doneFade = false;
 
 
 private:
@@ -27,9 +27,9 @@ private:
 	const int FADESPEED = 5;
 	const int FADEINSPEED = 4;
 
-	int screenFade = 0;
-
-
+	//int screenFade = 0;
+	//debug
+	int screenFade = 255;
 
 
 

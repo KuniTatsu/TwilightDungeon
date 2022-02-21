@@ -12,6 +12,7 @@
 #include"Item/equipItem.h"
 #include"Item/Inventory.h"
 #include"Animation.h"
+#include"FadeControl.h"
 
 using namespace std;
 
@@ -192,7 +193,7 @@ void DungeonScene::Draw()
 		}
 	}
 	else if (nowSeq == sequence::ANIMATION) {
-		
+
 	}
 	log->Menu_Draw();
 	gManager->LogDraw(log->menu_x, log->menu_y);
@@ -319,6 +320,7 @@ bool DungeonScene::SeqMain(const float deltatime)
 
 		if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
 			MoveLevel(1);
+			ChangeSequence(sequence::FADEOUT);
 			return true;
 		}
 	}
@@ -622,7 +624,7 @@ bool DungeonScene::SeqThrowItemMove(const float deltatime)
 	return true;
 }
 
-bool DungeonScene::SeqAnimationFirst(const float deltatime)
+bool DungeonScene::SeqAnimation(const float deltatime)
 {
 	//アニメーションさせる関数を実行する
 	//アニメーションが終わり次第誰から呼ばれたかを確認してシークエンスを移動する
@@ -659,10 +661,7 @@ bool DungeonScene::SeqAnimationFirst(const float deltatime)
 	return true;
 }
 
-bool DungeonScene::SeqAnimationSecond(const float deltatime)
-{
-	return false;
-}
+
 
 bool DungeonScene::SeqCameraMove(const float deltatime)
 {
@@ -675,6 +674,34 @@ bool DungeonScene::SeqCameraMove(const float deltatime)
 		return true;
 	}
 
+	return true;
+}
+
+bool DungeonScene::SeqFadeIn(const float deltatime)
+{
+	if (gManager->fControl->doneFade) {
+		gManager->fControl->FadeIn();
+		return true;
+	}
+	else {
+		ChangeSequence(sequence::MAIN);
+		return true;
+	}
+
+
+	return true;
+}
+
+bool DungeonScene::SeqFadeOut(const float deltatime)
+{
+	if (!gManager->fControl->doneFade) {
+		gManager->fControl->FadeOut();
+		return true;
+	}
+	else {
+		ChangeSequence(sequence::FADEIN);
+		return true;
+	}
 	return true;
 }
 
@@ -707,7 +734,13 @@ void DungeonScene::ChangeSequence(sequence seq)
 		mainSequence.change(&DungeonScene::SeqThrowItemMove);
 	}
 	else if (seq == sequence::ANIMATION) {
-		mainSequence.change(&DungeonScene::SeqAnimationFirst);
+		mainSequence.change(&DungeonScene::SeqAnimation);
+	}
+	else if (seq == sequence::FADEIN) {
+		mainSequence.change(&DungeonScene::SeqFadeIn);
+	}
+	else if (seq == sequence::FADEOUT) {
+		mainSequence.change(&DungeonScene::SeqFadeOut);
 	}
 	else if (seq == sequence::CAMERA) {
 		mainSequence.change(&DungeonScene::SeqCameraMove);

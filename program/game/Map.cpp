@@ -45,6 +45,7 @@ Map::Map(int Width, int Height, std::vector<int>Handles)
 	width = Width;
 	height = Height;
 
+
 	//c‚Ì‰Šú‰»
 	ground.resize(height);
 	for (auto v : ground)v.resize(width);

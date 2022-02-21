@@ -224,18 +224,6 @@ void GameManager::initGameManager()
 
 	CreateDungeon(Dungeon::FOREST);
 
-	//map = new Map(MAPWIDTH, MAPHEIGHT);
-	//ここにCampシーンから入ってきたどのダンジョンかを入れる
-	/*
-	CreateMap(Dungeon::TOWER);
-
-	map->DivideStart(MAPWIDTH, MAPHEIGHT, map);
-	//階段のマップ座標の取得
-	t2k::Vector3 stairsPos = SetStartPos(setStartPosType::STAIR);
-	//階段設置
-	map->SetChip(stairsPos.x, stairsPos.y, map->STAIRS);
-	*/
-
 	//loadDivGraphのindex取得
 	LoadMaxIndex();
 
@@ -245,9 +233,9 @@ void GameManager::initGameManager()
 	inventory = new Inventory(0);
 	inventories.emplace_back(inventory);
 
-	SceneManager::ChangeScene(SceneManager::SCENE::DUNGEON);
+	SceneManager::ChangeScene(SceneManager::SCENE::CAMP);
 	camera->cameraPos = player->pos - WINDOWCENTER;
-	
+
 
 	//shared_inventory = std::make_shared<Inventory>(0);
 	//sharedInventories.emplace_back(shared_inventory);
@@ -606,6 +594,8 @@ void GameManager::MapDraw()
 }
 void GameManager::CreateDungeon(Dungeon dungeonName) {
 
+	if (map != nullptr)delete map;
+
 	nowDungeon = dungeonName;
 	CreateMap(dungeonName);
 	//マップ自動生成
@@ -615,6 +605,12 @@ void GameManager::CreateDungeon(Dungeon dungeonName) {
 	//階段設置
 	map->SetChip(stairsPos.x, stairsPos.y, map->STAIRS);
 
+	if (player == nullptr)return;
+	//ダンジョン内のランダムな位置にプレイヤーを移動
+	player->pos = SetStartPos(setStartPosType::PLAYER);
+	CameraReset();
+
+	map->player = player;
 }
 void GameManager::CreateMap(Dungeon dungeonName)
 {
@@ -625,9 +621,10 @@ void GameManager::CreateMap(Dungeon dungeonName)
 
 void GameManager::MakePlayer(SpawnScene nowScene)
 {
+	if (player != nullptr)return;
 	if (nowScene == SpawnScene::Camp) {
 		player = std::make_shared<Player>(SpawnPlayerCamp(), 100.0f, 30, 30, 30, 0);
-		map->player = player;
+		//map->player = player;
 	}
 	else if (nowScene == SpawnScene::Dungeon) {
 		player = std::make_shared<Player>(SetStartPos(setStartPosType::PLAYER), 100.0f, 30, 30, 30, 0);
@@ -664,10 +661,10 @@ void GameManager::CameraMove(int width, int height, int dir)
 	//	if (player->pos.x+ width / 2 > width)return;
 	//	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
 	//	//camera->cameraPos = player->pos - GetMultipleVector(dir, 20);
-	if (player->pos.x > 1024 / 2 && player->pos.x < width - 1024 / 2 ) {
+	if (player->pos.x > 1024 / 2 && player->pos.x < width - 1024 / 2) {
 		camera->cameraPos.x = player->pos.x - (1024 / 2);
 	}
-	if (player->pos.y > 768 / 2 && player->pos.y < height - 768 / 2 ) {
+	if (player->pos.y > 768 / 2 && player->pos.y < height - 768 / 2) {
 		camera->cameraPos.y = player->pos.y - (768 / 2);
 	}
 }

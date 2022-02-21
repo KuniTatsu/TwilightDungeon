@@ -43,6 +43,8 @@ private:
 
 	MenuWindow* dungeonIn = nullptr;
 
+	bool nowFade = false;
+
 	//mapchip_night_20.png‚Ì“Ç‚İ‚İ ‰¡xc=30x20
 	int campGraphic[600];
 	//‰æ‘œƒnƒ“ƒhƒ‹æ“¾ŠÖ”

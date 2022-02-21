@@ -100,7 +100,7 @@ private:
 	t2k::Vector3 playerPos = {};
 
 	t2k::Sequence<DungeonScene*> mainSequence =
-		t2k::Sequence<DungeonScene*>(this, &DungeonScene::SeqMain);
+		t2k::Sequence<DungeonScene*>(this, &DungeonScene::SeqFadeIn);
 
 	//プレイヤー動作シークエンス
 	bool SeqMain(const float deltatime);
@@ -118,10 +118,12 @@ private:
 	bool SeqInventoryUse(const float deltatime);
 	//物が飛んでいるシークエンス
 	bool SeqThrowItemMove(const float deltatime);
-	//アニメーションシークエンス(前半)
-	bool SeqAnimationFirst(const float deltatime);
-	//アニメーションシークエンス(後半)
-	bool SeqAnimationSecond(const float deltatime);
+	//アニメーションシークエンス
+	bool SeqAnimation(const float deltatime);
+	//フェードインシークエンス
+	bool SeqFadeIn(const float deltatime);
+	//フェードアウトシークエンス
+	bool SeqFadeOut(const float deltatime);
 
 	//debug
 	bool SeqCameraMove(const float deltatime);
@@ -136,6 +138,8 @@ private:
 		INVENTORY_USE,
 		THROWITEMMOVE,
 		ANIMATION,
+		FADEIN,
+		FADEOUT,
 		CAMERA
 
 	};

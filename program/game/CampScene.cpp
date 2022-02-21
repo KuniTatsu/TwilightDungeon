@@ -4,6 +4,8 @@
 #include"Player.h"
 #include"Camera.h"
 #include"MenuWindow.h"
+#include"FadeControl.h"
+#include"SceneManager.h"
 #include"../support/Support.h"
 
 using namespace std;
@@ -18,12 +20,12 @@ CampScene::CampScene()
 	LoadDivGraph("graphics/mapchip_night_20.png", 480, 30, 16, 20, 20, campGraphic);
 	gManager->MakePlayer(GameManager::SpawnScene::Camp);
 	player = gManager->GetPlayer();
-	
-		MenuWindow::MenuElement_t * menu_usable = new MenuWindow::MenuElement_t[]{
-		{650,480,"ダンジョンに入る",0},
-		{650,510,"やめる",1}
+
+	MenuWindow::MenuElement_t* menu_usable = new MenuWindow::MenuElement_t[]{
+	{650,480,"ダンジョンに入る",0},
+	{650,510,"やめる",1}
 	};
-		dungeonIn = new MenuWindow(640, 440, 150, 100, "graphics/WindowBase_02.png", menu_usable, 2, 0.35);
+	dungeonIn = new MenuWindow(640, 440, 150, 100, "graphics/WindowBase_02.png", menu_usable, 2, 0.35);
 }
 
 CampScene::~CampScene()
@@ -32,8 +34,28 @@ CampScene::~CampScene()
 
 void CampScene::Update()
 {
+	//現在のシークエンスの処理
 	mainSequence.update(gManager->deitatime_);
 
+	//フェードが完了するまでフェードアウトを実行
+	if (nowFade) {
+		gManager->fControl->FadeOut();
+	}
+	//ゲームの開始処理
+	//フェードが完了したらDungeonSceneへ飛ばす
+	if (!gManager->fControl->doneFade)return;
+
+	t2k::debugTrace("\nダンジョンに入場します\n");
+
+	//int型をGameManager::Dungeon型にキャスト
+	GameManager::Dungeon dungeonName = static_cast<GameManager::Dungeon>(selectDungeon);
+
+	//ダンジョンの自動生成
+	gManager->CreateDungeon(dungeonName);
+
+	
+	SceneManager::ChangeScene(SceneManager::SCENE::DUNGEON);
+	return;
 
 }
 
@@ -46,7 +68,7 @@ void CampScene::Draw()
 	player->Draw();
 	if (nowSeq == sequence::DUNGEONIN) {
 		dungeonIn->All();
-		DrawStringEx(650, 450, GetColor(0,0,0), "%s", DUNGEONNAME[selectDungeon].c_str());
+		DrawStringEx(650, 450, GetColor(0, 0, 0), "%s", DUNGEONNAME[selectDungeon].c_str());
 	}
 }
 int CampScene::GetGraphicHandle(int num)
@@ -54,7 +76,7 @@ int CampScene::GetGraphicHandle(int num)
 	return campGraphic[num];
 }
 //Csvフォルダの中の特定のマップをロードする関数
-void CampScene::LoadMap(string fileName, vector<vector<string>>& stringData,vector<vector<int>>& intData)
+void CampScene::LoadMap(string fileName, vector<vector<string>>& stringData, vector<vector<int>>& intData)
 {
 	stringData = t2k::loadCsv(fileName);
 
@@ -89,7 +111,7 @@ bool CampScene::SeqMain(const float deltatime)
 {
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
 		//469だったらシークエンスを移動する
-		if (GetSurfaceGraphicNum(gManager->WorldToLocal(player->pos).x, gManager->WorldToLocal(player->pos).y -1) == 469) {
+		if (GetSurfaceGraphicNum(gManager->WorldToLocal(player->pos).x, gManager->WorldToLocal(player->pos).y - 1) == 469) {
 			for (int i = 0; i < 5; ++i) {
 				if (GetGraphicNum(gManager->WorldToLocal(player->pos).x, gManager->WorldToLocal(player->pos).y) == PORTALPOINTNUM[i]) {
 					selectDungeon = i;
@@ -159,8 +181,17 @@ bool CampScene::SeqDungeonInMenu(const float deltatime)
 		ChangeSequence(sequence::MAIN);
 		return true;
 	}
+	//入るを選択したら
+	if (dungeonIn->SelectNum == 0 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+		//menuの上下を操作出来なくする
+		dungeonIn->manageSelectFlag = false;
+		//gManager->sound->System_Play(gManager->sound->system_select);
 
-
+		//シーン切り替えフラグをonにする
+		nowFade = true;
+		return true;
+	}
+	//SetStartPos(setStartPosType::PLAYER) playerの位置を更新すること
 
 
 	return true;

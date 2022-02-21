@@ -55,8 +55,7 @@ void TitleScene::Update()
 
 		gManager->sound->System_Play(gManager->sound->system_select);
 		nowFade = true;
-		/*SceneManager::ChangeScene(SceneManager::SCENE::TRAINING);
-		return;*/
+		
 	}
 	if (nowFade) {
 		gManager->fControl->FadeOut();
@@ -68,12 +67,7 @@ void TitleScene::Update()
 	return;
 
 
-	//なにかキーボードを押したらorボタンを押したらゲームが終了する
-	//終了する前に以下の情報を外部ファイルに保存する
-	//現在の在籍キャラクターのステータス
-	//日にちの進捗状況
-	//所持しているカードの日にちとイベント
-	//Daycellのイベントidとgh
+	
 
 
 }
