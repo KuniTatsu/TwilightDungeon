@@ -1,3 +1,7 @@
+///*****Description*****
+///タイトルシーンクラス
+///ゲーム開始時の処理を行う
+///*********************
 #pragma once
 #include"Scene.h"
 
@@ -20,6 +24,7 @@ private:
 	Menu* title_Menu = nullptr;
 
 	bool init = false;
+
 	int title_gh = 0;
 	int enter_gh = 0;
 

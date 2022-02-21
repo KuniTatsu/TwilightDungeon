@@ -20,14 +20,15 @@ extern GameManager* gManager;
 
 DungeonScene::DungeonScene()
 {
-	alfa = gManager->LoadGraphEx("graphics/old/test.png");
+	//alfa = gManager->LoadGraphEx("graphics/old/test.png");
+	EButton = gManager->LoadGraphEx("graphics/button_E.png");
 
 	nextLevelWindow = new Menu(300, 300, 300, 200, "graphics/WindowBase_01.png");
 	menuOpen = new Menu(20, 20, 100, 100, "graphics/WindowBase_01.png");
 	inventory = new Menu(255, 50, 420, 340, "graphics/WindowBase_01.png");
-	log = new Menu(10, 580, 1000, 180, "graphics/WindowBase_01.png");
+	log = new Menu(12, 560, 1000, 200, "graphics/WindowBase_01.png");
 	desc = new Menu(680, 300, 320, 90, "graphics/WindowBase_01.png");
-	playerStatus = new Menu(10, 10, 500, 200, "graphics/WindowBase_01.png");
+	playerStatus = new Menu(512, 560, 500, 200, "graphics/WindowBase_01.png");
 
 	MenuWindow::MenuElement_t* menu_usable = new MenuWindow::MenuElement_t[]{
 		{670,450,"使う",0},
@@ -75,6 +76,16 @@ DungeonScene::DungeonScene()
 
 DungeonScene::~DungeonScene()
 {
+	delete nextLevelWindow;
+	delete menuOpen;
+	//delete inventory;	シーンを変えても所持アイテムのデータは引き継ぎたい　引き継ぎ処理を実装予定:優先度低
+	delete log;
+	delete desc;
+	delete playerStatus;
+	delete use_usable;
+	delete use_equip;
+	delete use_nowEquip;
+	delete firstMenu;
 }
 
 void DungeonScene::RandEnemyCreate(int num)
@@ -135,8 +146,8 @@ void DungeonScene::Draw()
 		gManager->player->Draw();
 		gManager->player->HpVarDraw();
 
-		for (auto hoge : eManager->liveEnemyList) {
-			hoge->Draw();
+		for (auto enemy : eManager->liveEnemyList) {
+			enemy->Draw();
 		}
 
 		if (gManager->isDebug) {
@@ -146,26 +157,36 @@ void DungeonScene::Draw()
 			DrawStringEx(100, 320, -1, "PlayerMapChipY:%d", (int)playerPos.y);
 			DrawEnemyData();
 		}
+		//プレイヤーの位置が階段の上ならウィンドウを表示する
 		if (gManager->GetMapChip(playerPos) == 3) {
 			nextLevelWindow->Menu_Draw();
-			DrawStringEx(nextLevelWindow->menu_x + 10, nextLevelWindow->menu_y + 100, -1, "Enterで次の階へ");
+
+			DrawStringEx(nextLevelWindow->menu_x + 60, nextLevelWindow->menu_y + 60, -1, "階段を見つけた");
+
+			DrawStringEx(nextLevelWindow->menu_x + 60, nextLevelWindow->menu_y + 100, -1, "次の階へ進みますか？");
+
+			DrawStringEx(nextLevelWindow->menu_x + 60, nextLevelWindow->menu_y + 140, -1, "Enterで次の階へ");
+
 		}
-
-
-		DrawNowSequence(nowSeq);
-
+		//アニメーションリストの描画
 		DrawAnimation();
+
+		if (gManager->isDebug) {
+			//今のシークエンス名を表示する
+			DrawNowSequence(nowSeq);
+		}
 	}
-
-
-
 	//ここから下はシークエンスごとの描画
 
 	firstMenu->All();
-	if (nowSeq == sequence::MAIN || nowSeq == sequence::ENEMYACT) {
+	//フェード中以外で描画
+	if (nowSeq == sequence::MAIN || nowSeq == sequence::ENEMYACT || nowSeq == sequence::PLAYERATTACK || nowSeq == sequence::ENEMYATTACK || nowSeq == sequence::ANIMATION) {
 		menuOpen->Menu_Draw();
 		DrawStringEx(menuOpen->menu_x + 10, menuOpen->menu_y + 10, -1, "Menuを開く");
+		DrawStringEx(menuOpen->menu_x + 10, menuOpen->menu_y + menuOpen->menu_height * 5 / 9, -1, "Press");
+		DrawRotaGraph(menuOpen->menu_x + menuOpen->menu_width - 20, menuOpen->menu_y + menuOpen->menu_height * 2 / 3, 1, 0, EButton, false);
 	}
+	//インベントリを開いている時に描画
 	else if (nowSeq == sequence::INVENTORY_OPEN || nowSeq == sequence::INVENTORY_USE) {
 		inventory->Menu_Draw();
 		DrawInventory();
@@ -175,6 +196,7 @@ void DungeonScene::Draw()
 			else if (usetype == NOWEQUIP)use_nowEquip->All();
 		}
 	}
+	//アイテムが投げられ、飛んでいる時に描画
 	else if (nowSeq == sequence::THROWITEMMOVE) {
 		if (!throwedItemList.empty()) {
 			for (auto item : throwedItemList) {
@@ -182,21 +204,21 @@ void DungeonScene::Draw()
 			}
 		}
 	}
+	//フェード中に描画
 	else if (nowSeq == sequence::FADEDESC) {
 		SetFontSize(30);
 		DrawFadeDesc();
 		SetFontSize(16);
 	}
 	if (nowSeq == sequence::FADEDESC)return;
+	//ログの背景描画
 	log->Menu_Draw();
+	//ログの描画
 	gManager->LogDraw(log->menu_x, log->menu_y);
-
-	//debug
-	if (t2k::Input::isKeyDown(t2k::Input::KEYBORD_P)) {
-		playerStatus->Menu_Draw();
-		player->DrawPlayerStatus();
-	}
-
+	//プレイヤーステータス背景の描画
+	playerStatus->Menu_Draw();
+	//プレイヤーステータスの描画
+	player->DrawPlayerStatus(playerStatus->menu_x, playerStatus->menu_y, playerStatus->menu_width, playerStatus->menu_height);
 
 }
 
@@ -643,7 +665,9 @@ bool DungeonScene::SeqAnimation(const float deltatime)
 	}
 	//エネミーの攻撃なら
 	else if (lastSeq == sequence::ENEMYACT) {
-
+		//エネミーのエフェクト座標を取得
+		//アニメーションをnew
+		//描画リストに登録
 
 
 		//もしアニメーションが終わっているなら
@@ -690,7 +714,6 @@ bool DungeonScene::SeqCameraMove(const float deltatime)
 
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_ESCAPE)) {
 		ChangeSequence(sequence::MAIN);
-		//gManager->CameraMove(gManager->MAPWIDTH*20, gManager->MAPHEIGHT * 20,);
 		gManager->CameraReset();
 		return true;
 	}
@@ -703,14 +726,14 @@ void DungeonScene::DrawFadeDesc() {
 	if (mainSequence.isStart()) {
 		nowDungeonName = gManager->GetDungeonName(gManager->nowDungeon);
 	}
-	if (firstIn) {
-		DrawStringEx(gManager->WINDOWCENTER.x - OFFSET, gManager->WINDOWCENTER.y, -1, "%s", nowDungeonName.c_str());
-	}
-	else {
+	if (lastSeq == sequence::FADEOUT) {
 		DrawStringEx(gManager->WINDOWCENTER.x - OFFSET, gManager->WINDOWCENTER.y, -1, "%s", nowDungeonName.c_str());
 		DrawStringEx(gManager->WINDOWCENTER.x - OFFSET, gManager->WINDOWCENTER.y + 50, -1, "%d階", dungeonLevel);
 	}
+	else {
+		DrawStringEx(gManager->WINDOWCENTER.x - OFFSET, gManager->WINDOWCENTER.y, -1, "%s", nowDungeonName.c_str());
 
+	}
 
 }
 bool DungeonScene::SeqFadeIn(const float deltatime)
@@ -735,7 +758,7 @@ bool DungeonScene::SeqFadeOut(const float deltatime)
 	else {
 		//次のmapを生成
 		MoveLevel(1);
-
+		playerPos = gManager->WorldToLocal(gManager->player->pos);
 		//ChangeSequence(sequence::FADEIN);
 		ChangeSequence(sequence::FADEDESC);
 		return true;

@@ -1,4 +1,8 @@
-#pragma once
+///*****Description*****
+///アニメーションに関するクラス
+///インスタンス生成時にアニメーションの情報を取得
+/// そのアニメーションの更新、描画処理を行う
+///*********************#pragma once
 #include"../library/t2klib.h"
 #include"../support/Support.h"
 #include<string>
@@ -12,7 +16,7 @@ public:
 
 	void Update();
 	void Draw();
-
+	//アニメーションが終了しているか取得する関数
 	inline bool GetIsAlive() {
 		return isAlive;
 	}
@@ -37,6 +41,6 @@ private:
 	//描画する画像
 	int drawGh = 0;
 
-
+	//アニメーションの終了確認フラグ
 	bool isAlive = true;
 };

@@ -1,3 +1,9 @@
+///*****Description*****
+///プレイヤーに関するクラス
+///プレイヤーの移動と装備やステータスの変更を行う
+/// Actorを継承している。
+///*********************
+
 #pragma once
 #include"../library/t2klib.h"
 #include"Actor/Actor.h"
@@ -10,7 +16,7 @@ public:
 	Player(const t2k::Vector3& StartPos, float Hp, int Atack, int Defence, int Speed, int ActId);
 	~Player();
 
-	//t2k::Vector3 pos = {};
+	//足踏みフラグ
 	bool skip = false;
 
 
@@ -29,30 +35,40 @@ public:
 	inline t2k::Vector3 GetPlayerLocalPos() {
 		return playerInMap;
 	}
-
+	//移動関数
 	bool Move()override;
+	//Campでの移動関数
 	void TownMove(dir nextDir);
-
-	//void Draw()override;
+	//HPバーの描画
 	void HpVarDraw();
 
 	//経験値の獲得関数
 	void AddExp(const int num);
 
-	//debug
-	void DrawPlayerStatus();
+	//プレイヤーのステータス,装備を描画する関数
+	void DrawPlayerStatus(int x,int y,int width,int height);
 private:
 
 	t2k::Vector3 playerInMap;
-
+	//満腹度 機能未実装
 	int manPuku = 100;
-
+	//今保持している経験値
 	int nowExp = 0;
+	//次のレベルまでの必要経験値 だんだん多くなる
 	int nextLevelExp = 100;
+	//レベルごとの必要経験値倍率
+	const int needExpParLevel = 50;
 
+	//レベルごとの基本上昇ステータス倍率
+	const int statusParLevel = 2;
+	//レベルごとの体力上昇倍率
+	const int hpParLevel = 20;
+
+	//レベルによる上昇ステータスの設定関数
 	void SetLevelStatus();
+	//次のレベルまでの必要経験値を更新する関数
 	void SetNextExp();
-
+	//装備アイテム
 	equipItem* myEquip[6] = { nullptr,nullptr, nullptr, nullptr, nullptr, nullptr };
 
 	const std::string equipName[6] = { "WEAPON","HEAD","CHEST","GLOVE","BOOTS","SHIELD" };
@@ -65,12 +81,9 @@ private:
 	bool right = false;
 	bool down = false;
 
-	/*enum Dir {
-		LEFT,
-		UP,
-		RIGHT,
-		DOWN
-	};*/
+
+	//ダッシュ中なら移動する関数
+	//bool DetectDash();
 
 	void DashToDir(const int dir, const t2k::Vector3 mapPos);
 	void MoveToDir(const int dir, const t2k::Vector3 mapPos);

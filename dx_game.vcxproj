@@ -14,7 +14,6 @@
     <ClCompile Include="program\game\Animation.cpp" />
     <ClCompile Include="program\game\CampScene.cpp" />
     <ClCompile Include="program\game\Item\equipItem.cpp" />
-    <ClCompile Include="program\game\Item\HaveItem.cpp" />
     <ClCompile Include="program\game\Item\Inventory.cpp" />
     <ClCompile Include="program\game\Item\Item.cpp" />
     <ClCompile Include="program\game\Actor\Actor.cpp" />
@@ -27,7 +26,6 @@
     <ClCompile Include="program\game\game_main.cpp" />
     <ClCompile Include="program\game\Item\ItemManager.cpp" />
     <ClCompile Include="program\game\Map.cpp" />
-    <ClCompile Include="program\game\MapManager.cpp" />
     <ClCompile Include="program\game\MenuWindow.cpp" />
     <ClCompile Include="program\game\Player.cpp" />
     <ClCompile Include="program\game\ResourcesManager.cpp" />
@@ -56,7 +54,6 @@
     <ClInclude Include="program\game\Animation.h" />
     <ClInclude Include="program\game\CampScene.h" />
     <ClInclude Include="program\game\Item\equipItem.h" />
-    <ClInclude Include="program\game\Item\HaveItem.h" />
     <ClInclude Include="program\game\Item\Inventory.h" />
     <ClInclude Include="program\game\Item\Item.h" />
     <ClInclude Include="program\game\Actor\Actor.h" />
@@ -69,7 +66,6 @@
     <ClInclude Include="program\game\game_main.h" />
     <ClInclude Include="program\game\Item\ItemManager.h" />
     <ClInclude Include="program\game\Map.h" />
-    <ClInclude Include="program\game\MapManager.h" />
     <ClInclude Include="program\game\MenuWindow.h" />
     <ClInclude Include="program\game\Player.h" />
     <ClInclude Include="program\game\ResourcesManager.h" />

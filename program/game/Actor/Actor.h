@@ -1,3 +1,8 @@
+///*****Description*****
+///生き物に関するクラス
+///プレイヤーとエネミーを派生先に持つ。
+/// 各種ステータスと描画関数を持つ
+///*********************
 #pragma once
 #include"../../library/t2klib.h"
 #include<string>
@@ -43,10 +48,6 @@ public:
 	inline int GetActId() {
 		return actId;
 	}
-	////mydir取得
-	//inline dir getDir() {
-	//	return mydir;
-	//}
 
 	//アニメーション座標の設定
 	void SetAnimPos();

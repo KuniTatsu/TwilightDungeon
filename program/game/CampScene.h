@@ -82,15 +82,18 @@ private:
 	const std::string DUNGEONNAME[5] = { "塔のダンジョン","森のダンジョン","灼熱のダンジョン","滝のダンジョン","石のダンジョン" };
 	
 	t2k::Sequence<CampScene*> mainSequence =
-		t2k::Sequence<CampScene*>(this, &CampScene::SeqMain);
+		t2k::Sequence<CampScene*>(this, &CampScene::SeqFadeIn);
 
 	bool SeqMain(const float deltatime);
 	bool SeqDungeonInMenu(const float deltatime);
+	//フェードインシークエンス
+	bool SeqFadeIn(const float deltatime);
 
 	//シークエンスの列挙体
 	enum class sequence {
 		MAIN,
 		DUNGEONIN,
+		FADEIN,
 	};
 	sequence nowSeq = sequence::MAIN;
 	//Sequenceを移動させる関数,enumも一緒に変更する

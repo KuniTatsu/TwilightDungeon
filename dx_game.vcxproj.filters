@@ -74,7 +74,6 @@
     <ClCompile Include="program\game\SceneManager.cpp" />
     <ClCompile Include="program\game\GameManager.cpp" />
     <ClCompile Include="program\game\Map.cpp" />
-    <ClCompile Include="program\game\MapManager.cpp" />
     <ClCompile Include="program\game\TitleScene.cpp" />
     <ClCompile Include="program\game\DungeonScene.cpp" />
     <ClCompile Include="program\game\Camera.cpp" />
@@ -89,7 +88,6 @@
     <ClCompile Include="program\game\Item\ItemManager.cpp" />
     <ClCompile Include="program\game\Item\equipItem.cpp" />
     <ClCompile Include="program\game\ExEffectManager.cpp" />
-    <ClCompile Include="program\game\Item\HaveItem.cpp" />
     <ClCompile Include="program\game\Item\Inventory.cpp" />
     <ClCompile Include="program\game\Animation.cpp" />
     <ClCompile Include="program\game\CampScene.cpp" />
@@ -178,7 +176,6 @@
     <ClInclude Include="program\game\Scene.h" />
     <ClInclude Include="program\game\GameManager.h" />
     <ClInclude Include="program\game\Map.h" />
-    <ClInclude Include="program\game\MapManager.h" />
     <ClInclude Include="program\game\TitleScene.h" />
     <ClInclude Include="program\game\DungeonScene.h" />
     <ClInclude Include="program\game\SoundManager.h" />
@@ -194,7 +191,6 @@
     <ClInclude Include="program\game\Item\ItemManager.h" />
     <ClInclude Include="program\game\Item\equipItem.h" />
     <ClInclude Include="program\game\ExEffectManager.h" />
-    <ClInclude Include="program\game\Item\HaveItem.h" />
     <ClInclude Include="program\game\Item\Inventory.h" />
     <ClInclude Include="program\game\Animation.h" />
     <ClInclude Include="program\game\CampScene.h" />

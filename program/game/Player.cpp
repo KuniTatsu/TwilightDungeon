@@ -40,17 +40,7 @@ Player::Player(const t2k::Vector3& StartPos, float Hp, int Atack, int Defence, i
 Player::~Player()
 {
 }
-//
-//void Player::TakeHpEffect(int HpMove)
-//{
-//	if (nowHp <= 0)return;
-//	nowHp += HpMove;
-//	if (nowHp < 0)nowHp = 0;
-//	if (nowHp > hp)nowHp = hp;
-//
-//	nowHpVarWidth = nowHp / hp;
-//}
-
+//体力と満腹度を変更する関数
 void Player::ChangeBaseStatus(int ManpukuMove, int HpMove)
 {
 	manPuku += ManpukuMove;
@@ -60,7 +50,7 @@ void Player::ChangeBaseStatus(int ManpukuMove, int HpMove)
 	TakeHpEffect(HpMove);
 
 }
-
+//装備を変更する関数
 void Player::ChangeEquipItem(equipItem* item)
 {
 	int subId = item->getItemData(9);
@@ -82,7 +72,7 @@ void Player::ChangeEquipItem(equipItem* item)
 		ChangeStatus(i, item->getItemData(i + 5), 1);
 	}
 }
-
+//装備を外す関数
 void Player::RemoveEquipItem(equipItem* item)
 {
 	int subId = item->getItemData(9);
@@ -95,7 +85,7 @@ void Player::RemoveEquipItem(equipItem* item)
 		ChangeStatus(i, statuses[i], 1);
 	}
 }
-
+//装備アイテムの合計ステータスを格納する関数
 void Player::GetSumStatusFromEquipment()
 {
 	//自分が装備しているアイテムの HP/atack/defence/speedをそれぞれ合計して配列にしまいたい
@@ -110,11 +100,12 @@ void Player::GetSumStatusFromEquipment()
 		}
 	}
 }
-
+//リファクタリング必須　あとで変える:優先度高
 bool Player::Move()
 {
 	//キャラの位置がマップ上のどのチップか特定する
 	t2k::Vector3 playerInMap = gManager->WorldToLocal(pos);
+
 	if (left)
 	{
 		DashToDir(LEFT, playerInMap);
@@ -215,36 +206,15 @@ bool Player::Move()
 }
 
 void Player::TownMove(dir nextDir)
-{	
+{
 	playerInMap = gManager->WorldToLocal(pos);
 	mydir = nextDir;
 	//MoveToDir(nextDir, playerInMap);
 	t2k::Vector3 nextPos = gManager->GetMultipleVector(nextDir, 20);
 	pos.x += nextPos.x;
 	pos.y += nextPos.y;
-
-	
 }
-
-
-/*
-void Player::Draw()
-{
-	//t2k::Vector3 gp(0, 0, 0);
-	//t2k::Vector3 fix;
-	//fix.x = pos.x ;
-	//fix.y = pos.y ;
-	////gp += (fix - gp) * 0.1f;
-	//t2k::Vector3 move= (fix - gp) * 0.1f;//10fで全て移動完了
-	//gp += move;
-
-
-	//DrawRotaGraph(pos.x - gManager->camera->cameraPos.x, pos.y - gManager->camera->cameraPos.y, 1, 0, gh, true);
-	//DrawRotaGraph(gp.x, gp.y, 1, 0, p_gh, true);
-	//DrawRotaGraph(gp.x - gManager->camera->cameraPos.x, gp.y - gManager->camera->cameraPos.y, 1, 0, p_gh, true);
-}
-*/
-
+//HPバーの描画
 void Player::HpVarDraw()
 {
 	DrawRotaGraph(pos.x - gManager->camera->cameraPos.x, pos.y - gManager->camera->cameraPos.y - 30, 1, 0, hpVar_gh, false);
@@ -252,7 +222,7 @@ void Player::HpVarDraw()
 		nowHpVarWidth, 1, 0, nowHpVar_gh, false);
 	DrawStringEx(pos.x - gManager->camera->cameraPos.x - 10, pos.y - gManager->camera->cameraPos.y - 50, -1, "%.0f", nowHp);
 }
-
+//経験値取得とレベルアップ処理
 void Player::AddExp(int num)
 {
 	nowExp += num;
@@ -264,6 +234,7 @@ void Player::AddExp(int num)
 	}
 }
 
+//近くに敵がいなければ指定方向に進む関数
 void Player::DashToDir(int dir, t2k::Vector3 mapPos)
 {
 	if (dir == LEFT) {
@@ -309,7 +280,7 @@ void Player::DashToDir(int dir, t2k::Vector3 mapPos)
 
 	gManager->setPlayerRoomNum(gManager->CheckIsThere(mapPos));
 }
-
+//指定方向に1マス進む関数
 void Player::MoveToDir(int dir, t2k::Vector3 mapPos)
 {
 	if (dir == LEFT) {
@@ -340,36 +311,38 @@ void Player::MoveToDir(int dir, t2k::Vector3 mapPos)
 
 	gManager->setPlayerRoomNum(gManager->CheckIsThere(mapPos));
 }
-
-void Player::DrawPlayerStatus()
+//リファクタリング必須　あとで変える:優先度中
+//プレイヤーステータスの描画
+void Player::DrawPlayerStatus(int x, int y, int width, int height)
 {
-	DrawStringEx(20, 30, -1, "現在のレベル:%d", level);
-	DrawStringEx(20, 50, -1, "体力:%.0f", nowHp);
-	DrawStringEx(20, 70, -1, "攻撃力:%d", atack);
-	DrawStringEx(20, 90, -1, "防御力:%d", defence);
-	DrawStringEx(20, 110, -1, "素早さ:%d", speed);
+
+	DrawStringEx(x + 10, y + 20, -1, "現在のレベル:%d", level);//20
+	DrawStringEx(x + 10, y + 40, -1, "体力:%.0f", nowHp);	//40
+	DrawStringEx(x + 10, y + 60, -1, "攻撃力:%d", atack);	//60
+	DrawStringEx(x + 10, y + 80, -1, "防御力:%d", defence);	//80
+	DrawStringEx(x + 10, y + 100, -1, "素早さ:%d", speed);	//100
 	for (int i = 0; i < 6; ++i) {
-		DrawStringEx(170, 30 + 30 * i, -1, "%s:", equipName[i].c_str());
+		DrawStringEx(x + 160, y + 20 + 30 * i, -1, "%s:", equipName[i].c_str());
 	}
 	for (int i = 0; i < 6; ++i) {
 		if (myEquip[i] == nullptr) {
-			DrawStringEx(240, 30 + 30 * i, -1, "装備なし");
+			DrawStringEx(x + 230, y + 20 + 30 * i, -1, "装備なし");
 		}
 		else {
-			DrawStringEx(240, 30 + 30 * i, -1, "%s", myEquip[i]->getItemName().c_str());
+			DrawStringEx(x + 230, y + 20 + 30 * i, -1, "%s", myEquip[i]->getItemName().c_str());
 		}
 	}
 
-	DrawStringEx(20, 130, -1, "経験値:%d/%d", nowExp, nextLevelExp);
+	DrawStringEx(x + 10, y + 120, -1, "経験値:%d/%d", nowExp, nextLevelExp);
 
 }
 
 void Player::SetLevelStatus()
 {
-	int lvHp = (level - 1) * 20;
-	int lvAttack = (level - 1) * 2;
-	int lvDefence = (level - 1) * 2;
-	int lvSpeed = (level - 1) * 2;
+	int lvHp = (level - 1) * hpParLevel;
+	int lvAttack = (level - 1) * statusParLevel;
+	int lvDefence = (level - 1) * statusParLevel;
+	int lvSpeed = (level - 1) * statusParLevel;
 	int lvStatus[4] = { lvHp,lvAttack,lvDefence,lvSpeed };
 
 	for (int i = 0; i < 4; ++i) {
@@ -379,5 +352,5 @@ void Player::SetLevelStatus()
 
 void Player::SetNextExp()
 {
-	nextLevelExp = 100 + (level - 1) * 50; //1lv上がるごとに必要経験値が50増える
+	nextLevelExp = 100 + (level - 1) * needExpParLevel; //1lv上がるごとに必要経験値が50増える
 }

@@ -45,7 +45,9 @@ private:
 	//1階層に設置するアイテム数
 	const int spawnItemNum = 5;
 
-	int alfa = 0;
+	int EButton = 0;
+
+	/*int alfa = 0;*/
 	//次のenemyの行動までのインターバルフレーム
 	const int ENEMYACTINTERVAL = 30;
 	//更新インターバルフレーム
@@ -80,11 +82,6 @@ private:
 	std::list<Item*> throwItem;
 
 	std::list<std::shared_ptr<Item>>throwedItemList;
-
-	/*
-	Menu* hoge=new Menu(30,50,175,390,gh(int))
-	Menu* hoge=new Menu(220,50,440,390,gh(int))
-	*/
 
 	std::shared_ptr<EnemyManager>eManager = nullptr;
 
@@ -165,7 +162,7 @@ private:
 	std::string nowDungeonName = "";
 
 	//drawstring用の中心座標補正
-	const float OFFSET = 20.0f;
+	const float OFFSET = 30.0f;
 
 	//fadeDescシークエンスで文字を描画する関数
 	void DrawFadeDesc();

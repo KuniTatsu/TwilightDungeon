@@ -1,3 +1,9 @@
+///*****Description*****
+///アイテムに関するクラス
+///equipItemクラスを派生先に持つ
+///アイテムの各種情報と
+///現在の各アイテムごとの状況を保持する
+///*********************
 #pragma once
 #include<string>
 #include<vector>

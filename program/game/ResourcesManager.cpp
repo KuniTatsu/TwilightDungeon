@@ -24,14 +24,4 @@ void ResourceManager::LoadResource()
 			dungeonMapChipGh[i].emplace_back(gManager->LoadGraphEx(hoge));
 		}
 	}
-
-	/*
-	mapChip[0] = gManager->LoadGraphEx("graphics/floor.png");//°
-	mapChip[1] = gManager->LoadGraphEx("graphics/Wall.png");//‚½‚¾‚Ì•Ç
-	ue = gManager->LoadGraphEx("graphics/Wall_top.png");//top
-	shita = gManager->LoadGraphEx("graphics/Wall_bottom.png");//bottom
-	hidari = gManager->LoadGraphEx("graphics/Wall_leftside.png");//left
-	migi = gManager->LoadGraphEx("graphics/Wall_rightside.png");//right
-	*/
-
 }

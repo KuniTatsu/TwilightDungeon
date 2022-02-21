@@ -20,6 +20,7 @@ CampScene::CampScene()
 	LoadDivGraph("graphics/mapchip_night_20.png", 480, 30, 16, 20, 20, campGraphic);
 	gManager->MakePlayer(GameManager::SpawnScene::Camp);
 	player = gManager->GetPlayer();
+	gManager->CameraReset();
 
 	MenuWindow::MenuElement_t* menu_usable = new MenuWindow::MenuElement_t[]{
 	{650,480,"ダンジョンに入る",0},
@@ -30,6 +31,7 @@ CampScene::CampScene()
 
 CampScene::~CampScene()
 {
+	delete dungeonIn;
 }
 
 void CampScene::Update()
@@ -40,23 +42,21 @@ void CampScene::Update()
 	//フェードが完了するまでフェードアウトを実行
 	if (nowFade) {
 		gManager->fControl->FadeOut();
+
+		if (gManager->fControl->doneFade) {
+			t2k::debugTrace("\nダンジョンに入場します\n");
+
+			//int型をGameManager::Dungeon型にキャスト
+			GameManager::Dungeon dungeonName = static_cast<GameManager::Dungeon>(selectDungeon);
+
+			//ダンジョンの自動生成
+			gManager->CreateDungeon(dungeonName);
+
+
+			SceneManager::ChangeScene(SceneManager::SCENE::DUNGEON);
+			return;
+		}
 	}
-	//ゲームの開始処理
-	//フェードが完了したらDungeonSceneへ飛ばす
-	if (!gManager->fControl->doneFade)return;
-
-	t2k::debugTrace("\nダンジョンに入場します\n");
-
-	//int型をGameManager::Dungeon型にキャスト
-	GameManager::Dungeon dungeonName = static_cast<GameManager::Dungeon>(selectDungeon);
-
-	//ダンジョンの自動生成
-	gManager->CreateDungeon(dungeonName);
-
-	
-	SceneManager::ChangeScene(SceneManager::SCENE::DUNGEON);
-	return;
-
 }
 
 void CampScene::Draw()
@@ -64,7 +64,7 @@ void CampScene::Draw()
 	DrawMap(groundMapData);
 	DrawMap(surfaceMapData);
 
-	DrawStringEx(500, 500, -1, "ここはCampシーンです");
+	//DrawStringEx(500, 500, -1, "ここはCampシーンです");
 	player->Draw();
 	if (nowSeq == sequence::DUNGEONIN) {
 		dungeonIn->All();
@@ -197,6 +197,21 @@ bool CampScene::SeqDungeonInMenu(const float deltatime)
 	return true;
 }
 
+bool CampScene::SeqFadeIn(const float deltatime)
+{
+	if (gManager->fControl->doneFade) {
+		gManager->fControl->FadeIn();
+		return true;
+	}
+	else {
+		ChangeSequence(sequence::MAIN);
+		return true;
+	}
+	return true;
+}
+
+
+
 void CampScene::ChangeSequence(const sequence seq)
 {
 	nowSeq = seq;
@@ -205,5 +220,8 @@ void CampScene::ChangeSequence(const sequence seq)
 	}
 	else if (seq == sequence::DUNGEONIN) {
 		mainSequence.change(&CampScene::SeqDungeonInMenu);
+	}
+	else if (seq == sequence::FADEIN) {
+		mainSequence.change(&CampScene::SeqFadeIn);
 	}
 }

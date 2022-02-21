@@ -1,3 +1,8 @@
+///*****Description*****
+///ゲーム機能全般に関するクラス
+///ゲーム全体に対して関連する処理及びインスタンスを保有するクラス
+/// シーンマネージャのUpdate,DrawをこのクラスのUpdate,Drawで行い、gameMainで呼び出すことでゲームを動かす
+///*********************
 #pragma once
 #include<vector>
 #include<string>
@@ -16,7 +21,6 @@ class Player;
 class Camera;
 class Enemy;
 class ItemManager;
-class HaveItem;
 class Inventory;
 class Actor;
 class ResourceManager;
@@ -36,7 +40,6 @@ public:
 
 	Camera* camera = nullptr;
 	ItemManager* iManager = nullptr;
-	HaveItem* haveItem = nullptr;
 	Inventory* inventory = nullptr;
 	ResourceManager* resource = nullptr;
 
@@ -255,7 +258,7 @@ public:
 
 
 	//debug切り替え
-	bool isDebug = true;
+	bool isDebug = false;
 
 	int playerRoomNum = 0;
 

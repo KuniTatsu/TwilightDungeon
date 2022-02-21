@@ -31,7 +31,7 @@ TitleScene::~TitleScene()
 {
 	init = false;
 	nowFade = false;
-	StopSoundMem(gManager->sound->bgm_title);
+	//StopSoundMem(gManager->sound->bgm_title);
 	delete title_Menu;
 	delete titleBack;
 }
@@ -50,7 +50,6 @@ void TitleScene::Update()
 		return;
 	}
 
-
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
 
 		gManager->sound->System_Play(gManager->sound->system_select);
@@ -63,13 +62,8 @@ void TitleScene::Update()
 	//ƒQ[ƒ€‚ÌŠJŽnˆ—
 	//TrainingScene‚Ö”ò‚Î‚·
 	if (gManager->fControl->doneFade != true)return;
-	SceneManager::ChangeScene(SceneManager::SCENE::DUNGEON);
+	SceneManager::ChangeScene(SceneManager::SCENE::CAMP);
 	return;
-
-
-	
-
-
 }
 
 void TitleScene::Draw()

@@ -1,3 +1,9 @@
+///*****Description*****
+///UIに関するクラス
+///選択肢を持たないMenuと
+///選択肢を持つMenuWindowがある
+///生成時に大きさが決定され、DivGraphによって分割,延長された元画像がUIとして表示される
+///*********************
 #pragma once
 #include<DxLib.h>
 #include<string>

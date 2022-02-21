@@ -1,3 +1,8 @@
+///*****Description*****
+///インベントリに関するクラス
+///プレイヤーの所有するアイテムの情報を保持する
+/// インベントリ内のアイテムの処理も行う
+///*********************
 #pragma once
 #include<list>
 #include<memory>
@@ -9,10 +14,9 @@ public:
 	Inventory(int MyInventoryNum);
 	~Inventory();
 
-	//Item* inventory[10] = { nullptr,nullptr ,nullptr ,nullptr ,nullptr ,nullptr ,nullptr ,nullptr ,nullptr ,nullptr };
-
 	//std::shared_ptr<Item>inventory[10] = { nullptr,nullptr ,nullptr ,nullptr ,nullptr ,nullptr ,nullptr ,nullptr ,nullptr ,nullptr };
-
+	
+	//内部にItemを10個持つlist
 	std::list<Item*> inventoryList;
 	//std::list<std::shared_ptr<Item>> inventorySharedList;
 

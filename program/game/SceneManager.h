@@ -1,4 +1,9 @@
-﻿#pragma once
+﻿
+///*****Description*****
+///シーン管理に関するクラス
+///現在のシーンのUpdateとDrawを処理する
+///シーン変更関数を持つ
+///*********************#pragma once
 #include "Scene.h"
 
 class Scene;
@@ -28,8 +33,5 @@ public:
 	//	return scene;
 	//}
 
-
-	static void Save();
-	static void Load();
 
 };

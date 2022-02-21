@@ -1,3 +1,7 @@
+///*****Description*****
+///フェード処理に関するクラス
+///各シーンから呼び出し、トランジションを行う
+///*********************
 #pragma once
 
 class FadeControl {
@@ -18,9 +22,7 @@ public:
 	//画面を徐々に出す関数
 	void FadeIn();
 	//trueは真っ暗,falseは明るい
-	bool doneFade = false;
-
-
+	bool doneFade = true;
 private:
 
 	int imageFade = 0;
@@ -29,7 +31,7 @@ private:
 
 	//int screenFade = 0;
 	//debug
-	int screenFade = 255;
+	int screenFade = 0;
 
 
 

@@ -14,7 +14,6 @@
 #include"Actor/Enemy.h"
 #include"Actor/Actor.h"
 #include"Item/ItemManager.h"
-#include"Item/HaveItem.h"
 #include"Item/Item.h"
 #include"Item/equipItem.h"
 #include"Item//Inventory.h"
@@ -165,19 +164,20 @@ bool GameManager::OutOfRangeInItem(int ItemId)
 	if (ItemId > 0 && ItemId < iManager->itemSumNum + 1)return true;
 	return false;
 }
+//ドロップアイテムリストから特定のアイテムを削除
 bool GameManager::PopDetectItem(Item* item, std::list<Item*>& list) {
-	bool hoge = false;
+	bool erase = false;
 	for (auto itr = list.begin(); itr != list.end();) {
 		if ((*itr) == item) {
 			itr = list.erase(itr);
-			hoge = true;
+			erase = true;
 			break;
 		}
 		else {
 			itr++;
 		}
 	}
-	return hoge;
+	return erase;
 }
 void GameManager::Update()
 {
@@ -212,31 +212,28 @@ void GameManager::Draw()
 
 void GameManager::initGameManager()
 {
-	//SRand(time(0));//dxlib randInit
+	SRand(time(0));//dxlib randInit
 	//srand(time(0));//C randInit
 	// 
 	//debug
 	//SRand(1);
+	//
 	resource = new ResourceManager();
 	resource->LoadResource();
 
 	camera = new Camera();
 
+	//map情報利用のためダンジョン生成
 	CreateDungeon(Dungeon::FOREST);
 
 	//loadDivGraphのindex取得
 	LoadMaxIndex();
 
 	iManager = new ItemManager();
-
-	haveItem = new HaveItem();
 	inventory = new Inventory(0);
 	inventories.emplace_back(inventory);
 
-	SceneManager::ChangeScene(SceneManager::SCENE::CAMP);
-	camera->cameraPos = player->pos - WINDOWCENTER;
-
-
+	SceneManager::ChangeScene(SceneManager::SCENE::TITLE);
 	//shared_inventory = std::make_shared<Inventory>(0);
 	//sharedInventories.emplace_back(shared_inventory);
 
@@ -270,16 +267,16 @@ int GameManager::LoadGraphEx(std::string gh)
 int GameManager::GetRandEx(int a, int b)
 {
 	if (a > b) {
-		int hoge = a - b;
-		int random = GetRand(hoge) + b;
-		//int random = (hoge) ? ( rand() % hoge ) + b : b ;
+		int diff = a - b;
+		int random = GetRand(diff) + b;
+		//int random = (diff) ? ( rand() % diff ) + b : b ;
 		//
 		return random;
 	}
 	else {
-		int hoge = b - a;
-		int random = GetRand(hoge) + a;
-		//int random = (hoge) ? ( rand() % hoge ) + a : a ;
+		int diff = b - a;
+		int random = GetRand(diff) + a;
+		//int random = (diff) ? ( rand() % diff ) + a : a ;
 		return random;
 	}
 	return 0;
@@ -498,25 +495,29 @@ void GameManager::Zoom()
 	}
 	graphEx = nowGraphicSize / GRAPHICSIZE;
 }
-void GameManager::TakeDamageToTarget(Actor* hoge, t2k::Vector3 Pos)
+void GameManager::TakeDamageToTarget(Actor* actor, t2k::Vector3 Pos)
 {
 	//プレイヤーが攻撃するなら
-	if (hoge->GetActId() == 0) {
+	if (actor->GetActId() == 0) {
 		//全てのエネミーから前にいるエネミーを取得
-		std::shared_ptr<Enemy>hoge = GetIsThereEnemyToDir(Pos);
+		std::shared_ptr<Enemy>frontEnemy = GetIsThereEnemyToDir(Pos);
 		//もし空振りなら
-		if (hoge == nullptr) {
+		if (frontEnemy == nullptr) {
 			player->skip = true;
 			return;
 		}
-
-		float damage = CalcDamage(player->GetStatus(1), hoge->GetStatus(2));
-		RunDamageEvent((-1) * damage, hoge);
-		addLog(hoge->GetName() + "が" + std::to_string(static_cast<int>(damage)) + "ダメージを受けた");
+		//攻撃力と防御力を取得,ダメージ計算
+		float damage = CalcDamage(player->GetStatus(1), frontEnemy->GetStatus(2));
+		//ダメージを反映
+		RunDamageEvent((-1) * damage, frontEnemy);
+		//ログ追加
+		addLog(frontEnemy->GetName() + "が" + std::to_string(static_cast<int>(damage)) + "ダメージを受けた");
 	}
 	//エネミーが攻撃するなら
 	else {
-		float damage = CalcDamage(hoge->GetStatus(1), player->GetStatus(2));
+		//攻撃力と防御力を取得,ダメージ計算
+		float damage = CalcDamage(actor->GetStatus(1), player->GetStatus(2));
+		//ダメージを反映
 		RunDamageEvent((-1) * damage, player);
 		addLog("Playerが" + std::to_string(static_cast<int>(damage)) + "ダメージを受けた");
 	}
@@ -654,7 +655,7 @@ int GameManager::CheckIsThere(t2k::Vector3 Pos)
 }
 //カメラをキャラを中心にリセット
 void GameManager::CameraReset() {
-	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
+	camera->cameraPos = player->pos - WINDOWCENTER;
 }
 //なんか微妙
 void GameManager::CameraMove(int width, int height, int dir)
