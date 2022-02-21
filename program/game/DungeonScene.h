@@ -160,11 +160,12 @@ private:
 	//毎秒デルタタイムを足す
 	float descFadeCount = 0;
 	//文字を描画する時間
-	const float DESCFADETIME = 5;
+	const float DESCFADETIME = 3;
 	//今のダンジョン文字列
 	std::string nowDungeonName = "";
 
-
+	//drawstring用の中心座標補正
+	const float OFFSET = 20.0f;
 
 	//fadeDescシークエンスで文字を描画する関数
 	void DrawFadeDesc();

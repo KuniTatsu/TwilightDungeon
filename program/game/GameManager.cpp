@@ -595,7 +595,8 @@ void GameManager::MapDraw()
 void GameManager::CreateDungeon(Dungeon dungeonName) {
 
 	if (map != nullptr)delete map;
-
+	//InitWayPointVector();
+	wayPoint.clear();
 	nowDungeon = dungeonName;
 	CreateMap(dungeonName);
 	//É}ÉbÉvé©ìÆê∂ê¨

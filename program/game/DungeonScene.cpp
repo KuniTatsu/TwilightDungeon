@@ -157,6 +157,8 @@ void DungeonScene::Draw()
 		DrawAnimation();
 	}
 
+
+
 	//ここから下はシークエンスごとの描画
 
 	firstMenu->All();
@@ -310,7 +312,7 @@ bool DungeonScene::SeqMain(const float deltatime)
 	if (gManager->GetMapChip(playerPos) == 3) {
 
 		if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
-			MoveLevel(1);
+			//MoveLevel(1);
 			ChangeSequence(sequence::FADEOUT);
 			return true;
 		}
@@ -657,29 +659,28 @@ bool DungeonScene::SeqAnimation(const float deltatime)
 bool DungeonScene::SeqDescFade(const float deltatime)
 {
 	//文字描画時間が終わるまでフェードアウトを始めない
-	if (descFadeCount < DESCFADETIME) {
+
 		//***フェードイン処理
-		if (gManager->fControl->doneFade) {
-			gManager->fControl->FadeIn();
-			return true;
-		}
-		//***
-		//文字描画時間の更新
-		descFadeCount += deltatime;
+	if (gManager->fControl->doneFade && descFadeCount < DESCFADETIME) {
+		gManager->fControl->FadeIn();
+		return true;
+	}
+	//***
+	//文字描画時間の更新
+	descFadeCount += deltatime;
+
+	if (descFadeCount < DESCFADETIME)return true;
+
+	if (!gManager->fControl->doneFade) {
+		gManager->fControl->FadeOut();
+		return true;
 	}
 	else {
-		//if (descFadeCount < DESCFADETIME)return true;
-
-		if (!gManager->fControl->doneFade) {
-			gManager->fControl->FadeOut();
-			return true;
-		}
-		else {
-			ChangeSequence(sequence::FADEIN);
-			descFadeCount = 0;
-			return true;
-		}
+		ChangeSequence(sequence::FADEIN);
+		descFadeCount = 0;
+		return true;
 	}
+
 	return true;
 }
 
@@ -703,11 +704,11 @@ void DungeonScene::DrawFadeDesc() {
 		nowDungeonName = gManager->GetDungeonName(gManager->nowDungeon);
 	}
 	if (firstIn) {
-		DrawStringEx(gManager->WINDOWCENTER.x, gManager->WINDOWCENTER.y, -1, "%s", nowDungeonName.c_str());
+		DrawStringEx(gManager->WINDOWCENTER.x - OFFSET, gManager->WINDOWCENTER.y, -1, "%s", nowDungeonName.c_str());
 	}
 	else {
-		DrawStringEx(gManager->WINDOWCENTER.x, gManager->WINDOWCENTER.y, -1, "%s", nowDungeonName.c_str());
-		DrawStringEx(gManager->WINDOWCENTER.x, gManager->WINDOWCENTER.y + 50, -1, "%d階", dungeonLevel);
+		DrawStringEx(gManager->WINDOWCENTER.x - OFFSET, gManager->WINDOWCENTER.y, -1, "%s", nowDungeonName.c_str());
+		DrawStringEx(gManager->WINDOWCENTER.x - OFFSET, gManager->WINDOWCENTER.y + 50, -1, "%d階", dungeonLevel);
 	}
 
 
@@ -732,7 +733,11 @@ bool DungeonScene::SeqFadeOut(const float deltatime)
 		return true;
 	}
 	else {
-		ChangeSequence(sequence::FADEIN);
+		//次のmapを生成
+		MoveLevel(1);
+
+		//ChangeSequence(sequence::FADEIN);
+		ChangeSequence(sequence::FADEDESC);
 		return true;
 	}
 	return true;
