@@ -1,7 +1,7 @@
 #include "DungeonScene.h"
 #include"Map.h"
 #include"GameManager.h"
-
+#include"SoundManager.h"
 #include"../support/Support.h"
 #include "Player.h"
 #include"MenuWindow.h"
@@ -13,6 +13,7 @@
 #include"Item/Inventory.h"
 #include"Animation.h"
 #include"FadeControl.h"
+#include"SceneManager.h"
 
 using namespace std;
 
@@ -20,58 +21,7 @@ extern GameManager* gManager;
 
 DungeonScene::DungeonScene()
 {
-	//alfa = gManager->LoadGraphEx("graphics/old/test.png");
-	EButton = gManager->LoadGraphEx("graphics/button_E.png");
-
-	nextLevelWindow = new Menu(300, 300, 300, 200, "graphics/WindowBase_01.png");
-	menuOpen = new Menu(20, 20, 100, 100, "graphics/WindowBase_01.png");
-	inventory = new Menu(255, 50, 420, 340, "graphics/WindowBase_01.png");
-	log = new Menu(12, 560, 1000, 200, "graphics/WindowBase_01.png");
-	desc = new Menu(680, 300, 320, 90, "graphics/WindowBase_01.png");
-	playerStatus = new Menu(512, 560, 500, 200, "graphics/WindowBase_01.png");
-
-	MenuWindow::MenuElement_t* menu_usable = new MenuWindow::MenuElement_t[]{
-		{670,450,"使う",0},
-		{670,480,"投げる",1},
-		{670,510,"やめる",2}
-	};
-	use_usable = new MenuWindow(640, 440, 90, 100, "graphics/WindowBase_02.png", menu_usable, 3, 0.15);
-
-	MenuWindow::MenuElement_t* menu_equip = new MenuWindow::MenuElement_t[]{
-		{670,450,"装備する",0},
-		{670,480,"投げる",1},
-		{670,510,"やめる",2}
-	};
-	use_equip = new MenuWindow(640, 440, 90, 100, "graphics/WindowBase_02.png", menu_equip, 3, 0.15);
-
-	MenuWindow::MenuElement_t* menu_nowEquip = new MenuWindow::MenuElement_t[]{
-		{670,450,"はずす",0},
-		{670,480,"投げる",1},
-		{670,510,"やめる",2}
-	};
-	use_nowEquip = new MenuWindow(640, 440, 90, 100, "graphics/WindowBase_02.png", menu_nowEquip, 3, 0.15);
-
-
-	eManager = std::make_shared<EnemyManager>();
-
-	MenuWindow::MenuElement_t* menu_0 = new MenuWindow::MenuElement_t[]{
-		{70,80,"持ち物",0},
-		{70,110,"足元",1},
-		{70,140,"セーブ",2},
-		{70,170,"タイトルへ戻る",3},
-		{70,200,"Esc|メニューを閉じる",4}
-	};
-	// メニューウィンドウのインスタンス化
-	firstMenu = new MenuWindow(30, 50, 220, 210, "graphics/WindowBase_02.png", menu_0, 5, 0.45);
-	gManager->MakePlayer(GameManager::SpawnScene::Dungeon);
-	RandEnemyCreate(5);
-
-	for (int i = 0; i < 5; ++i) {
-		//int rand = GetRand(100) % gManager->GetItemNum();
-		int random = rand() % gManager->GetItemNum();
-		SpawnItem(random);
-	}
-	player = gManager->GetPlayer();
+	initDungeonScene();
 }
 
 DungeonScene::~DungeonScene()
@@ -102,6 +52,12 @@ void DungeonScene::Update()
 	GetMousePoint(&mouseX, &mouseY);
 
 	mainSequence.update(gManager->deitatime_);
+
+	//デバッグ
+	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_C)) {
+		ReturnCamp();
+		return;
+	}
 
 	//デバッグ切り替え
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_F2)) {
@@ -261,6 +217,62 @@ void DungeonScene::UpdateAnimation()
 	}
 }
 
+void DungeonScene::initDungeonScene()
+{
+	EButton = gManager->LoadGraphEx("graphics/button_E.png");
+
+	nextLevelWindow = new Menu(300, 300, 300, 200, "graphics/WindowBase_01.png");
+	menuOpen = new Menu(20, 20, 100, 100, "graphics/WindowBase_01.png");
+	inventory = new Menu(255, 50, 420, 340, "graphics/WindowBase_01.png");
+	log = new Menu(12, 560, 1000, 200, "graphics/WindowBase_01.png");
+	desc = new Menu(680, 300, 320, 90, "graphics/WindowBase_01.png");
+	playerStatus = new Menu(512, 560, 500, 200, "graphics/WindowBase_01.png");
+
+	MenuWindow::MenuElement_t* menu_usable = new MenuWindow::MenuElement_t[]{
+		{670,450,"使う",0},
+		{670,480,"投げる",1},
+		{670,510,"やめる",2}
+	};
+	use_usable = new MenuWindow(640, 440, 90, 100, "graphics/WindowBase_02.png", menu_usable, 3, 0.15);
+
+	MenuWindow::MenuElement_t* menu_equip = new MenuWindow::MenuElement_t[]{
+		{670,450,"装備する",0},
+		{670,480,"投げる",1},
+		{670,510,"やめる",2}
+	};
+	use_equip = new MenuWindow(640, 440, 90, 100, "graphics/WindowBase_02.png", menu_equip, 3, 0.15);
+
+	MenuWindow::MenuElement_t* menu_nowEquip = new MenuWindow::MenuElement_t[]{
+		{670,450,"はずす",0},
+		{670,480,"投げる",1},
+		{670,510,"やめる",2}
+	};
+	use_nowEquip = new MenuWindow(640, 440, 90, 100, "graphics/WindowBase_02.png", menu_nowEquip, 3, 0.15);
+
+
+	eManager = std::make_shared<EnemyManager>();
+
+	MenuWindow::MenuElement_t* menu_0 = new MenuWindow::MenuElement_t[]{
+		{70,80,"持ち物",0},
+		{70,110,"足元",1},
+		{70,140,"セーブ",2},
+		{70,170,"タイトルへ戻る",3},
+		{70,200,"Esc|メニューを閉じる",4}
+	};
+	// メニューウィンドウのインスタンス化
+	firstMenu = new MenuWindow(30, 50, 220, 210, "graphics/WindowBase_02.png", menu_0, 5, 0.45);
+	gManager->MakePlayer(GameManager::SpawnScene::Dungeon);
+	RandEnemyCreate(5);
+
+	for (int i = 0; i < 5; ++i) {
+		//int rand = GetRand(100) % gManager->GetItemNum();
+		int random = rand() % gManager->GetItemNum();
+		SpawnItem(random);
+	}
+	player = gManager->GetPlayer();
+	gManager->RunDungeonBgm();
+}
+
 void DungeonScene::DrawAnimation()
 {
 	if (drawAnimationList.empty())return;
@@ -309,6 +321,7 @@ bool DungeonScene::SeqMain(const float deltatime)
 		//マウスクリックしていたら
 		if (t2k::Input::isMouseTrigger(t2k::Input::MOUSE_RELEASED_LEFT)) {
 			t2k::debugTrace("\n押されたよ\n");//ok
+			gManager->sound->System_Play(gManager->sound->system_select);
 			firstMenu->Open();
 			ChangeSequence(sequence::FIRSTMENU);
 			return true;
@@ -316,6 +329,7 @@ bool DungeonScene::SeqMain(const float deltatime)
 	}
 	//Eを押してもメニューが開く
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_E)) {
+		gManager->sound->System_Play(gManager->sound->system_select);
 		firstMenu->Open();
 		ChangeSequence(sequence::FIRSTMENU);
 		return true;
@@ -334,7 +348,7 @@ bool DungeonScene::SeqMain(const float deltatime)
 	if (gManager->GetMapChip(playerPos) == 3) {
 
 		if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
-			//MoveLevel(1);
+			gManager->sound->System_Play(gManager->sound->system_select);
 			ChangeSequence(sequence::FADEOUT);
 			return true;
 		}
@@ -380,6 +394,13 @@ bool DungeonScene::SeqPlayerAttack(const float deltatime)
 	}
 	ChangeSequence(sequence::ENEMYACT);
 	return true;
+}
+
+void DungeonScene::ReturnCamp()
+{
+	gManager->StopBgm();
+	player->pos = gManager->SpawnPlayerCamp();
+	SceneManager::ChangeScene(SceneManager::CAMP);
 }
 
 bool DungeonScene::SeqEnemyAct(const float deltatime)
@@ -454,6 +475,7 @@ bool DungeonScene::SeqFirstMenu(const float deltatime)
 {
 	//インベントリを開く
 	if (firstMenu->SelectNum == 0 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+		gManager->sound->System_Play(gManager->sound->system_select);
 		//menuの上下を操作出来なくする
 		firstMenu->manageSelectFlag = false;
 		//gManager->sound->System_Play(gManager->sound->system_select);
@@ -464,6 +486,7 @@ bool DungeonScene::SeqFirstMenu(const float deltatime)
 	}
 	//メニューを閉じる
 	else if (firstMenu->SelectNum == 4 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+		gManager->sound->System_Play(gManager->sound->system_cancel);
 		firstMenu->menu_live = false;
 		ChangeSequence(sequence::MAIN);
 		return true;
@@ -472,6 +495,7 @@ bool DungeonScene::SeqFirstMenu(const float deltatime)
 	//Escキーでもメニューを閉じる
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_ESCAPE))
 	{
+		gManager->sound->System_Play(gManager->sound->system_cancel);
 		firstMenu->menu_live = false;
 		ChangeSequence(sequence::MAIN);
 		return true;
@@ -484,6 +508,7 @@ bool DungeonScene::SeqInventoryOpen(const float deltatime)
 
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_ESCAPE))
 	{
+		gManager->sound->System_Play(gManager->sound->system_cancel);
 		firstMenu->manageSelectFlag = true;
 		ChangeSequence(sequence::FIRSTMENU);
 		return true;
@@ -498,6 +523,7 @@ bool DungeonScene::SeqInventoryOpen(const float deltatime)
 
 	//もしインベントリを開いている時にenterが押されたら
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+		gManager->sound->System_Play(gManager->sound->system_select);
 		//現在のカーソルの位置のアイテムを取得する
 		auto itr = gManager->inventories[drawInventoryPage]->inventoryList.begin();
 		for (int i = 0; i < selectNum; ++i) {
@@ -536,6 +562,7 @@ bool DungeonScene::SeqInventoryUse(const float deltatime)
 {
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_ESCAPE))
 	{
+		gManager->sound->System_Play(gManager->sound->system_cancel);
 		use_usable->menu_live = false;
 		use_equip->menu_live = false;
 		use_nowEquip->menu_live = false;
@@ -550,6 +577,7 @@ bool DungeonScene::SeqInventoryUse(const float deltatime)
 	if (type < 2) {
 		//使うでEnterを押したら
 		if (use_usable->SelectNum == 0 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+			gManager->sound->System_Play(gManager->sound->system_select);
 			ItemUse(drawInventoryPage);
 			use_usable->menu_live = false;
 			itemBuf = nullptr;
@@ -558,6 +586,7 @@ bool DungeonScene::SeqInventoryUse(const float deltatime)
 		}
 		//投げるでEnterを押したら
 		else if (use_usable->SelectNum == 1 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+			gManager->sound->System_Play(gManager->sound->system_select);
 			firstMenu->menu_live = false;
 			ItemThrow(drawInventoryPage);
 			ChangeSequence(sequence::THROWITEMMOVE);
@@ -565,6 +594,7 @@ bool DungeonScene::SeqInventoryUse(const float deltatime)
 		}
 		//やめるでEnterを押したら
 		else if (use_usable->SelectNum == 2 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+			gManager->sound->System_Play(gManager->sound->system_cancel);
 			use_usable->menu_live = false;
 			itemBuf = nullptr;
 			ChangeSequence(sequence::INVENTORY_OPEN);
@@ -578,6 +608,7 @@ bool DungeonScene::SeqInventoryUse(const float deltatime)
 		if (eItem->GetIsEquiped()) {
 			//使うでEnterを押したら
 			if (use_nowEquip->SelectNum == 0 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+				gManager->sound->System_Play(gManager->sound->system_select);
 				ItemUse(drawInventoryPage);
 				use_equip->menu_live = false;
 				itemBuf = nullptr;
@@ -586,12 +617,14 @@ bool DungeonScene::SeqInventoryUse(const float deltatime)
 			}
 			//装備している　かつ　投げるでEnterを押したら
 			else if (use_nowEquip->SelectNum == 1 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+				gManager->sound->System_Play(gManager->sound->system_cancel);
 				gManager->addLog("装備中のアイテムは投げられません");
 				ChangeSequence(sequence::INVENTORY_OPEN);
 				return true;
 			}
 			//やめるでEnterを押したら
 			else if (use_nowEquip->SelectNum == 2 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+				gManager->sound->System_Play(gManager->sound->system_cancel);
 				use_equip->menu_live = false;
 				itemBuf = nullptr;
 				ChangeSequence(sequence::INVENTORY_OPEN);
@@ -601,6 +634,7 @@ bool DungeonScene::SeqInventoryUse(const float deltatime)
 		else {
 			//使うでEnterを押したら
 			if (use_equip->SelectNum == 0 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+				gManager->sound->System_Play(gManager->sound->system_select);
 				ItemUse(drawInventoryPage);
 				use_equip->menu_live = false;
 				itemBuf = nullptr;
@@ -609,6 +643,7 @@ bool DungeonScene::SeqInventoryUse(const float deltatime)
 			}//投げるでEnterを押したら
 			//装備していない　かつ　投げるでEnterを押したら
 			else if (use_equip->SelectNum == 1 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+				gManager->sound->System_Play(gManager->sound->system_select);
 				firstMenu->menu_live = false;
 				ItemThrow(drawInventoryPage);
 				ChangeSequence(sequence::THROWITEMMOVE);
@@ -616,6 +651,7 @@ bool DungeonScene::SeqInventoryUse(const float deltatime)
 			}
 			//やめるでEnterを押したら
 			else if (use_equip->SelectNum == 2 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+				gManager->sound->System_Play(gManager->sound->system_cancel);
 				use_equip->menu_live = false;
 				itemBuf = nullptr;
 				ChangeSequence(sequence::INVENTORY_OPEN);
@@ -647,6 +683,7 @@ bool DungeonScene::SeqAnimation(const float deltatime)
 	if (lastSeq == sequence::MAIN) {
 		//最初のフレームのみ実行
 		if (mainSequence.isStart()) {
+			gManager->sound->System_Play(gManager->sound->system_attack);
 			//アニメーションポジションの決定
 			player->SetAnimPos();
 			//アニメーション画像の最大Index番号の取得
@@ -665,14 +702,24 @@ bool DungeonScene::SeqAnimation(const float deltatime)
 	}
 	//エネミーの攻撃なら
 	else if (lastSeq == sequence::ENEMYACT) {
-		//エネミーのエフェクト座標を取得
-		//アニメーションをnew
-		//描画リストに登録
+		if (mainSequence.isStart()) {
+			gManager->sound->System_Play(gManager->sound->system_attack);
+			//アニメーション画像の最大Index番号の取得
+			int index = gManager->GetMaxIndex(GameManager::index::ATTACK);
+			for (auto attackEnemy : atackEnemies) {
+				//Animationクラスをnew
+				std::shared_ptr<Animation>anim = std::make_shared<Animation>("graphics/AttackAnim_30.png", player->pos, ATTACKEFFECTSPEED, index);
+				//描画リストに登録
+				drawAnimationList.emplace_back(anim);
+			}
+		}
 
 
-		//もしアニメーションが終わっているなら
-		ChangeSequence(sequence::ENEMYATTACK);
-		return true;
+		if (drawAnimationList.empty()) {
+			//もしアニメーションが終わっているなら
+			ChangeSequence(sequence::ENEMYATTACK);
+			return true;
+		}
 	}
 
 	return true;

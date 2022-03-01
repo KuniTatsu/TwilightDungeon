@@ -3,6 +3,7 @@
 #include"DxLib.h"
 #include"Player.h"
 #include"Camera.h"
+#include"SoundManager.h"
 #include"MenuWindow.h"
 #include"FadeControl.h"
 #include"SceneManager.h"
@@ -11,8 +12,11 @@
 using namespace std;
 
 extern GameManager* gManager;
+
 CampScene::CampScene()
 {
+	gManager->sound->BGM_Play(gManager->sound->bgm_town);
+
 	LoadMap("Csv/start_map_floor.csv", loadGroundMap, groundMapData);
 	LoadMap("Csv/start_map_top.csv", loadSurfaceMap, surfaceMapData);
 	LoadMap("Csv/start_map_cannotMove.csv", loadCollision, collisionData);
@@ -32,6 +36,7 @@ CampScene::CampScene()
 CampScene::~CampScene()
 {
 	delete dungeonIn;
+	StopSoundMem(gManager->sound->bgm_town);
 }
 
 void CampScene::Update()
@@ -112,6 +117,7 @@ bool CampScene::SeqMain(const float deltatime)
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
 		//469だったらシークエンスを移動する
 		if (GetSurfaceGraphicNum(gManager->WorldToLocal(player->pos).x, gManager->WorldToLocal(player->pos).y - 1) == 469) {
+			gManager->sound->System_Play(gManager->sound->system_select);
 			for (int i = 0; i < 5; ++i) {
 				if (GetGraphicNum(gManager->WorldToLocal(player->pos).x, gManager->WorldToLocal(player->pos).y) == PORTALPOINTNUM[i]) {
 					selectDungeon = i;
@@ -177,12 +183,14 @@ bool CampScene::SeqDungeonInMenu(const float deltatime)
 {
 
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_ESCAPE)) {
+		gManager->sound->System_Play(gManager->sound->system_cancel);
 		dungeonIn->menu_live = false;
 		ChangeSequence(sequence::MAIN);
 		return true;
 	}
 	//入るを選択したら
 	if (dungeonIn->SelectNum == 0 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+		gManager->sound->System_Play(gManager->sound->system_select);
 		//menuの上下を操作出来なくする
 		dungeonIn->manageSelectFlag = false;
 		//gManager->sound->System_Play(gManager->sound->system_select);

@@ -13,14 +13,11 @@ extern GameManager* gManager;
 
 TitleScene::TitleScene()
 {
-	//gManager->sound->BGM_Play(gManager->sound->bgm_title);
+	gManager->sound->BGM_Play(gManager->sound->bgm_title);
 	String_Color_Black = GetColor(0, 0, 0);
-
-	//title_gh = gManager->LoadGraphEx("graphics/sougenna.jpg");
-
 	enter_gh = gManager->LoadGraphEx("graphics/button_Enter.png");
 	title_Name_gh = gManager->LoadGraphEx("graphics/Title.png");
-	title_Background_gh = gManager->LoadGraphEx("graphics/title_Background_Edit_2.png");
+	title_Background_gh = gManager->LoadGraphEx("graphics/title_Background.png");
 
 	title_Menu = new Menu(384, 500, 250, 80, "graphics/WindowBase_02.png");
 	titleBack = new Menu(200, 40, 650, 120, "graphics/WindowBase_01.png");
@@ -31,7 +28,7 @@ TitleScene::~TitleScene()
 {
 	init = false;
 	nowFade = false;
-	//StopSoundMem(gManager->sound->bgm_title);
+	StopSoundMem(gManager->sound->bgm_title);
 	delete title_Menu;
 	delete titleBack;
 }
@@ -75,7 +72,7 @@ void TitleScene::Draw()
 	//タイトルの背景
 	titleBack->Menu_Draw();
 	//タイトル
-	DrawRotaGraph(512, 100, 1.28, 0, title_Name_gh, true);
+	DrawRotaGraph(512, 100, 1.5, 0, title_Name_gh, true);
 
 
 	//タイトルメニューの描画

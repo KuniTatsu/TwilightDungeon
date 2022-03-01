@@ -5,6 +5,7 @@
 #include"Item.h"
 #include"equipItem.h"
 #include"../GameManager.h"
+#include"../SoundManager.h"
 
 extern GameManager* gManager;
 Inventory::Inventory(int MyInventoryNum)
@@ -46,9 +47,11 @@ void Inventory::AddInventory(Item* item)
 void Inventory::CursorMove()
 {
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_UP)) {
+		gManager->sound->System_Play(gManager->sound->system_move);
 		selectCursor = (selectCursor + (itemNum - 1)) % itemNum;
 	}
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_DOWN)) {
+		gManager->sound->System_Play(gManager->sound->system_move);
 		selectCursor = (selectCursor + 1) % itemNum;
 	}
 }

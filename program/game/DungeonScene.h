@@ -56,6 +56,9 @@ private:
 	std::list<std::shared_ptr<Enemy>>atackEnemies;
 	std::list<std::shared_ptr<Enemy>>::iterator itr;
 
+	//****************************************************
+	//UI関連のクラスのインスタンス
+	
 	//次の回に行けるwindow
 	Menu* nextLevelWindow = nullptr;
 	Menu* menuOpen = nullptr;
@@ -67,6 +70,8 @@ private:
 	MenuWindow* use_equip = nullptr;
 
 	MenuWindow* use_nowEquip = nullptr;
+	MenuWindow* firstMenu = nullptr;
+	//****************************************************
 
 	enum useType {
 		USABLE,
@@ -74,8 +79,6 @@ private:
 		NOWEQUIP
 	};
 	useType usetype = USABLE;
-
-	MenuWindow* firstMenu = nullptr;
 	std::shared_ptr<Player> player = nullptr;
 
 	//飛んでいるアイテムリスト
@@ -86,6 +89,7 @@ private:
 	std::shared_ptr<EnemyManager>eManager = nullptr;
 
 	std::list<std::shared_ptr<Animation>>drawAnimationList;
+	void initDungeonScene();
 
 	void UpdateAnimation();
 	void DrawAnimation();
@@ -94,8 +98,8 @@ private:
 	const int ATTACKEFFECTSPEED = 10;
 	//int ATTACKEFFECTINDEX = 5;
 
+	void ReturnCamp();
 
-	//**debug
 	t2k::Vector3 playerPos = {};
 
 	t2k::Sequence<DungeonScene*> mainSequence =

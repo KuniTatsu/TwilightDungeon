@@ -16,40 +16,15 @@ void EnemyManager::CreateEnemy(int Id, int Floor)
 {
 	std::shared_ptr<Enemy> enemy;
 
-	////ロードしたエネミーの数分だけループさせてIDが一致する敵を選び出すようにへんこうする　
-	//for (int i = 0; i < enemyList.size(); ++i) {
-	//	//もしIdが一緒ならenemyに入れる
-	//	if (Id == std::atoi(enemyList[i][0].c_str())) {
-	//		enemy = GetEnemyStatus(i, Floor);
-	//		break;
-	//	}
-	//}
-
-	switch (Id)
-	{
-	case 100:
-		enemy = GetEnemyStatus(0, Floor);
-		//(*enemy)->skill = {};
-		break;
-	case 101:
-		enemy = GetEnemyStatus(1, Floor);
-		break;
-	case 102:
-		enemy = GetEnemyStatus(2, Floor);
-		break;
-	case 103:
-		enemy = GetEnemyStatus(3, Floor);
-		break;
-	case 104:
-		enemy = GetEnemyStatus(4, Floor);
-		break;
-	case 105:
-		enemy = GetEnemyStatus(5, Floor);
-		break;
-	default:
-		break;
+	//ロードしたエネミーの数分だけループさせてIDが一致する敵を選び出すようにへんこうする　
+	for (int i = 0; i < enemyList.size(); ++i) {
+		//もしIdが一緒ならenemyに入れる
+		if (Id == std::atoi(enemyList[i][0].c_str())) {
+			enemy = GetEnemyStatus(i, Floor);
+			break;
+		}
 	}
-
+	
 	//敵同士の座標被りチェック
 	while (1) {
 		//座標セット

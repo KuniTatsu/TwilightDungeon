@@ -121,7 +121,7 @@ public:
 	//プレイヤーの生成
 	void MakePlayer(SpawnScene nowScene);
 
-
+	
 
 	enum class Dungeon : uint32_t {
 		TOWER,
@@ -144,6 +144,15 @@ public:
 
 	//ダンジョンマップの生成
 	void CreateMap(Dungeon dungeonName);
+
+	//ダンジョンマップごとのBGM再生
+	void RunDungeonBgm();
+
+	//BGM停止
+	void StopBgm();
+
+	//効果音
+	void RunSystemSound();
 
 	//マップの描画
 	void MapDraw();

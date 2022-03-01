@@ -1,7 +1,6 @@
 ///*****Description*****
 ///音声に関するクラス
 ///各種音声データと再生関数を持つ
-///優先順位の都合上未着手
 ///*********************
 #pragma once
 
@@ -10,15 +9,16 @@ class Sound {
 
 
 public:
-	int bgm_training = 0;
-	/*int bgm_local = 0;
-	int bgm_battle = 0;*/
+	int bgm_town = 0;
+	int bgm_tower = 0;
+	int bgm_forest = 0;
+
 	int bgm_title = 0;
 
 	int system_select = 0;
 	int system_move = 0;
 	int system_cancel = 0;
-	int system_run = 0;
+	int system_attack = 0;
 
 	int system_statusUp = 0;
 

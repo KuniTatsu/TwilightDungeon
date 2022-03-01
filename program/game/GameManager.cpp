@@ -233,20 +233,27 @@ void GameManager::initGameManager()
 	inventory = new Inventory(0);
 	inventories.emplace_back(inventory);
 
-	SceneManager::ChangeScene(SceneManager::SCENE::TITLE);
-	//shared_inventory = std::make_shared<Inventory>(0);
-	//sharedInventories.emplace_back(shared_inventory);
-
-
 	sound = new Sound();
 	fControl = new FadeControl();
 
-
+	SceneManager::ChangeScene(SceneManager::SCENE::TITLE);
+	//shared_inventory = std::make_shared<Inventory>(0);
+	//sharedInventories.emplace_back(shared_inventory);
 	deitatime_ = 0;
 
 }
 
+ void GameManager::RunDungeonBgm()
+{
+	 if (nowDungeon == Dungeon::TOWER)sound->BGM_Play(sound->bgm_tower);
+	 else if (nowDungeon == Dungeon::FOREST)sound->BGM_Play(sound->bgm_forest);
+}
 
+ void GameManager::StopBgm()
+ {
+	 if (nowDungeon == Dungeon::TOWER)StopSoundMem(sound->bgm_tower);
+	 else if (nowDungeon == Dungeon::FOREST)StopSoundMem(sound->bgm_forest);
+ }
 int GameManager::LoadGraphEx(std::string gh)
 {
 
@@ -263,6 +270,7 @@ int GameManager::LoadGraphEx(std::string gh)
 
 	return ghmap[gh];
 }
+
 //a‚©‚çb‚Ü‚Å‚Ì’l‚©‚çƒ‰ƒ“ƒ_ƒ€‚ÉŽæ“¾‚·‚é
 int GameManager::GetRandEx(int a, int b)
 {
@@ -280,6 +288,10 @@ int GameManager::GetRandEx(int a, int b)
 		return random;
 	}
 	return 0;
+}
+
+void GameManager::RunSystemSound()
+{
 }
 
 

@@ -40,7 +40,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	// キー入力制御の初期化
 	t2k::Input::initialize();
 
-
+	SetMainWindowText("Twilight Dungeon");
 	// メッセージループ
 	while( 1 )
 	{

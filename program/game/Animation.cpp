@@ -32,12 +32,5 @@ void Animation::Update()
 
 void Animation::Draw()
 {
-	//‘I‘ð‚³‚ê‚½‰æ‘œ‚ð•`‰æ‚·‚é
-	/*float x = pos.x - gManager->camera->cameraPos.x;
-	float y = pos.y - gManager->camera->cameraPos.y;*/
-
-	//DrawRotaGraph(pos.x - gManager->camera->cameraPos.x, pos.y - gManager->camera->cameraPos.x, 1, 0, drawGh, true);
 	DrawRotaGraph(pos.x - gManager->camera->cameraPos.x, pos.y - gManager->camera->cameraPos.y, 1, 0, drawGh, true);
-	//DrawRotaGraph(pos.x, pos.y, 1, 0, drawGh, true);
-	//DrawRotaGraph(500, 500, 1, 0, drawGh, true);
 }

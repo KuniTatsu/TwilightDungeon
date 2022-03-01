@@ -3,13 +3,16 @@
 
 Sound::Sound()
 {
-	/*bgm_title = LoadSoundMem("sound/title_bgm.mp3");
-	bgm_training = LoadSoundMem("sound/localmap_bgm.mp3");
+	bgm_town = LoadSoundMem("sound/bgm_town.mp3");
+	bgm_tower = LoadSoundMem("sound/bgm_tower.mp3");
+	bgm_forest = LoadSoundMem("sound/bgm_forest.mp3");
+	bgm_title = LoadSoundMem("sound/bgm_title.mp3");
 
 	system_select = LoadSoundMem("sound/system_select.mp3");
 	system_move = LoadSoundMem("sound/system_move.mp3");
 	system_cancel = LoadSoundMem("sound/system_cancel.mp3");
-	system_statusUp = LoadSoundMem("sound/system_statusUp.mp3");*/
+	system_attack = LoadSoundMem("sound/system_attack.mp3");
+
 }
 
 Sound::~Sound()
