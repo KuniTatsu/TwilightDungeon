@@ -93,7 +93,7 @@ public:
 	//インベントリからアイテムを削除する関数
 	void PopItemFromInventory(const int NowInventoryId);
 
-
+	
 
 	//一度読み込んだghを保存するmap
 	std::unordered_map<std::string, int> ghmap;
@@ -192,8 +192,17 @@ public:
 	//カメラの移動
 	void CameraMove(int width, int height, int dir);
 
-
-
+	//特殊なウィンドウの表示関数
+	//arg1 windowX 最大に開いた時の横の大きさ
+	//arg2 windowY 最大に開いた時の縦の大きさ
+	//arg3 xSpeed  横に開く際のタイマースピード
+	//arg4 ySpeed　縦に開く際のタイマースピード
+	//arg5 centerX 画像描画中心X座標
+	//arg6 centerY 画像描画中心Y座標
+	//arg7 gh	   表示する画像のグラフィックハンドル
+	void DrawOpenWindow(float windowX,float windowY,int xCount,float yCount,int gh);
+	//ウィンドウが開く際のタイマー
+	float openTimer = 0;
 
 	enum class setStartPosType {
 		PLAYER,

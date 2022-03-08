@@ -12,7 +12,7 @@ Inventory::Inventory(int MyInventoryNum)
 {
 	cursorGh = gManager->LoadGraphEx("graphics/menuCursor.png");
 	selectItemBackGh = gManager->LoadGraphEx("graphics/selectItemBack.png");
-	myInventoryNum = MyInventoryNum+1;
+	myInventoryNum = MyInventoryNum + 1;
 }
 
 Inventory::~Inventory()
@@ -47,10 +47,12 @@ void Inventory::AddInventory(Item* item)
 void Inventory::CursorMove()
 {
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_UP)) {
+		itemNum = GetItemCount();
 		gManager->sound->System_Play(gManager->sound->system_move);
 		selectCursor = (selectCursor + (itemNum - 1)) % itemNum;
 	}
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_DOWN)) {
+		itemNum = GetItemCount();
 		gManager->sound->System_Play(gManager->sound->system_move);
 		selectCursor = (selectCursor + 1) % itemNum;
 	}

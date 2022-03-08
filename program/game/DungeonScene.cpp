@@ -923,6 +923,11 @@ void DungeonScene::DrawInventory()
 
 void DungeonScene::ChangeInventory()
 {
+	//上下移動
+	gManager->inventories[drawInventoryPage]->CursorMove();
+
+	//インベントリが一つだけならreturn
+	if (gManager->inventoryNum == 0)return;
 	//インベントリを切り替える
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RIGHT)) {
 		drawInventoryPage = (drawInventoryPage + 1) % (gManager->inventoryNum + 1);
@@ -933,8 +938,7 @@ void DungeonScene::ChangeInventory()
 		gManager->inventories[drawInventoryPage]->CursorReset();
 	}
 	if (gManager->inventories[drawInventoryPage]->inventoryList.empty())return;
-	//上下移動
-	gManager->inventories[drawInventoryPage]->CursorMove();
+	
 }
 
 void DungeonScene::SpawnItem(int ItemId)
@@ -999,12 +1003,18 @@ void DungeonScene::ItemUse(/*int selectNum, Inventory* inventory,*/ int inventor
 		gManager->PopItemFromInventory(inventoryPage);
 		//ページ内のアイテムを全て消費してページを消去したあとだったら
 		if (gManager->isDeleteInventory) {
+
 			//gManager->ForceInventoryChange(inventoryPage);
+			//最初のページならやめる
 			if (drawInventoryPage == 0) {
 				gManager->isDeleteInventory = false;
 				return;
 			}
-			drawInventoryPage--;
+			//もしいま描画しているインベントリが最後のページなら描画ページを1減らす
+			if (drawInventoryPage == gManager->inventoryNum + 1) {
+				drawInventoryPage--;
+			}
+			//drawInventoryPage--;
 			gManager->isDeleteInventory = false;
 		}
 	}//投擲消費アイテムだったら
@@ -1012,7 +1022,6 @@ void DungeonScene::ItemUse(/*int selectNum, Inventory* inventory,*/ int inventor
 		//投げるアイテムをpopアイテムとして描画する
 		//投げる関数を呼ぶ
 		ItemThrow(inventoryPage);
-
 
 		//投擲アイテムは使うでも投げるでもアイテムを射出する
 

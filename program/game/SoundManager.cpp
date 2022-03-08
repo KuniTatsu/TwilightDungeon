@@ -21,6 +21,7 @@ Sound::~Sound()
 
 void Sound::BGM_Play(int bgm)
 {
+	ChangeVolumeSoundMem(255 * 80 / 100, bgm);
 	PlaySoundMem(bgm, DX_PLAYTYPE_LOOP);
 }
 

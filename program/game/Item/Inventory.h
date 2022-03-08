@@ -20,6 +20,10 @@ public:
 	std::list<Item*> inventoryList;
 	//std::list<std::shared_ptr<Item>> inventorySharedList;
 
+	//インベントリ内のアイテム数を取得する関数
+	inline int GetItemCount() {
+		return inventoryList.size();
+	}
 	//インベントリにアイテムを追加する関数
 	void AddInventory(Item* item);
 

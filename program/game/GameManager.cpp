@@ -36,7 +36,7 @@ GameManager::~GameManager()
 
 }
 
-void GameManager::AddItemToInventory(int itemId)
+void GameManager::AddItemToInventory(const int itemId)
 {
 	//今のinventoryの持つアイテム配列がいっぱいなら
 	if (inventories[inventoryNum]->inventoryList.size() >= 10) {
@@ -83,7 +83,7 @@ void GameManager::AddItemToInventory(int itemId)
 
 }
 
-void GameManager::PopItemFromInventory(int NowInventoryId)
+void GameManager::PopItemFromInventory(const int NowInventoryId)
 {
 	int selectNum = inventories[NowInventoryId]->GetCursorNum();
 
@@ -102,7 +102,7 @@ void GameManager::PopItemFromInventory(int NowInventoryId)
 	//itr = sharedInventories[NowInventoryId]->inventoryList.erase(itr);
 
 	inventories[NowInventoryId]->SetCursorNum(-1);
-	inventories[NowInventoryId]->SetItemNum(-1);
+	//inventories[NowInventoryId]->SetItemNum(-1);
 
 	//sharedInventories[NowInventoryId]->SetCursorNum(-1);
 
@@ -134,6 +134,12 @@ void GameManager::PopItemFromInventory(int NowInventoryId)
 			checkInventoryNum++;
 		}
 	}
+	//最初のインベントリ内なら
+	else {
+		//インベントリ内のアイテム数を1減らす
+		inventories[NowInventoryId]->SetItemNum(-1);
+	}
+	//空のインベントリを消す処理
 	if (inventories[inventoryNum]->inventoryList.empty()) {
 		if (inventoryNum != 0) {
 			delete inventories[inventoryNum];
@@ -153,13 +159,13 @@ void GameManager::LoadMaxIndex()
 	maxIndex = t2k::loadCsv("Csv/GraphicMaxIndex.csv");
 }
 
-Item* GameManager::GetItemData(int ItemId)
+Item* GameManager::GetItemData(const int ItemId)
 {
 	Item* item = iManager->getItemData(ItemId);
 	return item;
 }
 
-bool GameManager::OutOfRangeInItem(int ItemId)
+bool GameManager::OutOfRangeInItem(const int ItemId)
 {
 	if (ItemId > 0 && ItemId < iManager->itemSumNum + 1)return true;
 	return false;
@@ -181,23 +187,20 @@ bool GameManager::PopDetectItem(Item* item, std::list<Item*>& list) {
 }
 void GameManager::Update()
 {
+	//debug
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_I)) {
 		AddItemToInventory(2);
 	}
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_O)) {
 		AddItemToInventory(3);
 	}
+	//
 	SceneManager::Update();
 
-	/*if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_F4) && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_F5)) {
-		t2k::debugTrace("同時押し成功");
-	}*/
 }
 void GameManager::Draw()
 {
 	SceneManager::Render();
-
-	//debug
 
 	if (haveItemList.empty())return;
 
@@ -243,17 +246,17 @@ void GameManager::initGameManager()
 
 }
 
- void GameManager::RunDungeonBgm()
+void GameManager::RunDungeonBgm()
 {
-	 if (nowDungeon == Dungeon::TOWER)sound->BGM_Play(sound->bgm_tower);
-	 else if (nowDungeon == Dungeon::FOREST)sound->BGM_Play(sound->bgm_forest);
+	if (nowDungeon == Dungeon::TOWER)sound->BGM_Play(sound->bgm_tower);
+	else if (nowDungeon == Dungeon::FOREST)sound->BGM_Play(sound->bgm_forest);
 }
 
- void GameManager::StopBgm()
- {
-	 if (nowDungeon == Dungeon::TOWER)StopSoundMem(sound->bgm_tower);
-	 else if (nowDungeon == Dungeon::FOREST)StopSoundMem(sound->bgm_forest);
- }
+void GameManager::StopBgm()
+{
+	if (nowDungeon == Dungeon::TOWER)StopSoundMem(sound->bgm_tower);
+	else if (nowDungeon == Dungeon::FOREST)StopSoundMem(sound->bgm_forest);
+}
 int GameManager::LoadGraphEx(std::string gh)
 {
 
@@ -332,6 +335,29 @@ t2k::Vector3 GameManager::SetStartPos(setStartPosType num)
 	t2k::Vector3 Pos = map->MapToWorld(x, y);
 
 	return Pos;
+}
+
+void GameManager::DrawOpenWindow(float windowX, float windowY, int xCount, float yCount, int gh)
+{
+	// DrawRotaGraph3( 320, 240, 0, 0, 2.0f, 1.5f, PI / 2, GHandle, TRUE ) ;
+	/*DrawRotaGraph3(
+	int x, int y,
+		int cx, int cy,
+		double ExtRateX, double ExtRateY,
+		double Angle, int GrHandle,
+		int TransFlag, int TurnFlag );
+		*/
+		//タイマーを回し、一定周期で横に拡大する
+		//特定の大きさになったら縦に拡大する
+		//縦も特定の大きさになったら拡大をやめ、そのまま表示する
+	if (openTimer += deitatime_ > xCount) {
+		openTimer = 0;
+
+	}
+
+
+
+	
 }
 
 void GameManager::InitWayPointVector(int initroomNum)
