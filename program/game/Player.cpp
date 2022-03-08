@@ -316,6 +316,16 @@ void Player::MoveToDir(int dir, t2k::Vector3 mapPos)
 
 	gManager->setPlayerRoomNum(gManager->CheckIsThere(mapPos));
 }
+void Player::RemoveAllEquip()
+{
+	for (int i = 0; i < 6; ++i) {
+		myEquip[i] = nullptr;
+	}
+	GetSumStatusFromEquipment();
+	for (int i = 0; i < 4; ++i) {
+		ChangeStatus(i, statuses[i], 1);
+	}
+}
 //リファクタリング必須　あとで変える:優先度中
 //プレイヤーステータスの描画
 void Player::DrawPlayerStatus(int x, int y, int width, int height)
@@ -339,6 +349,20 @@ void Player::DrawPlayerStatus(int x, int y, int width, int height)
 	}
 
 	DrawStringEx(x + 10, y + 120, -1, "経験値:%d/%d", nowExp, nextLevelExp);
+
+}
+
+void Player::DeadPlayer()
+{
+	nowExp = 0;
+	level = 1;
+	//ステータスの初期化
+	SetLevelStatus();
+	//必要経験値の初期化
+	SetNextExp();
+	//装備アイテムの破棄
+	RemoveAllEquip();
+	nowHp = hp;
 
 }
 

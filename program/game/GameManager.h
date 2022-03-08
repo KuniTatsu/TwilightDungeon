@@ -346,6 +346,15 @@ public:
 		else if (haveTwilightFragment < 0)haveTwilightFragment = 0;
 	}
 
+	//プレイヤー死亡時に呼ぶ関数
+	void PlayerDead();
+	//ログの消去
+	inline void ResetLog() {
+		for (int i = 0; i < 7; ++i) {
+			Log[i] = "";
+		}
+	}
+
 private:
 	std::string Log[7] = {};
 

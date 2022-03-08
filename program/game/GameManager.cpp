@@ -197,6 +197,9 @@ void GameManager::Update()
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_W)) {
 		AddItemToInventory(11);
 	}
+	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_G)) {
+		player->TakeHpEffect(-100);
+	}
 	//
 	SceneManager::Update();
 
@@ -528,6 +531,32 @@ void GameManager::SetLiveEnemyList(std::list<std::shared_ptr<Enemy>> list)
 	liveEnemyList = list;
 }
 
+void GameManager::PlayerDead()
+{
+	//プレイヤーのステータス関係処理
+	player->DeadPlayer();
+	//ログ消去
+	ResetLog();
+
+	//インベントリのアイテムを全て消去する
+	for (auto inventory : inventories) {
+		inventory->inventoryList.clear();
+	}
+	//インベントリを削除
+	for (int i = inventoryNum; i >= 0; --i) {
+		delete inventories[i];
+		inventories[i] = nullptr;
+		inventories.pop_back();
+	}
+	//インベントリの個数をリセット
+	inventoryNum = 0;
+	//インベントリを一つだけ生成
+	inventory = new Inventory(0);
+	inventories.emplace_back(inventory);
+	//キャンプシーンスポーン位置
+	player->pos = SpawnPlayerCamp();
+}
+
 void GameManager::Zoom()
 {
 	if (t2k::Input::isKeyDown(t2k::Input::KEYBORD_Z)) {
@@ -639,10 +668,12 @@ void GameManager::MapDraw()
 void GameManager::CreateDungeon(Dungeon dungeonName) {
 
 	if (map != nullptr)delete map;
-	//InitWayPointVector();
+	ResetLog();
 	wayPoint.clear();
 	nowDungeon = dungeonName;
 	CreateMap(dungeonName);
+	addLog(GetDungeonName(dungeonName) + "に入場しました");
+
 	//マップ自動生成
 	map->DivideStart(MAPWIDTH, MAPHEIGHT, map);
 	//階段のマップ座標の取得
@@ -661,7 +692,6 @@ void GameManager::CreateMap(Dungeon dungeonName)
 {
 	std::vector<int> handles = GetGraphicHandles(dungeonName);
 	map = new Map(MAPWIDTH, MAPHEIGHT, handles);
-
 }
 
 int GameManager::GetDifStatus(int subId, int equipType, int amount)

@@ -90,6 +90,10 @@ void DungeonScene::Update()
 	}
 	UpdateAnimation();
 	CheckAnimLive();
+
+	if (gManager->player->GetStatus(0) <= 0) {
+		WhenDeadPlayer();
+	}
 }
 
 void DungeonScene::Draw()
@@ -222,6 +226,7 @@ void DungeonScene::initDungeonScene()
 	EButton = gManager->LoadGraphEx("graphics/button_E.png");
 
 	nextLevelWindow = new Menu(300, 300, 300, 200, "graphics/WindowBase_01.png");
+	gameOver = new Menu(100, 100, 924, 668, "graphics/WindowBase_01.png");
 	menuOpen = new Menu(20, 20, 100, 100, "graphics/WindowBase_01.png");
 	inventory = new Menu(255, 50, 420, 340, "graphics/WindowBase_01.png");
 	log = new Menu(12, 560, 1000, 200, "graphics/WindowBase_01.png");
@@ -1075,6 +1080,17 @@ void DungeonScene::DeleteDeadEnemy()
 			itr++;
 		}
 	}
+}
+
+void DungeonScene::WhenDeadPlayer()
+{
+	//プレイヤーとインベントリの初期化
+	gManager->PlayerDead();
+	//ダンジョンのレベルの初期化
+	dungeonLevel = 1;
+	//キャンプシーンに戻る
+	SceneManager::ChangeScene(SceneManager::SCENE::CAMP);
+	return;
 }
 
 

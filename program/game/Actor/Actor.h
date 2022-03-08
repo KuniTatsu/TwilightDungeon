@@ -77,13 +77,6 @@ public:
 	virtual void Draw();
 protected:
 	int actId;
-	//enum dir {
-	//	UP,
-	//	RIGHT,
-	//	DOWN,
-	//	LEFT
-	//};
-	//dir mydir = UP;
 
 	int id = 0;
 	int type = 0;

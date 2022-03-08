@@ -57,6 +57,9 @@ public:
 
 	//プレイヤーのステータス,装備を描画する関数
 	void DrawPlayerStatus(int x,int y,int width,int height);
+
+	//プレイヤー死亡時の処理
+	void DeadPlayer();
 private:
 
 	t2k::Vector3 playerInMap;
@@ -98,6 +101,7 @@ private:
 	void DashToDir(const int dir, const t2k::Vector3 mapPos);
 	void MoveToDir(const int dir, const t2k::Vector3 mapPos);
 
-
+	//装備をすべて外す関数
+	void RemoveAllEquip();
 
 };

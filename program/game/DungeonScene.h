@@ -67,6 +67,7 @@ private:
 	Menu* desc = nullptr;
 	Menu* status = nullptr;
 	Menu* playerStatus = nullptr;
+	Menu* gameOver = nullptr;
 	MenuWindow* use_usable = nullptr;
 	MenuWindow* use_equip = nullptr;
 
@@ -207,9 +208,10 @@ private:
 
 	//アイテムの使用関数
 	void ItemUse(const int inventoryPage);
-
+	//アイテム投擲関数
 	void ItemThrow(const int inventoryPage);
-
+	//死んだ敵の消去
 	void DeleteDeadEnemy();
-
+	//プレイヤー死亡処理
+	void WhenDeadPlayer();
 };
