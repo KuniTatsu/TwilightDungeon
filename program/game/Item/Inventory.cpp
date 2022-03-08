@@ -119,9 +119,10 @@ void Inventory::DrawEquipItemStatus(const int x, const int y)
 		}
 		itr++;
 	}
-
-	auto item = static_cast<equipItem*>((*itr));
-	item->DrawEquipItemStatus(x, y,item->GetSubId());
+	if ((*itr)->getItemData(1) >= 2) {
+		auto item = static_cast<equipItem*>((*itr));
+		item->DrawEquipItemStatus(x, y, item->GetSubId());
+	}
 
 }
 

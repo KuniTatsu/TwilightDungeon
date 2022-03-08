@@ -26,6 +26,15 @@ CampScene::CampScene()
 	player = gManager->GetPlayer();
 	gManager->CameraReset();
 
+	fragmentsGh[0] = gManager->LoadGraphEx("graphics/fragment_0.png");
+	fragmentsGh[1] = gManager->LoadGraphEx("graphics/fragment_1.png");
+	fragmentsGh[2] = gManager->LoadGraphEx("graphics/fragment_2.png");
+	fragmentsGh[3] = gManager->LoadGraphEx("graphics/fragment_3.png");
+	fragmentsGh[4] = gManager->LoadGraphEx("graphics/fragment_4.png");
+	fragmentsGh[5] = gManager->LoadGraphEx("graphics/fragment_Full.png");
+
+	fragBackGround = gManager->LoadGraphEx("graphics/fragment_Back.png");
+
 	MenuWindow::MenuElement_t* menu_usable = new MenuWindow::MenuElement_t[]{
 	{650,480,"ダンジョンに入る",0},
 	{650,510,"やめる",1}
@@ -41,6 +50,14 @@ CampScene::~CampScene()
 
 void CampScene::Update()
 {
+	//debug
+	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_F)) {
+		gManager->SetFragmentNum(1);
+		t2k::debugTrace("\n黄昏のかけらを1足します\n");
+		t2k::debugTrace("\n黄昏のかけら個数:%d\n",gManager->GetFragmentNum());
+	}
+	 
+	
 	//現在のシークエンスの処理
 	mainSequence.update(gManager->deitatime_);
 
@@ -74,6 +91,13 @@ void CampScene::Draw()
 	if (nowSeq == sequence::DUNGEONIN) {
 		dungeonIn->All();
 		DrawStringEx(650, 450, GetColor(0, 0, 0), "%s", DUNGEONNAME[selectDungeon].c_str());
+	}
+	if (drawFrag) {
+		DrawRotaGraph(512, 384, 1, 0, fragBackGround, false);
+		DrawRotaGraph(512, 384, 1, 0, fragmentsGh[gManager->GetFragmentNum()], true);
+		SetFontSize(25);
+		DrawStringEx(300, 100, -1, "現在所持している黄昏のかけら:%d個", gManager->GetFragmentNum());
+		SetFontSize(16);
 	}
 }
 int CampScene::GetGraphicHandle(int num)
@@ -114,6 +138,13 @@ void CampScene::DrawMap(vector<vector<int>>intData)
 
 bool CampScene::SeqMain(const float deltatime)
 {
+	//黄昏のかけら画面を描画
+	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_SPACE)) {
+		if (!drawFrag)drawFrag = true;
+		else drawFrag = false;
+	}
+
+
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
 		//469だったらシークエンスを移動する
 		if (GetSurfaceGraphicNum(gManager->WorldToLocal(player->pos).x, gManager->WorldToLocal(player->pos).y - 1) == 469) {

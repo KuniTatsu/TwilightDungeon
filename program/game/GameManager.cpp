@@ -663,12 +663,7 @@ void GameManager::CreateMap(Dungeon dungeonName)
 	map = new Map(MAPWIDTH, MAPHEIGHT, handles);
 
 }
-/*
-int subId = item->getItemData(9);
-	//1->•Ší,2->head,3->chest,4->glove,5->boots,6->shield
 
-		//‚à‚¤‚·‚Å‚É‘•”õ‚µ‚Ä‚¢‚é‚à‚Ì‚ª‚ ‚ê‚Î
-	if (myEquip[subId - 1] != nullptr) {*/
 int GameManager::GetDifStatus(int subId, int equipType, int amount)
 {
 	int dif = amount - player->GetStatusFromEquipment(subId, equipType);

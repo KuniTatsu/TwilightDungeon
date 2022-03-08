@@ -74,14 +74,6 @@ void equipItem::ChangeEquip()
 
 void equipItem::DrawEquipItemStatus(int x, int y, int subId)
 {
-
-	//åªç›ëïîıíÜÇÃÉAÉCÉeÉÄÇ∆ÇÃç∑
-	/*int difHp = gManager->GetDifStatus(subId, static_cast<uint32_t>(STATUS::HP), hp);
-	int difAttack = gManager->GetDifStatus(subId, static_cast<uint32_t>(STATUS::ATTACK), attack);
-	int difDefence = gManager->GetDifStatus(subId, static_cast<uint32_t>(STATUS::DEFENCE), defence);
-	int difSpeed = gManager->GetDifStatus(subId, static_cast<uint32_t>(STATUS::SPEED), speed);*/
-
-
 	DrawStringEx(x, y, -1, "HP:%dè„è∏", hp);
 	DrawStringEx(x, y + DIS, -1, "çUåÇóÕ%dè„è∏", attack);
 	DrawStringEx(x, y + DIS * 2, -1, "ñhå‰óÕ:%dè„è∏", defence);

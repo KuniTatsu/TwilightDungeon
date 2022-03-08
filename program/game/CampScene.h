@@ -30,6 +30,10 @@ public:
 	}
 
 private:
+	//黄昏のかけらのグラフィックハンドル
+	int fragmentsGh[6];
+	//背景
+	int fragBackGround = 0;
 
 	std::shared_ptr<Player>player;
 
@@ -99,5 +103,5 @@ private:
 	//Sequenceを移動させる関数,enumも一緒に変更する
 	void ChangeSequence(const sequence seq);
 
-
+	bool drawFrag = false;
 };

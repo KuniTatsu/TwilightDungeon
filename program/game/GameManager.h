@@ -337,6 +337,14 @@ public:
 	inline Camera* GetCamera() {
 		return camera;
 	}
+	inline int GetFragmentNum() {
+		return haveTwilightFragment;
+	}
+	inline void SetFragmentNum(int num) {
+		haveTwilightFragment += num;
+		if (haveTwilightFragment > 5)haveTwilightFragment = 5;
+		else if (haveTwilightFragment < 0)haveTwilightFragment = 0;
+	}
 
 private:
 	std::string Log[7] = {};
@@ -344,7 +352,9 @@ private:
 	int test = 0;
 	//アイテムの総数
 	int itemNum = 0;
-	//std::vector<int> haveItemList;
+	
+	//所持している黄昏のかけらの数 そのうち配列でどこのダンジョンからどれが手に入るか決めるかも
+	int haveTwilightFragment = 0;
 
 	void Zoom();
 
