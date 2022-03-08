@@ -26,7 +26,17 @@ public:
 	inline bool GetIsEquiped() {
 		return isEquiped;
 	}
-	
+	//subId取得
+	inline int GetSubId(){
+		return subId;
+	}
+
+	//インベントリ内の装備アイテムのステータス描画
+	//arg1:描画X座標
+	//arg2:描画Y座標
+	//arg3:選択中アイテムのsubId
+	void DrawEquipItemStatus(int x, int y,int subId);
+
 private:
 
 	int hp = 0;
@@ -37,4 +47,26 @@ private:
 	int subId = 0;
 
 	bool isEquiped = false;
+
+	//描画用間隔の定数
+	const int DIS = 30;
+
+	enum class STATUS : uint32_t {
+		HP,
+		ATTACK,
+		DEFENCE,
+		SPEED,
+		STATUSMAX
+	};
+	//アイテムステータスの配列
+	int equipStatus[static_cast<uint32_t>(STATUS::STATUSMAX)];
+
+
+	//アイテムのステータスを一定範囲内でランダムにする関数
+	int SetRandomStatus(int CenterNum);
+
+	//装備中アイテムとの差を取得する関数
+	void SetDifNumEquipment(int subId);
+	//装備中アイテムとの差
+	int difNum[static_cast<uint32_t>(STATUS::STATUSMAX)];
 };

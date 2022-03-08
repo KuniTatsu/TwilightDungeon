@@ -194,6 +194,9 @@ void GameManager::Update()
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_O)) {
 		AddItemToInventory(3);
 	}
+	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_W)) {
+		AddItemToInventory(11);
+	}
 	//
 	SceneManager::Update();
 
@@ -244,6 +247,8 @@ void GameManager::initGameManager()
 	//sharedInventories.emplace_back(shared_inventory);
 	deitatime_ = 0;
 
+	red = GetColor(255, 0, 0);
+	blue = GetColor(0, 0, 255);
 }
 
 void GameManager::RunDungeonBgm()
@@ -278,15 +283,15 @@ int GameManager::LoadGraphEx(std::string gh)
 int GameManager::GetRandEx(int a, int b)
 {
 	if (a > b) {
-		int diff = a - b;
-		int random = GetRand(diff) + b;
+		int diff = static_cast<int>(a - b);
+		int random = static_cast<int>(GetRand(diff) + b);
 		//int random = (diff) ? ( rand() % diff ) + b : b ;
 		//
 		return random;
 	}
 	else {
-		int diff = b - a;
-		int random = GetRand(diff) + a;
+		int diff = static_cast<int>(b - a);
+		int random = static_cast<int>(GetRand(diff) + a);
 		//int random = (diff) ? ( rand() % diff ) + a : a ;
 		return random;
 	}
@@ -357,7 +362,7 @@ void GameManager::DrawOpenWindow(float windowX, float windowY, int xCount, float
 
 
 
-	
+
 }
 
 void GameManager::InitWayPointVector(int initroomNum)
@@ -657,6 +662,22 @@ void GameManager::CreateMap(Dungeon dungeonName)
 	std::vector<int> handles = GetGraphicHandles(dungeonName);
 	map = new Map(MAPWIDTH, MAPHEIGHT, handles);
 
+}
+/*
+int subId = item->getItemData(9);
+	//1->•Ší,2->head,3->chest,4->glove,5->boots,6->shield
+
+		//‚à‚¤‚·‚Å‚É‘•”õ‚µ‚Ä‚¢‚é‚à‚Ì‚ª‚ ‚ê‚Î
+	if (myEquip[subId - 1] != nullptr) {*/
+int GameManager::GetDifStatus(int subId, int equipType, int amount)
+{
+	int dif = amount - player->GetStatusFromEquipment(subId, equipType);
+	return dif;
+}
+
+bool GameManager::CheckEquipItem(int subId)
+{
+	return player->CheckEquip(subId);
 }
 
 void GameManager::MakePlayer(SpawnScene nowScene)

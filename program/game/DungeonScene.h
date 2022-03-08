@@ -65,6 +65,7 @@ private:
 	Menu* inventory = nullptr;
 	Menu* log = nullptr;
 	Menu* desc = nullptr;
+	Menu* status = nullptr;
 	Menu* playerStatus = nullptr;
 	MenuWindow* use_usable = nullptr;
 	MenuWindow* use_equip = nullptr;

@@ -36,7 +36,10 @@ public:
 	//インベントリ内のアイテム名を描画する関数
 	void DrawInventory(const int x, const int y);
 	//カーソルで選択中のアイテムの説明を描画する関数
-	void DrawItemData(const int x, const int y);
+	void DrawItemDesc(const int x, const int y);
+	//カーソルで選択中の装備アイテムのステータスを描画する関数
+	void DrawEquipItemStatus(const int x, const int y);
+	
 
 	//カーソルの位置を取得する関数
 	int GetCursorNum();

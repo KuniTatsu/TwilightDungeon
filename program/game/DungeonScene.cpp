@@ -226,6 +226,7 @@ void DungeonScene::initDungeonScene()
 	inventory = new Menu(255, 50, 420, 340, "graphics/WindowBase_01.png");
 	log = new Menu(12, 560, 1000, 200, "graphics/WindowBase_01.png");
 	desc = new Menu(680, 300, 320, 90, "graphics/WindowBase_01.png");
+	status = new Menu(680, 100, 320, 190, "graphics/WindowBase_01.png");
 	playerStatus = new Menu(512, 560, 500, 200, "graphics/WindowBase_01.png");
 
 	MenuWindow::MenuElement_t* menu_usable = new MenuWindow::MenuElement_t[]{
@@ -240,7 +241,7 @@ void DungeonScene::initDungeonScene()
 		{670,480,"“Š‚°‚é",1},
 		{670,510,"‚â‚ß‚é",2}
 	};
-	use_equip = new MenuWindow(640, 440, 90, 100, "graphics/WindowBase_02.png", menu_equip, 3, 0.15);
+	use_equip = new MenuWindow(640, 440, 120, 100, "graphics/WindowBase_02.png", menu_equip, 3, 0.2);
 
 	MenuWindow::MenuElement_t* menu_nowEquip = new MenuWindow::MenuElement_t[]{
 		{670,450,"‚Í‚¸‚·",0},
@@ -914,10 +915,11 @@ void DungeonScene::DrawInventory()
 	DrawStringEx(inventory->menu_x + 300, inventory->menu_y + 10, -1, "ƒy[ƒW:%d", gManager->inventories[drawInventoryPage]->GetInventoryNum());
 	if (gManager->inventories[drawInventoryPage]->inventoryList.empty())return;
 	desc->Menu_Draw();
+	status->Menu_Draw();
 	SetFontSize(25);
 	gManager->inventories[drawInventoryPage]->DrawInventory(inventory->menu_x, inventory->menu_y);
-	gManager->inventories[drawInventoryPage]->DrawItemData(desc->menu_x + 10, desc->menu_y + 10);
-
+	gManager->inventories[drawInventoryPage]->DrawItemDesc(desc->menu_x + 10, desc->menu_y + 10);
+	gManager->inventories[drawInventoryPage]->DrawEquipItemStatus(status->menu_x + 10, status->menu_y + 10);
 	SetFontSize(16);
 }
 

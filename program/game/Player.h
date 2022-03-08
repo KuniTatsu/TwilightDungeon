@@ -29,8 +29,18 @@ public:
 	//装備を外す関数
 	void RemoveEquipItem(equipItem* item);
 
+	//装備しているかどうか返す関数
+	inline bool CheckEquip(int subId) {
+		if (myEquip[subId - 1] != nullptr)return true;
+		return false;
+	}
+
 	//装備によるステータス上昇値を獲得する関数
 	void GetSumStatusFromEquipment();
+
+	//特定の装備のステータスを取得する関数
+	//arg2:0->hp,1->attack,2->defence,3->speed
+	int GetStatusFromEquipment(int subId,int statusType);
 
 	inline t2k::Vector3 GetPlayerLocalPos() {
 		return playerInMap;

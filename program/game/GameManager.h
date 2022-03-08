@@ -48,6 +48,9 @@ public:
 	//debug
 	bool minimapDraw = true;
 	//
+	//文字色
+	int red = 0;
+	int blue = 0;
 
 	//マップチップの一枚の大きさ
 	const int GRAPHICSIZE = 20;
@@ -93,7 +96,11 @@ public:
 	//インベントリからアイテムを削除する関数
 	void PopItemFromInventory(const int NowInventoryId);
 
-	
+	//現在装備中のアイテムとインベントリ内のアイテムのステータスの差を取得する関数
+	int GetDifStatus(int subId,int equipType,int amount);
+
+	//装備しているか確認する関数
+	bool CheckEquipItem(int subId);
 
 	//一度読み込んだghを保存するmap
 	std::unordered_map<std::string, int> ghmap;

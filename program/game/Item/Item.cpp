@@ -23,6 +23,10 @@ Item::Item(int Id, int ItemType, std::string ItemName, int Saturation, int Heal,
 
 	itemDesc[0] = itemName;
 	itemDesc[1] = desc;
+
+	//å≈óLIDÇÃê›íË
+	uniqueId = rand();
+
 }
 
 
@@ -153,7 +157,7 @@ void Item::DrawThrowItem()
 }
 
 
-void Item::DrawItemData(int x, int y)
+void Item::DrawItemStringData(int x, int y)
 {
 	DrawStringEx(x, y, -1, "%s", itemDesc[0].c_str());
 	DrawStringEx(x, y + 30, -1, "%s", itemDesc[1].c_str());

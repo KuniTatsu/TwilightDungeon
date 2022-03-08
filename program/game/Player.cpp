@@ -100,6 +100,11 @@ void Player::GetSumStatusFromEquipment()
 		}
 	}
 }
+int Player::GetStatusFromEquipment(int subId, int statusType)
+{
+	//subIdに対応する装備アイテムの持つ、statusTypeに対応するステータスを返す
+	return myEquip[subId - 1]->getItemData(statusType + 5);
+}
 //リファクタリング必須　あとで変える:優先度高
 bool Player::Move()
 {
@@ -317,7 +322,7 @@ void Player::DrawPlayerStatus(int x, int y, int width, int height)
 {
 
 	DrawStringEx(x + 10, y + 20, -1, "現在のレベル:%d", level);//20
-	DrawStringEx(x + 10, y + 40, -1, "体力:%.0f", nowHp);	//40
+	DrawStringEx(x + 10, y + 40, -1, "体力:%.0f/%d", nowHp, hp);	//40
 	DrawStringEx(x + 10, y + 60, -1, "攻撃力:%d", atack);	//60
 	DrawStringEx(x + 10, y + 80, -1, "防御力:%d", defence);	//80
 	DrawStringEx(x + 10, y + 100, -1, "素早さ:%d", speed);	//100

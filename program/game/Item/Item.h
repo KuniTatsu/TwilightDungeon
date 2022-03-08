@@ -20,7 +20,8 @@ public:
 	//アイテムIDの取得
 	int GetItemId();
 	//アイテムデータの描画
-	void DrawItemData(int x,int y);
+	void DrawItemStringData(int x,int y);
+
 	//popしているアイテムの描画
 	void DrawPopItem();
 	 
@@ -57,23 +58,29 @@ public:
 	
 protected:
 
-	//id(int)	ItemType(int)	Item_Name(std::string)	AmountOfSaturation(int)	AmountOfHeal(int)	HitDamage(int) Gh(std::string)
-
+	//基本データ csvから読み込みで取得
 	int id = 0;
 	int itemType = 0;
 	std::string itemName = "";
 	int amountOfSaturation = 0;
 	int amountOfHeal = 0;
 	int hitDamage = 0;
+	//url
 	std::string ghData;
-	int gh = 0;
+	//アイテム説明
 	std::string desc = {};
+	//
+	//グラフィックハンドル
+	int gh = 0;
 	//名前と説明文の入った配列
 	std::string itemDesc[2] = {};
 	//描画座標
 	t2k::Vector3 pos = { 0,0,0 };
 	//マップ座標
 	t2k::Vector3 mapPos = { 0,0,0 };
+
+	//アイテムの固有ID→いずれUUIDで実装したい
+	int uniqueId = 0;
 
 	bool isLive = true;
 

@@ -95,7 +95,7 @@ void Inventory::DrawInventory(int x, int y)
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 }
 
-void Inventory::DrawItemData(int x, int y)
+void Inventory::DrawItemDesc(int x, int y)
 {
 	if (inventoryList.empty())return;
 	auto itr = inventoryList.begin();
@@ -105,8 +105,24 @@ void Inventory::DrawItemData(int x, int y)
 		}
 		itr++;
 	}
-	(*itr)->DrawItemData(x, y);
+	(*itr)->DrawItemStringData(x, y);
 	//inventory[selectCursor]->DrawItemData(x, y);
+}
+
+void Inventory::DrawEquipItemStatus(const int x, const int y)
+{
+	if (inventoryList.empty())return;
+	auto itr = inventoryList.begin();
+	for (int i = 0; i < selectCursor; ++i) {
+		if (itr == inventoryList.end()) {
+			break;
+		}
+		itr++;
+	}
+
+	auto item = static_cast<equipItem*>((*itr));
+	item->DrawEquipItemStatus(x, y,item->GetSubId());
+
 }
 
 int Inventory::GetCursorNum()
