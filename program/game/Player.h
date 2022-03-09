@@ -77,6 +77,9 @@ private:
 	//レベルごとの体力上昇倍率
 	const int hpParLevel = 20;
 
+	//表示のy座標間隔
+	const int yBuf = 20;
+
 	//レベルによる上昇ステータスの設定関数
 	void SetLevelStatus();
 	//次のレベルまでの必要経験値を更新する関数

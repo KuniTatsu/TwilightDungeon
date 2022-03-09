@@ -41,6 +41,11 @@ private:
 
 	//階層
 	int dungeonLevel = 1;
+	//クリアフラグ
+	bool dungeonClear = false;
+
+	//クリア時の処理
+	void DungeonClear();
 
 	//1階層に設置するアイテム数
 	const int spawnItemNum = 5;

@@ -49,6 +49,12 @@ void DungeonScene::RandEnemyCreate(int num)
 
 void DungeonScene::Update()
 {
+	if (dungeonClear) {
+		SceneManager::ChangeScene(SceneManager::SCENE::CAMP);
+		return;
+	}
+
+
 	GetMousePoint(&mouseX, &mouseY);
 
 	mainSequence.update(gManager->deitatime_);
@@ -213,6 +219,8 @@ void DungeonScene::MoveLevel(int addLevel)
 	}
 }
 
+
+
 void DungeonScene::UpdateAnimation()
 {
 	if (drawAnimationList.empty())return;
@@ -277,6 +285,7 @@ void DungeonScene::initDungeonScene()
 	}
 	player = gManager->GetPlayer();
 	gManager->RunDungeonBgm();
+	dungeonClear = false;
 }
 
 void DungeonScene::DrawAnimation()
@@ -297,7 +306,6 @@ void DungeonScene::CheckAnimLive()
 		++itr;
 	}
 }
-
 
 
 bool DungeonScene::SeqMain(const float deltatime)
@@ -809,6 +817,12 @@ bool DungeonScene::SeqFadeOut(const float deltatime)
 		return true;
 	}
 	else {
+		//ゴール階層なら黄昏のかけらを付与してシーンチェンジ
+		if (dungeonLevel >= 49) {
+			DungeonClear();
+			return true;
+		}
+
 		//次のmapを生成
 		MoveLevel(1);
 		playerPos = gManager->WorldToLocal(gManager->player->pos);
@@ -945,7 +959,7 @@ void DungeonScene::ChangeInventory()
 		gManager->inventories[drawInventoryPage]->CursorReset();
 	}
 	if (gManager->inventories[drawInventoryPage]->inventoryList.empty())return;
-	
+
 }
 
 void DungeonScene::SpawnItem(int ItemId)
@@ -1093,6 +1107,16 @@ void DungeonScene::WhenDeadPlayer()
 	return;
 }
 
-
+void DungeonScene::DungeonClear()
+{
+	//かけら付与
+	gManager->SetFragmentNum(1);
+	//クリアフラグ
+	dungeonClear = true;
+	//ログリセット
+	gManager->ResetLog();
+	player->pos = gManager->SpawnPlayerCamp();
+	player->mydir = player->dir::UP;
+}
 
 

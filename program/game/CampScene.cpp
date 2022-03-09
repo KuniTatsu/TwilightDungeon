@@ -23,7 +23,7 @@ CampScene::CampScene()
 
 	LoadDivGraph("graphics/mapchip_night_20.png", 480, 30, 16, 20, 20, campGraphic);
 	gManager->MakePlayer(GameManager::SpawnScene::Camp);
-	player = gManager->GetPlayer();
+	if (player == nullptr)player = gManager->GetPlayer();
 	gManager->CameraReset();
 
 	fragmentsGh[0] = gManager->LoadGraphEx("graphics/fragment_0.png");
@@ -33,13 +33,24 @@ CampScene::CampScene()
 	fragmentsGh[4] = gManager->LoadGraphEx("graphics/fragment_4.png");
 	fragmentsGh[5] = gManager->LoadGraphEx("graphics/fragment_Full.png");
 
+	spaceButton = gManager->LoadGraphEx("graphics/spaceButton.png");
+	EnterButton = gManager->LoadGraphEx("graphics/button_Enter.png");
+
 	fragBackGround = gManager->LoadGraphEx("graphics/fragment_Back.png");
+
+	dungeonEnterUi = new Menu(345, 245, 330, 260, "graphics/WindowBase_01.png");
+	/*Menu* hoge=new Menu(342,246,330,258,gh(int))
+Menu* hoge=new Menu(494,521,505,234,gh(int))
+*/
+	miniFragment = new Menu(50, 520, 220, 248, "graphics/WindowBase_02.png");
 
 	MenuWindow::MenuElement_t* menu_usable = new MenuWindow::MenuElement_t[]{
 	{650,480,"ダンジョンに入る",0},
 	{650,510,"やめる",1}
 	};
 	dungeonIn = new MenuWindow(640, 440, 150, 100, "graphics/WindowBase_02.png", menu_usable, 2, 0.35);
+
+	ChangeSequence(sequence::FADEIN);
 }
 
 CampScene::~CampScene()
@@ -54,10 +65,10 @@ void CampScene::Update()
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_F)) {
 		gManager->SetFragmentNum(1);
 		t2k::debugTrace("\n黄昏のかけらを1足します\n");
-		t2k::debugTrace("\n黄昏のかけら個数:%d\n",gManager->GetFragmentNum());
+		t2k::debugTrace("\n黄昏のかけら個数:%d\n", gManager->GetFragmentNum());
 	}
-	 
-	
+
+
 	//現在のシークエンスの処理
 	mainSequence.update(gManager->deitatime_);
 
@@ -98,6 +109,22 @@ void CampScene::Draw()
 		SetFontSize(25);
 		DrawStringEx(300, 100, -1, "現在所持している黄昏のかけら:%d個", gManager->GetFragmentNum());
 		SetFontSize(16);
+	}
+	else {
+		miniFragment->Menu_Draw();
+		DrawStringEx(miniFragment->menu_x + 40, miniFragment->menu_y + 15, GetColor(0, 0, 0), "黄昏のかけら一覧");
+		DrawRotaGraph(miniFragment->menu_x + miniFragment->menu_width / 2, miniFragment->menu_y + miniFragment->menu_height / 2, 0.3, 0, fragBackGround, false);
+		DrawRotaGraph(miniFragment->menu_x + miniFragment->menu_width / 2, miniFragment->menu_y + miniFragment->menu_height / 2, 0.3, 0, fragmentsGh[gManager->GetFragmentNum()], true);
+		DrawRotaGraph(miniFragment->menu_x + miniFragment->menu_width / 2, miniFragment->menu_y + miniFragment->menu_height - 20, 1, 0, spaceButton, true);
+
+	}
+	if (nowSeq != sequence::MAIN)return;
+	//女神像の前にいる時にダンジョン入場を促すUIを表示する
+	if (GetSurfaceGraphicNum(gManager->WorldToLocal(player->pos).x, gManager->WorldToLocal(player->pos).y - 1) == 469) {
+
+		dungeonEnterUi->Menu_Draw();
+		DrawStringEx(dungeonEnterUi->menu_x + 20, dungeonEnterUi->menu_y + 10, -1, "Enterを押してダンジョンに入場する");
+		DrawRotaGraph(510, 480, 1, 0, EnterButton, true);
 	}
 }
 int CampScene::GetGraphicHandle(int num)

@@ -331,11 +331,11 @@ void Player::RemoveAllEquip()
 void Player::DrawPlayerStatus(int x, int y, int width, int height)
 {
 
-	DrawStringEx(x + 10, y + 20, -1, "現在のレベル:%d", level);//20
-	DrawStringEx(x + 10, y + 40, -1, "体力:%.0f/%d", nowHp, hp);	//40
-	DrawStringEx(x + 10, y + 60, -1, "攻撃力:%d", atack);	//60
-	DrawStringEx(x + 10, y + 80, -1, "防御力:%d", defence);	//80
-	DrawStringEx(x + 10, y + 100, -1, "素早さ:%d", speed);	//100
+	DrawStringEx(x + 10, y + yBuf, -1, "現在のレベル:%d", level);//20
+	DrawStringEx(x + 10, y + yBuf * 2, -1, "体力:%.0f/%d", nowHp, hp);	//40
+	DrawStringEx(x + 10, y + yBuf * 3, -1, "攻撃力:%d", atack);	//60
+	DrawStringEx(x + 10, y + yBuf * 4, -1, "防御力:%d", defence);	//80
+	DrawStringEx(x + 10, y + yBuf * 5, -1, "素早さ:%d", speed);	//100
 	for (int i = 0; i < 6; ++i) {
 		DrawStringEx(x + 160, y + 20 + 30 * i, -1, "%s:", equipName[i].c_str());
 	}
@@ -362,8 +362,10 @@ void Player::DeadPlayer()
 	SetNextExp();
 	//装備アイテムの破棄
 	RemoveAllEquip();
+	//hpのリセット
 	nowHp = hp;
-
+	nowHpVarWidth = nowHp / hp;
+	mydir = dir::UP;
 }
 
 void Player::SetLevelStatus()

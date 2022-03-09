@@ -12,6 +12,7 @@
 #include<string>
 
 class Player;
+class Menu;
 class MenuWindow;
 
 class CampScene :public BaseScene {
@@ -45,6 +46,8 @@ private:
 	std::vector<std::vector<int>>surfaceMapData;
 	std::vector<std::vector<int>>collisionData;
 
+	Menu* miniFragment = nullptr;
+	Menu* dungeonEnterUi = nullptr;
 	MenuWindow* dungeonIn = nullptr;
 
 	bool nowFade = false;
@@ -53,6 +56,11 @@ private:
 	int campGraphic[600];
 	//‰æ‘œƒnƒ“ƒhƒ‹æ“¾ŠÖ”
 	int GetGraphicHandle(int num);
+
+	//spacebutton
+	int spaceButton = 0;
+	//enterbutton
+	int EnterButton = 0;
 
 	//“Á’è‚ÌÀ•W‚Ì‰æ‘œ”Ô†‚ğ•Ô‚·ŠÖ”
 	inline int GetGraphicNum(int x, int y) {
