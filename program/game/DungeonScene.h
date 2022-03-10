@@ -212,6 +212,11 @@ private:
 	//アイテムをスポーンさせる関数
 	void SpawnItem(const int ItemId);
 
+	//敵からアイテムがドロップする確率
+	const int DROPODDS = 80;
+	//敵からアイテムをドロップさせる関数
+	void DropItem(const int ItemId,const t2k::Vector3 DropPos);
+
 	//落ちているアイテムリスト
 	std::list<Item*>dropItems;
 

@@ -854,7 +854,7 @@ void GameManager::DrawHowTo()
 	//ボタン説明画像
 	DrawRotaGraph(930, 150, 0.1, 0, arrowButton, true);
 	DrawRotaGraph(930, 210, 1, 0, RButton, true);
-	DrawRotaGraph(930, 250, 1, 0, EnterButton, true);
+	DrawRotaGraph(930, 255, 1, 0, EnterButton, true);
 
 	//説明文
 	DrawStringEx(780, 150, -1, "移動ボタン");

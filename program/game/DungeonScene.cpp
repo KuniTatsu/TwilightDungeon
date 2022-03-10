@@ -115,7 +115,7 @@ void DungeonScene::Draw()
 		for (auto enemy : eManager->liveEnemyList) {
 			enemy->Draw();
 		}
-		gManager->MiniMapDraw(); 
+		gManager->MiniMapDraw();
 		DrawMiniEnemy();
 
 		if (gManager->isDebug) {
@@ -404,6 +404,15 @@ bool DungeonScene::SeqPlayerAttack(const float deltatime)
 	for (auto enemy : eManager->liveEnemyList) {
 		if (enemy->GetStatus(0) <= 0) {
 			player->AddExp(enemy->GetExp());
+			//アイテムのポップ判定
+			int odds = rand() % 100;
+			if (odds < DROPODDS) {
+				//落ちるアイテムの判定
+				int random = rand() % gManager->GetItemNum();
+				//SpawnItem(random);
+				t2k::Vector3 dropPos = enemy->pos;
+				DropItem(random, dropPos);
+			}
 			enemy->isLive = false;
 		}
 	}
@@ -1124,6 +1133,14 @@ void DungeonScene::WhenDeadPlayer()
 	//キャンプシーンに戻る
 	SceneManager::ChangeScene(SceneManager::SCENE::CAMP);
 	return;
+}
+
+void DungeonScene::DropItem(const int ItemId, const t2k::Vector3 DropPos)
+{
+	Item* dropItem = gManager->GetItemData(ItemId);
+
+	dropItem->SetPos(DropPos);
+	dropItems.emplace_back(dropItem);
 }
 
 void DungeonScene::DungeonClear()
