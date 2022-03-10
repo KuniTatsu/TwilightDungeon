@@ -217,6 +217,9 @@ private:
 	//敵からアイテムをドロップさせる関数
 	void DropItem(const int ItemId,const t2k::Vector3 DropPos);
 
+	//アイテムを拾うフラグ
+	bool itemGetFlag = true;
+
 	//落ちているアイテムリスト
 	std::list<Item*>dropItems;
 

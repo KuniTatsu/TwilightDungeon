@@ -81,15 +81,18 @@ void DungeonScene::Update()
 		else gManager->minimapDraw = true;
 	}
 	//アイテム当たり判定感知
-
 	for (auto item : dropItems) {
 		//アイテムとプレイヤーが重なったら
 		if (item->DetectOnPlayer(playerPos)) {
+			//アイテムをすでに拾ってなければ
+			if(itemGetFlag){
 			gManager->AddItemToInventory(item->GetItemId());
 			item->SetIsLiveFalse();
-			//gManager->PopDetectItem(item, dropItems);
+			itemGetFlag = false;
+			}
 		}
 	}
+
 	for (auto item : dropItems) {
 		if (item->GetIsLive())continue;
 		if (gManager->PopDetectItem(item, dropItems))break;
@@ -386,6 +389,8 @@ bool DungeonScene::SeqMain(const float deltatime)
 
 	//もしPlayerが動いたら もしくはスキップしたら
 	if (gManager->player->Move() || player->skip) {
+
+		itemGetFlag = true;
 
 		playerPos = gManager->WorldToLocal(gManager->player->pos);
 
