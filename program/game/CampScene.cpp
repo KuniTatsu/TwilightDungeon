@@ -99,6 +99,7 @@ void CampScene::Draw()
 
 	//DrawStringEx(500, 500, -1, "‚±‚±‚ÍCampƒV[ƒ“‚Å‚·");
 	player->Draw();
+	gManager->DrawHowTo();
 	if (nowSeq == sequence::DUNGEONIN) {
 		dungeonIn->All();
 		DrawStringEx(650, 450, GetColor(0, 0, 0), "%s", DUNGEONNAME[selectDungeon].c_str());

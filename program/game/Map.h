@@ -165,6 +165,8 @@ private:
 	int miniMapChip[3] = {};
 	//ミニマッププレイヤーgh
 	int miniPlayer = 0;
+	////ミニマップエネミーgh
+	//int miniEnemy = 0;
 
 	//区間分割(区間)
 	std::vector<std::vector<int>> divideArea;

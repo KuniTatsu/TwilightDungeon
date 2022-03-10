@@ -238,6 +238,11 @@ void GameManager::initGameManager()
 	//loadDivGraphのindex取得
 	LoadMaxIndex();
 
+	arrowButton = LoadGraphEx("graphics/arrowButtons.png");
+	RButton = LoadGraphEx("graphics/button_R.png");
+	EnterButton=LoadGraphEx("graphics/button_Enter.png");
+	howToPlayBack = LoadGraphEx("graphics/howToPlayBack.png");
+
 	iManager = new ItemManager();
 	inventory = new Inventory(0);
 	inventories.emplace_back(inventory);
@@ -660,6 +665,13 @@ void GameManager::MapDraw()
 
 	map->MapDraw();
 
+	/*if (!minimapDraw)return;
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+	map->MiniMapDraw();
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);*/
+}
+void GameManager::MiniMapDraw()
+{
 	if (!minimapDraw)return;
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
 	map->MiniMapDraw();
@@ -833,3 +845,19 @@ void GameManager::LogDraw(int x, int y)
 }
 
 
+void GameManager::DrawHowTo()
+{
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+	//ボタン説明背景
+	DrawRotaGraph(870, 250, 1, 0, howToPlayBack, true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	//ボタン説明画像
+	DrawRotaGraph(930, 150, 0.1, 0, arrowButton, true);
+	DrawRotaGraph(930, 210, 1, 0, RButton, true);
+	DrawRotaGraph(930, 250, 1, 0, EnterButton, true);
+
+	//説明文
+	DrawStringEx(780, 150, -1, "移動ボタン");
+	DrawStringEx(780, 200, -1, "攻撃ボタン");
+	DrawStringEx(780, 250, -1, "決定ボタン");
+}

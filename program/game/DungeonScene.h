@@ -50,7 +50,11 @@ private:
 	//1階層に設置するアイテム数
 	const int spawnItemNum = 5;
 
+	//グラフィック
 	int EButton = 0;
+
+
+
 
 	/*int alfa = 0;*/
 	//次のenemyの行動までのインターバルフレーム
@@ -92,20 +96,26 @@ private:
 	std::list<Item*> throwItem;
 
 	std::list<std::shared_ptr<Item>>throwedItemList;
-
+	//敵管理マネージャ
 	std::shared_ptr<EnemyManager>eManager = nullptr;
-
+	//描画するアニメーションリスト
 	std::list<std::shared_ptr<Animation>>drawAnimationList;
+	//ダンジョンシーン初期化
 	void initDungeonScene();
-
+	//アニメーション更新
 	void UpdateAnimation();
+	//アニメーション描画
 	void DrawAnimation();
 
 	void CheckAnimLive();
 	const int ATTACKEFFECTSPEED = 10;
 	//int ATTACKEFFECTINDEX = 5;
-
+	//debug キャンプに戻る
 	void ReturnCamp();
+	//敵のミニマップ描画 いずれひとつにする
+	void DrawMiniEnemy();
+	//ミニマップエネミーgh
+	int miniEnemy = 0;
 
 	t2k::Vector3 playerPos = {};
 

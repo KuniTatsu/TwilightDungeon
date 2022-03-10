@@ -163,6 +163,17 @@ public:
 
 	//マップの描画
 	void MapDraw();
+	//ミニマップ描画
+	void MiniMapDraw();
+
+	//説明画像
+	int arrowButton = 0;
+	int RButton = 0;
+	int EnterButton = 0;
+	int howToPlayBack = 0;
+
+	//説明画像描画
+	void DrawHowTo();
 
 	//GameManagerの初期化
 	void initGameManager();

@@ -41,7 +41,8 @@ Map::Map(int Width, int Height, std::vector<int>Handles)
 	miniMapChip[0] = gManager->LoadGraphEx("graphics/mini_PassWay.png");
 	miniMapChip[1] = gManager->LoadGraphEx("graphics/mini_Stair.png");
 
-	miniPlayer = gManager->LoadGraphEx("graphics/PlayerTest.png");
+	miniPlayer = gManager->LoadGraphEx("graphics/mini_Player.png");
+	/*miniEnemy = gManager->LoadGraphEx("graphics/mini_Enemy.png");*/
 	width = Width;
 	height = Height;
 
@@ -220,7 +221,10 @@ void Map::MiniMapDraw()
 		y += 10;
 	}
 	t2k::Vector3 PlayerPos = gManager->WorldToLocal(player->pos);
+	//ミニマップにプレイヤーの位置を描画
 	DrawRotaGraph(PlayerPos.x * 10 + 150, PlayerPos.y * 10 + 50, 0.5, 0, miniPlayer, true);
+	//ミニマップにエネミーを描画
+	
 }
 
 bool Map::IsOutOfRange(int x, int y)

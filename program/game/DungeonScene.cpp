@@ -115,6 +115,8 @@ void DungeonScene::Draw()
 		for (auto enemy : eManager->liveEnemyList) {
 			enemy->Draw();
 		}
+		gManager->MiniMapDraw(); 
+		DrawMiniEnemy();
 
 		if (gManager->isDebug) {
 			DrawStringEx(100, 280, -1, "現在の階層:%d", dungeonLevel);
@@ -151,6 +153,9 @@ void DungeonScene::Draw()
 		DrawStringEx(menuOpen->menu_x + 10, menuOpen->menu_y + 10, -1, "Menuを開く");
 		DrawStringEx(menuOpen->menu_x + 10, menuOpen->menu_y + menuOpen->menu_height * 5 / 9, -1, "Press");
 		DrawRotaGraph(menuOpen->menu_x + menuOpen->menu_width - 20, menuOpen->menu_y + menuOpen->menu_height * 2 / 3, 1, 0, EButton, false);
+
+
+		gManager->DrawHowTo();
 	}
 	//インベントリを開いている時に描画
 	else if (nowSeq == sequence::INVENTORY_OPEN || nowSeq == sequence::INVENTORY_USE) {
@@ -232,6 +237,8 @@ void DungeonScene::UpdateAnimation()
 void DungeonScene::initDungeonScene()
 {
 	EButton = gManager->LoadGraphEx("graphics/button_E.png");
+
+	miniEnemy = gManager->LoadGraphEx("graphics/mini_Enemy.png");
 
 	nextLevelWindow = new Menu(300, 300, 300, 200, "graphics/WindowBase_01.png");
 	gameOver = new Menu(100, 100, 924, 668, "graphics/WindowBase_01.png");
@@ -687,6 +694,18 @@ bool DungeonScene::SeqThrowItemMove(const float deltatime)
 		return true;
 	}
 	return true;
+}
+
+
+void DungeonScene::DrawMiniEnemy()
+{
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+	for (auto liveEnemy : eManager->liveEnemyList) {
+		t2k::Vector3 LocalPos = gManager->WorldToLocal(liveEnemy->pos);
+		//ミニマップにプレイヤーの位置を描画
+		DrawRotaGraph(LocalPos.x * 10 + 150, LocalPos.y * 10 + 50, 0.5, 0, miniEnemy, true);
+	}
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 }
 
 bool DungeonScene::SeqAnimation(const float deltatime)
