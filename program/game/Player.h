@@ -53,7 +53,7 @@ public:
 	void HpVarDraw();
 
 	//経験値の獲得関数
-	void AddExp(const int num);
+	bool AddExp(const int num);
 
 	//プレイヤーのステータス,装備を描画する関数
 	void DrawPlayerStatus(int x,int y,int width,int height);

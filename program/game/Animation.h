@@ -12,6 +12,8 @@ class Camera;
 class Animation {
 public:
 	Animation(std::string Gh,t2k::Vector3 Pos,int ActSpeed,int MaxIndex);
+	//レベルアップ用
+	Animation(std::string Gh, t2k::Vector3 Pos);
 	~Animation();
 
 	void Update();
@@ -27,7 +29,9 @@ private:
 
 	//std::vector<int>gh;
 	//エフェクトの元画像
-	int gh[5];
+	int gh[5] = {};
+	//レベルアップ元画像
+	int levelUpGh[10] = {};
 	//描画座標
 	t2k::Vector3 pos;
 	//コマ更新フレーム数
@@ -40,6 +44,8 @@ private:
 	int actIndex = 0;
 	//描画する画像
 	int drawGh = 0;
+
+	int animationType = 0;
 
 	//アニメーションの終了確認フラグ
 	bool isAlive = true;

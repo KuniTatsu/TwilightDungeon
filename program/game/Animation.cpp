@@ -11,7 +11,17 @@ Animation::Animation(std::string Gh, t2k::Vector3 Pos, int ActSpeed, int MaxInde
 	pos = Pos;
 	actSpeed = ActSpeed;
 	maxMotionIndex = MaxIndex;
+	animationType = 0;
 	//camera = gManager->GetCamera();
+}
+
+Animation::Animation(std::string Gh, t2k::Vector3 Pos)
+{
+	LoadDivGraph(Gh.c_str(), 10, 10, 1, 30, 30, levelUpGh);
+	pos = Pos;
+	actSpeed = 15;
+	maxMotionIndex = 10;
+	animationType = 1;
 }
 
 Animation::~Animation()
@@ -26,8 +36,9 @@ void Animation::Update()
 		actWait = actSpeed;
 		actIndex %= maxMotionIndex;
 	}
-	drawGh = gh[actIndex];
-	if (drawGh == gh[4])isAlive = false;
+	if (animationType == 0)drawGh = gh[actIndex];
+	else drawGh = levelUpGh[actIndex];
+	if (drawGh == gh[maxMotionIndex-1])isAlive = false;
 }
 
 void Animation::Draw()

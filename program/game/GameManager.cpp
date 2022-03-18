@@ -721,7 +721,7 @@ void GameManager::MakePlayer(SpawnScene nowScene)
 {
 	if (player != nullptr)return;
 	if (nowScene == SpawnScene::Camp) {
-		player = std::make_shared<Player>(SpawnPlayerCamp(), 100.0f, 30, 30, 30, 0);
+		player = std::make_shared<Player>(SpawnPlayerCamp(), 100.0f, 90, 30, 20, 0);
 		//map->player = player;
 	}
 	else if (nowScene == SpawnScene::Dungeon) {

@@ -408,7 +408,13 @@ bool DungeonScene::SeqPlayerAttack(const float deltatime)
 	//死亡チェック
 	for (auto enemy : eManager->liveEnemyList) {
 		if (enemy->GetStatus(0) <= 0) {
-			player->AddExp(enemy->GetExp());
+			//もしレベルアップしたら
+			if (player->AddExp(enemy->GetExp())) {
+				////Animationクラスをnew
+				//std::shared_ptr<Animation>anim = std::make_shared<Animation>("graphics/levelUpEffect.png", player->pos);
+				////描画リストに登録
+				//drawAnimationList.emplace_back(anim);
+			}
 			//アイテムのポップ判定
 			int odds = rand() % 100;
 			if (odds < DROPODDS) {
