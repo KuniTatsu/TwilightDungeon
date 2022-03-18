@@ -1089,6 +1089,7 @@ int Map::CheckAroundWay(int x, int y)
 	else if (ue && migishita)return ROOMWALL;
 	else if (ue && hidari)return ROOMWALL;
 	else if (hidari && migi)return ROOMWALL;
+	else if (ue && migiue&&migi)return ROOMWALL;
 
 	//‰º,‰E‰º,¶‰º‚ªtrue->’Ê˜H‚È‚ç •”‰®‚Ìã‘¤
 	else if (shita)return ROOMTOP;//0

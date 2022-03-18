@@ -85,10 +85,10 @@ void DungeonScene::Update()
 		//アイテムとプレイヤーが重なったら
 		if (item->DetectOnPlayer(playerPos)) {
 			//アイテムをすでに拾ってなければ
-			if(itemGetFlag){
-			gManager->AddItemToInventory(item->GetItemId());
-			item->SetIsLiveFalse();
-			itemGetFlag = false;
+			if (itemGetFlag) {
+				gManager->AddItemToInventory(item->GetItemId());
+				item->SetIsLiveFalse();
+				itemGetFlag = false;
 			}
 		}
 	}
@@ -301,9 +301,12 @@ void DungeonScene::initDungeonScene()
 void DungeonScene::DrawAnimation()
 {
 	if (drawAnimationList.empty())return;
-	for (auto anim : drawAnimationList) {
+	auto itr = drawAnimationList.front();
+	itr->Draw();
+
+	/*for (auto anim : drawAnimationList) {
 		anim->Draw();
-	}
+	}*/
 }
 void DungeonScene::CheckAnimLive()
 {
@@ -336,6 +339,17 @@ bool DungeonScene::SeqMain(const float deltatime)
 		for (auto enemy : eManager->liveEnemyList) {
 			enemy->ChangeStatus(2, 10, 0);
 		}
+	}
+
+	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_L)) {
+		player->LevelUp();
+		//もしレベルアップしたら
+
+			//Animationクラスをnew
+		std::shared_ptr<Animation>anim = std::make_shared<Animation>("graphics/levelUpEffect_new.png", player->pos);
+		//描画リストに登録
+		drawAnimationList.emplace_back(anim);
+
 	}
 	//
 
@@ -410,10 +424,10 @@ bool DungeonScene::SeqPlayerAttack(const float deltatime)
 		if (enemy->GetStatus(0) <= 0) {
 			//もしレベルアップしたら
 			if (player->AddExp(enemy->GetExp())) {
-				////Animationクラスをnew
-				//std::shared_ptr<Animation>anim = std::make_shared<Animation>("graphics/levelUpEffect.png", player->pos);
-				////描画リストに登録
-				//drawAnimationList.emplace_back(anim);
+				//Animationクラスをnew
+				std::shared_ptr<Animation>anim = std::make_shared<Animation>("graphics/levelUpEffect.png", player->pos);
+				//描画リストに登録
+				drawAnimationList.emplace_back(anim);
 			}
 			//アイテムのポップ判定
 			int odds = rand() % 100;

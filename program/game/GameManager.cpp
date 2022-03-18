@@ -580,7 +580,7 @@ void GameManager::TakeDamageToTarget(Actor* actor, t2k::Vector3 Pos)
 		std::shared_ptr<Enemy>frontEnemy = GetIsThereEnemyToDir(Pos);
 		//‚à‚µ‹óU‚è‚È‚ç
 		if (frontEnemy == nullptr) {
-			player->skip = true;
+			//player->skip = true;
 			return;
 		}
 		//UŒ‚—Í‚Æ–hŒä—Í‚ðŽæ“¾,ƒ_ƒ[ƒWŒvŽZ
@@ -684,7 +684,7 @@ void GameManager::CreateDungeon(Dungeon dungeonName) {
 	wayPoint.clear();
 	nowDungeon = dungeonName;
 	CreateMap(dungeonName);
-	addLog(GetDungeonName(dungeonName) + "‚É“üê‚µ‚Ü‚µ‚½");
+	//addLog(GetDungeonName(dungeonName) + "‚É“üê‚µ‚Ü‚µ‚½");
 
 	//ƒ}ƒbƒvŽ©“®¶¬
 	map->DivideStart(MAPWIDTH, MAPHEIGHT, map);

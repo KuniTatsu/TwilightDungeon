@@ -19,9 +19,10 @@ Animation::Animation(std::string Gh, t2k::Vector3 Pos)
 {
 	LoadDivGraph(Gh.c_str(), 10, 10, 1, 30, 30, levelUpGh);
 	pos = Pos;
-	actSpeed = 15;
+	actSpeed = 10;
 	maxMotionIndex = 10;
 	animationType = 1;
+	SetTransColor(0, 0, 0);
 }
 
 Animation::~Animation()
@@ -36,12 +37,22 @@ void Animation::Update()
 		actWait = actSpeed;
 		actIndex %= maxMotionIndex;
 	}
+	else return;
+
 	if (animationType == 0)drawGh = gh[actIndex];
 	else drawGh = levelUpGh[actIndex];
-	if (drawGh == gh[maxMotionIndex-1])isAlive = false;
+
+	if (animationType == 0) {
+		if (drawGh == gh[maxMotionIndex - 1])isAlive = false;
+	}
+	else {
+		if (drawGh == levelUpGh[maxMotionIndex - 1])isAlive = false;
+	}
 }
 
 void Animation::Draw()
 {
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
 	DrawRotaGraph(pos.x - gManager->camera->cameraPos.x, pos.y - gManager->camera->cameraPos.y, 1, 0, drawGh, true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }

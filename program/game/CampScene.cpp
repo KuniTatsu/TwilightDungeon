@@ -78,6 +78,7 @@ void CampScene::Update()
 
 		if (gManager->fControl->doneFade) {
 			t2k::debugTrace("\nダンジョンに入場します\n");
+			
 
 			//int型をGameManager::Dungeon型にキャスト
 			GameManager::Dungeon dungeonName = static_cast<GameManager::Dungeon>(selectDungeon);
@@ -85,6 +86,7 @@ void CampScene::Update()
 			//ダンジョンの自動生成
 			gManager->CreateDungeon(dungeonName);
 
+			gManager->addLog(gManager->GetDungeonName(dungeonName) + "に入場しました");
 
 			SceneManager::ChangeScene(SceneManager::SCENE::DUNGEON);
 			return;

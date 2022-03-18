@@ -55,6 +55,9 @@ public:
 	//経験値の獲得関数
 	bool AddExp(const int num);
 
+	//デバッグ用レベルアップ関数
+	void LevelUp();
+
 	//プレイヤーのステータス,装備を描画する関数
 	void DrawPlayerStatus(int x,int y,int width,int height);
 

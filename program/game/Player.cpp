@@ -228,7 +228,7 @@ void Player::HpVarDraw()
 	DrawStringEx(pos.x - gManager->camera->cameraPos.x - 10, pos.y - gManager->camera->cameraPos.y - 50, -1, "%.0f", nowHp);
 }
 //経験値取得とレベルアップ処理
-bool Player::AddExp(int num)
+bool Player::AddExp(const int num)
 {
 	nowExp += num;
 	if (nowExp >= nextLevelExp) {
@@ -239,6 +239,13 @@ bool Player::AddExp(int num)
 		return true;
 	}
 	return false;
+}
+
+void Player::LevelUp()
+{
+	level++;
+	SetLevelStatus();
+	SetNextExp();
 }
 
 //近くに敵がいなければ指定方向に進む関数
