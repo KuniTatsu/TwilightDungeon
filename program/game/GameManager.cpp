@@ -85,26 +85,20 @@ void GameManager::AddItemToInventory(const int itemId)
 
 void GameManager::PopItemFromInventory(const int NowInventoryId)
 {
+	//今の位置の配列番号を取得
 	int selectNum = inventories[NowInventoryId]->GetCursorNum();
-
-	//int selectNum = sharedInventories[NowInventoryId]->GetCursorNum();
-
+	//表示中のインベントリを取得
 	auto itr = inventories[NowInventoryId]->inventoryList.begin();
 
-	//auto itr = sharedInventories[NowInventoryId]->inventoryList.begin();
-
+	//選択されたアイテムまでイテレータ移動
 	for (int i = 0; i < selectNum; ++i) {
 		itr++;
 	}
+	//アイテムを消去
 	delete((*itr));
 	itr = inventories[NowInventoryId]->inventoryList.erase(itr);
-
-	//itr = sharedInventories[NowInventoryId]->inventoryList.erase(itr);
-
+	//カーソルの位置をひとつ上に移動
 	inventories[NowInventoryId]->SetCursorNum(-1);
-	//inventories[NowInventoryId]->SetItemNum(-1);
-
-	//sharedInventories[NowInventoryId]->SetCursorNum(-1);
 
 //popするアイテムがいる場所=今いるインベントリが最後のインベントリではない場合
 	if (NowInventoryId != inventoryNum) {
@@ -117,17 +111,11 @@ void GameManager::PopItemFromInventory(const int NowInventoryId)
 		//次のページの最初のアイテムをコピーして消したアイテムのリストの末尾に加える
 			auto item = inventories[checkInventoryNum + 1]->inventoryList.begin();
 
-			//auto item = sharedInventories[checkInventoryNum + 1]->inventoryList.begin();
-
 		//アイテム追加
 			inventories[checkInventoryNum]->inventoryList.emplace_back((*item));
 
-			//sharedInventories[checkInventoryNum]->inventoryList.emplace_back((*item));
-
 		//次のページの最初のアイテムをpopする
 			inventories[checkInventoryNum + 1]->inventoryList.pop_front();
-
-			//sharedInventories[checkInventoryNum + 1]->inventoryList.pop_front();
 
 		//最後のインベントリページにたどり着いたらbreak
 			if (checkInventoryNum + 1 == inventoryNum)break;
@@ -150,8 +138,8 @@ void GameManager::PopItemFromInventory(const int NowInventoryId)
 		}
 	}
 	if (isDeleteInventory)return;
+	//カーソルの位置を一番上にリセット
 	if (inventories[NowInventoryId]->inventoryList.empty())inventories[NowInventoryId]->CursorReset();
-	//if (sharedInventories[NowInventoryId]->inventoryList.empty())sharedInventories[NowInventoryId]->CursorReset();
 }
 
 void GameManager::LoadMaxIndex()
