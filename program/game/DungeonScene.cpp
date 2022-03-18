@@ -487,21 +487,7 @@ bool DungeonScene::SeqEnemyAct(const float deltatime)
 		ChangeSequence(sequence::ANIMATION);
 		return true;
 
-		/*
-		//*****enemyAttackSeqに処理を移動
 
-		////もし敵が一体だけならインターバルを0にする
-		//if (atackEnemies.size() == 1)enemyActTimer = ENEMYACTINTERVAL;
-		////一体ずつ攻撃させるためのインターバル計測
-		//if (++enemyActTimer > ENEMYACTINTERVAL) {
-		//	(*itr)->Atack();
-		//	enemyActTimer = 0;
-		//	itr = atackEnemies.erase(itr);
-		//}
-		////すべての敵が攻撃し終えるまでこのシークエンスを出ない
-		//if (!atackEnemies.empty())return true;
-		//*****
-		*/
 	}
 	ChangeSequence(sequence::MAIN);
 	return true;
