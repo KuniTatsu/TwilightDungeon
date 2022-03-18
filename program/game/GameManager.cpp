@@ -684,7 +684,7 @@ void GameManager::CreateDungeon(Dungeon dungeonName) {
 	wayPoint.clear();
 	nowDungeon = dungeonName;
 	CreateMap(dungeonName);
-	//addLog(GetDungeonName(dungeonName) + "‚É“üê‚µ‚Ü‚µ‚½");
+
 
 	//ƒ}ƒbƒvŽ©“®¶¬
 	map->DivideStart(MAPWIDTH, MAPHEIGHT, map);
