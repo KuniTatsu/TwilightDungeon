@@ -166,6 +166,12 @@ public:
 	//ミニマップ描画
 	void MiniMapDraw();
 
+	//ミニマップ更新
+	void UpdateMiniMap(t2k::Vector3 localPos);
+
+	//ミニマップ描画可能確認関数
+	bool CheckCanDraw(t2k::Vector3 localPos);
+
 	//説明画像
 	int arrowButton = 0;
 	int RButton = 0;
@@ -181,6 +187,12 @@ public:
 	//画像を読み込んでmapに入れる関数
 	//すでにあるghならそれを返す
 	int LoadGraphEx(const std::string gh);
+
+	//複数枚の連なった画像をvectorに格納する関数
+	void LoadDivGraphEx(const std::string Gh,const int AllNum,const int WidthNum,const int HeightNum,
+		int XSize,int YSize,std::vector<int>& GhVector);
+	
+
 
 	//a~bの間の乱数取得
 	int GetRandEx(const int a, const int b);

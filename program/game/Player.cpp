@@ -6,7 +6,7 @@
 
 extern GameManager* gManager;
 
-Player::Player(const t2k::Vector3& StartPos, float Hp, int Atack, int Defence, int Speed, int ActId)
+Player::Player(const t2k::Vector3& StartPos, float Hp, int Attack, int Defence, int Speed, int ActId)
 {
 	actId = ActId;
 	pos = StartPos;
@@ -22,12 +22,12 @@ Player::Player(const t2k::Vector3& StartPos, float Hp, int Atack, int Defence, i
 	name = "Player";
 
 	baseHp = Hp;
-	baseAtack = Atack;
+	baseAttack = Attack;
 	baseDefence = Defence;
 	baseSpeed = Speed;
 
 	hp = baseHp;
-	atack = baseAtack;
+	attack = baseAttack;
 	defence = baseDefence;
 	speed = baseSpeed;
 
@@ -342,7 +342,7 @@ void Player::DrawPlayerStatus(int x, int y, int width, int height)
 
 	DrawStringEx(x + 10, y + yBuf, -1, "Œ»İ‚ÌƒŒƒxƒ‹:%d", level);//20
 	DrawStringEx(x + 10, y + yBuf * 2, -1, "‘Ì—Í:%.0f/%d", nowHp, hp);	//40
-	DrawStringEx(x + 10, y + yBuf * 3, -1, "UŒ‚—Í:%d", atack);	//60
+	DrawStringEx(x + 10, y + yBuf * 3, -1, "UŒ‚—Í:%d", attack);	//60
 	DrawStringEx(x + 10, y + yBuf * 4, -1, "–hŒä—Í:%d", defence);	//80
 	DrawStringEx(x + 10, y + yBuf * 5, -1, "‘f‘‚³:%d", speed);	//100
 	for (int i = 0; i < 6; ++i) {

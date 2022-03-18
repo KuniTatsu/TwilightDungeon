@@ -23,6 +23,23 @@ public:
 
 	//マップの背景
 	std::vector<std::vector<int>> ground;
+	//ミニマップ用表示判定配列
+	std::vector < std::vector<bool>>visited;
+
+	//ミニマップ用 通路表示判定変更関数
+	void ChangeWayVisit(t2k::Vector3 localPos);
+
+	//ミニマップ用 部屋表示判定変更関数
+	void ChangeRoomVisit(t2k::Vector3 localPos);
+	//ミニマップ用 座標から表示していいチップか判定する関数
+	inline bool CheckCanDraw(t2k::Vector3 localPos) {
+		return visited[localPos.y][localPos.x];
+	}
+
+
+	//部屋の左上と右下の座標のバッファー
+	t2k::Vector3 leftTop;
+	t2k::Vector3 rightBottom;
 
 	std::shared_ptr<Player> player = nullptr;
 
@@ -85,13 +102,26 @@ public:
 
 	//部屋座標系の0,0を取得する関数
 	t2k::Vector3 GetRoomStartPos(const int roomNum);
+	//特定の部屋の左上と右下の座標を取得する関数
+	void SetCornerPos(int roomNum, t2k::Vector3& LeftTop, t2k::Vector3& RightBottom);
 
-
-	//特定のマップ座標が部屋のどこかに存在するか確認する関数
+	//特定のマップ座標が部屋のどこかに存在するか確認する関数 返り値は部屋番号
 	int CheckIsThere(const int x, const int y);
+
+
+	//階段テスト用関数
+	void AddStairList(t2k::Vector3 pos);
+	//階段テスト用クリア関数
+	inline void ResetStairList() {
+		stairs.clear();
+	}
+	std::vector<t2k::Vector3> stairs;
+
 
 	//マップ全体の描画
 	void MapDraw();
+
+
 
 	//ミニマップ描画
 	void MiniMapDraw();

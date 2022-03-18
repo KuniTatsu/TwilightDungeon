@@ -22,7 +22,7 @@ Animation::Animation(std::string Gh, t2k::Vector3 Pos)
 	actSpeed = 10;
 	maxMotionIndex = 10;
 	animationType = 1;
-	SetTransColor(0, 0, 0);
+	
 }
 
 Animation::~Animation()

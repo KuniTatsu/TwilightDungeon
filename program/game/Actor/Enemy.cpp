@@ -5,7 +5,7 @@
 #include"../Map.h"
 
 extern GameManager* gManager;
-Enemy::Enemy(int Id, int Type, std::string Name, int Hp, int Atack, int Defence, int Speed, std::string Gh, int Exp, int Floor, int ActId)
+Enemy::Enemy(int Id, int Type, std::string Name, int Hp, int Attack, int Defence, int Speed, std::string Gh, int Exp, int Floor, int ActId)
 {
 	actId = ActId;
 	id = Id;
@@ -13,20 +13,20 @@ Enemy::Enemy(int Id, int Type, std::string Name, int Hp, int Atack, int Defence,
 	name = Name;
 	//補正値 constにする
 	exHp = (Floor - 1) * 10;
-	exAtack = (Floor - 1) * 2;
+	exAttack = (Floor - 1) * 2;
 	exDefence = (Floor - 1) * 2;
 	exSpeed = (Floor - 1) * 2;
 	exExp = (Floor - 1) * 5;
 
 	//csvから読み込む基礎値
 	baseHp = Hp;
-	baseAtack = Atack;
+	baseAttack = Attack;
 	baseDefence = Defence;
 	baseSpeed = Speed;
 
 	//描画ステータスの算出
 	hp = baseHp + exHp;
-	atack = baseAtack + exAtack;
+	attack = baseAttack + exAttack;
 	defence = baseDefence + exDefence;
 	speed = baseSpeed + exSpeed;
 

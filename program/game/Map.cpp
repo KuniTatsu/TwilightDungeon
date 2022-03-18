@@ -13,7 +13,7 @@ Map::Map(int Width, int Height, std::vector<int>Handles)
 
 	//mapChip[0] = gManager->LoadGraphEx("graphics/floor.png");//床
 	//mapChip[1] = gManager->LoadGraphEx("graphics/Wall.png");//ただの壁
-	
+
 	floor = Handles[0];//床
 	wall = Handles[1];//ただの壁
 
@@ -34,7 +34,7 @@ Map::Map(int Width, int Height, std::vector<int>Handles)
 	autoTileChip[7] = wall;
 	autoTileChip[8] = wall;
 	//
-	stair= gManager->LoadGraphEx("graphics/Stairs_.png");//階段
+	stair = gManager->LoadGraphEx("graphics/Stairs_.png");//階段
 
 	voidGh = gManager->LoadGraphEx("graphics/void.png");
 
@@ -49,14 +49,63 @@ Map::Map(int Width, int Height, std::vector<int>Handles)
 
 	//縦の初期化
 	ground.resize(height);
+	visited.resize(height);
 	for (auto v : ground)v.resize(width);
+	for (auto v : visited)v.resize(width);
+
 	for (int i = 0; i < height; ++i) {
 		ground[i].resize(width);
+		visited[i].resize(width);
 	}
 	//すべてを壁にする
 	for (int i = 0; i < height; ++i) {
 		for (int k = 0; k < width; ++k) {
 			ground[i][k] = WALL;
+			visited[i][k] = false;
+		}
+	}
+}
+
+void Map::ChangeRoomVisit(t2k::Vector3 localPos)
+{
+	int check = CheckIsThere(localPos.x, localPos.y);
+	if (check == OUTOFRANGE)return;
+
+	SetCornerPos(check, leftTop, rightBottom);
+	if (rightBottom.y < gManager->MAPHEIGHT && rightBottom.x < gManager->MAPWIDTH) {
+		for (int i = leftTop.y-2; i < rightBottom.y + 2; ++i) {
+			for (int k = leftTop.x-2; k < rightBottom.x + 2; ++k) {
+				visited[i][k] = true;
+			}
+		}
+	}
+	else {
+		for (int i = leftTop.y; i < rightBottom.y; ++i) {
+			for (int k = leftTop.x; k < rightBottom.x; ++k) {
+				visited[i][k] = true;
+			}
+		}
+	}
+
+}
+
+void Map::ChangeWayVisit(t2k::Vector3 localPos)
+{
+	int check = CheckIsThere(localPos.x, localPos.y);
+	if (check != OUTOFRANGE)return;
+
+	if (IsOutOfRange(localPos.x - 2, localPos.y - 2))return;
+	if (IsOutOfRange(localPos.x + 2, localPos.y + 2))return;
+
+	int x1 = localPos.x - 2;
+	int x2 = localPos.x + 2;
+
+	int y1 = localPos.y - 2;
+	int y2 = localPos.y + 2;
+
+	for (int i = y1; i <= y2; ++i) {
+		for (int k = x1; k <= x2; ++k) {
+			visited[i][k] = true;
 		}
 	}
 }
@@ -114,6 +163,20 @@ int Map::CheckIsThere(int x, int y)
 		}
 	}
 	/*if (!isThere)*/return OUTOFRANGE;
+
+}
+
+void Map::SetCornerPos(int roomNum, t2k::Vector3& LeftTop, t2k::Vector3& RightBottom)
+{
+	LeftTop.x = divideRoom[roomNum][0];
+	LeftTop.y = divideRoom[roomNum][1];
+	RightBottom.x = divideRoom[roomNum][2];
+	RightBottom.y = divideRoom[roomNum][3];
+}
+
+void Map::AddStairList(t2k::Vector3 pos)
+{
+	stairs.emplace_back(pos);
 
 }
 
@@ -186,8 +249,7 @@ void Map::MapDraw()
 				DrawRotaGraph(k * SIZE - gManager->camera->cameraPos.x, i * SIZE - gManager->camera->cameraPos.y, gManager->graphEx, 0, autoTileChip[iti], false);
 			}
 			else if (ground[i][k] == PASSWAY)DrawRotaGraph(k * SIZE - gManager->camera->cameraPos.x, i * SIZE - gManager->camera->cameraPos.y, gManager->graphEx, 0, floor, false);
-			else if (ground[i][k] == STAIRS)DrawRotaGraph(k * SIZE - gManager->camera->cameraPos.x, i * SIZE - gManager->camera->cameraPos.y, gManager->graphEx, 0,stair, false);
-			//else if (ground[i][k] == EXPASSWAY)DrawRotaGraph(k * SIZE - gManager->camera->cameraPos.x, i * SIZE - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[3], false);
+			else if (ground[i][k] == STAIRS)DrawRotaGraph(k * SIZE - gManager->camera->cameraPos.x, i * SIZE - gManager->camera->cameraPos.y, gManager->graphEx, 0, stair, false);
 
 		}
 	}
@@ -202,8 +264,32 @@ void Map::MiniMapDraw()
 {
 	int x = 150;
 	int y = 50;
-	for (auto i : ground) {
+
+	for (int i = 0; i < ground.size(); ++i) {
+		for (int k = 0; k < ground[i].size(); ++k) {
+			if (visited[i][k] == false) {
+				x += 10;
+				continue;
+			}
+			if (ground[i][k] == PASSWAY) {
+				DrawRotaGraph(x, y, 0.5, 0, miniMapChip[0], false);
+			}
+			else if (ground[i][k] == STAIRS) {
+				DrawRotaGraph(x, y, 0.5, 0, miniMapChip[0], false);
+				DrawRotaGraph(x, y, 0.5, 0, miniMapChip[1], false);
+			}
+			x += 10;
+		}
+		x = 150;
+		y += 10;
+	}
+
+
+	/*for (auto i : ground) {
 		for (auto k : i) {
+
+			if (visited[i][k] == false)return;
+
 			if (k == PASSWAY) {
 				DrawRotaGraph(x, y, 0.5, 0, miniMapChip[0], false);
 			}
@@ -219,18 +305,18 @@ void Map::MiniMapDraw()
 		}
 		x = 150;
 		y += 10;
-	}
+	}*/
 	t2k::Vector3 PlayerPos = gManager->WorldToLocal(player->pos);
 	//ミニマップにプレイヤーの位置を描画
 	DrawRotaGraph(PlayerPos.x * 10 + 150, PlayerPos.y * 10 + 50, 0.5, 0, miniPlayer, true);
-	//ミニマップにエネミーを描画
-	
+
+
 }
 
 bool Map::IsOutOfRange(int x, int y)
 {
-	if (x <= -1 || width < x)return true;
-	if (y <= -1 || height < y)return true;
+	if (x <= -1 || width <= x)return true;
+	if (y <= -1 || height <= y)return true;
 	return false;
 }
 
@@ -514,10 +600,10 @@ void Map::CreateRoom()
 		int down = area[3];
 		int id = area[4];
 
-		int roomLeft = gManager->GetRandEx(left, right - roomMinWidth + 2);
-		int roomRight = gManager->GetRandEx(roomLeft + roomMinWidth - 2, right);
+		int roomLeft = gManager->GetRandEx(left+2, right - roomMinWidth + 2);
+		int roomRight = gManager->GetRandEx(roomLeft + roomMinWidth - 2, right-2);
 		int roomUp = gManager->GetRandEx(up + 2, down - roomMinHeight + 2);
-		int roomDown = gManager->GetRandEx(roomUp + roomMinHeight - 2, down);
+		int roomDown = gManager->GetRandEx(roomUp + roomMinHeight - 2, down-2);
 
 		SetDivideRoom(roomLeft, roomUp, roomRight, roomDown, id);
 	}
@@ -1089,7 +1175,7 @@ int Map::CheckAroundWay(int x, int y)
 	else if (ue && migishita)return ROOMWALL;
 	else if (ue && hidari)return ROOMWALL;
 	else if (hidari && migi)return ROOMWALL;
-	else if (ue && migiue&&migi)return ROOMWALL;
+	else if (ue && migiue && migi)return ROOMWALL;
 
 	//下,右下,左下がtrue->通路なら 部屋の上側
 	else if (shita)return ROOMTOP;//0

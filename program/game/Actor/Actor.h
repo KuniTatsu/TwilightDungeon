@@ -62,7 +62,9 @@ public:
 	//Hpの変動が外部から与えられた時に使う関数
 	void TakeHpEffect(const int HpMove);
 
-	virtual void Atack();
+	virtual void Attack();
+	virtual void SkillAttack();
+
 	virtual bool Move();
 
 	const enum class AnimPattern {
@@ -83,24 +85,24 @@ protected:
 	std::string name = "";
 	//装備, アイテムによる追加ステータス
 	int equipHp = 0;
-	int equipAtack = 0;
+	int equipAttack = 0;
 	int equipDefence = 0;
 	int equipSpeed = 0;
 
 	//その他要因による追加ステータス
 	int exHp = 0;
-	int exAtack = 0;
+	int exAttack = 0;
 	int exDefence = 0;
 	int exSpeed = 0;
 
 	//基礎ステータス
 	int baseHp = 0;
-	int baseAtack = 0;
+	int baseAttack = 0;
 	int baseDefence = 0;
 	int baseSpeed = 0;
 	//描画ステータス
 	int hp = 0;
-	int atack = 0;
+	int attack = 0;
 	int defence = 0;
 	int speed = 0;
 

@@ -404,9 +404,13 @@ bool DungeonScene::SeqMain(const float deltatime)
 	//もしPlayerが動いたら もしくはスキップしたら
 	if (gManager->player->Move() || player->skip) {
 
-		itemGetFlag = true;
 
+		itemGetFlag = true;
 		playerPos = gManager->WorldToLocal(gManager->player->pos);
+		//部屋の中に入ったならミニマップの部屋を表示させる
+		gManager->UpdateMiniMap(playerPos);
+
+
 
 		ChangeSequence(sequence::ENEMYACT);
 		if (player->skip)player->skip = false;
@@ -418,14 +422,14 @@ bool DungeonScene::SeqMain(const float deltatime)
 
 bool DungeonScene::SeqPlayerAttack(const float deltatime)
 {
-	player->Atack();
+	player->Attack();
 	//死亡チェック
 	for (auto enemy : eManager->liveEnemyList) {
 		if (enemy->GetStatus(0) <= 0) {
 			//もしレベルアップしたら
 			if (player->AddExp(enemy->GetExp())) {
 				//Animationクラスをnew
-				std::shared_ptr<Animation>anim = std::make_shared<Animation>("graphics/levelUpEffect.png", player->pos);
+				std::shared_ptr<Animation>anim = std::make_shared<Animation>("graphics/levelUpEffect_new.png", player->pos);
 				//描画リストに登録
 				drawAnimationList.emplace_back(anim);
 			}
@@ -471,17 +475,17 @@ bool DungeonScene::SeqEnemyAct(const float deltatime)
 
 				if (liveEnemy->mydir != vec)liveEnemy->setDir(vec);
 				//リストに入れる
-				atackEnemies.emplace_back(liveEnemy);
+				attackEnemies.emplace_back(liveEnemy);
 			}
 			else {
 				//動く関数は全て同時でいい
 				liveEnemy->Move();
 			}
 		}
-		itr = atackEnemies.begin();
+		itr = attackEnemies.begin();
 	}
 	//攻撃する敵リストがからじゃないなら
-	if (!atackEnemies.empty()) {
+	if (!attackEnemies.empty()) {
 
 		//アニメーションシークエンスに飛ばす
 		ChangeSequence(sequence::ANIMATION);
@@ -496,15 +500,15 @@ bool DungeonScene::SeqEnemyAct(const float deltatime)
 bool DungeonScene::SeqEnemyAttack(const float deltatime)
 {
 	//もし敵が一体だけならインターバルを0にする
-	if (atackEnemies.size() == 1)enemyActTimer = ENEMYACTINTERVAL;
+	if (attackEnemies.size() == 1)enemyActTimer = ENEMYACTINTERVAL;
 	//一体ずつ攻撃させるためのインターバル計測
 	if (++enemyActTimer > ENEMYACTINTERVAL) {
-		(*itr)->Atack();
+		(*itr)->Attack();
 		enemyActTimer = 0;
-		itr = atackEnemies.erase(itr);
+		itr = attackEnemies.erase(itr);
 	}
 	//すべての敵が攻撃し終えるまでこのシークエンスを出ない
-	if (!atackEnemies.empty())return true;
+	if (!attackEnemies.empty())return true;
 
 
 	//すべての攻撃を終えたらMainSequenceに戻る
@@ -719,11 +723,14 @@ bool DungeonScene::SeqThrowItemMove(const float deltatime)
 
 void DungeonScene::DrawMiniEnemy()
 {
+
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
 	for (auto liveEnemy : eManager->liveEnemyList) {
-		t2k::Vector3 LocalPos = gManager->WorldToLocal(liveEnemy->pos);
-		//ミニマップにプレイヤーの位置を描画
-		DrawRotaGraph(LocalPos.x * 10 + 150, LocalPos.y * 10 + 50, 0.5, 0, miniEnemy, true);
+		t2k::Vector3 localPos = gManager->WorldToLocal(liveEnemy->pos);
+		if (gManager->CheckCanDraw(localPos)) {
+			//ミニマップにプレイヤーの位置を描画
+			DrawRotaGraph(localPos.x * 10 + 150, localPos.y * 10 + 50, 0.5, 0, miniEnemy, true);
+		}
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 }
@@ -759,7 +766,7 @@ bool DungeonScene::SeqAnimation(const float deltatime)
 			gManager->sound->System_Play(gManager->sound->system_attack);
 			//アニメーション画像の最大Index番号の取得
 			int index = gManager->GetMaxIndex(GameManager::index::ATTACK);
-			for (auto attackEnemy : atackEnemies) {
+			for (auto attackEnemy : attackEnemies) {
 				//Animationクラスをnew
 				std::shared_ptr<Animation>anim = std::make_shared<Animation>("graphics/AttackAnim_30.png", player->pos, ATTACKEFFECTSPEED, index);
 				//描画リストに登録

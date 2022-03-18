@@ -13,11 +13,13 @@ class Player : public Actor
 {
 public:
 	Player(){}
-	Player(const t2k::Vector3& StartPos, float Hp, int Atack, int Defence, int Speed, int ActId);
+	Player(const t2k::Vector3& StartPos, float Hp, int Attack, int Defence, int Speed, int ActId);
 	~Player();
 
 	//足踏みフラグ
 	bool skip = false;
+
+	t2k::Vector3 localPos = {};
 
 
 	//満腹度とHPの変更関数(主に食料アイテムの使用で使う)

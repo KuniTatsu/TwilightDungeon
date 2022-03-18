@@ -25,7 +25,7 @@ int Actor::GetStatus(int StatusNum)
 		return nowHp;
 	}
 	else if (StatusNum == 1) {
-		return atack;
+		return attack;
 	}
 	else if (StatusNum == 2) {
 		return defence;
@@ -41,7 +41,7 @@ void Actor::ChangeStatus(int StatusNum, int MoveNum, int StatusType)
 {
 	if (StatusType == EFFECT) {
 		exHp = 0;
-		exAtack = 0;
+		exAttack = 0;
 		exDefence = 0;
 		exSpeed = 0;
 		if (StatusNum == 0) {
@@ -49,8 +49,8 @@ void Actor::ChangeStatus(int StatusNum, int MoveNum, int StatusType)
 			hp = baseHp + equipHp + exHp;
 		}
 		else if (StatusNum == 1) {
-			exAtack += MoveNum;
-			atack = baseAtack + equipAtack + exAtack;
+			exAttack += MoveNum;
+			attack = baseAttack + equipAttack + exAttack;
 		}
 		else if (StatusNum == 2) {
 			exDefence += MoveNum;
@@ -64,7 +64,7 @@ void Actor::ChangeStatus(int StatusNum, int MoveNum, int StatusType)
 	else {
 		//装備アイテムを付け替える場合は装備アイテムによって付与されていたステータスを消去してから加算する
 		equipHp = 0;
-		equipAtack = 0;
+		equipAttack = 0;
 		equipDefence = 0;
 		equipSpeed = 0;
 		if (StatusNum == 0) {
@@ -72,8 +72,8 @@ void Actor::ChangeStatus(int StatusNum, int MoveNum, int StatusType)
 			hp = baseHp + equipHp + exHp;
 		}
 		else if (StatusNum == 1) {
-			equipAtack += MoveNum;
-			atack = baseAtack + equipAtack + exAtack;
+			equipAttack += MoveNum;
+			attack = baseAttack + equipAttack + exAttack;
 		}
 		else if (StatusNum == 2) {
 			equipDefence += MoveNum;
@@ -123,7 +123,7 @@ void Actor::TakeHpEffect(int HpMove)
 
 	nowHpVarWidth = nowHp / hp;
 }
-void Actor::Atack()
+void Actor::Attack()
 {
 	//方向を引数にVector3を返す関数を用意する
 
@@ -133,6 +133,13 @@ void Actor::Atack()
 
 	//目の前の対象を取得,ダメージ処理を行う
 	gManager->TakeDamageToTarget(this, front);
+
+}
+
+void Actor::SkillAttack()
+{
+
+
 
 }
 

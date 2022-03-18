@@ -11,9 +11,9 @@
 class Enemy :public Actor {
 
 public:
-	//id(int)	EnemyType(int)	Enemy_Name(std::string)	HP(int)	Atack(int)	Defence(int)	Speed(int)	Gh(std::string)	Exp(int) level(int)
+	//id(int)	EnemyType(int)	Enemy_Name(std::string)	HP(int)	Attack(int)	Defence(int)	Speed(int)	Gh(std::string)	Exp(int) level(int)
 
-	Enemy(int Id, int Type, std::string Name, int Hp, int Atack, int Defence, int Speed, std::string Gh, int Exp,int Floor, int ActId);
+	Enemy(int Id, int Type, std::string Name, int Hp, int Attack, int Defence, int Speed, std::string Gh, int Exp,int Floor, int ActId);
 	~Enemy()override;
 
 	//“|‚µ‚½‚ÌŒoŒ±’l‚ğæ“¾‚·‚éŠÖ”

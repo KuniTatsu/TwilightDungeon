@@ -275,6 +275,19 @@ int GameManager::LoadGraphEx(std::string gh)
 	return ghmap[gh];
 }
 
+void GameManager::LoadDivGraphEx(const std::string Gh, const int AllNum, const int WidthNum, const int HeightNum, int XSize, int YSize, std::vector<int>& GhVector)
+{
+	int* buf = new int[AllNum];
+	LoadDivGraph(Gh.c_str(), AllNum, WidthNum, HeightNum, XSize, YSize, buf);
+
+
+	for (int i = 0; i < AllNum;++i) {
+		GhVector.emplace_back(buf[i]);
+	}
+	delete[] buf;
+
+}
+
 //aからbまでの値からランダムに取得する
 int GameManager::GetRandEx(int a, int b)
 {
@@ -632,7 +645,7 @@ void GameManager::ReCreate()
 	CreateDungeon(nowDungeon);
 
 
-	player->pos = SetStartPos(setStartPosType::PLAYER);
+	//player->pos = SetStartPos(setStartPosType::PLAYER);
 	map->player = player;
 
 	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
@@ -665,11 +678,21 @@ void GameManager::MiniMapDraw()
 	map->MiniMapDraw();
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 }
+void GameManager::UpdateMiniMap(t2k::Vector3 localPos)
+{
+	map->ChangeRoomVisit(localPos);
+	map->ChangeWayVisit(localPos);
+}
+bool GameManager::CheckCanDraw(t2k::Vector3 localPos)
+{
+	return map->CheckCanDraw(localPos);
+}
 void GameManager::CreateDungeon(Dungeon dungeonName) {
 
 	if (map != nullptr)delete map;
 	ResetLog();
 	wayPoint.clear();
+
 	nowDungeon = dungeonName;
 	CreateMap(dungeonName);
 
@@ -680,13 +703,17 @@ void GameManager::CreateDungeon(Dungeon dungeonName) {
 	t2k::Vector3 stairsPos = SetStartPos(setStartPosType::STAIR);
 	//階段設置
 	map->SetChip(stairsPos.x, stairsPos.y, map->STAIRS);
+	//デバッグ用階段座標登録
+	map->AddStairList(stairsPos);
+
 
 	if (player == nullptr)return;
 	//ダンジョン内のランダムな位置にプレイヤーを移動
 	player->pos = SetStartPos(setStartPosType::PLAYER);
+	map->player = player;
+	map->ChangeRoomVisit(WorldToLocal(player->pos));
 	CameraReset();
 
-	map->player = player;
 }
 void GameManager::CreateMap(Dungeon dungeonName)
 {

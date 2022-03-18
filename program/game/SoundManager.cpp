@@ -13,6 +13,8 @@ Sound::Sound()
 	system_cancel = LoadSoundMem("sound/system_cancel.mp3");
 	system_attack = LoadSoundMem("sound/system_attack.mp3");
 
+
+
 }
 
 Sound::~Sound()
@@ -21,11 +23,12 @@ Sound::~Sound()
 
 void Sound::BGM_Play(int bgm)
 {
-	ChangeVolumeSoundMem(255 * 80 / 100, bgm);
+	ChangeVolumeSoundMem(255 * 40 / 100, bgm);
 	PlaySoundMem(bgm, DX_PLAYTYPE_LOOP);
 }
 
 void Sound::System_Play(int sound)
 {
+	ChangeVolumeSoundMem(255 * 40 / 100, sound);
 	PlaySoundMem(sound, DX_PLAYTYPE_BACK);
 }

@@ -62,7 +62,7 @@ private:
 	//更新インターバルフレーム
 	int enemyActTimer = 30;
 
-	std::list<std::shared_ptr<Enemy>>atackEnemies;
+	std::list<std::shared_ptr<Enemy>>attackEnemies;
 	std::list<std::shared_ptr<Enemy>>::iterator itr;
 
 	//****************************************************
