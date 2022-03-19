@@ -65,6 +65,16 @@ public:
 
 	//プレイヤー死亡時の処理
 	void DeadPlayer();
+
+	//所持金を変化させる関数
+	inline void ChangeHaveCoin(int MoveNum) {
+		coin += MoveNum;
+		if (coin < 0)coin = 0;
+	}
+	//所持金を取得する関数
+	inline int GetHaveCoin() {
+		return coin;
+	}
 private:
 
 	t2k::Vector3 playerInMap;
@@ -95,6 +105,8 @@ private:
 	const std::string equipName[6] = { "WEAPON","HEAD","CHEST","GLOVE","BOOTS","SHIELD" };
 	//hp,attack,defence,speed
 	int statuses[4] = { 0,0,0,0 };
+
+	int coin = 0;
 
 	//突き当りまで走るフラグ
 	bool left = false;

@@ -86,7 +86,7 @@ void DungeonScene::Update()
 		if (item->DetectOnPlayer(playerPos)) {
 			//アイテムをすでに拾ってなければ
 			if (itemGetFlag) {
-				gManager->AddItemToInventory(item->GetItemId());
+				gManager->AddItemToInventory(item->GetItemId(), gManager->inventories, gManager->inventoryNum);
 				item->SetIsLiveFalse();
 				itemGetFlag = false;
 			}
@@ -379,18 +379,8 @@ bool DungeonScene::SeqMain(const float deltatime)
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_SPACE)) {
 		player->skip = true;
 	}
+	if (CheckExtraOnTile())return true;
 
-	//もしplayerが階段の上にいたら
-	//windowを出す
-	//enterで次の階へ
-	if (gManager->GetMapChip(playerPos) == 3) {
-
-		if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
-			gManager->sound->System_Play(gManager->sound->system_select);
-			ChangeSequence(sequence::FADEOUT);
-			return true;
-		}
-	}
 	//左クリックかRボタンで攻撃
 	//プレイヤーの攻撃は目の前に対象がいなかった場合skipと同じ処理を行う
 	if (t2k::Input::isMouseTrigger(t2k::Input::MOUSE_RELEASED_LEFT) || t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_R)) {
@@ -815,6 +805,68 @@ bool DungeonScene::SeqDescFade(const float deltatime)
 	return true;
 }
 
+bool DungeonScene::SeqShopMain(const float deltatime)
+{
+	if (mainSequence.isStart()) {
+		if (shopPages[0] == nullptr) {
+			//新しくinventoryのインスタンスを生成する
+			Inventory* newPage = new Inventory(shopPage + 1);
+			//ショップのページを登録
+			shopPages.emplace_back(newPage);
+		}
+		//ショップページにアイテムを登録(6個,2個,2個で登録)
+		SetShopItem(6, static_cast<uint32_t>(ItemType::CONSUME));
+		SetShopItem(2, static_cast<uint32_t>(ItemType::WEAPON));
+		SetShopItem(2, static_cast<uint32_t>(ItemType::ARMOR));
+	}
+	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_ESCAPE)) {
+
+		//ショップアイテムをすべてdeleteする
+		for (auto item : shopPages[0]->inventoryList) {
+			delete item;
+			shopPages[0]->inventoryList.pop_front();
+		}
+		//ショップを閉じる
+		ChangeSequence(sequence::MAIN);
+		return true;
+	}
+
+
+	shopPages[0]->CursorMove();
+	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+		int cursorNum = shopPages[0]->GetCursorNum();
+
+		//表示中のインベントリを取得
+		auto itr = shopPages[0]->inventoryList.begin();
+
+		//選択されたアイテムまでイテレータ移動
+		for (int i = 0; i < cursorNum; ++i) {
+			itr++;
+		}
+		int price = (*itr)->getItemData(5);
+		//所持金が足りないときは買わない
+		if (player->GetHaveCoin() < price) {
+			gManager->addLog("所持金が足りません!");
+			return true;
+		}
+
+		int itemId = gManager->GetItemId((*itr));
+		//インベントリに表示されていたステータスのまま追加する
+		gManager->AddItemToInventory(itemId, gManager->inventories, gManager->inventoryNum, 1);
+
+		player->ChangeHaveCoin(price * (-1));
+
+		//shopに並んでいる該当アイテムをdeleteする
+		delete (*itr);
+		itr = shopPages[0]->inventoryList.erase(itr);
+		shopPages[0]->SetCursorNum(-1);
+
+	}
+
+
+	return true;
+}
+
 bool DungeonScene::SeqCameraMove(const float deltatime)
 {
 	gManager->camera->CameraMove();
@@ -842,6 +894,33 @@ void DungeonScene::DrawFadeDesc() {
 
 	}
 
+}
+bool DungeonScene::CheckExtraOnTile()
+{
+	//踏んでいるタイルが普通の通路だったらreturn false;
+	if (gManager->GetMapChip(playerPos) == 1) return false;
+
+	//もしplayerが階段の上にいたら
+	//windowを出す
+	//enterで次の階へ
+	if (gManager->GetMapChip(playerPos) == 3) {
+
+		if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+			gManager->sound->System_Play(gManager->sound->system_select);
+			ChangeSequence(sequence::FADEOUT);
+			return true;
+		}
+	}
+	//踏んでいるのがショップだったら
+	else if (gManager->GetMapChip(playerPos) == 4) {
+		//enterでショップシークエンスに入る
+		if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+			gManager->sound->System_Play(gManager->sound->system_select);
+			ChangeSequence(sequence::SHOP);
+			return true;
+		}
+	}
+	return false;
 }
 bool DungeonScene::SeqFadeIn(const float deltatime)
 {
@@ -918,6 +997,9 @@ void DungeonScene::ChangeSequence(sequence seq)
 	}
 	else if (seq == sequence::FADEDESC) {
 		mainSequence.change(&DungeonScene::SeqDescFade);
+	}
+	else if (seq == sequence::SHOP) {
+		mainSequence.change(&DungeonScene::SeqShopMain);
 	}
 	else if (seq == sequence::CAMERA) {
 		mainSequence.change(&DungeonScene::SeqCameraMove);
@@ -1113,7 +1195,7 @@ void DungeonScene::ItemThrow(int inventoryPage)
 	std::vector<string> stringData = itemBuf->GetAllStringData();
 
 	//Item* throwedItem = new Item(intData[0], intData[1], stringData[0], intData[2], intData[3], intData[4], stringData[1], stringData[2]);
-	std::shared_ptr<Item>throwedItem = std::make_shared<Item>(intData[0], intData[1], stringData[0], intData[2], intData[3], intData[4], stringData[1], stringData[2]);
+	std::shared_ptr<Item>throwedItem = std::make_shared<Item>(intData[0], intData[1], stringData[0], intData[2], intData[3], intData[4], intData[5], stringData[1], stringData[2]);
 
 	throwedItem->SetPos(player->pos);
 	throwedItem->SetGoalPos(player->mydir);
@@ -1151,6 +1233,17 @@ void DungeonScene::WhenDeadPlayer()
 	//キャンプシーンに戻る
 	SceneManager::ChangeScene(SceneManager::SCENE::CAMP);
 	return;
+}
+
+void DungeonScene::SetShopItem(int SetNum, int ItemType)
+{
+	//SetNumと同じだけランダムでアイテムを生成しインベントリに入れる
+	for (int i = 0; i < SetNum; ++i) {
+		//アイテムタイプの中からランダムなアイテムのIdを取得
+		int itemId = gManager->GetRandItemData(ItemType);
+		//ショップアイテムページにアイテムを追加
+		gManager->AddItemToInventory(itemId, shopPages, shopPage);
+	}
 }
 
 void DungeonScene::DropItem(const int ItemId, const t2k::Vector3 DropPos)

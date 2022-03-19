@@ -91,7 +91,8 @@ public:
 	int inventoryNum = 0;
 
 	//インベントリにアイテムを追加する関数
-	void AddItemToInventory(const int itemId);
+	//アイテムId,追加するインベントリ,現在のインベントリ番号,ステータスを保存するかランダムにするか(装備アイテム向け)
+	void AddItemToInventory(const int ItemId,std::vector<Inventory*>& Inventories,int& InventoryNumint SetType);
 
 	//インベントリからアイテムを削除する関数
 	void PopItemFromInventory(const int NowInventoryId);
@@ -101,6 +102,12 @@ public:
 
 	//装備しているか確認する関数
 	bool CheckEquipItem(int subId);
+
+	//アイテムタイプからランダムなアイテムIdを取得する関数
+	int GetRandItemData(int ItemType);
+
+	//アイテムポインタからアイテムIdを取得する関数
+	int GetItemId(Item* Item);
 
 	//一度読み込んだghを保存するmap
 	std::unordered_map<std::string, int> ghmap;

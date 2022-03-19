@@ -1,0 +1,7 @@
+id(int),SkillType(int),Skill_Name,damage,heal,Gh(std::string),allnum,xnum,ynum,xsize,ysize
+100,0,ファイア,100,0,graphics/,3,3,1,32,32
+101,0,ファイアボム,150,0,graphics/,3,3,1,32,32
+102,0,インシネレート,200,0,graphics/,3,3,1,32,32
+103,0,ドレイン,100,50,graphics/,3,3,1,32,32
+104,0,リーチナックル,200,50,graphics/,3,3,1,32,32
+105,0,ソウルスティール,400,50,graphics/,3,3,1,32,32

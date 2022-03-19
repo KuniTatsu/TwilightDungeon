@@ -61,6 +61,8 @@ private:
 	//dirの方向に1進んだマスが移動可能かどうか確認する関数
 	bool CheckCanMove(const int dir, const t2k::Vector3 nowPos);
 
+	//chasePointについたか確認し、ついたならリセットする関数
+	void CheckDoneChase();
 
 	enum /*class*/ CheckDir {
 		UP,

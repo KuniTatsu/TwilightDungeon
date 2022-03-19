@@ -36,48 +36,53 @@ GameManager::~GameManager()
 
 }
 
-void GameManager::AddItemToInventory(const int itemId)
+//void GameManager::AddItemToInventory(const int itemId)
+void GameManager::AddItemToInventory(const int ItemId, std::vector<Inventory*>& Inventories, 
+	int& InventoryNum, int SetType)
 {
 	//今のinventoryの持つアイテム配列がいっぱいなら
-	if (inventories[inventoryNum]->inventoryList.size() >= 10) {
+	if (Inventories[InventoryNum]->inventoryList.size() >= 10) {
 		//if (sharedInventories[inventoryNum]->inventoryList.size() >= 10) {
 
 			//新しくinventoryのインスタンスを生成する
-		Inventory* newInventory = new Inventory(inventoryNum + 1);
+		Inventory* newInventory = new Inventory(InventoryNum + 1);
 		//inventory配列に登録
-		inventories.emplace_back(newInventory);
-
-		/*
-		std::shared_ptr<Inventory> newShared_inventory = std::make_shared<Inventory>(inventoryNum+1);
-		sharedInventories.emplace_back(newShared_inventory);
-		*/
+		Inventories.emplace_back(newInventory);
 
 		//登録するinventoryを更新する
-		inventoryNum++;
+		InventoryNum++;
 	}
-	Item* item = iManager->getItemData(itemId);
+	Item* item = iManager->GetItemData(ItemId);
 	//装備アイテムだったら
 	if (item->getItemData(1) >= 2) {
 		equipItem* eItem = (equipItem*)item;
+		//整数データの取得
 		std::vector<int> intData = eItem->GetAllIntData();
+		//文字列データの取得
 		std::vector<std::string> stringData = item->GetAllStringData();
-		//int Id, int ItemType, std::string ItemName, int Saturation, int Heal, int HitDamage, std::string Gh, int SubId, std::string Desc, int Hp, int Attack, int Defence, int Speed
-		equipItem* newItem = new equipItem(intData[0], intData[1], stringData[0], intData[2], intData[3], intData[4],
-			stringData[1], intData[5], stringData[2], intData[6], intData[7], intData[8], intData[9]);
-		inventories[inventoryNum]->AddInventory(newItem);
+		if (SetType == 0) {
+			//装備アイテムを生成 生成時にステータスをランダムに変更
+			equipItem* newItem = new equipItem(intData[0], intData[1], stringData[0], intData[2], intData[3], intData[4],
+				stringData[1], intData[5], intData[6], stringData[2], intData[7], intData[8], intData[9], intData[10], 0);
+			//インベントリ追加
+			Inventories[InventoryNum]->AddInventory(newItem);
+		}
+		else {
+			//装備アイテムを生成 生成時にステータスを変更しない(マスターのままorショップの表示のまま)
+			equipItem* newItem = new equipItem(intData[0], intData[1], stringData[0], intData[2], intData[3], intData[4],
+				stringData[1], intData[5], intData[6], stringData[2], intData[7], intData[8], intData[9], intData[10], 1);
+			//インベントリ追加
+			Inventories[InventoryNum]->AddInventory(newItem);
+		}
 
-		//sharedInventories[inventoryNum]->AddInventory(newItem);
 	}
 	else {
 		std::vector<int> intData = item->GetAllIntData();
 		std::vector<std::string> stringData = item->GetAllStringData();
 
-		Item* newItem = new Item(intData[0], intData[1], stringData[0], intData[2], intData[3], intData[4], stringData[1], stringData[2]);
-		//std::shared_ptr<Item>nItem= std::make_shared<Item>(intData[0], intData[1], stringData[0], intData[2], intData[3], intData[4], stringData[1], stringData[2]);
+		Item* newItem = new Item(intData[0], intData[1], stringData[0], intData[2], intData[3], intData[4], intData[5], stringData[1], stringData[2]);
 
-		inventories[inventoryNum]->AddInventory(newItem);
-
-		//sharedInventories[inventoryNum]->AddInventory(newItem);
+		Inventories[InventoryNum]->AddInventory(newItem);
 
 	}
 
@@ -100,7 +105,7 @@ void GameManager::PopItemFromInventory(const int NowInventoryId)
 	//カーソルの位置をひとつ上に移動
 	inventories[NowInventoryId]->SetCursorNum(-1);
 
-//popするアイテムがいる場所=今いるインベントリが最後のインベントリではない場合
+	//popするアイテムがいる場所=今いるインベントリが最後のインベントリではない場合
 	if (NowInventoryId != inventoryNum) {
 		int checkInventoryNum = NowInventoryId;
 		while (1) {
@@ -111,13 +116,13 @@ void GameManager::PopItemFromInventory(const int NowInventoryId)
 		//次のページの最初のアイテムをコピーして消したアイテムのリストの末尾に加える
 			auto item = inventories[checkInventoryNum + 1]->inventoryList.begin();
 
-		//アイテム追加
+			//アイテム追加
 			inventories[checkInventoryNum]->inventoryList.emplace_back((*item));
 
-		//次のページの最初のアイテムをpopする
+			//次のページの最初のアイテムをpopする
 			inventories[checkInventoryNum + 1]->inventoryList.pop_front();
 
-		//最後のインベントリページにたどり着いたらbreak
+			//最後のインベントリページにたどり着いたらbreak
 			if (checkInventoryNum + 1 == inventoryNum)break;
 			checkInventoryNum++;
 		}
@@ -149,7 +154,7 @@ void GameManager::LoadMaxIndex()
 
 Item* GameManager::GetItemData(const int ItemId)
 {
-	Item* item = iManager->getItemData(ItemId);
+	Item* item = iManager->GetItemData(ItemId);
 	return item;
 }
 
@@ -177,13 +182,13 @@ void GameManager::Update()
 {
 	//debug
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_I)) {
-		AddItemToInventory(2);
+		AddItemToInventory(2, inventories, inventoryNum,0);
 	}
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_O)) {
-		AddItemToInventory(3);
+		AddItemToInventory(3, inventories, inventoryNum,0);
 	}
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_W)) {
-		AddItemToInventory(11);
+		AddItemToInventory(11, inventories, inventoryNum,0);
 	}
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_G)) {
 		player->TakeHpEffect(-100);
@@ -200,7 +205,7 @@ void GameManager::Draw()
 
 	int k = 0;
 	for (auto id : haveItemList) {
-		Item* haveItem = iManager->getItemData(id);
+		Item* haveItem = iManager->GetItemData(id);
 		DrawStringEx(500 + 100 * k, 100, -1, "ItemId:%d", haveItem->getItemData(0));
 		DrawStringEx(500 + 100 * k, 120, -1, "ItemName:%s", haveItem->getItemName().c_str());
 		++k;
@@ -228,7 +233,7 @@ void GameManager::initGameManager()
 
 	arrowButton = LoadGraphEx("graphics/arrowButtons.png");
 	RButton = LoadGraphEx("graphics/button_R.png");
-	EnterButton=LoadGraphEx("graphics/button_Enter.png");
+	EnterButton = LoadGraphEx("graphics/button_Enter.png");
 	howToPlayBack = LoadGraphEx("graphics/howToPlayBack.png");
 
 	iManager = new ItemManager();
@@ -281,7 +286,7 @@ void GameManager::LoadDivGraphEx(const std::string Gh, const int AllNum, const i
 	LoadDivGraph(Gh.c_str(), AllNum, WidthNum, HeightNum, XSize, YSize, buf);
 
 
-	for (int i = 0; i < AllNum;++i) {
+	for (int i = 0; i < AllNum; ++i) {
 		GhVector.emplace_back(buf[i]);
 	}
 	delete[] buf;
@@ -705,7 +710,8 @@ void GameManager::CreateDungeon(Dungeon dungeonName) {
 	map->SetChip(stairsPos.x, stairsPos.y, map->STAIRS);
 	//デバッグ用階段座標登録
 	map->AddStairList(stairsPos);
-
+	//ショップをランダムで設置(デフォルト確率は20%)
+	map->SetShop();
 
 	if (player == nullptr)return;
 	//ダンジョン内のランダムな位置にプレイヤーを移動
@@ -730,6 +736,16 @@ int GameManager::GetDifStatus(int subId, int equipType, int amount)
 bool GameManager::CheckEquipItem(int subId)
 {
 	return player->CheckEquip(subId);
+}
+
+int GameManager::GetRandItemData(int ItemType)
+{
+	return iManager->GetRamdomTypeItemId(ItemType);
+}
+
+int GameManager::GetItemId(Item* Item)
+{
+	return Item->getItemData(0);
 }
 
 void GameManager::MakePlayer(SpawnScene nowScene)

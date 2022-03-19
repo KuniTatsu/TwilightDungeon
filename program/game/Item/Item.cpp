@@ -7,7 +7,7 @@
 
 extern GameManager* gManager;
 
-Item::Item(int Id, int ItemType, std::string ItemName, int Saturation, int Heal, int HitDamage, std::string Gh, std::string Desc)
+Item::Item(int Id, int ItemType, std::string ItemName, int Saturation, int Heal, int HitDamage, int SellPrice, std::string Gh, std::string Desc)
 {
 	id = Id;
 	itemType = ItemType;
@@ -23,6 +23,9 @@ Item::Item(int Id, int ItemType, std::string ItemName, int Saturation, int Heal,
 
 	itemDesc[0] = itemName;
 	itemDesc[1] = desc;
+
+	//sellingPrice = SellPrice;
+	sellingPrice = gManager->GetRandEx(SellPrice,SellPrice*1.5);
 
 	//å≈óLIDÇÃê›íË
 	uniqueId = rand();
@@ -48,6 +51,7 @@ int Item::getItemData(int ColumnId)
 	else if (ColumnId == 2)return amountOfSaturation;
 	else if (ColumnId == 3)return amountOfHeal;
 	else if (ColumnId == 4)return hitDamage;
+	else if (ColumnId == 5)return sellingPrice;
 	else return -1;
 }
 
@@ -64,6 +68,7 @@ std::vector<int> Item::GetAllIntData()
 	data.emplace_back(amountOfSaturation);
 	data.emplace_back(amountOfHeal);
 	data.emplace_back(hitDamage);
+	data.emplace_back(sellingPrice);
 
 	return data;
 }

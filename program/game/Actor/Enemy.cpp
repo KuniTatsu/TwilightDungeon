@@ -71,6 +71,7 @@ bool Enemy::Move()
 	//目的地がセットされていればそちらへ向かう
 	if (isSetChasePoint && !sameRoom) {
 		MoveChasePoint();
+		CheckDoneChase();
 		return true;
 	}
 	else if (isSetChasePoint && sameRoom) {
@@ -78,6 +79,7 @@ bool Enemy::Move()
 		isSetChasePoint = true;
 
 		MoveChasePoint();
+		CheckDoneChase();
 		return true;
 	}
 
@@ -181,6 +183,7 @@ void Enemy::MoveChasePoint()
 				//enemyが上にいるなら
 				if (ChasePoint.y > myNowPos.y) {
 					if (!gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, 1, 0))) {
+						if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, 1, 0)) == 0)return;
 						pos.y -= gManager->GRAPHICSIZE;
 						mydir = dir::DOWN;
 					}
@@ -191,6 +194,7 @@ void Enemy::MoveChasePoint()
 				//enemyが下にいるなら
 				else {
 					if (!gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, -1, 0))) {
+						if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, -1, 0)) == 0)return;
 						pos.y -= gManager->GRAPHICSIZE;
 						mydir = dir::UP;
 					}
@@ -198,6 +202,7 @@ void Enemy::MoveChasePoint()
 						return;
 					}
 				}
+				return;
 			}
 			pos.x += gManager->GRAPHICSIZE;
 			mydir = dir::RIGHT;
@@ -210,8 +215,10 @@ void Enemy::MoveChasePoint()
 				//enemyが上にいるなら
 				if (ChasePoint.y > myNowPos.y) {
 					if (!gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, 1, 0))) {
+						if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, 1, 0)) == 0)return;
 						pos.y += gManager->GRAPHICSIZE;
 						mydir = dir::DOWN;
+						return;
 					}
 					else {
 						return;
@@ -220,8 +227,10 @@ void Enemy::MoveChasePoint()
 				//enemyが下にいるなら
 				else {
 					if (!gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, -1, 0))) {
+						if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, -1, 0)) == 0)return;
 						pos.y -= gManager->GRAPHICSIZE;
 						mydir = dir::UP;
+						return;
 					}
 					else {
 						return;
@@ -251,6 +260,7 @@ void Enemy::MoveChasePoint()
 
 					pos.x += gManager->GRAPHICSIZE;
 					mydir = dir::RIGHT;
+					return;
 				}//左に進む
 				else {
 					if (gManager->GetMapChip(myNowPos + t2k::Vector3(-1, 0, 0)) == 0)return;
@@ -259,15 +269,16 @@ void Enemy::MoveChasePoint()
 
 					pos.x -= gManager->GRAPHICSIZE;
 					mydir = dir::LEFT;
+					return;
 				}
 				return;
 			}
 			//if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, 1, 0)) == 0)return;
 			//敵がその位置にいれば移動しない
 			if (gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, 1, 0)))return;
-
 			pos.y += gManager->GRAPHICSIZE;
 			mydir = dir::DOWN;
+			return;
 		}//上に進む
 		else {
 			//ひとつ上が壁のとき
@@ -280,6 +291,7 @@ void Enemy::MoveChasePoint()
 
 					pos.x += gManager->GRAPHICSIZE;
 					mydir = dir::RIGHT;
+					return;
 				}//左に進む
 				else {
 					if (gManager->GetMapChip(myNowPos + t2k::Vector3(-1, 0, 0)) == 0)return;
@@ -288,6 +300,7 @@ void Enemy::MoveChasePoint()
 
 					pos.x -= gManager->GRAPHICSIZE;
 					mydir = dir::LEFT;
+					return;
 				}
 				return;
 			}
@@ -297,16 +310,17 @@ void Enemy::MoveChasePoint()
 
 			pos.y -= gManager->GRAPHICSIZE;
 			mydir = dir::UP;
+			return;
 		}
 	}
 
-	//もし今の自分の位置と目的地が一致していれば
-	if (pos.x / gManager->GRAPHICSIZE == ChasePoint.x && pos.y / gManager->GRAPHICSIZE == ChasePoint.y) {
-		//isSetChasePointをfalseにする
-		isSetChasePoint = false;
-		//目的地を破棄する
-		ChasePoint = { 0,0,0 };
-	}
+	////もし今の自分の位置と目的地が一致していれば
+	//if (pos.x / gManager->GRAPHICSIZE == ChasePoint.x && pos.y / gManager->GRAPHICSIZE == ChasePoint.y) {
+	//	//isSetChasePointをfalseにする
+	//	isSetChasePoint = false;
+	//	//目的地を破棄する
+	//	ChasePoint = { 0,0,0 };
+	//}
 
 }
 int Enemy::GetDir(const int dir, const int getDir)
@@ -423,6 +437,17 @@ bool Enemy::CheckCanMove(const int dir, const t2k::Vector3 nowPos)
 	if (gManager->GetMapChip(nextPos) == 0 || gManager->CheckIsThereEnemyToDir(nextPos))return false;
 
 	return true;
+}
+
+void Enemy::CheckDoneChase()
+{
+	//もし今の自分の位置と目的地が一致していれば
+	if (pos.x / gManager->GRAPHICSIZE == ChasePoint.x && pos.y / gManager->GRAPHICSIZE == ChasePoint.y) {
+		//isSetChasePointをfalseにする
+		isSetChasePoint = false;
+		//目的地を破棄する
+		ChasePoint = { 0,0,0 };
+	}
 }
 
 bool Enemy::CheckCanMoveToDir(const int dir, const t2k::Vector3 nowPos, const int checkDir)

@@ -14,7 +14,8 @@ class Item
 {
 public:
 	Item() {};
-	Item(int Id,int ItemType,std::string ItemName,int Saturation,int Heal,int HitDamage,std::string Gh,std::string Desc);
+	Item(int Id,int ItemType,std::string ItemName,int Saturation,int Heal,int HitDamage, int SellPrice,
+		std::string Gh,std::string Desc);
 	
 	virtual ~Item();
 	//アイテムIDの取得
@@ -25,7 +26,7 @@ public:
 	//popしているアイテムの描画
 	void DrawPopItem();
 	 
-	//ColumnId: 0->id,1->type,2->manpukudo,3->heal,4->hitdamage
+	//ColumnId: 0->id,1->type,2->manpukudo,3->heal,4->hitdamage,5->coin
 	virtual int getItemData(int ColumnId);
 	const std::string getItemName();
 
@@ -78,6 +79,9 @@ protected:
 	t2k::Vector3 pos = { 0,0,0 };
 	//マップ座標
 	t2k::Vector3 mapPos = { 0,0,0 };
+
+	//ショップでの売値 プレイヤーが売るときは8割になる
+	int sellingPrice = 0;
 
 	//アイテムの固有ID→いずれUUIDで実装したい
 	int uniqueId = 0;

@@ -3,22 +3,21 @@
 
 extern GameManager* gManager;
 
-equipItem::equipItem(int Id, int ItemType, std::string ItemName, int Saturation, int Heal, int HitDamage, std::string Gh, int SubId, std::string Desc, int Hp, int Attack, int Defence, int Speed)
-	: Item(Id, ItemType, ItemName, Saturation, Heal, HitDamage, Gh, Desc)
+equipItem::equipItem(int Id, int ItemType, std::string ItemName, int Saturation, int Heal, int HitDamage, std::string Gh, int SubId, int SellPrice, std::string Desc, int Hp, int Attack, int Defence, int Speed, int SetType)
+	: Item(Id, ItemType, ItemName, Saturation, Heal, HitDamage, SellPrice, Gh, Desc)
 {
-	/*int buf[static_cast<uint32_t>(STATUS::STATUSMAX)] = { Hp,Attack,Defence,Speed };
-
-
-	for (int i = 0; i < static_cast<uint32_t>(STATUS::STATUSMAX); ++i) {
-	//ÉGÉâÅ[
-		equipStatus[i] = SetRandomStatus(buf(i));
-
-	}*/
-
-	hp = SetRandomStatus(Hp);
-	attack = SetRandomStatus(Attack);
-	defence = SetRandomStatus(Defence);
-	speed = SetRandomStatus(Speed);
+	if (SetType == 0) {
+		hp = SetRandomStatus(Hp);
+		attack = SetRandomStatus(Attack);
+		defence = SetRandomStatus(Defence);
+		speed = SetRandomStatus(Speed);
+	}
+	else {
+		hp = Hp;
+		attack = Attack;
+		defence = Defence;
+		speed = Speed;
+	}
 
 	subId = SubId;
 	equipStatus[0] = hp;
@@ -56,6 +55,7 @@ std::vector<int> equipItem::GetAllIntData()
 	data.emplace_back(hitDamage);
 
 	data.emplace_back(subId);
+	data.emplace_back(sellingPrice);
 	data.emplace_back(hp);
 	data.emplace_back(attack);
 	data.emplace_back(defence);

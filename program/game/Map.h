@@ -55,7 +55,7 @@ public:
 		PASSWAY,
 		CHARACTOR,
 		STAIRS,
-		EXPASSWAY,
+		SHOP,
 	};
 
 	//マップチップを取得
@@ -63,6 +63,8 @@ public:
 		if (IsOutOfRange(x, y))return OUTOFRANGE;
 		return ground[y][x];
 	}
+
+	void SetShop();
 
 	//範囲内のマップチップを取得
 	void GetAllChip(const int roomNum, std::vector<std::vector<int>>& chips);
@@ -143,6 +145,8 @@ private:
 
 	bool doneFirstDivide = false;
 
+	//ショップローカル座標
+	t2k::Vector3 localPos;
 
 	//部屋の最小幅
 	const int roomMinWidth = 8;

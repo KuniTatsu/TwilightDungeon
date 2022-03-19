@@ -25,24 +25,7 @@ void Inventory::AddInventory(Item* item)
 	inventoryList.emplace_back(item);
 	itemNum++;
 
-#if 0
-	if (inventory[9] != nullptr)return;
-
-	for (int i = 0; i < 10; ++i) {
-		if (inventory[i] != nullptr)continue;
-		inventory[i] = item;
-		itemNum++;
-		break;
-	}
-#endif
 }
-
-//void Inventory::AddSharedInventory(std::shared_ptr<Item> item)
-//{
-//	if (inventoryList.size() == 10)return;
-//	inventorySharedList.emplace_back(item);
-//	itemNum++;
-//}
 
 void Inventory::CursorMove()
 {

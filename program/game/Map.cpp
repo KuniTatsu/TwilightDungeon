@@ -135,6 +135,20 @@ void Map::DivideStart(int Width, int Height, Map* map)
 	sumRoomNum = divideRoom.size();
 }
 
+void Map::SetShop()
+{
+	//ショップを設置するかどうかランダム関数で決める
+	int rand = GetRand(100);
+	//20%の確率でショップを設置する
+	if (rand < 80)return;
+	//設置座標をローカル座標として取得する
+	t2k::Vector3 localPos = gManager->SetStartPos(GameManager::setStartPosType::STAIR);
+
+	SetChip(localPos.x, localPos.y, SHOP);
+
+
+}
+
 t2k::Vector3 Map::GetRoomValue(int roomNum)
 {
 	int x = abs(divideRoom[roomNum][2] - divideRoom[roomNum][0]);

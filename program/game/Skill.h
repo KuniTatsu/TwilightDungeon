@@ -8,7 +8,7 @@
 class Skill
 {
 public:
-	Skill(int SkillId, int SkillType, int DamageAmount, int HealAmount, std::string GhPass, int AllNum
+	Skill(int SkillId, int SkillType,std::string SkillName, int DamageAmount, int HealAmount, std::string GhPass, int AllNum
 		, int XNum, int YNum, int XSize, int YSize);
 	~Skill();
 
@@ -20,6 +20,7 @@ private:
 
 	int skillId = 0;
 	int skillType = 0;
+	std::string name = "";
 
 	int damageAmount = 0;
 	int healAmount = 0;

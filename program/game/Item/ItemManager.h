@@ -21,7 +21,9 @@ public:
 
 	int itemSumNum = 0;
 
-	Item* getItemData(int ItemId);
+	Item* GetItemData(int ItemId);
+
+	int GetRamdomTypeItemId(int ItemType);
 
 private:
 	void LoadItem();

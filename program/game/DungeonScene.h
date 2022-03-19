@@ -106,7 +106,7 @@ private:
 	void UpdateAnimation();
 	//アニメーション描画
 	void DrawAnimation();
-
+	//アニメーション終了確認
 	void CheckAnimLive();
 	const int ATTACKEFFECTSPEED = 10;
 	//int ATTACKEFFECTINDEX = 5;
@@ -147,6 +147,11 @@ private:
 	//エリア移動時の文字フェードシークエンス
 	bool SeqDescFade(const float deltatime);
 
+	//ショップ買い物メニューシークエンス
+	bool SeqShopMain(const float deltatime);
+
+
+
 	//debug
 	bool SeqCameraMove(const float deltatime);
 	//シークエンスの列挙体
@@ -163,6 +168,7 @@ private:
 		FADEIN,
 		FADEOUT,
 		FADEDESC,
+		SHOP,
 		CAMERA
 
 	};
@@ -188,6 +194,8 @@ private:
 	//fadeDescシークエンスで文字を描画する関数
 	void DrawFadeDesc();
 
+	//特殊なマップチップを踏んでいるか確認する関数
+	bool CheckExtraOnTile();
 
 	//Sequenceを移動させる関数,enumも一緒に変更する
 	void ChangeSequence(const sequence seq);
@@ -237,4 +245,22 @@ private:
 	void DeleteDeadEnemy();
 	//プレイヤー死亡処理
 	void WhenDeadPlayer();
+
+	//ショップのアイテム決定関数
+	void SetShopItem(int SetNum, int ItemType);
+	//ショップのアイテムページ数
+	int shopPage = 0;
+	//ショップのページを入れておく配列
+	std::vector<Inventory*> shopPages;
+
+	enum class ItemType:uint32_t {
+		CONSUME,
+		THROW,
+		WEAPON,
+		ARMOR,
+		MAXNUM
+	};
+
+
+
 };

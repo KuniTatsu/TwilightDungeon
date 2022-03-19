@@ -10,7 +10,7 @@ ItemManager::ItemManager()
 	LoadItem();
 }
 
-Item* ItemManager::getItemData(int ItemId)
+Item* ItemManager::GetItemData(int ItemId)
 {
 	for (auto master : itemMaster) {
 		for (auto item : master) {
@@ -20,6 +20,14 @@ Item* ItemManager::getItemData(int ItemId)
 		}
 	}
 	return nullptr;
+}
+
+int ItemManager::GetRamdomTypeItemId(int ItemType)
+{
+	int num = itemMaster[ItemType].size();
+	int rand = gManager->GetRandEx(0, num);
+
+	return itemMaster[ItemType][rand]->getItemData(0);
 }
 
 void ItemManager::LoadItem()
@@ -39,14 +47,15 @@ void ItemManager::LoadItem()
 		int equipDefence = std::atoi(loadItem[i][8].c_str());
 		int equipSpeed = std::atoi(loadItem[i][9].c_str());
 		int subId = std::atoi(loadItem[i][11].c_str());
+		int price = std::atoi(loadItem[i][12].c_str());
 
 		//Á”ïƒAƒCƒeƒ€‚È‚ç
 		if (type < 2) {
-			Item* newItem = new Item(id, type, loadItem[i][2], manpuku, heal, damage, loadItem[i][10], loadItem[i][12]);
+			Item* newItem = new Item(id, type, loadItem[i][2], manpuku, heal, damage, price,loadItem[i][10], loadItem[i][13]);
 			itemMaster[type].emplace_back(newItem);
 		}
 		else {
-			equipItem* newItem = new equipItem(id, type, loadItem[i][2], manpuku, heal, damage, loadItem[i][10], subId, loadItem[i][12], equipHp, equipAtack, equipDefence, equipSpeed);
+			equipItem* newItem = new equipItem(id, type, loadItem[i][2], manpuku, heal, damage, loadItem[i][10], subId, price,loadItem[i][13], equipHp, equipAtack, equipDefence, equipSpeed,1);
 			itemMaster[type].emplace_back(newItem);
 		}
 		itemSumNum++;
