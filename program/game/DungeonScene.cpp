@@ -86,7 +86,7 @@ void DungeonScene::Update()
 		if (item->DetectOnPlayer(playerPos)) {
 			//アイテムをすでに拾ってなければ
 			if (itemGetFlag) {
-				gManager->AddItemToInventory(item->GetItemId(), gManager->inventories, gManager->inventoryNum);
+				gManager->AddItemToInventory(item->GetItemId(), gManager->inventories, gManager->inventoryNum,0);
 				item->SetIsLiveFalse();
 				itemGetFlag = false;
 			}
@@ -805,6 +805,12 @@ bool DungeonScene::SeqDescFade(const float deltatime)
 	return true;
 }
 
+//todo
+//shopシークエンス中に表示するMenuインスタンスを作る
+//Draw関数の中にこのシークエンス中に表示したい インベントリの中身表示関数を実行させる
+//ショップのマップチップを用意する
+
+
 bool DungeonScene::SeqShopMain(const float deltatime)
 {
 	if (mainSequence.isStart()) {
@@ -1242,7 +1248,7 @@ void DungeonScene::SetShopItem(int SetNum, int ItemType)
 		//アイテムタイプの中からランダムなアイテムのIdを取得
 		int itemId = gManager->GetRandItemData(ItemType);
 		//ショップアイテムページにアイテムを追加
-		gManager->AddItemToInventory(itemId, shopPages, shopPage);
+		gManager->AddItemToInventory(itemId, shopPages, shopPage,0);
 	}
 }
 

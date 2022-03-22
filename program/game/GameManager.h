@@ -92,7 +92,7 @@ public:
 
 	//インベントリにアイテムを追加する関数
 	//アイテムId,追加するインベントリ,現在のインベントリ番号,ステータスを保存するかランダムにするか(装備アイテム向け)
-	void AddItemToInventory(const int ItemId,std::vector<Inventory*>& Inventories,int& InventoryNumint SetType);
+	void AddItemToInventory(const int ItemId,std::vector<Inventory*>& Inventories,int& InventoryNum,int SetType);
 
 	//インベントリからアイテムを削除する関数
 	void PopItemFromInventory(const int NowInventoryId);
