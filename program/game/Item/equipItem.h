@@ -10,8 +10,8 @@
 class equipItem :public Item {
 
 public:
-	//HP(int)	Atack(int)	Defence(int)	Speed(int)
 
+	//settype:0->RandomRange,1->そのままの値で生成
 	equipItem(int Id, int ItemType, std::string ItemName, int Saturation, int Heal, int HitDamage,
 		std::string Gh, int SubId, int SellPrice, std::string Desc, int Hp, int Attack, int Defence, int Speed,int SetType);
 
@@ -69,5 +69,5 @@ private:
 	//装備中アイテムとの差を取得する関数
 	void SetDifNumEquipment(int subId);
 	//装備中アイテムとの差
-	int difNum[static_cast<uint32_t>(STATUS::STATUSMAX)];
+	int difNum[static_cast<uint32_t>(STATUS::STATUSMAX)] = {0,0,0,0};
 };

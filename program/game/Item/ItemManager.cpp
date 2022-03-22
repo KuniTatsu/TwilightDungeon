@@ -24,7 +24,7 @@ Item* ItemManager::GetItemData(int ItemId)
 
 int ItemManager::GetRamdomTypeItemId(int ItemType)
 {
-	int num = itemMaster[ItemType].size();
+	int num = itemMaster[ItemType].size()-1;
 	int rand = gManager->GetRandEx(0, num);
 
 	return itemMaster[ItemType][rand]->getItemData(0);

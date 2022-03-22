@@ -35,10 +35,82 @@ GameManager::~GameManager()
 {
 
 }
+void GameManager::initGameManager()
+{
+	SRand(time(0));//dxlib randInit
+	//srand(time(0));//C randInit
+	// 
+	//debug
+	//SRand(1);
+	//
+	resource = new ResourceManager();
+	resource->LoadResource();
 
-//void GameManager::AddItemToInventory(const int itemId)
-void GameManager::AddItemToInventory(const int ItemId, std::vector<Inventory*>& Inventories, 
-	int& InventoryNum, int SetType)
+	camera = new Camera();
+
+	//map情報利用のためダンジョン生成
+	CreateDungeon(Dungeon::FOREST);
+
+	//loadDivGraphのindex取得
+	LoadMaxIndex();
+
+	arrowButton = LoadGraphEx("graphics/arrowButtons.png");
+	RButton = LoadGraphEx("graphics/button_R.png");
+	EnterButton = LoadGraphEx("graphics/button_Enter.png");
+	howToPlayBack = LoadGraphEx("graphics/howToPlayBack.png");
+
+	iManager = new ItemManager();
+	inventory = new Inventory(0);
+	inventories.emplace_back(inventory);
+
+	sound = new Sound();
+	fControl = new FadeControl();
+
+	SceneManager::ChangeScene(SceneManager::SCENE::TITLE);
+	//shared_inventory = std::make_shared<Inventory>(0);
+	//sharedInventories.emplace_back(shared_inventory);
+	deitatime_ = 0;
+
+	red = GetColor(255, 0, 0);
+	blue = GetColor(0, 0, 255);
+}
+
+void GameManager::Update()
+{
+	//debug
+	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_I)) {
+		AddItemToInventory(2, inventories, inventoryNum);
+	}
+	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_O)) {
+		AddItemToInventory(3, inventories, inventoryNum);
+	}
+	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_W)) {
+		AddItemToInventory(11, inventories, inventoryNum);
+	}
+	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_G)) {
+		player->TakeHpEffect(-100);
+	}
+	//
+	SceneManager::Update();
+
+}
+void GameManager::Draw()
+{
+	SceneManager::Render();
+
+	if (haveItemList.empty())return;
+
+	int k = 0;
+	for (auto id : haveItemList) {
+		Item* haveItem = iManager->GetItemData(id);
+		DrawStringEx(500 + 100 * k, 100, -1, "ItemId:%d", haveItem->getItemData(0));
+		DrawStringEx(500 + 100 * k, 120, -1, "ItemName:%s", haveItem->getItemName().c_str());
+		++k;
+	}
+}
+
+void GameManager::AddItemToInventory(const int ItemId, std::vector<Inventory*>& Inventories,
+	int& InventoryNum)
 {
 	//今のinventoryの持つアイテム配列がいっぱいなら
 	if (Inventories[InventoryNum]->inventoryList.size() >= 10) {
@@ -60,21 +132,12 @@ void GameManager::AddItemToInventory(const int ItemId, std::vector<Inventory*>& 
 		std::vector<int> intData = eItem->GetAllIntData();
 		//文字列データの取得
 		std::vector<std::string> stringData = item->GetAllStringData();
-		if (SetType == 0) {
-			//装備アイテムを生成 生成時にステータスをランダムに変更
-			equipItem* newItem = new equipItem(intData[0], intData[1], stringData[0], intData[2], intData[3], intData[4],
-				stringData[1], intData[5], intData[6], stringData[2], intData[7], intData[8], intData[9], intData[10], 0);
-			//インベントリ追加
-			Inventories[InventoryNum]->AddInventory(newItem);
-		}
-		else {
-			//装備アイテムを生成 生成時にステータスを変更しない(マスターのままorショップの表示のまま)
-			equipItem* newItem = new equipItem(intData[0], intData[1], stringData[0], intData[2], intData[3], intData[4],
-				stringData[1], intData[5], intData[6], stringData[2], intData[7], intData[8], intData[9], intData[10], 1);
-			//インベントリ追加
-			Inventories[InventoryNum]->AddInventory(newItem);
-		}
 
+		//装備アイテムを生成 生成時にステータスをランダムに変更
+		equipItem* newItem = new equipItem(intData[0], intData[1], stringData[0], intData[2], intData[3], intData[4],
+			stringData[1], intData[5], intData[6], stringData[2], intData[7], intData[8], intData[9], intData[10], 0);
+		//インベントリ追加
+		Inventories[InventoryNum]->AddInventory(newItem);
 	}
 	else {
 		std::vector<int> intData = item->GetAllIntData();
@@ -86,6 +149,45 @@ void GameManager::AddItemToInventory(const int ItemId, std::vector<Inventory*>& 
 
 	}
 
+}
+//ショップからプレイヤーインベントリにアイテムを追加する関数
+void GameManager::AddItemFromShop(Item* ShopItem)
+{
+	//今のinventoryの持つアイテム配列がいっぱいなら
+	if (inventories[inventoryNum]->inventoryList.size() >= 10) {
+		//if (sharedInventories[inventoryNum]->inventoryList.size() >= 10) {
+
+			//新しくinventoryのインスタンスを生成する
+		Inventory* newInventory = new Inventory(inventoryNum + 1);
+		//inventory配列に登録
+		inventories.emplace_back(newInventory);
+
+		//登録するinventoryを更新する
+		inventoryNum++;
+	}
+	//装備アイテムだったら
+	if (ShopItem->getItemData(1) >= 2) {
+		equipItem* eItem = static_cast<equipItem*>(ShopItem);
+		//整数データの取得
+		std::vector<int> intData = eItem->GetAllIntData();
+		//文字列データの取得
+		std::vector<std::string> stringData = ShopItem->GetAllStringData();
+
+		//装備アイテムを生成 生成時にステータスをランダムに変更
+		equipItem* newItem = new equipItem(intData[0], intData[1], stringData[0], intData[2], intData[3], intData[4],
+			stringData[1], intData[5], intData[6], stringData[2], intData[7], intData[8], intData[9], intData[10], 1);
+		//インベントリ追加
+		inventories[inventoryNum]->AddInventory(newItem);
+	}
+	else {
+		std::vector<int> intData = ShopItem->GetAllIntData();
+		std::vector<std::string> stringData = ShopItem->GetAllStringData();
+
+		Item* newItem = new Item(intData[0], intData[1], stringData[0], intData[2], intData[3], intData[4], intData[5], stringData[1], stringData[2]);
+
+		inventories[inventoryNum]->AddInventory(newItem);
+
+	}
 }
 
 void GameManager::PopItemFromInventory(const int NowInventoryId)
@@ -178,79 +280,7 @@ bool GameManager::PopDetectItem(Item* item, std::list<Item*>& list) {
 	}
 	return erase;
 }
-void GameManager::Update()
-{
-	//debug
-	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_I)) {
-		AddItemToInventory(2, inventories, inventoryNum,0);
-	}
-	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_O)) {
-		AddItemToInventory(3, inventories, inventoryNum,0);
-	}
-	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_W)) {
-		AddItemToInventory(11, inventories, inventoryNum,0);
-	}
-	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_G)) {
-		player->TakeHpEffect(-100);
-	}
-	//
-	SceneManager::Update();
 
-}
-void GameManager::Draw()
-{
-	SceneManager::Render();
-
-	if (haveItemList.empty())return;
-
-	int k = 0;
-	for (auto id : haveItemList) {
-		Item* haveItem = iManager->GetItemData(id);
-		DrawStringEx(500 + 100 * k, 100, -1, "ItemId:%d", haveItem->getItemData(0));
-		DrawStringEx(500 + 100 * k, 120, -1, "ItemName:%s", haveItem->getItemName().c_str());
-		++k;
-	}
-}
-
-void GameManager::initGameManager()
-{
-	SRand(time(0));//dxlib randInit
-	//srand(time(0));//C randInit
-	// 
-	//debug
-	//SRand(1);
-	//
-	resource = new ResourceManager();
-	resource->LoadResource();
-
-	camera = new Camera();
-
-	//map情報利用のためダンジョン生成
-	CreateDungeon(Dungeon::FOREST);
-
-	//loadDivGraphのindex取得
-	LoadMaxIndex();
-
-	arrowButton = LoadGraphEx("graphics/arrowButtons.png");
-	RButton = LoadGraphEx("graphics/button_R.png");
-	EnterButton = LoadGraphEx("graphics/button_Enter.png");
-	howToPlayBack = LoadGraphEx("graphics/howToPlayBack.png");
-
-	iManager = new ItemManager();
-	inventory = new Inventory(0);
-	inventories.emplace_back(inventory);
-
-	sound = new Sound();
-	fControl = new FadeControl();
-
-	SceneManager::ChangeScene(SceneManager::SCENE::TITLE);
-	//shared_inventory = std::make_shared<Inventory>(0);
-	//sharedInventories.emplace_back(shared_inventory);
-	deitatime_ = 0;
-
-	red = GetColor(255, 0, 0);
-	blue = GetColor(0, 0, 255);
-}
 
 void GameManager::RunDungeonBgm()
 {

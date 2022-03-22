@@ -77,6 +77,8 @@ private:
 	Menu* status = nullptr;
 	Menu* playerStatus = nullptr;
 	Menu* gameOver = nullptr;
+	Menu* shop = nullptr;
+	Menu* shopDesc = nullptr;
 	MenuWindow* use_usable = nullptr;
 	MenuWindow* use_equip = nullptr;
 
@@ -250,6 +252,9 @@ private:
 	void SetShopItem(int SetNum, int ItemType);
 	//ショップのアイテムページ数
 	int shopPage = 0;
+
+	//今の描画中のショップページ
+	int currentDrawPage = 0;
 	//ショップのページを入れておく配列
 	std::vector<Inventory*> shopPages;
 

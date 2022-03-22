@@ -78,7 +78,6 @@ public:
 	};
 
 	inline const int& GetMaxIndex(index IndexName) {
-		//std::string hoge = maxIndex[static_cast<uint32_t>(IndexName)][1].c_str();
 		return std::atoi(maxIndex[static_cast<uint32_t>(IndexName)][1].c_str());
 	}
 
@@ -91,8 +90,11 @@ public:
 	int inventoryNum = 0;
 
 	//インベントリにアイテムを追加する関数
-	//アイテムId,追加するインベントリ,現在のインベントリ番号,ステータスを保存するかランダムにするか(装備アイテム向け)
-	void AddItemToInventory(const int ItemId,std::vector<Inventory*>& Inventories,int& InventoryNum,int SetType);
+	//アイテムId,追加するインベントリ,現在のインベントリ番号
+	void AddItemToInventory(const int ItemId,std::vector<Inventory*>& Inventories,int& InventoryNum);
+
+	//ショップのアイテムをインベントリに追加する関数
+	void AddItemFromShop(Item* ShopItem);
 
 	//インベントリからアイテムを削除する関数
 	void PopItemFromInventory(const int NowInventoryId);

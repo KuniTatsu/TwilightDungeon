@@ -120,7 +120,7 @@ protected:
 	int hpVar_gh = 0;
 
 	const float VARWIDTH = 30;
-	double nowHpVarWidth = nowHp / hp;
+	double nowHpVarWidth = static_cast<double>(nowHp / hp);
 
 
 	int actSpeed = 20;

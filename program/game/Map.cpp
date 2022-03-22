@@ -182,10 +182,10 @@ int Map::CheckIsThere(int x, int y)
 
 void Map::SetCornerPos(int roomNum, t2k::Vector3& LeftTop, t2k::Vector3& RightBottom)
 {
-	LeftTop.x = divideRoom[roomNum][0];
-	LeftTop.y = divideRoom[roomNum][1];
-	RightBottom.x = divideRoom[roomNum][2];
-	RightBottom.y = divideRoom[roomNum][3];
+	LeftTop.x = static_cast<float>(divideRoom[roomNum][0]);
+	LeftTop.y = static_cast<float>(divideRoom[roomNum][1]);
+	RightBottom.x = static_cast<float>(divideRoom[roomNum][2]);
+	RightBottom.y = static_cast<float>(divideRoom[roomNum][3]);
 }
 
 void Map::AddStairList(t2k::Vector3 pos)

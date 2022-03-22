@@ -106,7 +106,7 @@ private:
 	//hp,attack,defence,speed
 	int statuses[4] = { 0,0,0,0 };
 
-	int coin = 0;
+	int coin = 10000000;
 
 	//“Ë‚«“–‚è‚Ü‚Å‘–‚éƒtƒ‰ƒO
 	bool left = false;
