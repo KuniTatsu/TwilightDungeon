@@ -36,6 +36,7 @@ void Animation::Update()
 		actIndex++;
 		actWait = actSpeed;
 		actIndex %= maxMotionIndex;
+		t2k::debugTrace("\nアニメーション更新%d回目\n", actIndex);
 	}
 	else return;
 

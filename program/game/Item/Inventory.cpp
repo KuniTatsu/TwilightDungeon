@@ -5,6 +5,7 @@
 #include"Item.h"
 #include"equipItem.h"
 #include"../GameManager.h"
+#include"../Player.h"
 #include"../SoundManager.h"
 
 extern GameManager* gManager;
@@ -110,6 +111,32 @@ void Inventory::DrawEquipItemStatus(const int x, const int y)
 		item->DrawEquipItemStatus(x, y, item->GetSubId());
 	}
 
+}
+
+void Inventory::DrawNeedCoin(int x, int y)
+{
+	if (inventoryList.empty())return;
+	auto itr = inventoryList.begin();
+	for (int i = 0; i < selectCursor; ++i) {
+		if (itr == inventoryList.end()) {
+			break;
+		}
+		itr++;
+	}
+	int needCoin = 0;
+	if ((*itr)->getItemData(1) >= 2) {
+		auto item = static_cast<equipItem*>((*itr));
+		needCoin = item->getItemData(10);
+	}
+	else {
+		needCoin = (*itr)->getItemData(5);
+	}
+	//文字サイズ変更
+	SetFontSize(25);
+	DrawStringEx(x + 10, y + 10, -1, "購入必要コイン:%d", needCoin);
+	DrawStringEx(x + 10, y + 60, -1, "所持コイン:%d", gManager->player->GetHaveCoin());
+	//文字サイズ変更
+	SetFontSize(16);
 }
 
 int Inventory::GetCursorNum()

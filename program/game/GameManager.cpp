@@ -598,6 +598,16 @@ void GameManager::PlayerDead()
 	player->pos = SpawnPlayerCamp();
 }
 
+void GameManager::SetDoneBuy()
+{
+	map->SetDoneBuy();
+}
+
+bool GameManager::GetDoneBuy()
+{
+	return map->GetDoneBuy();
+}
+
 void GameManager::Zoom()
 {
 	if (t2k::Input::isKeyDown(t2k::Input::KEYBORD_Z)) {
@@ -729,25 +739,38 @@ void GameManager::CreateDungeon(Dungeon dungeonName) {
 	wayPoint.clear();
 
 	nowDungeon = dungeonName;
-	CreateMap(dungeonName);
+	t2k::debugTrace("\nダンジョン作成前デバッグ\n");
 
+	CreateMap(dungeonName);
+	t2k::debugTrace("\nダンジョン作成後デバッグ\n");
 
 	//マップ自動生成
 	map->DivideStart(MAPWIDTH, MAPHEIGHT, map);
+	t2k::debugTrace("\n分割終了デバッグ\n");
+
 	//階段のマップ座標の取得
 	t2k::Vector3 stairsPos = SetStartPos(setStartPosType::STAIR);
+	t2k::debugTrace("\n階段座標指定デバッグ\n");
+
 	//階段設置
 	map->SetChip(stairsPos.x, stairsPos.y, map->STAIRS);
+
 	//デバッグ用階段座標登録
 	map->AddStairList(stairsPos);
+
 	//ショップをランダムで設置(デフォルト確率は20%)
 	map->SetShop();
+	t2k::debugTrace("\nショップ設置デバッグ\n");
 
 	if (player == nullptr)return;
 	//ダンジョン内のランダムな位置にプレイヤーを移動
 	player->pos = SetStartPos(setStartPosType::PLAYER);
+	t2k::debugTrace("\nプレイヤー設置デバッグ\n");
+
 	map->player = player;
 	map->ChangeRoomVisit(WorldToLocal(player->pos));
+	t2k::debugTrace("\n位置情報登録デバッグ\n");
+
 	CameraReset();
 
 }
@@ -891,12 +914,7 @@ void GameManager::addLog(const std::string log)
 
 }
 
-void GameManager::DrawStringLows(int lowNum)
-{
-	for (int i = 0; i < 3; ++i) {
-		DrawStringEx(100, 100 * i + 20, -1, (char*)strings[lowNum][i].c_str());
-	}
-}
+
 //生成したログを表示する関数
 void GameManager::LogDraw(int x, int y)
 {

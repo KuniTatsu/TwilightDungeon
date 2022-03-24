@@ -111,54 +111,40 @@ bool Player::Move()
 	//キャラの位置がマップ上のどのチップか特定する
 	t2k::Vector3 playerInMap = gManager->WorldToLocal(pos);
 
-	if (left)
-	{
-		DashToDir(LEFT, playerInMap);
+	if (isDash) {
+		DashToDir(mydir, playerInMap);
 		return true;
 	}
-	else if (up)
-	{
-		DashToDir(UP, playerInMap);
-		return true;
-	}
-	else if (right)
-	{
-		DashToDir(RIGHT, playerInMap);
-		return true;
-	}
-	else if (down)
-	{
-		DashToDir(DOWN, playerInMap);
-		return true;
-	}
+
+	
 
 	//もしshiftも一緒に押していたら壁か敵に当たるまでダッシュする
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_LEFT) && t2k::Input::isKeyDown(t2k::Input::KEYBORD_LSHIFT)) {
 		mydir = Actor::LEFT;
-		DashToDir(LEFT, playerInMap);
-		left = true;
+		DashToDir(mydir, playerInMap);
+		isDash = true;
 		gManager->setPlayerRoomNum(gManager->CheckIsThere(playerInMap));
 		return true;
 		//もしshiftも一緒に押していたら壁か敵に当たるまでダッシュする
 	}
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_UP) && t2k::Input::isKeyDown(t2k::Input::KEYBORD_LSHIFT)) {
 		mydir = Actor::UP;
-		DashToDir(UP, playerInMap);
-		up = true;
+		DashToDir(mydir, playerInMap);
+		isDash = true;
 		gManager->setPlayerRoomNum(gManager->CheckIsThere(playerInMap));
 		return true;
 	}
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RIGHT) && t2k::Input::isKeyDown(t2k::Input::KEYBORD_LSHIFT)) {
 		mydir = Actor::RIGHT;
-		DashToDir(RIGHT, playerInMap);
-		right = true;
+		DashToDir(mydir, playerInMap);
+		isDash = true;
 		gManager->setPlayerRoomNum(gManager->CheckIsThere(playerInMap));
 		return true;
 	}
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_DOWN) && t2k::Input::isKeyDown(t2k::Input::KEYBORD_LSHIFT)) {
 		mydir = Actor::DOWN;
-		DashToDir(DOWN, playerInMap);
-		down = true;
+		DashToDir(mydir, playerInMap);
+		isDash = true;
 		gManager->setPlayerRoomNum(gManager->CheckIsThere(playerInMap));
 		return true;
 	}
@@ -254,7 +240,7 @@ void Player::DashToDir(int dir, t2k::Vector3 mapPos)
 	if (dir == LEFT) {
 		if ((gManager->GetMapChip(mapPos + t2k::Vector3(-1, 0, 0))) == 0 || gManager->CheckNearByPlayerToAllEnemy(2))
 		{
-			left = false;
+			isDash = false;
 			return;
 		}
 		pos.x -= 20;
@@ -264,7 +250,7 @@ void Player::DashToDir(int dir, t2k::Vector3 mapPos)
 	else if (dir == UP) {
 		if ((gManager->GetMapChip(mapPos + t2k::Vector3(0, -1, 0))) == 0 || gManager->CheckNearByPlayerToAllEnemy(2))
 		{
-			up = false;
+			isDash = false;
 			return;
 		}
 		pos.y -= 20;
@@ -274,7 +260,7 @@ void Player::DashToDir(int dir, t2k::Vector3 mapPos)
 	else if (dir == RIGHT) {
 		if ((gManager->GetMapChip(mapPos + t2k::Vector3(1, 0, 0))) == 0 || gManager->CheckNearByPlayerToAllEnemy(2))
 		{
-			right = false;
+			isDash = false;
 			return;
 		}
 		pos.x += 20;
@@ -284,7 +270,7 @@ void Player::DashToDir(int dir, t2k::Vector3 mapPos)
 	else if (dir == DOWN) {
 		if ((gManager->GetMapChip(mapPos + t2k::Vector3(0, 1, 0))) == 0 || gManager->CheckNearByPlayerToAllEnemy(2))
 		{
-			down = false;
+			isDash = false;
 			return;
 		}
 		pos.y += 20;

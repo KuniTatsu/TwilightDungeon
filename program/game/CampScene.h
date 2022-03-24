@@ -48,6 +48,7 @@ private:
 
 	Menu* miniFragment = nullptr;
 	Menu* dungeonEnterUi = nullptr;
+	Menu* cannotJoinDungeon = nullptr;
 	MenuWindow* dungeonIn = nullptr;
 
 	bool nowFade = false;
@@ -112,4 +113,6 @@ private:
 	void ChangeSequence(const sequence seq);
 
 	bool drawFrag = false;
+
+	bool debugMessageFlag = false;
 };

@@ -36,10 +36,13 @@ Map::Map(int Width, int Height, std::vector<int>Handles)
 	//
 	stair = gManager->LoadGraphEx("graphics/Stairs_.png");//階段
 
+	shop = gManager->LoadGraphEx("graphics/shop.png");//shop
+
 	voidGh = gManager->LoadGraphEx("graphics/void.png");
 
 	miniMapChip[0] = gManager->LoadGraphEx("graphics/mini_PassWay.png");
 	miniMapChip[1] = gManager->LoadGraphEx("graphics/mini_Stair.png");
+	miniMapChip[2] = gManager->LoadGraphEx("graphics/mini_shop.png");
 
 	miniPlayer = gManager->LoadGraphEx("graphics/mini_Player.png");
 	/*miniEnemy = gManager->LoadGraphEx("graphics/mini_Enemy.png");*/
@@ -73,8 +76,8 @@ void Map::ChangeRoomVisit(t2k::Vector3 localPos)
 
 	SetCornerPos(check, leftTop, rightBottom);
 	if (rightBottom.y < gManager->MAPHEIGHT && rightBottom.x < gManager->MAPWIDTH) {
-		for (int i = leftTop.y-2; i < rightBottom.y + 2; ++i) {
-			for (int k = leftTop.x-2; k < rightBottom.x + 2; ++k) {
+		for (int i = leftTop.y - 2; i < rightBottom.y + 2; ++i) {
+			for (int k = leftTop.x - 2; k < rightBottom.x + 2; ++k) {
 				visited[i][k] = true;
 			}
 		}
@@ -126,7 +129,7 @@ void Map::DivideStart(int Width, int Height, Map* map)
 	CreateRoom();
 
 	gManager->InitWayPointVector(GetRoomNum());
-
+	t2k::debugTrace("\n通路作成前デバッグ\n");
 	CreatePassWay();
 
 	for (auto room : divideRoom) {
@@ -137,10 +140,10 @@ void Map::DivideStart(int Width, int Height, Map* map)
 
 void Map::SetShop()
 {
-	//ショップを設置するかどうかランダム関数で決める
-	int rand = GetRand(100);
-	//20%の確率でショップを設置する
-	if (rand < 80)return;
+	////ショップを設置するかどうかランダム関数で決める
+	//int rand = GetRand(100);
+	////20%の確率でショップを設置する
+	//if (rand < 80)return;
 	//設置座標をローカル座標として取得する
 	t2k::Vector3 localPos = gManager->SetStartPos(GameManager::setStartPosType::STAIR);
 
@@ -191,7 +194,6 @@ void Map::SetCornerPos(int roomNum, t2k::Vector3& LeftTop, t2k::Vector3& RightBo
 void Map::AddStairList(t2k::Vector3 pos)
 {
 	stairs.emplace_back(pos);
-
 }
 
 void Map::GetAllChip(int roomNum, std::vector<std::vector<int>>& chips)
@@ -264,6 +266,10 @@ void Map::MapDraw()
 			}
 			else if (ground[i][k] == PASSWAY)DrawRotaGraph(k * SIZE - gManager->camera->cameraPos.x, i * SIZE - gManager->camera->cameraPos.y, gManager->graphEx, 0, floor, false);
 			else if (ground[i][k] == STAIRS)DrawRotaGraph(k * SIZE - gManager->camera->cameraPos.x, i * SIZE - gManager->camera->cameraPos.y, gManager->graphEx, 0, stair, false);
+			else if (ground[i][k] == SHOP)DrawRotaGraph(k * SIZE - gManager->camera->cameraPos.x, i * SIZE - gManager->camera->cameraPos.y, gManager->graphEx, 0, shop, false);
+			else {
+				t2k::debugTrace("\n描画エラー(%d,%d)\n", i, k);
+			}
 
 		}
 	}
@@ -292,6 +298,10 @@ void Map::MiniMapDraw()
 				DrawRotaGraph(x, y, 0.5, 0, miniMapChip[0], false);
 				DrawRotaGraph(x, y, 0.5, 0, miniMapChip[1], false);
 			}
+			else if (ground[i][k] == SHOP) {
+				DrawRotaGraph(x, y, 0.5, 0, miniMapChip[0], false);
+				DrawRotaGraph(x, y, 0.5, 0, miniMapChip[2], false);
+			}
 			x += 10;
 		}
 		x = 150;
@@ -299,27 +309,6 @@ void Map::MiniMapDraw()
 	}
 
 
-	/*for (auto i : ground) {
-		for (auto k : i) {
-
-			if (visited[i][k] == false)return;
-
-			if (k == PASSWAY) {
-				DrawRotaGraph(x, y, 0.5, 0, miniMapChip[0], false);
-			}
-			else if (k == STAIRS) {
-				DrawRotaGraph(x, y, 0.5, 0, miniMapChip[0], false);
-				DrawRotaGraph(x, y, 0.5, 0, miniMapChip[1], false);
-			}
-			else if (k == EXPASSWAY) {
-				DrawRotaGraph(x, y, 0.5, 0, miniMapChip[0], false);
-			}
-
-			x += 10;
-		}
-		x = 150;
-		y += 10;
-	}*/
 	t2k::Vector3 PlayerPos = gManager->WorldToLocal(player->pos);
 	//ミニマップにプレイヤーの位置を描画
 	DrawRotaGraph(PlayerPos.x * 10 + 150, PlayerPos.y * 10 + 50, 0.5, 0, miniPlayer, true);
@@ -614,10 +603,10 @@ void Map::CreateRoom()
 		int down = area[3];
 		int id = area[4];
 
-		int roomLeft = gManager->GetRandEx(left+2, right - roomMinWidth + 2);
-		int roomRight = gManager->GetRandEx(roomLeft + roomMinWidth - 2, right-2);
+		int roomLeft = gManager->GetRandEx(left + 2, right - roomMinWidth + 2);
+		int roomRight = gManager->GetRandEx(roomLeft + roomMinWidth - 2, right - 2);
 		int roomUp = gManager->GetRandEx(up + 2, down - roomMinHeight + 2);
-		int roomDown = gManager->GetRandEx(roomUp + roomMinHeight - 2, down-2);
+		int roomDown = gManager->GetRandEx(roomUp + roomMinHeight - 2, down - 2);
 
 		SetDivideRoom(roomLeft, roomUp, roomRight, roomDown, id);
 	}
@@ -722,12 +711,14 @@ void Map::CreatePassWay()
 		}
 		count++;
 	}
-	///////////ここで無限ループに入ってる/////////////
+	t2k::debugTrace("\n通常通路作成完了デバッグ\n");
 	//0:上, 1 : 右, 2 : 下, 3 : 左
 	int dir = 0;
 	//最初の部屋の出発点を取得する
 	t2k::Vector3 start = RandomPoint(0, dir);
 	CreateSecondWay(start.x, start.y, dir, 0);
+
+	t2k::debugTrace("\n最初の部屋追加通路作成完了デバッグ\n");
 
 	//最後の部屋の出発点を取得する
 	int lastroomId = divideRoom.back()[4];
@@ -748,10 +739,17 @@ t2k::Vector3 Map::RandomPoint(int roomId, int& dir)
 			//分割線より部屋の左が大きければ分割線は左にある
 			if (divideLine[roomId - 2][0] < divideRoom[roomId][0]) {
 				int point = 0;
+
+				int debug = 0;
 				while (1) {
 					//部屋の左端のどっかのy座標
 					point = gManager->GetRandEx(divideRoom[roomId][1], divideRoom[roomId][3]);
 					if ((GetChip(divideRoom[roomId][0] - 1, point) == 0 && GetChip(divideRoom[roomId][0] - 1, point - 1) == 0 && GetChip(divideRoom[roomId][0] - 1, point + 1)) == 0) break;
+					else {
+						debug++;
+						t2k::debugTrace("\n適正座標ではない%d回目(dir:%d,cell:(%d,%d))\n", debug, divideLine[roomId][4], divideRoom[roomId][0] - 1, point);
+						if (debug > 50)break;
+					}
 				}
 				dir = 3;
 				int pointX = divideRoom[roomId][0];
@@ -760,10 +758,16 @@ t2k::Vector3 Map::RandomPoint(int roomId, int& dir)
 			}
 			else {
 				int point = 0;
+				int debug = 0;
 				while (1) {
 					//部屋の右端のどっかのy座標
 					point = gManager->GetRandEx(divideRoom[roomId][1], divideRoom[roomId][3]);
 					if ((GetChip(divideRoom[roomId][0] + 1, point)) == 0 && (GetChip(divideRoom[roomId][0] + 1, point - 1)) == 0 && (GetChip(divideRoom[roomId][0] + 1, point + 1)) == 0) break;
+					else {
+						debug++;
+						t2k::debugTrace("\n適正座標ではない%d回目(dir:%d,cell:(%d,%d))\n", debug, divideLine[roomId][4], divideRoom[roomId][0] - 1, point);
+						if (debug > 50)break;
+					}
 				}
 				dir = 1;
 				int pointX = divideRoom[roomId][2];
@@ -776,10 +780,16 @@ t2k::Vector3 Map::RandomPoint(int roomId, int& dir)
 			//分割線より部屋の上が大きければ分割線は上にある
 			if (divideLine[roomId - 2][1] < divideRoom[roomId][1]) {
 				int point = 0;
+				int debug = 0;
 				while (1) {
 					//部屋の上端のどっかのx座標
 					point = gManager->GetRandEx(divideRoom[roomId][0], divideRoom[roomId][2]);
 					if ((GetChip(point, divideRoom[roomId][1] - 1)) == 0 && (GetChip(point - 1, divideRoom[roomId][1] - 1)) == 0 && (GetChip(point + 1, divideRoom[roomId][1] - 1)) == 0) break;
+					else {
+						debug++;
+						t2k::debugTrace("\n適正座標ではない%d回目(dir:%d,cell:(%d,%d))\n", debug, divideLine[roomId][4], divideRoom[roomId][0] - 1, point);
+						if (debug > 50)break;
+					}
 				}
 				dir = 0;
 				int pointY = divideRoom[roomId][1];
@@ -788,10 +798,16 @@ t2k::Vector3 Map::RandomPoint(int roomId, int& dir)
 			}
 			else {
 				int point = 0;
+				int debug = 0;
 				while (1) {
 					//部屋の下端のどっかのx座標
 					point = gManager->GetRandEx(divideRoom[roomId][0], divideRoom[roomId][2]);
 					if ((GetChip(point, divideRoom[roomId][3] + 1)) == 0 && (GetChip(point - 1, divideRoom[roomId][3] + 1)) == 0 && (GetChip(point + 1, divideRoom[roomId][3] + 1)) == 0) break;
+					else {
+						debug++;
+						t2k::debugTrace("\n適正座標ではない%d回目(dir:%d,cell:(%d,%d))\n", debug, divideLine[roomId][4], divideRoom[roomId][0] - 1, point);
+						if (debug > 50)break;
+					}
 				}
 				dir = 2;
 				int pointY = divideRoom[roomId][3];
@@ -813,10 +829,17 @@ t2k::Vector3 Map::RandomPoint(int roomId, int& dir)
 		//分割線より部屋の左が大きければ分割線は左にある
 		if (divideLine[roomId][0] < divideRoom[roomId][0]) {
 			int point = 0;
+
+			int debug = 0;
 			while (1) {
 				//部屋の左端のどっかのy座標
 				point = gManager->GetRandEx(divideRoom[roomId][1], divideRoom[roomId][3]);
 				if ((GetChip(divideRoom[roomId][0] - 1, point)) == 0 && (GetChip(divideRoom[roomId][0] - 1, point + 1)) == 0 && (GetChip(divideRoom[roomId][0] - 1, point - 1)) == 0) break;
+				else {
+					debug++;
+					t2k::debugTrace("\n適正座標ではない%d回目(dir:%d,cell:(%d,%d))\n", debug,divideLine[roomId][4], divideRoom[roomId][0] - 1,point);
+					if (debug > 50)break;
+				}
 			}
 			dir = 3;
 			int pointX = divideRoom[roomId][0];
@@ -825,10 +848,17 @@ t2k::Vector3 Map::RandomPoint(int roomId, int& dir)
 		}
 		else {
 			int point = 0;
+
+			int debug = 0;
 			while (1) {
 				//部屋の右端のどっかのy座標
 				point = gManager->GetRandEx(divideRoom[roomId][1], divideRoom[roomId][3]);
 				if ((GetChip(divideRoom[roomId][2] + 1, point)) == 0 && (GetChip(divideRoom[roomId][2] + 1, point - 1)) == 0 && (GetChip(divideRoom[roomId][2] + 1, point + 1)) == 0) break;
+				else {
+					debug++;
+					t2k::debugTrace("\n適正座標ではない%d回目(dir:%d,cell:(%d,%d))\n", debug, divideLine[roomId][4], divideRoom[roomId][0] - 1, point);
+					if (debug > 50)break;
+				}
 			}
 			dir = 1;
 			int pointX = divideRoom[roomId][2];
@@ -841,10 +871,16 @@ t2k::Vector3 Map::RandomPoint(int roomId, int& dir)
 		//分割線より部屋の上が大きければ分割線は上にある
 		if (divideLine[roomId][1] < divideRoom[roomId][1]) {
 			int point = 0;
+			int debug = 0;
 			while (1) {
 				//部屋の上端のどっかのy座標
 				point = gManager->GetRandEx(divideRoom[roomId][0], divideRoom[roomId][2]);
 				if ((GetChip(point, divideRoom[roomId][1] - 1)) == 0 && (GetChip(point - 1, divideRoom[roomId][1] - 1)) == 0 && (GetChip(point + 1, divideRoom[roomId][1] - 1)) == 0) break;
+				else {
+					debug++;
+					t2k::debugTrace("\n適正座標ではない%d回目(dir:%d,cell:(%d,%d))\n", debug, divideLine[roomId][4], divideRoom[roomId][0] - 1, point);
+					if (debug > 50)break;
+				}
 			}
 			dir = 0;
 			int pointY = divideRoom[roomId][1];
@@ -853,10 +889,16 @@ t2k::Vector3 Map::RandomPoint(int roomId, int& dir)
 		}
 		else {
 			int point = 0;
+			int debug = 0;
 			while (1) {
 				//部屋の下端のどっかのy座標
 				point = gManager->GetRandEx(divideRoom[roomId][0], divideRoom[roomId][2]);
 				if ((GetChip(point, divideRoom[roomId][3] + 1)) == 0 && (GetChip(point - 1, divideRoom[roomId][3] + 1)) == 0 && (GetChip(point + 1, divideRoom[roomId][3] + 1)) == 0) break;
+				else {
+					debug++;
+					t2k::debugTrace("\n適正座標ではない%d回目(dir:%d,cell:(%d,%d))\n", debug, divideLine[roomId][4], divideRoom[roomId][0] - 1, point);
+					if (debug > 50)break;
+				}
 			}
 			dir = 2;
 			int pointY = divideRoom[roomId][3];
@@ -1210,7 +1252,7 @@ int Map::CheckAroundWay(int x, int y)
 
 bool Map::CheckThisCell(int x, int y)
 {
-	if (ground[x][y] == PASSWAY || ground[x][y] == STAIRS)return true;
+	if (ground[x][y] == PASSWAY || ground[x][y] == STAIRS || ground[x][y] == SHOP)return true;
 	else return false;
 }
 

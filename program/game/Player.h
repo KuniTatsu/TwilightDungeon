@@ -113,6 +113,7 @@ private:
 	bool up = false;
 	bool right = false;
 	bool down = false;
+	bool isDash = false;
 
 
 	//ƒ_ƒbƒVƒ…’†‚È‚çˆÚ“®‚·‚éŠÖ”

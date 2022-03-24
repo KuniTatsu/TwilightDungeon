@@ -49,6 +49,8 @@ private:
 
 	//1階層に設置するアイテム数
 	const int spawnItemNum = 5;
+	//敵を倒して手に入るコイン　いずれCSVから読み込む
+	const int DROPCOIN = 500;
 
 	//グラフィック
 	int EButton = 0;
@@ -77,8 +79,13 @@ private:
 	Menu* status = nullptr;
 	Menu* playerStatus = nullptr;
 	Menu* gameOver = nullptr;
+
+	Menu* shopIn = nullptr;
+	Menu* shopMyInv = nullptr;
 	Menu* shop = nullptr;
 	Menu* shopDesc = nullptr;
+	Menu* shopCoin = nullptr;
+
 	MenuWindow* use_usable = nullptr;
 	MenuWindow* use_equip = nullptr;
 
@@ -212,7 +219,7 @@ private:
 	//描画中のインベントリページ
 	int drawInventoryPage = 0;
 	//選択中のインベントリを描画する関数
-	void DrawInventory();
+	void DrawInventory(int x,int y);
 	//インベントリの別ページに移動する関数
 	void ChangeInventory();
 

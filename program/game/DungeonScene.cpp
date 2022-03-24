@@ -117,17 +117,22 @@ void DungeonScene::Draw()
 	//階層間のフェード中でなければ描画する
 	if (nowSeq != sequence::FADEDESC) {
 		gManager->MapDraw();
-
+		//ドロップしているアイテムの描画
 		DrawPopItem();
-		gManager->player->Draw();
-		gManager->player->HpVarDraw();
-
+		//プレイヤーの描画
+		player->Draw();
+		//HPバーの描画
+		player->HpVarDraw();
+		//敵の描画
 		for (auto enemy : eManager->liveEnemyList) {
 			enemy->Draw();
 		}
+		//ミニマップの描画
 		gManager->MiniMapDraw();
+		//ミニマップの敵の描画
 		DrawMiniEnemy();
 
+		//debugMode
 		if (gManager->isDebug) {
 			DrawStringEx(100, 280, -1, "現在の階層:%d", dungeonLevel);
 
@@ -135,6 +140,7 @@ void DungeonScene::Draw()
 			DrawStringEx(100, 320, -1, "PlayerMapChipY:%d", (int)playerPos.y);
 			DrawEnemyData();
 		}
+
 		//プレイヤーの位置が階段の上ならウィンドウを表示する
 		if (gManager->GetMapChip(playerPos) == 3) {
 			nextLevelWindow->Menu_Draw();
@@ -144,6 +150,18 @@ void DungeonScene::Draw()
 			DrawStringEx(nextLevelWindow->menu_x + 60, nextLevelWindow->menu_y + 100, -1, "次の階へ進みますか？");
 
 			DrawStringEx(nextLevelWindow->menu_x + 60, nextLevelWindow->menu_y + 140, -1, "Enterで次の階へ");
+
+		}
+		//プレイヤーがショップの上にいるならウィンドウを表示する
+		else if (gManager->GetMapChip(playerPos) == 4&&nowSeq!=sequence::SHOP) {
+			shopIn->Menu_Draw();
+			DrawStringEx(shopIn->menu_x + 70, shopIn->menu_y + 60, -1, "ショップを見つけた");
+
+			DrawStringEx(shopIn->menu_x + 70, shopIn->menu_y + 100, -1, "売り物を見ますか？");
+
+			SetFontSize(30);
+			DrawStringEx(shopIn->menu_x + 20, shopIn->menu_y + 140, -1, "Enterでショップを見る");
+			SetFontSize(16);
 
 		}
 		//アニメーションリストの描画
@@ -170,7 +188,7 @@ void DungeonScene::Draw()
 	//インベントリを開いている時に描画
 	else if (nowSeq == sequence::INVENTORY_OPEN || nowSeq == sequence::INVENTORY_USE) {
 		inventory->Menu_Draw();
-		DrawInventory();
+		DrawInventory(inventory->menu_x, inventory->menu_y);
 		if (nowSeq == sequence::INVENTORY_USE) {
 			if (usetype == USABLE)use_usable->All();
 			else if (usetype == EQUIP)use_equip->All();
@@ -192,14 +210,28 @@ void DungeonScene::Draw()
 		SetFontSize(16);
 	}
 	else if (nowSeq == sequence::SHOP) {
-
+		//ショップインベントリの描画
 		shop->Menu_Draw();
-		shopPages[currentDrawPage]->DrawInventory(shop->menu_x + 10, shop->menu_y + 10);
-		shopDesc->Menu_Draw();
-		shopPages[currentDrawPage]->DrawEquipItemStatus(shopDesc->menu_x + 10, shopDesc->menu_y + 10);
 
-		inventory->Menu_Draw();
-		DrawInventory();
+		//文字サイズ変更
+		SetFontSize(25);
+		//ショップインベントリ内容の描画
+		shopPages[currentDrawPage]->DrawInventory(shop->menu_x + 10, shop->menu_y + 10);
+		//文字サイズ変更
+		SetFontSize(16);
+
+		//必要コインの描画
+		shopCoin->Menu_Draw();
+		shopPages[currentDrawPage]->DrawNeedCoin(shopCoin->menu_x, shopCoin->menu_y);
+		//アイテムステータスの比較表示
+		shopDesc->Menu_Draw();
+		SetFontSize(23);
+		DrawStringEx(shopDesc->menu_x + 10, shopDesc->menu_y + 10, -1, "現在装備中の装備と比較");
+		shopPages[currentDrawPage]->DrawEquipItemStatus(shopDesc->menu_x + 10, shopDesc->menu_y + 50);
+		SetFontSize(16);
+		//自分のインベントリ表示
+		shopMyInv->Menu_Draw();
+		DrawInventory(shopMyInv->menu_x, shopMyInv->menu_y);
 	}
 	if (nowSeq == sequence::FADEDESC)return;
 	//ログの背景描画
@@ -230,6 +262,11 @@ void DungeonScene::MoveLevel(int addLevel)
 	if (!gManager->liveEnemyList.empty())gManager->liveEnemyList.clear();
 	//アイテムの消去
 	dropItems.clear();
+
+	//ショップアイテムをすべてdeleteする
+	for (int i = 0; i < shopPages.size(); ++i) {
+		shopPages[i]->inventoryList.clear();
+	}
 
 	//ダンジョンの階層を移動する
 	dungeonLevel += addLevel;
@@ -264,8 +301,11 @@ void DungeonScene::initDungeonScene()
 	nextLevelWindow = new Menu(300, 300, 300, 200, "graphics/WindowBase_01.png");
 	gameOver = new Menu(100, 100, 924, 668, "graphics/WindowBase_01.png");
 
-	shop = new Menu(700, 50, 320, 340, "graphics/WindowBase_01.png");
-	shopDesc = new Menu(700, 400, 320, 90, "graphics/WindowBase_01.png");
+	shopIn = new Menu(300, 300, 380, 200, "graphics/WindowBase_01.png");
+	shopMyInv = new Menu(60, 90, 320, 340, "graphics/WindowBase_01.png");
+	shop = new Menu(380, 90, 320, 340, "graphics/WindowBase_01.png");
+	shopDesc = new Menu(720, 90, 300, 180, "graphics/WindowBase_01.png");
+	shopCoin = new Menu(720, 280, 300, 200, "graphics/WindowBase_01.png");
 
 	menuOpen = new Menu(20, 20, 100, 100, "graphics/WindowBase_01.png");
 
@@ -298,7 +338,7 @@ void DungeonScene::initDungeonScene()
 	use_nowEquip = new MenuWindow(640, 440, 90, 100, "graphics/WindowBase_02.png", menu_nowEquip, 3, 0.15);
 
 
-	
+
 
 	MenuWindow::MenuElement_t* menu_0 = new MenuWindow::MenuElement_t[]{
 		{70,80,"持ち物",0},
@@ -422,6 +462,7 @@ bool DungeonScene::SeqMain(const float deltatime)
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_SPACE)) {
 		player->skip = true;
 	}
+	//階段,ショップの上にプレイヤーがいるかどうか確認
 	if (CheckExtraOnTile())return true;
 
 	//左クリックかRボタンで攻撃
@@ -466,6 +507,9 @@ bool DungeonScene::SeqPlayerAttack(const float deltatime)
 				//描画リストに登録
 				drawAnimationList.emplace_back(anim);
 			}
+			//コインのドロップ
+			player->ChangeHaveCoin(DROPCOIN);
+
 			//アイテムのポップ判定
 			int odds = rand() % 100;
 			if (odds < DROPODDS) {
@@ -857,6 +901,7 @@ bool DungeonScene::SeqDescFade(const float deltatime)
 bool DungeonScene::SeqShopMain(const float deltatime)
 {
 	if (mainSequence.isStart()) {
+		if (gManager->GetDoneBuy())return true;
 		if (shopPages.empty()) {
 			//新しくinventoryのインスタンスを生成する
 			Inventory* newPage = new Inventory(shopPage + 1);
@@ -871,10 +916,11 @@ bool DungeonScene::SeqShopMain(const float deltatime)
 	//ESCAPEでショップを閉じる
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_ESCAPE)) {
 
-		//ショップアイテムをすべてdeleteする
-		for (int i = 0; i < shopPages.size(); ++i) {
-			shopPages[i]->inventoryList.clear();
-		}
+		//ショップを使ったフラグを更新
+		gManager->SetDoneBuy();
+		//カーソル位置のリセット
+		shopPages[currentDrawPage]->CursorReset();
+
 		//ショップを閉じる
 		ChangeSequence(sequence::MAIN);
 		return true;
@@ -894,8 +940,14 @@ bool DungeonScene::SeqShopMain(const float deltatime)
 		for (int i = 0; i < cursorNum; ++i) {
 			itr++;
 		}
-		
-		int price = (*itr)->getItemData(5);
+		int price = 0;
+		if ((*itr)->getItemData(1) >= 2) {
+			auto item = static_cast<equipItem*>((*itr));
+			price = item->getItemData(10);
+		}
+		else {
+			price = (*itr)->getItemData(5);
+		}
 		//所持金が足りないときは買わない
 		if (player->GetHaveCoin() < price) {
 			gManager->addLog("所持金が足りません!");
@@ -1111,21 +1163,23 @@ void DungeonScene::DrawEnemyData()
 
 }
 
-void DungeonScene::DrawInventory()
+void DungeonScene::DrawInventory(int x, int y)
 {
-	//インベントリページ数を描画
-	DrawStringEx(inventory->menu_x + 300, inventory->menu_y + 10, -1, "ページ:%d", gManager->inventories[drawInventoryPage]->GetInventoryNum());
 	//インベントリが空ならreturn
 	if (gManager->inventories[drawInventoryPage]->inventoryList.empty())return;
 	//文字サイズ変更
 	SetFontSize(25);
 	//インベントリ内のアイテムを描画
-	gManager->inventories[drawInventoryPage]->DrawInventory(inventory->menu_x, inventory->menu_y);
+	gManager->inventories[drawInventoryPage]->DrawInventory(x, y);
 
 	//ショップシークエンスではインベントリ内のアイテムデータは表示しない
-	if (nowSeq !=sequence::SHOP) {
+	if (nowSeq != sequence::SHOP) {
+		//インベントリページ数を描画
+		DrawStringEx(x + 300, y + 10, -1, "ページ:%d", gManager->inventories[drawInventoryPage]->GetInventoryNum());
+		//アイテム説明描画
 		desc->Menu_Draw();
 		gManager->inventories[drawInventoryPage]->DrawItemDesc(desc->menu_x + 10, desc->menu_y + 10);
+		//ステータス比較描画
 		status->Menu_Draw();
 		gManager->inventories[drawInventoryPage]->DrawEquipItemStatus(status->menu_x + 10, status->menu_y + 10);
 	}

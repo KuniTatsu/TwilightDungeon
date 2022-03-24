@@ -76,7 +76,7 @@ public:
 		PLAYER,
 		ENEMY
 	};
-
+	//最大インデックス数を取得する関数
 	inline const int& GetMaxIndex(index IndexName) {
 		return std::atoi(maxIndex[static_cast<uint32_t>(IndexName)][1].c_str());
 	}
@@ -386,6 +386,10 @@ public:
 			Log[i] = "";
 		}
 	}
+	//同マップで買い物したフラグの更新
+	void SetDoneBuy();
+	//同マップで買い物したフラグの取得
+	bool GetDoneBuy();
 
 private:
 	std::string Log[7] = {};
@@ -399,13 +403,6 @@ private:
 
 	void Zoom();
 
-	//test
-	std::string strings[5][3]{
-		{"こんにちは","私の名前は","hogehogeです"},
-		{"","",""},
-		{"","",""},
-		{"","",""},
-		{"","",""}
-	};
+
 
 };

@@ -40,6 +40,8 @@ public:
 	//カーソルで選択中の装備アイテムのステータスを描画する関数
 	void DrawEquipItemStatus(const int x, const int y);
 	
+	//ショップインベントリ用 購入額の表示
+	void DrawNeedCoin(int x, int y);
 
 	//カーソルの位置を取得する関数
 	int GetCursorNum();

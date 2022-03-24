@@ -131,6 +131,15 @@ public:
 	//今表示されている全ての部屋の上下左右座標をする描画するDebug関数
 	void DrawAllRoomPos(const std::vector<std::vector<int>>RoomList);
 
+	inline void SetDoneBuy() {
+		if (!doneBuyItem)doneBuyItem = true;
+	}
+
+	//マップ内のショップで買い物をしたかどうか取得する関数
+	inline bool GetDoneBuy() {
+		return doneBuyItem;
+	}
+
 private:
 
 
@@ -142,8 +151,10 @@ private:
 
 	int colors[5] = { color_red,color_green ,color_blue,color_yellow,color_purple };
 
-
+	//初回分割時のためのフラグ
 	bool doneFirstDivide = false;
+	//買い物済みショップのフラグ
+	bool doneBuyItem = false;
 
 	//ショップローカル座標
 	t2k::Vector3 localPos;
@@ -167,6 +178,7 @@ private:
 	int wall = 0;
 	int floor = 0;
 	int stair = 0;
+	int shop = 0;
 
 	//オートタイル用列挙体
 	enum graphicPattern

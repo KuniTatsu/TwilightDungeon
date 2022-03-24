@@ -38,10 +38,9 @@ CampScene::CampScene()
 
 	fragBackGround = gManager->LoadGraphEx("graphics/fragment_Back.png");
 
-	dungeonEnterUi = new Menu(345, 245, 330, 260, "graphics/WindowBase_01.png");
-	/*Menu* hoge=new Menu(342,246,330,258,gh(int))
-Menu* hoge=new Menu(494,521,505,234,gh(int))
-*/
+	dungeonEnterUi = new Menu(345, 245, 330, 100, "graphics/WindowBase_01.png");
+	cannotJoinDungeon = new Menu(300, 245, 400, 100, "graphics/WindowBase_01.png");
+
 	miniFragment = new Menu(50, 520, 220, 248, "graphics/WindowBase_02.png");
 
 	MenuWindow::MenuElement_t* menu_usable = new MenuWindow::MenuElement_t[]{
@@ -127,7 +126,12 @@ void CampScene::Draw()
 
 		dungeonEnterUi->Menu_Draw();
 		DrawStringEx(dungeonEnterUi->menu_x + 20, dungeonEnterUi->menu_y + 10, -1, "Enterを押してダンジョンに入場する");
-		DrawRotaGraph(510, 480, 1, 0, EnterButton, true);
+		DrawRotaGraph(510, dungeonEnterUi->menu_y+ dungeonEnterUi->menu_height-20, 1, 0, EnterButton, true);
+	}
+	if (debugMessageFlag) {
+		cannotJoinDungeon->Menu_Draw();
+		DrawStringEx(cannotJoinDungeon->menu_x + 10, cannotJoinDungeon->menu_y + 20, -1, "このダンジョンはまだ入場できません");
+		DrawStringEx(cannotJoinDungeon->menu_x + 10, cannotJoinDungeon->menu_y + 40, -1, "Escを押して戻る");
 	}
 }
 int CampScene::GetGraphicHandle(int num)
@@ -173,7 +177,11 @@ bool CampScene::SeqMain(const float deltatime)
 		if (!drawFrag)drawFrag = true;
 		else drawFrag = false;
 	}
-
+	if (debugMessageFlag) {
+		if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_ESCAPE)) {
+			debugMessageFlag = false;
+		}
+	}
 
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
 		//469だったらシークエンスを移動する
@@ -181,6 +189,11 @@ bool CampScene::SeqMain(const float deltatime)
 			gManager->sound->System_Play(gManager->sound->system_select);
 			for (int i = 0; i < 5; ++i) {
 				if (GetGraphicNum(gManager->WorldToLocal(player->pos).x, gManager->WorldToLocal(player->pos).y) == PORTALPOINTNUM[i]) {
+
+					if (i > 1) {
+						debugMessageFlag = true;
+						return true;
+					}
 					selectDungeon = i;
 					dungeonIn->Open();
 					ChangeSequence(sequence::DUNGEONIN);
