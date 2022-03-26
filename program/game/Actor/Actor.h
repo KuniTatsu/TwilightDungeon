@@ -44,6 +44,26 @@ public:
 
 	//ステータス上昇の関数 StatusNum:0->HP,1->Atack,2->Defence,3->Speed,StatusType->0:effect,1:equipment
 	void ChangeStatus(const int StatusNum, const int MoveNum, const int StatusType);
+
+	//装備ステータスの除去
+	void RemoveStatus(const int StatusNum,const int MoveNum);
+
+	//装備ステータスの全除去
+	inline void RemoveAllEquipStatus() {
+		equipHp = 0;
+		equipAttack = 0;
+		equipDefence = 0;
+		equipSpeed = 0;
+	}
+
+	//レベルステータスの全除去
+	inline void RemoveAllLevelStatus() {
+		exHp = 0;
+		exAttack = 0;
+		exDefence = 0;
+		exSpeed = 0;
+	}
+
 	//actId取得
 	inline int GetActId() {
 		return actId;

@@ -59,8 +59,11 @@ void Player::ChangeEquipItem(equipItem* item)
 		//もうすでに装備しているものがあれば
 	if (myEquip[subId - 1] != nullptr) {
 		myEquip[subId - 1]->ChangeEquip();
-		//myEquip[subId - 1] = nullptr;
-		//入れ替える(本来はここでinventoryにあるアイテムの[E]マークを切り替えたい)
+		//装備していたアイテムのステータスを装備ステータスから取り除く
+		for (int i = 0; i < 4; ++i) {
+			RemoveStatus(i, myEquip[subId - 1]->getItemData(i+5));
+		}
+		//入れ替える
 		item->ChangeEquip();
 		myEquip[subId - 1] = item;
 	}
@@ -80,7 +83,12 @@ void Player::RemoveEquipItem(equipItem* item)
 	myEquip[subId - 1]->ChangeEquip();
 	myEquip[subId - 1] = nullptr;
 
+	//装備ステータスを一旦すべて0にする
+	RemoveAllEquipStatus();
+
+	//現在装備中の装備から得られるステータスをそれぞれ合計する
 	GetSumStatusFromEquipment();
+	//それぞれ足す
 	for (int i = 0; i < 4; ++i) {
 		ChangeStatus(i, statuses[i], 1);
 	}
@@ -116,7 +124,7 @@ bool Player::Move()
 		return true;
 	}
 
-	
+
 
 	//もしshiftも一緒に押していたら壁か敵に当たるまでダッシュする
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_LEFT) && t2k::Input::isKeyDown(t2k::Input::KEYBORD_LSHIFT)) {
@@ -371,6 +379,7 @@ void Player::SetLevelStatus()
 	int lvSpeed = (level - 1) * statusParLevel;
 	int lvStatus[4] = { lvHp,lvAttack,lvDefence,lvSpeed };
 
+	RemoveAllLevelStatus();
 	for (int i = 0; i < 4; ++i) {
 		ChangeStatus(i, lvStatus[i], 0);
 	}

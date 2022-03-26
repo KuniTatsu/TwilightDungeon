@@ -40,10 +40,6 @@ int Actor::GetStatus(int StatusNum)
 void Actor::ChangeStatus(int StatusNum, int MoveNum, int StatusType)
 {
 	if (StatusType == EFFECT) {
-		exHp = 0;
-		exAttack = 0;
-		exDefence = 0;
-		exSpeed = 0;
 		if (StatusNum == 0) {
 			exHp += MoveNum;
 			hp = baseHp + equipHp + exHp;
@@ -61,12 +57,9 @@ void Actor::ChangeStatus(int StatusNum, int MoveNum, int StatusType)
 			speed = baseSpeed + equipSpeed + exSpeed;
 		}
 	}
+	//装備アイテム
 	else {
-		//装備アイテムを付け替える場合は装備アイテムによって付与されていたステータスを消去してから加算する
-		equipHp = 0;
-		equipAttack = 0;
-		equipDefence = 0;
-		equipSpeed = 0;
+		
 		if (StatusNum == 0) {
 			equipHp += MoveNum;
 			hp = baseHp + equipHp + exHp;
@@ -83,6 +76,26 @@ void Actor::ChangeStatus(int StatusNum, int MoveNum, int StatusType)
 			equipSpeed += MoveNum;
 			speed = baseSpeed + equipSpeed + exSpeed;
 		}
+	}
+}
+//装備アイテムによって付与されていたステータスを消去する関数
+void Actor::RemoveStatus(const int StatusNum, const int MoveNum)
+{
+	if (StatusNum == 0) {
+		equipHp -= MoveNum;
+		hp = baseHp + equipHp + exHp;
+	}
+	else if (StatusNum == 1) {
+		equipAttack -= MoveNum;
+		attack = baseAttack + equipAttack + exAttack;
+	}
+	else if (StatusNum == 2) {
+		equipDefence -= MoveNum;
+		defence = baseDefence + equipDefence + exDefence;
+	}
+	else if (StatusNum == 3) {
+		equipSpeed -= MoveNum;
+		speed = baseSpeed + equipSpeed + exSpeed;
 	}
 }
 //今の向きの1マス先の座標を取得する
