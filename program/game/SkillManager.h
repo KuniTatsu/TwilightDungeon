@@ -10,6 +10,8 @@ public:
 	SkillManager();
 	~SkillManager();
 
+	Skill* GetSkill(int SkillId);
+
 private:
 
 	void LoadCsv();

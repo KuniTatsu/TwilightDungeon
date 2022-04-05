@@ -13,6 +13,11 @@ SkillManager::~SkillManager()
 {
 }
 
+Skill* SkillManager::GetSkill(int SkillId)
+{
+	return nullptr;
+}
+
 void SkillManager::LoadCsv()
 {
 	loadSkill = t2k::loadCsv("Csv/Skill.csv");

@@ -8,6 +8,7 @@
 #include<string>
 #include"map.h"
 #include<time.h>
+#include"Actor/Actor.h"
 #include"Player.h"
 #include"Camera.h"
 #include"ResourcesManager.h"
@@ -17,6 +18,9 @@
 #include"Item/Item.h"
 #include"Item/equipItem.h"
 #include"Item//Inventory.h"
+
+#include"Skill.h"
+#include"SkillManager.h"
 
 using namespace std;
 
@@ -47,6 +51,7 @@ void GameManager::initGameManager()
 	resource->LoadResource();
 
 	camera = new Camera();
+	sManager = new SkillManager();
 
 	//mapî•ñ—˜—p‚Ì‚½‚ßƒ_ƒ“ƒWƒ‡ƒ“¶¬
 	CreateDungeon(Dungeon::FOREST);
@@ -812,6 +817,11 @@ void GameManager::MakePlayer(SpawnScene nowScene)
 		player = std::make_shared<Player>(SetStartPos(setStartPosType::PLAYER), 100.0f, 30, 30, 30, 0);
 		map->player = player;
 	}
+}
+
+void GameManager::SetSkill(std::vector<Skill*>SkillList, int SkillId)
+{
+	SkillList.emplace_back()
 }
 
 std::vector<int>& GameManager::GetGraphicHandles(Dungeon dungeonName)

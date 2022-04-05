@@ -2,6 +2,7 @@
 #include"DxLib.h"
 #include"../GameManager.h"
 #include"../Camera.h"
+#include"../Skill.h"
 
 extern GameManager* gManager;
 

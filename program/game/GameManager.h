@@ -24,6 +24,7 @@ class ItemManager;
 class Inventory;
 class Actor;
 class ResourceManager;
+class SkillManager;
 
 class GameManager {
 
@@ -42,6 +43,8 @@ public:
 	ItemManager* iManager = nullptr;
 	Inventory* inventory = nullptr;
 	ResourceManager* resource = nullptr;
+
+	SkillManager* sManager = nullptr;
 
 	//std::shared_ptr<Inventory>shared_inventory;
 
@@ -137,7 +140,8 @@ public:
 	//プレイヤーの生成
 	void MakePlayer(SpawnScene nowScene);
 
-	
+	//スキル獲得
+	void SetSkill(std::vector<Skill*>SkillList,int SkillId);
 
 	enum class Dungeon : uint32_t {
 		TOWER,

@@ -7,6 +7,8 @@
 #include"../../library/t2klib.h"
 #include<string>
 
+class Skill;
+
 class Actor {
 public:
 	Actor();
@@ -95,6 +97,10 @@ public:
 	//アニメーションさせたいgh配列,描画スピード,描画最大枚数を引数に持つアニメーション関数
 	void Anim(int* DrawGhArr, int Speed, int MaxIndex, int& DrawGh);
 
+	inline std::vector<Skill*>GetSkillList() {
+		return mySkill;
+	}
+
 	virtual void Update();
 	virtual void Draw();
 protected:
@@ -158,6 +164,8 @@ protected:
 	int moveTimer = 0;
 	const int MOVETIME = 60;
 
-
+	//スキル関連
+	//所持スキル
+	std::vector<Skill*>mySkill = {};
 
 };
