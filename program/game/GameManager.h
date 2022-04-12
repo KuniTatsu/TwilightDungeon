@@ -47,7 +47,8 @@ public:
 
 	SkillManager* sManager = nullptr;
 
-	//std::shared_ptr<Inventory>shared_inventory;
+	//スキルを与える関数
+	void SetActorSkill(std::vector<Skill*>& SkillList, int SkillType, int SkillId);
 
 	//debug
 	bool minimapDraw = true;
@@ -74,8 +75,6 @@ public:
 
 	//debug用拡大縮小関数
 	void ScaleChange();
-
-
 
 	//画面中心
 	const t2k::Vector3 WINDOWCENTER = t2k::Vector3(512, 384, 0);
@@ -337,7 +336,10 @@ public:
 
 
 	//目の前の対象にダメージを与える
-	void TakeDamageToTarget(Actor* hoge, const t2k::Vector3 Pos);
+	void DealDamageToTarget(Actor* hoge, const t2k::Vector3 Pos);
+
+	//目の前の対象にスキルによるダメージを与える
+	void DealSkillDamageToTarget(Actor* Actor, const t2k::Vector3 Pos,Skill* ActivateSkill);
 
 
 	//debug切り替え
@@ -360,6 +362,8 @@ public:
 
 	//ダメージ計算
 	float CalcDamage(const int Attack, const int Defence);
+	//スキルダメージ計算
+	float CalcSkillDamage(const float SkillRate, const int Attack, const int Defence);
 
 	//ダメージ処理
 	void RunDamageEvent(const float Damage, std::shared_ptr<Actor>actor);

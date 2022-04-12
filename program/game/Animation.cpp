@@ -4,10 +4,13 @@
 #include"Camera.h"
 
 extern GameManager* gManager;
-Animation::Animation(std::string Gh, t2k::Vector3 Pos, int ActSpeed, int MaxIndex)
+Animation::Animation(std::string Gh, t2k::Vector3 Pos, int ActSpeed, int MaxIndex, int XNum, int YNum, int XSize, int YSize)
 {
 	//‰æ‘œ‚Ì•ªŠ„ƒ[ƒh
-	LoadDivGraph(Gh.c_str(), 5, 5, 1, 30, 30, gh);
+	//LoadDivGraph(Gh.c_str(), 5, 5, 1, 30, 30, gh);
+
+	gManager->LoadDivGraphEx(Gh.c_str(), MaxIndex, XNum, YNum, XSize, YSize, animGh);
+
 	pos = Pos;
 	actSpeed = ActSpeed;
 	maxMotionIndex = MaxIndex;
@@ -22,7 +25,17 @@ Animation::Animation(std::string Gh, t2k::Vector3 Pos)
 	actSpeed = 10;
 	maxMotionIndex = 10;
 	animationType = 1;
-	
+
+}
+
+Animation::Animation(std::vector<int>Anim, t2k::Vector3 Pos, int ActSpeed, int MaxIndex)
+{
+	animGh = Anim;
+
+	pos = Pos;
+	actSpeed = ActSpeed;
+	maxMotionIndex = MaxIndex;
+	animationType = 0;
 }
 
 Animation::~Animation()
@@ -40,11 +53,11 @@ void Animation::Update()
 	}
 	else return;
 
-	if (animationType == 0)drawGh = gh[actIndex];
+	if (animationType == 0)drawGh = animGh[actIndex];
 	else drawGh = levelUpGh[actIndex];
 
 	if (animationType == 0) {
-		if (drawGh == gh[maxMotionIndex - 1])isAlive = false;
+		if (drawGh == animGh[maxMotionIndex - 1])isAlive = false;
 	}
 	else {
 		if (drawGh == levelUpGh[maxMotionIndex - 1])isAlive = false;

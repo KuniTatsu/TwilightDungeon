@@ -39,6 +39,10 @@ GameManager::~GameManager()
 {
 
 }
+void GameManager::SetActorSkill(std::vector<Skill*>& SkillList, int SkillType, int SkillId)
+{
+	SkillList.emplace_back(sManager->GetSkill(SkillType, SkillId));
+}
 void GameManager::initGameManager()
 {
 	SRand(time(0));//dxlib randInit
@@ -97,6 +101,9 @@ void GameManager::Update()
 	}
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_X)) {
 		ScaleChange();
+	}
+	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_P)) {
+		SetActorSkill(player->GetSkillList(), 0, 0);
 	}
 
 
@@ -663,7 +670,7 @@ void GameManager::Zoom()
 	}
 	graphEx = nowGraphicSize / GRAPHICSIZE;
 }
-void GameManager::TakeDamageToTarget(Actor* actor, t2k::Vector3 Pos)
+void GameManager::DealDamageToTarget(Actor* actor, t2k::Vector3 Pos)
 {
 	//プレイヤーが攻撃するなら
 	if (actor->GetActId() == 0) {
@@ -691,6 +698,40 @@ void GameManager::TakeDamageToTarget(Actor* actor, t2k::Vector3 Pos)
 	}
 }
 
+void GameManager::DealSkillDamageToTarget(Actor* Actor, const t2k::Vector3 Pos, Skill* ActivateSkill)
+{
+	//スキルの数値データを取得
+	float* skillData = ActivateSkill->GetSkillAmount();
+	//スキル名を取得
+	std::string skillName = ActivateSkill->GetSkillName();
+
+	//プレイヤーが攻撃するなら
+	if (Actor->GetActId() == 0) {
+		//全てのエネミーから前にいるエネミーを取得
+		std::shared_ptr<Enemy>frontEnemy = GetIsThereEnemyToDir(Pos);
+		//もし空振りなら
+		if (frontEnemy == nullptr) {
+			//player->skip = true;
+			return;
+		}
+
+		//スキルの倍率,攻撃力と防御力を取得,ダメージ計算
+		float damage = CalcSkillDamage(skillData[0], player->GetStatus(1), frontEnemy->GetStatus(2));
+		//ダメージを反映
+		RunDamageEvent((-1) * damage, frontEnemy);
+		//ログ追加
+		addLog(frontEnemy->GetName() + "が" + skillName + "によって" + std::to_string(static_cast<int>(damage)) + "ダメージを受けた");
+	}
+	//エネミーが攻撃するなら
+	else {
+		//攻撃力と防御力を取得,ダメージ計算
+		float damage = CalcSkillDamage(skillData[0], Actor->GetStatus(1), player->GetStatus(2));
+		//ダメージを反映
+		RunDamageEvent((-1) * damage, player);
+		addLog("Playerが" + skillName + "によって" + std::to_string(static_cast<int>(damage)) + "ダメージを受けた");
+	}
+}
+
 std::shared_ptr<Player> GameManager::GetPlayer()
 {
 	return player;
@@ -714,6 +755,14 @@ float GameManager::CalcDamage(int Attack, int Defence)
 	if (damage < 0)damage = 1;
 
 	return damage;
+}
+
+float GameManager::CalcSkillDamage(const float SkillRate, const int Attack, const int Defence)
+{
+	//スキルのダメージ倍率を使用者のAttackに掛けた数値でダメージ計算を行う
+	float skillDamage = Attack * SkillRate;
+
+	return CalcDamage(skillDamage, Defence);
 }
 
 void GameManager::RunDamageEvent(float damage, std::shared_ptr<Actor>actor)

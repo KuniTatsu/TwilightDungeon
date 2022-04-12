@@ -48,7 +48,7 @@ public:
 	void ChangeStatus(const int StatusNum, const int MoveNum, const int StatusType);
 
 	//装備ステータスの除去
-	void RemoveStatus(const int StatusNum,const int MoveNum);
+	void RemoveStatus(const int StatusNum, const int MoveNum);
 
 	//装備ステータスの全除去
 	inline void RemoveAllEquipStatus() {
@@ -85,7 +85,7 @@ public:
 	void TakeHpEffect(const int HpMove);
 
 	virtual void Attack();
-	virtual void SkillAttack();
+	virtual void SkillAttack(Skill* usedSkill);
 
 	virtual bool Move();
 
@@ -97,7 +97,7 @@ public:
 	//アニメーションさせたいgh配列,描画スピード,描画最大枚数を引数に持つアニメーション関数
 	void Anim(int* DrawGhArr, int Speed, int MaxIndex, int& DrawGh);
 
-	inline std::vector<Skill*>GetSkillList() {
+	inline std::vector<Skill*>& GetSkillList() {
 		return mySkill;
 	}
 

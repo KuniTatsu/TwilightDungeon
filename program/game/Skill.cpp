@@ -3,21 +3,27 @@
 
 extern GameManager* gManager;
 
-Skill::Skill(int SkillId, int SkillType, std::string SkillName, int DamageAmount, int HealAmount, std::string GhPass, int AllNum
+Skill::Skill(int SkillId, int SkillType, std::string SkillName, float DamageRate, float HealRate, std::string GhPass, int AllNum
 	, int XNum, int YNum, int XSize, int YSize)
 {
 	skillId = SkillId;
 	skillType = SkillType;
 	name = SkillName;
 
-	damageAmount = DamageAmount;
-	healAmount = HealAmount;
+	damageRate = DamageRate;
+	healRate = HealRate;
 
-	skillNum[0] = damageAmount;
-	skillNum[1] = healAmount;
+	floatData[0] = damageRate;
+	floatData[1] = healRate;
 	ghPass = GhPass;
 	gManager->LoadDivGraphEx(ghPass, AllNum, XNum, YNum, XSize, YSize, animGh);
 
+	graphicAllNum = AllNum;
+	xNum = XNum;
+	yNum = YNum;
+
+	xSize = XSize;
+	ySize = YSize;
 }
 
 Skill::~Skill()

@@ -10,7 +10,7 @@ public:
 	SkillManager();
 	~SkillManager();
 
-	Skill* GetSkill(int SkillId);
+	Skill* GetSkill(int SkillType, int SkillId);
 
 private:
 

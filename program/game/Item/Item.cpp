@@ -122,10 +122,10 @@ void Item::SetGoalPos(int dir)
 {
 	if (!init) {
 		nowPos = pos;
-		goalPos = pos + gManager->GetMultipleVector(dir, 20);
+		goalPos = pos + gManager->GetMultipleVector(dir, gManager->nowGraphicSize);
 		init = true;
 	}
-	else goalPos = nowPos + gManager->GetMultipleVector(dir, 20);
+	else goalPos = nowPos + gManager->GetMultipleVector(dir, gManager->nowGraphicSize);
 	//1ƒtƒŒ[ƒ€‚ ‚½‚è‚ÌˆÚ“®—Ê
 	move = (goalPos - nowPos) * moveSpeed;
 }

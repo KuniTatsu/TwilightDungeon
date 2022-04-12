@@ -19,6 +19,7 @@ class Inventory;
 class Player;
 class Enemy;
 class Animation;
+class Skill;
 
 class DungeonScene :public BaseScene {
 
@@ -55,7 +56,8 @@ private:
 	//グラフィック
 	int EButton = 0;
 
-
+	//直近に発動したスキル
+	Skill* lastUseSkill = nullptr;
 
 
 	/*int alfa = 0;*/
@@ -118,6 +120,9 @@ private:
 	//アニメーション終了確認
 	void CheckAnimLive();
 	const int ATTACKEFFECTSPEED = 10;
+
+	const int SKILLANIMSPEED = 10;
+
 	//int ATTACKEFFECTINDEX = 5;
 	//debug キャンプに戻る
 	void ReturnCamp();

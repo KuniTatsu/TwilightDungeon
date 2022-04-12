@@ -8,27 +8,53 @@
 class Skill
 {
 public:
-	Skill(int SkillId, int SkillType,std::string SkillName, int DamageAmount, int HealAmount, std::string GhPass, int AllNum
+	Skill(int SkillId, int SkillType,std::string SkillName, float DamageRate, float HealRate, std::string GhPass, int AllNum
 		, int XNum, int YNum, int XSize, int YSize);
 	~Skill();
 
-	inline int* GetSkillAmount() {
-		return skillNum;
+	inline const float* GetSkillAmount() {
+		return floatData;
+	}
+	inline const std::string& GetSkillName() {
+		return name;
+	}
+
+	inline const int& GetGraphicAllNum() {
+		return graphicAllNum;
+	}
+
+	inline const std::vector<int>&GetGraphicHandle() {
+		return animGh;
 	}
 
 private:
-
+	//スキルId
 	int skillId = 0;
+	//スキルタイプ
 	int skillType = 0;
+	//スキルの名前
 	std::string name = "";
 
-	int damageAmount = 0;
-	int healAmount = 0;
+	//攻撃力にかかる倍率
+	float damageRate = 0;
+	//ダメージにかかる倍率
+	float healRate = 0;
+	//上２つを纏めた配列
+	float floatData[2];
 
-	int skillNum[2];
-
+	//フォルダパス
 	std::string ghPass = "";
-	int gh = 0;
+	//DivGraphで分割した画像ハンドル
 	std::vector<int>animGh;
+
+	//画像の情報
+	int graphicAllNum = 0;
+	int xNum = 0;
+	int yNum = 0;
+
+	int xSize = 0;
+	int ySize = 0;
+
+	
 };
 

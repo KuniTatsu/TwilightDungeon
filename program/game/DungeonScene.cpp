@@ -7,6 +7,7 @@
 #include"MenuWindow.h"
 #include"Actor/EnemyManager.h"
 #include"Actor/Enemy.h"
+#include"Skill.h"
 #include"Camera.h"
 #include"Item/Item.h"
 #include"Item/equipItem.h"
@@ -166,7 +167,7 @@ void DungeonScene::Draw()
 
 		}
 		//プレイヤーがショップの上にいるならウィンドウを表示する
-		else if (gManager->GetMapChip(playerPos) == 4&&nowSeq!=sequence::SHOP) {
+		else if (gManager->GetMapChip(playerPos) == 4 && nowSeq != sequence::SHOP) {
 			shopIn->Menu_Draw();
 			DrawStringEx(shopIn->menu_x + 70, shopIn->menu_y + 60, -1, "ショップを見つけた");
 
@@ -487,6 +488,16 @@ bool DungeonScene::SeqMain(const float deltatime)
 		return true;
 
 	}
+	else //Qボタンで1番のスキル発動
+   //プレイヤーの攻撃は目の前に対象がいなかった場合skipと同じ処理を行う
+		if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_Q)) {
+			//ここをアニメーションシークエンスに飛ばす
+			lastUseSkill = player->GetSkillList()[0];
+
+			ChangeSequence(sequence::ANIMATION);
+			return true;
+
+		}
 
 	//もしPlayerが動いたら もしくはスキップしたら
 	if (gManager->player->Move() || player->skip) {
@@ -573,7 +584,7 @@ bool DungeonScene::SeqEnemyAct(const float deltatime)
 			}
 		}
 		itr = attackEnemies.begin();
-		
+
 		//y座標でactorをソート
 		gManager->SortEntityList();
 	}
@@ -839,15 +850,31 @@ bool DungeonScene::SeqAnimation(const float deltatime)
 			gManager->sound->System_Play(gManager->sound->system_attack);
 			//アニメーションポジションの決定
 			player->SetAnimPos();
+
+			//スキルならスキルの情報を取得する
+			if (lastUseSkill != nullptr) {
+				int index = lastUseSkill->GetGraphicAllNum();
+
+				//Animationクラスをnew
+				std::shared_ptr<Animation>anim = std::make_shared<Animation>(lastUseSkill->GetGraphicHandle(),player->effectPos,SKILLANIMSPEED,index);
+				//描画リストに登録
+				drawAnimationList.emplace_back(anim);
+				return true;
+			}
+
 			//アニメーション画像の最大Index番号の取得
 			int index = gManager->GetMaxIndex(GameManager::index::ATTACK);
 			//Animationクラスをnew
-			std::shared_ptr<Animation>anim = std::make_shared<Animation>("graphics/AttackAnim_30.png", player->effectPos, ATTACKEFFECTSPEED, index);
+			std::shared_ptr<Animation>anim = std::make_shared<Animation>("graphics/AttackAnim_30.png", player->effectPos, ATTACKEFFECTSPEED, index, 5, 1, 30, 30);
 			//描画リストに登録
 			drawAnimationList.emplace_back(anim);
 		}
 		//もしアニメーションが終わっているなら
 		if (drawAnimationList.empty()) {
+
+			//もしスキル使用後だったら
+			if (lastUseSkill != nullptr)lastUseSkill = nullptr;
+
 			//攻撃シークエンスに移動
 			ChangeSequence(sequence::PLAYERATTACK);
 			return true;
@@ -861,7 +888,7 @@ bool DungeonScene::SeqAnimation(const float deltatime)
 			int index = gManager->GetMaxIndex(GameManager::index::ATTACK);
 			for (auto attackEnemy : attackEnemies) {
 				//Animationクラスをnew
-				std::shared_ptr<Animation>anim = std::make_shared<Animation>("graphics/AttackAnim_30.png", player->pos, ATTACKEFFECTSPEED, index);
+				std::shared_ptr<Animation>anim = std::make_shared<Animation>("graphics/AttackAnim_30.png", player->pos, ATTACKEFFECTSPEED, index, 5, 1, 30, 30);
 				//描画リストに登録
 				drawAnimationList.emplace_back(anim);
 			}

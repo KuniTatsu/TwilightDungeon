@@ -146,14 +146,18 @@ void Actor::Attack()
 	front = gManager->WorldToLocal(pos) + gManager->GetVecter(mydir);
 
 	//目の前の対象を取得,ダメージ処理を行う
-	gManager->TakeDamageToTarget(this, front);
+	gManager->DealDamageToTarget(this, front);
 
 }
 
-void Actor::SkillAttack()
+void Actor::SkillAttack(Skill* usedSkill)
 {
+	t2k::Vector3 front;
+	//目の前の対象を取得
+	front = gManager->WorldToLocal(pos) + gManager->GetVecter(mydir);
 
-
+	//目の前の対象を取得,ダメージ処理を行う
+	gManager->DealSkillDamageToTarget(this, front, usedSkill);
 
 }
 
