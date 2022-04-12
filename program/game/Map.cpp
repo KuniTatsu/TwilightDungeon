@@ -138,6 +138,22 @@ void Map::DivideStart(int Width, int Height, Map* map)
 	sumRoomNum = divideRoom.size();
 }
 
+t2k::Vector3 Map::WorldToMap(const int WorldX, const int WorldY)
+{
+	int mapX = WorldX / gManager->nowGraphicSize;
+	int mapY = WorldY / gManager->nowGraphicSize;
+
+	return t2k::Vector3(mapX, mapY, 0);
+}
+
+t2k::Vector3 Map::MapToWorld(const int MapX, const int MapY)
+{
+	int worldX = MapX * gManager->nowGraphicSize;
+	int worldY = MapY * gManager->nowGraphicSize;
+
+	return t2k::Vector3(worldX, worldY, 0);
+}
+
 void Map::SetShop()
 {
 	////ショップを設置するかどうかランダム関数で決める
@@ -262,11 +278,11 @@ void Map::MapDraw()
 				//DrawRotaGraphF(k * gManager->nowGraphicSize - gManager->camera->cameraPos.x, i * gManager->nowGraphicSize - gManager->camera->cameraPos.y, gManager->graphEx, 0, mapChip[1], false);
 
 				int iti = CheckAroundWay(i, k);
-				DrawRotaGraph(k * SIZE - gManager->camera->cameraPos.x, i * SIZE - gManager->camera->cameraPos.y, gManager->graphEx, 0, autoTileChip[iti], false);
+				DrawRotaGraph(k * gManager->nowGraphicSize - gManager->camera->cameraPos.x, i * gManager->nowGraphicSize - gManager->camera->cameraPos.y, gManager->graphEx, 0, autoTileChip[iti], false);
 			}
-			else if (ground[i][k] == PASSWAY)DrawRotaGraph(k * SIZE - gManager->camera->cameraPos.x, i * SIZE - gManager->camera->cameraPos.y, gManager->graphEx, 0, floor, false);
-			else if (ground[i][k] == STAIRS)DrawRotaGraph(k * SIZE - gManager->camera->cameraPos.x, i * SIZE - gManager->camera->cameraPos.y, gManager->graphEx, 0, stair, false);
-			else if (ground[i][k] == SHOP)DrawRotaGraph(k * SIZE - gManager->camera->cameraPos.x, i * SIZE - gManager->camera->cameraPos.y, gManager->graphEx, 0, shop, false);
+			else if (ground[i][k] == PASSWAY)DrawRotaGraph(k * gManager->nowGraphicSize - gManager->camera->cameraPos.x, i * gManager->nowGraphicSize - gManager->camera->cameraPos.y, gManager->graphEx, 0, floor, false);
+			else if (ground[i][k] == STAIRS)DrawRotaGraph(k * gManager->nowGraphicSize - gManager->camera->cameraPos.x, i * gManager->nowGraphicSize - gManager->camera->cameraPos.y, gManager->graphEx, 0, stair, false);
+			else if (ground[i][k] == SHOP)DrawRotaGraph(k * gManager->nowGraphicSize - gManager->camera->cameraPos.x, i * gManager->nowGraphicSize - gManager->camera->cameraPos.y, gManager->graphEx, 0, shop, false);
 			else {
 				t2k::debugTrace("\n描画エラー(%d,%d)\n", i, k);
 			}

@@ -25,6 +25,7 @@ class Inventory;
 class Actor;
 class ResourceManager;
 class SkillManager;
+class Skill;
 
 class GameManager {
 
@@ -56,10 +57,25 @@ public:
 	int blue = 0;
 
 	//マップチップの一枚の大きさ
-	const int GRAPHICSIZE = 20;
+	const int GRAPHICSIZE = 40;
 	float nowGraphicSize = GRAPHICSIZE;
 
-	double graphEx = 1;
+	//rotaGraph用倍率
+	double graphEx = 2.0;
+
+	enum class ScaleMode:uint32_t {
+		NORMAL,
+		WIDE
+	};
+	ScaleMode nowScale = ScaleMode::WIDE;
+
+	const float scale[2] = { 20.0f,40.0f };
+	
+	//debug用拡大縮小関数
+	void ScaleChange();
+
+
+
 	//画面中心
 	const t2k::Vector3 WINDOWCENTER = t2k::Vector3(512, 384, 0);
 

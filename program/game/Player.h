@@ -47,6 +47,9 @@ public:
 	inline t2k::Vector3 GetPlayerLocalPos() {
 		return playerInMap;
 	}
+
+	void SetPlayerLocalPos();
+
 	//ˆÚ“®ŠÖ”
 	bool Move()override;
 	//Camp‚Å‚ÌˆÚ“®ŠÖ”

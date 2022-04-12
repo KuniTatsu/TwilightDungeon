@@ -95,6 +95,12 @@ void GameManager::Update()
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_G)) {
 		player->TakeHpEffect(-100);
 	}
+	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_X)) {
+		ScaleChange();
+	}
+
+
+
 	//
 	SceneManager::Update();
 
@@ -252,6 +258,32 @@ void GameManager::PopItemFromInventory(const int NowInventoryId)
 	if (isDeleteInventory)return;
 	//カーソルの位置を一番上にリセット
 	if (inventories[NowInventoryId]->inventoryList.empty())inventories[NowInventoryId]->CursorReset();
+}
+//Xキーで画面を2倍に拡大縮小する関数
+void GameManager::ScaleChange()
+{
+	//プレイヤーのローカル座標を取得する
+	t2k::Vector3 playerPosBuf = WorldToLocal(player->pos);
+	//今の描画が通常倍率なら
+	if (nowScale == ScaleMode::NORMAL) {
+		//描画方法を拡大にする
+		nowScale = ScaleMode::WIDE;
+	}
+	//今の描画が2倍なら
+	else {
+		//描画方法を通常にする
+		nowScale = ScaleMode::NORMAL;
+	}
+	//描画チップのサイズを変更する
+	nowGraphicSize = scale[static_cast<uint32_t>(nowScale)];
+	//描画倍率を修正する
+	graphEx = nowGraphicSize / GRAPHICSIZE;
+	//プレイヤーの描画座標を修正する
+	player->pos = LocalToWorld(playerPosBuf.x, playerPosBuf.y);
+	//player->SetPlayerLocalPos();
+	//カメラをプレイヤー中心に修正する
+	CameraReset();
+
 }
 
 void GameManager::LoadMaxIndex()
@@ -821,7 +853,7 @@ void GameManager::MakePlayer(SpawnScene nowScene)
 
 void GameManager::SetSkill(std::vector<Skill*>SkillList, int SkillId)
 {
-	SkillList.emplace_back()
+	SkillList.emplace_back();
 }
 
 std::vector<int>& GameManager::GetGraphicHandles(Dungeon dungeonName)
@@ -850,9 +882,6 @@ void GameManager::CameraReset() {
 //なんか微妙
 void GameManager::CameraMove(int width, int height, int dir)
 {
-	//	if (player->pos.x+ width / 2 > width)return;
-	//	camera->cameraPos = player->pos - t2k::Vector3(512, 384, 0);
-	//	//camera->cameraPos = player->pos - GetMultipleVector(dir, 20);
 	if (player->pos.x > 1024 / 2 && player->pos.x < width - 1024 / 2) {
 		camera->cameraPos.x = player->pos.x - (1024 / 2);
 	}

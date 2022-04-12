@@ -171,7 +171,7 @@ void Actor::Draw()
 {
 	Anim(gh, actSpeed, maxMotionIndex, drawGh);
 	//描画座標+アニメーション位置補正(補完座標)-カメラ補正
-	DrawRotaGraph(pos.x + animPos.x - gManager->camera->cameraPos.x, pos.y + animPos.y - 10 - gManager->camera->cameraPos.y, 1, 0, drawGh, true);
+	DrawRotaGraph(pos.x  - gManager->camera->cameraPos.x, pos.y  - 10 - gManager->camera->cameraPos.y, gManager->graphEx, 0, drawGh, true);
 }
 
 void Actor::Anim(int* DrawGhArr, int Speed, int MaxIndex, int& DrawGh)

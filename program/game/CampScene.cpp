@@ -121,8 +121,9 @@ void CampScene::Draw()
 
 	}
 	if (nowSeq != sequence::MAIN)return;
+	t2k::Vector3 nowLocalPos = gManager->WorldToLocal(player->pos);
 	//女神像の前にいる時にダンジョン入場を促すUIを表示する
-	if (GetSurfaceGraphicNum(gManager->WorldToLocal(player->pos).x, gManager->WorldToLocal(player->pos).y - 1) == 469) {
+	if (GetSurfaceGraphicNum(nowLocalPos.x, nowLocalPos.y - 1) == 469) {
 
 		dungeonEnterUi->Menu_Draw();
 		DrawStringEx(dungeonEnterUi->menu_x + 20, dungeonEnterUi->menu_y + 10, -1, "Enterを押してダンジョンに入場する");
@@ -161,12 +162,12 @@ void CampScene::DrawMap(vector<vector<int>>intData)
 		for (int k = 0; k < intData[i].size(); ++k) {
 			if (intData[i][k] != -1) {
 				int gh = GetGraphicHandle(intData[i][k]);
-				DrawRotaGraph(x - gManager->camera->cameraPos.x, y - gManager->camera->cameraPos.y, 1, 0, gh, true);
+				DrawRotaGraph(x - gManager->camera->cameraPos.x, y - gManager->camera->cameraPos.y, gManager->graphEx, 0, gh, true);
 			}
-			x += 20;
+			x += gManager->nowGraphicSize;
 		}
 		x = 0;
-		y += 20;
+		y += gManager->nowGraphicSize;
 	}
 }
 
@@ -211,7 +212,7 @@ bool CampScene::SeqMain(const float deltatime)
 		//左一歩先が動けないなら動かない
 		if (canMoveThisPoint(nextPos.x, nextPos.y) == 0) {
 			player->TownMove(Player::UP);
-			gManager->CameraMove(groundMapData[0].size() * 20, groundMapData.size() * 20, GameManager::UP);
+			gManager->CameraMove(groundMapData[0].size() * gManager->nowGraphicSize, groundMapData.size() * gManager->nowGraphicSize, GameManager::UP);
 		}
 	}
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RIGHT)) {
@@ -223,7 +224,7 @@ bool CampScene::SeqMain(const float deltatime)
 		//左一歩先が動けないなら動かない
 		if (canMoveThisPoint(nextPos.x, nextPos.y) == 0) {
 			player->TownMove(Player::RIGHT);
-			gManager->CameraMove(groundMapData[0].size() * 20, groundMapData.size() * 20, GameManager::RIGHT);
+			gManager->CameraMove(groundMapData[0].size() * gManager->nowGraphicSize, groundMapData.size() * gManager->nowGraphicSize, GameManager::RIGHT);
 		}
 	}
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_DOWN)) {
@@ -235,7 +236,7 @@ bool CampScene::SeqMain(const float deltatime)
 		//左一歩先が動けないなら動かない
 		if (canMoveThisPoint(nextPos.x, nextPos.y) == 0) {
 			player->TownMove(Player::DOWN);
-			gManager->CameraMove(groundMapData[0].size() * 20, groundMapData.size() * 20, GameManager::DOWN);
+			gManager->CameraMove(groundMapData[0].size() * gManager->nowGraphicSize, groundMapData.size() * gManager->nowGraphicSize, GameManager::DOWN);
 		}
 	}
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_LEFT)) {
@@ -247,7 +248,7 @@ bool CampScene::SeqMain(const float deltatime)
 		//左一歩先が動けないなら動かない
 		if (canMoveThisPoint(nextPos.x, nextPos.y) == 0) {
 			player->TownMove(Player::LEFT);
-			gManager->CameraMove(groundMapData[0].size() * 20, groundMapData.size() * 20, GameManager::LEFT);
+			gManager->CameraMove(groundMapData[0].size() * gManager->nowGraphicSize, groundMapData.size() * gManager->nowGraphicSize, GameManager::LEFT);
 		}
 	}
 	return true;

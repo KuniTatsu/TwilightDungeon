@@ -73,21 +73,14 @@ public:
 	void SetChip(const int x, const int y, const int SetChip);
 	//一定範囲すべてを道で書き換え
 	void SetAllChip(const int Left, const int Up, const int Right, const int Down);
-
+	//エリア分割開始
 	void DivideStart(const int Width, const int Height, Map* map);
 
-	inline t2k::Vector3 WorldToMap(const int WorldX, const int WorldY) {
-		int mapX = WorldX / SIZE;
-		int mapY = WorldY / SIZE;
 
-		return t2k::Vector3(mapX, mapY, 0);
-	}
-	inline t2k::Vector3 MapToWorld(const int MapX, const int MapY) {
-		int worldX = MapX * SIZE;
-		int worldY = MapY * SIZE;
-
-		return t2k::Vector3(worldX, worldY, 0);
-	}
+	//描画座標をローカル座標に変換
+	t2k::Vector3 WorldToMap(const int WorldX, const int WorldY);
+	//ローカル座標を描画座標に変換
+	t2k::Vector3 MapToWorld(const int MapX, const int MapY);
 
 	//外部から"部屋の数"を取得するときの関数
 	inline int GetRoomNum() {
@@ -226,7 +219,7 @@ private:
 	std::vector<std::vector<int>> divideRoom;
 
 
-
+	//分割方向
 	enum mapDir {
 		VERTICAL,
 		HORIZONTAL,

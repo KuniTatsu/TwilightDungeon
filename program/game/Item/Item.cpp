@@ -158,7 +158,7 @@ bool Item::ThrowItem(int dir)
 
 void Item::DrawThrowItem()
 {
-	DrawRotaGraph(nowPos.x - gManager->camera->cameraPos.x, nowPos.y - gManager->camera->cameraPos.y, 1, 0, gh, true);
+	DrawRotaGraph(nowPos.x - gManager->camera->cameraPos.x, nowPos.y - gManager->camera->cameraPos.y, gManager->graphEx, 0, gh, true);
 }
 
 
@@ -170,5 +170,5 @@ void Item::DrawItemStringData(int x, int y)
 
 void Item::DrawPopItem()
 {
-	DrawRotaGraph(pos.x - gManager->camera->cameraPos.x, pos.y - gManager->camera->cameraPos.y, 1, 0, gh, true);
+	DrawRotaGraph(pos.x - gManager->camera->cameraPos.x, pos.y - gManager->camera->cameraPos.y, gManager->graphEx, 0, gh, true);
 }

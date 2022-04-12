@@ -237,7 +237,7 @@ private:
 	//アイテムを拾うフラグ
 	bool itemGetFlag = true;
 
-	//落ちているアイテムリスト
+	//落ちているアイテムリスト    //GameManagerでこの中身を使いたい
 	std::list<Item*>dropItems;
 
 	//落ちているアイテムの描画

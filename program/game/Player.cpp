@@ -113,6 +113,10 @@ int Player::GetStatusFromEquipment(int subId, int statusType)
 	//subIdに対応する装備アイテムの持つ、statusTypeに対応するステータスを返す
 	return myEquip[subId - 1]->getItemData(statusType + 5);
 }
+void Player::SetPlayerLocalPos()
+{
+	playerInMap = gManager->WorldToLocal(pos);
+}
 //リファクタリング必須　あとで変える:優先度高
 bool Player::Move()
 {
@@ -209,7 +213,7 @@ void Player::TownMove(dir nextDir)
 	playerInMap = gManager->WorldToLocal(pos);
 	mydir = nextDir;
 	//MoveToDir(nextDir, playerInMap);
-	t2k::Vector3 nextPos = gManager->GetMultipleVector(nextDir, 20);
+	t2k::Vector3 nextPos = gManager->GetMultipleVector(nextDir, gManager->nowGraphicSize);
 	pos.x += nextPos.x;
 	pos.y += nextPos.y;
 }
@@ -251,7 +255,7 @@ void Player::DashToDir(int dir, t2k::Vector3 mapPos)
 			isDash = false;
 			return;
 		}
-		pos.x -= 20;
+		pos.x -= gManager->nowGraphicSize;
 		//gManager->CameraMove(gManager->MAPWIDTH * 20, gManager->MAPHEIGHT * 20,dir);
 		gManager->CameraReset();
 	}
@@ -261,7 +265,7 @@ void Player::DashToDir(int dir, t2k::Vector3 mapPos)
 			isDash = false;
 			return;
 		}
-		pos.y -= 20;
+		pos.y -= gManager->nowGraphicSize;
 		//gManager->CameraMove(gManager->MAPWIDTH * 20, gManager->MAPHEIGHT * 20, dir);
 		gManager->CameraReset();
 	}
@@ -271,7 +275,7 @@ void Player::DashToDir(int dir, t2k::Vector3 mapPos)
 			isDash = false;
 			return;
 		}
-		pos.x += 20;
+		pos.x += gManager->nowGraphicSize;
 		//gManager->CameraMove(gManager->MAPWIDTH * 20, gManager->MAPHEIGHT * 20, dir);
 		gManager->CameraReset();
 	}
@@ -281,7 +285,7 @@ void Player::DashToDir(int dir, t2k::Vector3 mapPos)
 			isDash = false;
 			return;
 		}
-		pos.y += 20;
+		pos.y += gManager->nowGraphicSize;
 		//gManager->CameraMove(gManager->MAPWIDTH * 20, gManager->MAPHEIGHT * 20, dir);
 		gManager->CameraReset();
 	}
@@ -293,26 +297,26 @@ void Player::MoveToDir(int dir, t2k::Vector3 mapPos)
 {
 	if (dir == LEFT) {
 		if ((gManager->GetMapChip(mapPos + t2k::Vector3(-1, 0, 0))) == 0)return;
-		pos.x -= 20;
+		pos.x -= gManager->nowGraphicSize;
 		//gManager->CameraMove(gManager->MAPWIDTH * 20, gManager->MAPHEIGHT * 20, dir);
 		gManager->CameraReset();
 	}
 	else if (dir == UP) {
 		if ((gManager->GetMapChip(mapPos + t2k::Vector3(0, -1, 0))) == 0)return;
 
-		pos.y -= 20;
+		pos.y -= gManager->nowGraphicSize;
 		//gManager->CameraMove(gManager->MAPWIDTH * 20, gManager->MAPHEIGHT * 20, dir);
 		gManager->CameraReset();
 	}
 	else if (dir == RIGHT) {
 		if ((gManager->GetMapChip(mapPos + t2k::Vector3(1, 0, 0))) == 0)return;
-		pos.x += 20;
+		pos.x += gManager->nowGraphicSize;
 		//gManager->CameraMove(gManager->MAPWIDTH * 20, gManager->MAPHEIGHT * 20, dir);
 		gManager->CameraReset();
 	}
 	else if (dir == DOWN) {
 		if ((gManager->GetMapChip(mapPos + t2k::Vector3(0, 1, 0))) == 0)return;
-		pos.y += 20;
+		pos.y += gManager->nowGraphicSize;
 		//gManager->CameraMove(gManager->MAPWIDTH * 20, gManager->MAPHEIGHT * 20, dir);
 		gManager->CameraReset();
 	}
