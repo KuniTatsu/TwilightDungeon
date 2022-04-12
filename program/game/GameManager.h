@@ -62,15 +62,16 @@ public:
 
 	//rotaGraph用倍率
 	double graphEx = 2.0;
-
-	enum class ScaleMode:uint32_t {
+	//描画方法
+	enum class ScaleMode :uint32_t {
 		NORMAL,
 		WIDE
 	};
+	//今の描画方法
 	ScaleMode nowScale = ScaleMode::WIDE;
-
+	//描画方法ごとのマップチップの大きさ
 	const float scale[2] = { 20.0f,40.0f };
-	
+
 	//debug用拡大縮小関数
 	void ScaleChange();
 
@@ -110,7 +111,7 @@ public:
 
 	//インベントリにアイテムを追加する関数
 	//アイテムId,追加するインベントリ,現在のインベントリ番号
-	void AddItemToInventory(const int ItemId,std::vector<Inventory*>& Inventories,int& InventoryNum);
+	void AddItemToInventory(const int ItemId, std::vector<Inventory*>& Inventories, int& InventoryNum);
 
 	//ショップのアイテムをインベントリに追加する関数
 	void AddItemFromShop(Item* ShopItem);
@@ -119,7 +120,7 @@ public:
 	void PopItemFromInventory(const int NowInventoryId);
 
 	//現在装備中のアイテムとインベントリ内のアイテムのステータスの差を取得する関数
-	int GetDifStatus(int subId,int equipType,int amount);
+	int GetDifStatus(int subId, int equipType, int amount);
 
 	//装備しているか確認する関数
 	bool CheckEquipItem(int subId);
@@ -156,9 +157,11 @@ public:
 	//プレイヤーの生成
 	void MakePlayer(SpawnScene nowScene);
 
-	//スキル獲得
-	void SetSkill(std::vector<Skill*>SkillList,int SkillId);
 
+
+	//スキル獲得
+	void SetSkill(std::vector<Skill*>SkillList, int SkillId);
+	//ダンジョン一覧
 	enum class Dungeon : uint32_t {
 		TOWER,
 		FOREST,
@@ -166,9 +169,10 @@ public:
 		DUNGEONMAX
 	};
 	Dungeon nowDungeon;
-
+	//ダンジョンの名前
 	const std::string DUNGEONNAME[3] = { "塔のダンジョン","森のダンジョン","灼熱のダンジョン" };
 
+	//ダンジョンの名前を取得する関数
 	inline std::string GetDungeonName(Dungeon dungeonEnum) {
 		//if (dungeonEnum > Dungeon::DUNGEONMAX)return "範囲外";
 		return DUNGEONNAME[static_cast<uint32_t>(dungeonEnum)];
@@ -218,9 +222,9 @@ public:
 	int LoadGraphEx(const std::string gh);
 
 	//複数枚の連なった画像をvectorに格納する関数
-	void LoadDivGraphEx(const std::string Gh,const int AllNum,const int WidthNum,const int HeightNum,
-		int XSize,int YSize,std::vector<int>& GhVector);
-	
+	void LoadDivGraphEx(const std::string Gh, const int AllNum, const int WidthNum, const int HeightNum,
+		int XSize, int YSize, std::vector<int>& GhVector);
+
 
 
 	//a~bの間の乱数取得
@@ -245,7 +249,7 @@ public:
 	//特定のマップ座標が部屋のどこかにあるか確認する関数
 	int CheckIsThere(const t2k::Vector3 Pos);
 
-	//カメラをキャラを中心にリセット
+	//カメラをキャラを中心にリセット //補完を使って瞬間移動をなくしたい
 	void CameraReset();
 
 	//カメラの移動
@@ -259,7 +263,7 @@ public:
 	//arg5 centerX 画像描画中心X座標
 	//arg6 centerY 画像描画中心Y座標
 	//arg7 gh	   表示する画像のグラフィックハンドル
-	void DrawOpenWindow(float windowX,float windowY,int xCount,float yCount,int gh);
+	void DrawOpenWindow(float windowX, float windowY, int xCount, float yCount, int gh);
 	//ウィンドウが開く際のタイマー
 	float openTimer = 0;
 
@@ -312,9 +316,11 @@ public:
 
 	//enemylist
 	std::list<std::shared_ptr<Enemy>> liveEnemyList;
+	//actor型の生存者リスト
+	std::list<std::shared_ptr<Actor>>liveEntityList;
 
-	//生存しているenemyを同期する関数
-	void SetLiveEnemyList(std::list<std::shared_ptr<Enemy>> list);
+	//entityリストのy座標でソートする関数
+	void SortEntityList();
 
 	//全てのenemyとplayerが一定範囲内にいるかどうか確認する関数
 	bool CheckNearByPlayerToAllEnemy(const int range);
@@ -336,9 +342,9 @@ public:
 
 	//debug切り替え
 	bool isDebug = false;
-
+	//playerが今いる部屋の番号
 	int playerRoomNum = 0;
-
+	//プレイヤーの部屋番号を変更する　
 	void setPlayerRoomNum(const int roomNum);
 	//プレイヤーの取得
 	std::shared_ptr<Player> GetPlayer();
@@ -417,7 +423,7 @@ private:
 	int test = 0;
 	//アイテムの総数
 	int itemNum = 0;
-	
+
 	//所持している黄昏のかけらの数 そのうち配列でどこのダンジョンからどれが手に入るか決めるかも
 	int haveTwilightFragment = 0;
 

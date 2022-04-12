@@ -50,7 +50,9 @@ void DungeonScene::RandEnemyCreate(int num)
 		int random = rand() % 6 + 100;
 		eManager->CreateEnemy(random, dungeonLevel);
 	}
-	gManager->SetLiveEnemyList(eManager->liveEnemyList);
+	//gManager->SetLiveEnemyList(eManager->liveEnemyList);
+	//y座標でソート
+	gManager->SortEntityList();
 }
 
 void DungeonScene::Update()
@@ -116,17 +118,28 @@ void DungeonScene::Draw()
 {
 	//階層間のフェード中でなければ描画する
 	if (nowSeq != sequence::FADEDESC) {
+		//マップの描画
 		gManager->MapDraw();
 		//ドロップしているアイテムの描画
 		DrawPopItem();
+
+		for (auto actor : gManager->liveEntityList) {
+			actor->Draw();
+		}
+		/*
+
 		//プレイヤーの描画
 		player->Draw();
 		//HPバーの描画
 		player->HpVarDraw();
 		//敵の描画
-		for (auto enemy : eManager->liveEnemyList) {
+		for (auto enemy : gManager->liveEnemyList) {
 			enemy->Draw();
 		}
+
+
+		*/
+
 		//ミニマップの描画
 		gManager->MiniMapDraw();
 		//ミニマップの敵の描画
@@ -258,7 +271,7 @@ void DungeonScene::SetDungeonLevel(int addLevel)
 void DungeonScene::MoveLevel(int addLevel)
 {
 	//空じゃないならenemyを全て消去する
-	if (!eManager->liveEnemyList.empty())eManager->liveEnemyList.clear();
+	//if (!eManager->liveEnemyList.empty())eManager->liveEnemyList.clear();
 	if (!gManager->liveEnemyList.empty())gManager->liveEnemyList.clear();
 	//アイテムの消去
 	dropItems.clear();
@@ -414,7 +427,7 @@ bool DungeonScene::SeqMain(const float deltatime)
 	//ステータス上昇
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_U)) {
 		gManager->player->ChangeStatus(1, 50, 0);
-		for (auto enemy : eManager->liveEnemyList) {
+		for (auto enemy : gManager->liveEnemyList) {
 			enemy->ChangeStatus(2, 10, 0);
 		}
 	}
@@ -498,7 +511,7 @@ bool DungeonScene::SeqPlayerAttack(const float deltatime)
 {
 	player->Attack();
 	//死亡チェック
-	for (auto enemy : eManager->liveEnemyList) {
+	for (auto enemy : gManager->liveEnemyList) {
 		if (enemy->GetStatus(0) <= 0) {
 			//もしレベルアップしたら
 			if (player->AddExp(enemy->GetExp())) {
@@ -542,8 +555,8 @@ void DungeonScene::ReturnCamp()
 bool DungeonScene::SeqEnemyAct(const float deltatime)
 {
 	if (mainSequence.isStart()) {
-		for (auto liveEnemy : eManager->liveEnemyList) {
-			//playerとenemyが隣り合っているなら
+		for (auto liveEnemy : gManager->liveEnemyList) {
+			//playerとenemyが隣り合っているならリストにいれて順番に実行する
 			if (gManager->CheckNearByPlayer(liveEnemy))
 			{
 				//もしプレイヤーの方向を向いていない場合は向かせる
@@ -560,6 +573,9 @@ bool DungeonScene::SeqEnemyAct(const float deltatime)
 			}
 		}
 		itr = attackEnemies.begin();
+		
+		//y座標でactorをソート
+		gManager->SortEntityList();
 	}
 	//攻撃する敵リストがからじゃないなら
 	if (!attackEnemies.empty()) {
@@ -802,7 +818,7 @@ void DungeonScene::DrawMiniEnemy()
 {
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
-	for (auto liveEnemy : eManager->liveEnemyList) {
+	for (auto liveEnemy : gManager->liveEnemyList) {
 		t2k::Vector3 localPos = gManager->WorldToLocal(liveEnemy->pos);
 		if (gManager->CheckCanDraw(localPos)) {
 			//ミニマップにプレイヤーの位置を描画
@@ -1150,7 +1166,7 @@ void DungeonScene::DrawNowSequence(sequence seq)
 void DungeonScene::DrawEnemyData()
 {
 	int i = 0;
-	for (auto enemy : eManager->liveEnemyList) {
+	for (auto enemy : gManager->liveEnemyList) {
 
 		DrawStringEx(450 + 120 * i, 480, -1, "%s", enemy->GetName().c_str());
 		DrawStringEx(450 + 120 * i, 500, -1, "%d", enemy->GetStatus(0));
@@ -1327,15 +1343,23 @@ void DungeonScene::ItemThrow(int inventoryPage)
 }
 void DungeonScene::DeleteDeadEnemy()
 {
-	auto itr = eManager->liveEnemyList.begin();
+	auto itr1 = gManager->liveEnemyList.begin();
+	auto itr2 = gManager->liveEntityList.begin();
 
-	for (int i = 0; i < eManager->liveEnemyList.size(); ++i) {
-		if ((*itr)->isLive == false) {
-			itr = eManager->liveEnemyList.erase(itr);
-			gManager->SetLiveEnemyList(eManager->liveEnemyList);
+	for (int i = 0; i < gManager->liveEnemyList.size(); ++i) {
+		if ((*itr1)->isLive == false) {
+			itr1 = gManager->liveEnemyList.erase(itr1);
 		}
 		else {
-			itr++;
+			itr1++;
+		}
+	}
+	for (int i = 0; i < gManager->liveEntityList.size(); ++i) {
+		if ((*itr2)->isLive == false) {
+			itr2 = gManager->liveEntityList.erase(itr2);
+		}
+		else {
+			itr2++;
 		}
 	}
 }

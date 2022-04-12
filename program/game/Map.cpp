@@ -1215,7 +1215,7 @@ bool Map::CheckAround(int x, int y)
 	else return false;
 }
 
-int Map::CheckAroundWay(int x, int y)
+int Map::CheckAroundWay(int y, int x)
 {
 	bool ue = false;
 	bool migi = false;
@@ -1228,19 +1228,19 @@ int Map::CheckAroundWay(int x, int y)
 	bool migishita = false;
 
 	//8近傍のセルが通路ならtrue,そうでなければfalseを代入
-	if (x > 0) {
-		if (y > 0)hidariue = CheckThisCell(x - 1, y - 1);
-		if (y > 0)hidari = CheckThisCell(x, y - 1);
-		if (y + 1 < gManager->MAPWIDTH)hidarishita = CheckThisCell(x - 1, y + 1);
+	if (y > 0) {
+		if (x > 0)hidariue = CheckThisCell(y - 1, x - 1);
+		if (x > 0)hidari = CheckThisCell(y, x - 1);
+		if (x + 1 < gManager->MAPWIDTH)hidarishita = CheckThisCell(y - 1, x + 1);
 	}
 
-	if (x > 0)ue = CheckThisCell(x - 1, y);
-	if (x + 1 < gManager->MAPHEIGHT)shita = CheckThisCell(x + 1, y);
+	if (y > 0)ue = CheckThisCell(y - 1, x);
+	if (y + 1 < gManager->MAPHEIGHT)shita = CheckThisCell(y + 1, x);
 
-	if (x + 1 < gManager->MAPHEIGHT) {
-		if (y > 0)migiue = CheckThisCell(x + 1, y - 1);
-		if (y + 1 < gManager->MAPWIDTH) migi = CheckThisCell(x, y + 1);
-		if (y + 1 < gManager->MAPWIDTH)migishita = CheckThisCell(x + 1, y + 1);
+	if (y + 1 < gManager->MAPHEIGHT) {
+		if (x > 0)migiue = CheckThisCell(y + 1, x - 1);
+		if (x + 1 < gManager->MAPWIDTH) migi = CheckThisCell(y, x + 1);
+		if (x + 1 < gManager->MAPWIDTH)migishita = CheckThisCell(y + 1, x + 1);
 	}
 	if (hidari && hidarishita && hidariue && migi && migiue && migishita)return ROOMWALL;//8 ただのブロック
 

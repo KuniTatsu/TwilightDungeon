@@ -135,32 +135,24 @@ bool Player::Move()
 		mydir = Actor::LEFT;
 		DashToDir(mydir, playerInMap);
 		isDash = true;
-		gManager->setPlayerRoomNum(gManager->CheckIsThere(playerInMap));
-		return true;
-		//‚à‚µshift‚àˆê‚É‰Ÿ‚µ‚Ä‚¢‚½‚ç•Ç‚©“G‚É“–‚½‚é‚Ü‚Åƒ_ƒbƒVƒ…‚·‚é
 	}
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_UP) && t2k::Input::isKeyDown(t2k::Input::KEYBORD_LSHIFT)) {
 		mydir = Actor::UP;
 		DashToDir(mydir, playerInMap);
 		isDash = true;
-		gManager->setPlayerRoomNum(gManager->CheckIsThere(playerInMap));
-		return true;
 	}
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RIGHT) && t2k::Input::isKeyDown(t2k::Input::KEYBORD_LSHIFT)) {
 		mydir = Actor::RIGHT;
 		DashToDir(mydir, playerInMap);
 		isDash = true;
-		gManager->setPlayerRoomNum(gManager->CheckIsThere(playerInMap));
-		return true;
 	}
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_DOWN) && t2k::Input::isKeyDown(t2k::Input::KEYBORD_LSHIFT)) {
 		mydir = Actor::DOWN;
 		DashToDir(mydir, playerInMap);
 		isDash = true;
-		gManager->setPlayerRoomNum(gManager->CheckIsThere(playerInMap));
-		return true;
 	}
-
+	gManager->setPlayerRoomNum(gManager->CheckIsThere(playerInMap));
+	if (isDash)return true;
 
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_LEFT)) {
 		mydir = Actor::LEFT;
@@ -298,29 +290,21 @@ void Player::MoveToDir(int dir, t2k::Vector3 mapPos)
 	if (dir == LEFT) {
 		if ((gManager->GetMapChip(mapPos + t2k::Vector3(-1, 0, 0))) == 0)return;
 		pos.x -= gManager->nowGraphicSize;
-		//gManager->CameraMove(gManager->MAPWIDTH * 20, gManager->MAPHEIGHT * 20, dir);
-		gManager->CameraReset();
 	}
 	else if (dir == UP) {
 		if ((gManager->GetMapChip(mapPos + t2k::Vector3(0, -1, 0))) == 0)return;
 
 		pos.y -= gManager->nowGraphicSize;
-		//gManager->CameraMove(gManager->MAPWIDTH * 20, gManager->MAPHEIGHT * 20, dir);
-		gManager->CameraReset();
 	}
 	else if (dir == RIGHT) {
 		if ((gManager->GetMapChip(mapPos + t2k::Vector3(1, 0, 0))) == 0)return;
 		pos.x += gManager->nowGraphicSize;
-		//gManager->CameraMove(gManager->MAPWIDTH * 20, gManager->MAPHEIGHT * 20, dir);
-		gManager->CameraReset();
 	}
 	else if (dir == DOWN) {
 		if ((gManager->GetMapChip(mapPos + t2k::Vector3(0, 1, 0))) == 0)return;
 		pos.y += gManager->nowGraphicSize;
-		//gManager->CameraMove(gManager->MAPWIDTH * 20, gManager->MAPHEIGHT * 20, dir);
-		gManager->CameraReset();
 	}
-
+	gManager->CameraReset();
 	gManager->setPlayerRoomNum(gManager->CheckIsThere(mapPos));
 }
 void Player::RemoveAllEquip()

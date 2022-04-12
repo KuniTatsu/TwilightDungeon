@@ -30,9 +30,9 @@ void EnemyManager::CreateEnemy(int Id, int Floor)
 		//座標セット
 		enemy->pos = gManager->SetStartPos(GameManager::setStartPosType::ENEMY);
 		//まだenemyが一体も作られていなければすぐ抜ける
-		if (liveEnemyList.empty())break;
+		if (gManager->liveEnemyList.empty())break;
 		//全ての生成済みのenemyと比べる
-		for (auto liveEnemy : liveEnemyList) {
+		for (auto liveEnemy : gManager->liveEnemyList) {
 			//座標被りしていなければtrueにする
 			if (liveEnemy->pos.x != enemy->pos.x && liveEnemy->pos.y != enemy->pos.y&&
 				gManager->player->pos.x != enemy->pos.x&& gManager->player->pos.y != enemy->pos.y)
@@ -45,7 +45,8 @@ void EnemyManager::CreateEnemy(int Id, int Floor)
 		}
 		if (canCreateEnemy)break;
 	}
-	liveEnemyList.emplace_back(enemy);
+	gManager->liveEnemyList.emplace_back(enemy);
+	gManager->liveEntityList.emplace_back(enemy);
 	//gManager->hoge.emplace_back(enemy);
 }
 

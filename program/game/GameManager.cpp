@@ -537,6 +537,18 @@ t2k::Vector3 GameManager::GetRoomStartPos(int roomNum)
 {
 	return map->GetRoomStartPos(roomNum);
 }
+
+
+
+void GameManager::SortEntityList()
+{
+	liveEntityList.sort([](std::shared_ptr<Actor> actor1, std::shared_ptr<Actor> actor2) {
+		return (actor1->pos.y < actor2->pos.y);
+		});
+}
+
+
+
 bool GameManager::CheckNearByPlayerToAllEnemy(int range)
 {
 	bool isNear = false;
@@ -604,10 +616,6 @@ std::shared_ptr<Enemy> GameManager::GetIsThereEnemyToDir(t2k::Vector3 Pos)
 	return thereEnemy;
 }
 
-void GameManager::SetLiveEnemyList(std::list<std::shared_ptr<Enemy>> list)
-{
-	liveEnemyList = list;
-}
 
 void GameManager::PlayerDead()
 {
@@ -843,12 +851,12 @@ void GameManager::MakePlayer(SpawnScene nowScene)
 	if (player != nullptr)return;
 	if (nowScene == SpawnScene::Camp) {
 		player = std::make_shared<Player>(SpawnPlayerCamp(), 100.0f, 90, 30, 20, 0);
-		//map->player = player;
 	}
 	else if (nowScene == SpawnScene::Dungeon) {
 		player = std::make_shared<Player>(SetStartPos(setStartPosType::PLAYER), 100.0f, 30, 30, 30, 0);
 		map->player = player;
 	}
+	liveEntityList.emplace_back(player);
 }
 
 void GameManager::SetSkill(std::vector<Skill*>SkillList, int SkillId)
