@@ -66,7 +66,19 @@ bool Enemy::Move()
 	else {
 		sameRoom = false;
 	}
+	//プレイヤーを見つけていたら
+	if (detectFrag) {
+		//プレイヤーの座標に向かう
+		ChasePoint = gManager->WorldToLocal(gManager->player->pos);
+		//chasepointに向かって移動する
+		MoveChasePoint();
+		//chasepoint到着判定
+		CheckDoneChase();
+		//追跡範囲判定
+		ResetDetectFrag();
+		return true;
 
+	}
 
 	//目的地がセットされていればそちらへ向かう
 	if (isSetChasePoint && !sameRoom) {
@@ -74,9 +86,12 @@ bool Enemy::Move()
 		CheckDoneChase();
 		return true;
 	}
+	//同じ部屋にいるなら
 	else if (isSetChasePoint && sameRoom) {
+		//playerを追尾するようになる
 		ChasePoint = gManager->WorldToLocal(gManager->player->pos);
 		isSetChasePoint = true;
+		detectFrag = true;
 
 		MoveChasePoint();
 		CheckDoneChase();
@@ -176,69 +191,89 @@ void Enemy::MoveChasePoint()
 		//x方向に進む
 		//自分のx座標が目的地より左なら右に進む
 		if (myNowPos.x < ChasePoint.x) {
-			if (gManager->GetMapChip(myNowPos + t2k::Vector3(1, 0, 0)) == 0)return;
-			//敵がその位置にいれば移動しない y方向の先に敵がいないならそちらに進む
-			//if (gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(1, 0, 0)))return;
-			if (gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(1, 0, 0))) {
-				//enemyが上にいるなら
-				if (ChasePoint.y > myNowPos.y) {
-					if (!gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, 1, 0))) {
-						if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, 1, 0)) == 0)return;
-						pos.y -= gManager->nowGraphicSize;
-						mydir = dir::DOWN;
-					}
-					else {
-						return;
-					}
-				}
-				//enemyが下にいるなら
-				else {
-					if (!gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, -1, 0))) {
-						if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, -1, 0)) == 0)return;
-						pos.y -= gManager->nowGraphicSize;
-						mydir = dir::UP;
-					}
-					else {
-						return;
-					}
-				}
+
+			//右が壁じゃないかつ敵がいないなら
+			if (gManager->GetMapChip(myNowPos + t2k::Vector3(1, 0, 0)) != 0 && !gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(1, 0, 0))) {
+				//左に進む
+				pos.x += gManager->nowGraphicSize;
+				mydir = dir::RIGHT;
 				return;
 			}
-			pos.x += gManager->nowGraphicSize;
-			mydir = dir::RIGHT;
-		}//左に進む
-		else {
-			if (gManager->GetMapChip(myNowPos + t2k::Vector3(-1, 0, 0)) == 0)return;
-			//敵がその位置にいれば移動しない
-			//if (gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(-1, 0, 0)))return;
-			if (gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(-1, 0, 0))) {
-				//enemyが上にいるなら
+			//右に進めないなら上下を考える
+			else {
+				//enemyが上にいるなら→下に進みたい
 				if (ChasePoint.y > myNowPos.y) {
+					//下に敵がいなければ
 					if (!gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, 1, 0))) {
-						if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, 1, 0)) == 0)return;
+						//壁か敵がいるなら進まない
+						if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, 1, 0)) == 0 || gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, 1, 0)))return;
 						pos.y += gManager->nowGraphicSize;
 						mydir = dir::DOWN;
 						return;
 					}
+					//下もだめなら何もしない
 					else {
 						return;
 					}
 				}
-				//enemyが下にいるなら
+				//enemyが下にいるなら→上に進みたい
 				else {
 					if (!gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, -1, 0))) {
-						if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, -1, 0)) == 0)return;
+						//壁か敵がいるなら進まない
+						if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, -1, 0)) == 0 || gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, -1, 0)))return;
 						pos.y -= gManager->nowGraphicSize;
 						mydir = dir::UP;
 						return;
 					}
+					//上もだめなら何もしない
 					else {
 						return;
 					}
 				}
 			}
-			pos.x -= gManager->nowGraphicSize;
-			mydir = dir::LEFT;
+		}//左に進む
+		else {
+			//左が壁じゃないかつ敵がいないなら
+			if (gManager->GetMapChip(myNowPos + t2k::Vector3(-1, 0, 0)) != 0 && !gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(-1, 0, 0))) {
+				//左に進む
+				pos.x -= gManager->nowGraphicSize;
+				mydir = dir::LEFT;
+				return;
+			}
+			//左に進めないなら上下を考えるs
+			else {
+				//enemyが上にいるなら→下に進みたい
+				if (ChasePoint.y > myNowPos.y) {
+					//下に敵がいなければ
+					if (!gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, 1, 0))) {
+						//壁か敵がいるなら進まない
+						if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, 1, 0)) == 0 || gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, 1, 0)))return;
+						pos.y += gManager->nowGraphicSize;
+						mydir = dir::DOWN;
+						return;
+					}
+					//下もだめなら何もしない
+					else {
+						return;
+					}
+				}
+				//enemyが下にいるなら→上に進みたい
+				else {
+					if (!gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, -1, 0))) {
+						//壁か敵がいるなら進まない
+						if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, -1, 0)) == 0 || gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, -1, 0)))return;
+						pos.y -= gManager->nowGraphicSize;
+						mydir = dir::UP;
+						return;
+					}
+					//上もだめなら何もしない
+					else {
+						return;
+					}
+				}
+			}
+			/*pos.x -= gManager->nowGraphicSize;
+			mydir = dir::LEFT;*/
 		}
 	}//yのほうが長い場合
 	else {
@@ -250,78 +285,67 @@ void Enemy::MoveChasePoint()
 		//y方向に進む
 		//自分のy座標が目的地より上なら下に進む
 		if (myNowPos.y < ChasePoint.y) {
-			//ひとつ下が壁のとき
-			if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, 1, 0)) == 0 || gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, 1, 0))) {
+			//下が壁じゃないかつ敵がいないなら
+			if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, 1, 0)) != 0 && !gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, 1, 0))) {
+				//左に進む
+				pos.y += gManager->nowGraphicSize;
+				mydir = dir::DOWN;
+				return;
+			}
+			//下に進めないなら左右を考える
+			else {
 				//自分のx座標が目的地より左なら右に進む
 				if (myNowPos.x < ChasePoint.x) {
-					if (gManager->GetMapChip(myNowPos + t2k::Vector3(1, 0, 0)) == 0)return;
-					//敵がその位置にいれば移動しない
-					if (gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(1, 0, 0)))return;
+					//壁か敵がいるなら何もしない
+					if (gManager->GetMapChip(myNowPos + t2k::Vector3(1, 0, 0)) == 0 || gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(1, 0, 0)))return;
 
 					pos.x += gManager->nowGraphicSize;
 					mydir = dir::RIGHT;
 					return;
 				}//左に進む
 				else {
-					if (gManager->GetMapChip(myNowPos + t2k::Vector3(-1, 0, 0)) == 0)return;
-					//敵がその位置にいれば移動しない
-					if (gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(-1, 0, 0)))return;
+					//壁か敵がいるなら何もしない
+					if (gManager->GetMapChip(myNowPos + t2k::Vector3(-1, 0, 0)) == 0 || gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(-1, 0, 0)))return;
 
 					pos.x -= gManager->nowGraphicSize;
 					mydir = dir::LEFT;
 					return;
 				}
-				return;
+
 			}
-			//if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, 1, 0)) == 0)return;
-			//敵がその位置にいれば移動しない
-			if (gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, 1, 0)))return;
-			pos.y += gManager->nowGraphicSize;
-			mydir = dir::DOWN;
-			return;
-		}//上に進む
+		}
+		//上に進む
 		else {
-			//ひとつ上が壁のとき
-			if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, -1, 0)) == 0 || gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, -1, 0))) {
+			//上が壁じゃないかつ敵がいないなら
+			if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, -1, 0)) != 0 && !gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, -1, 0))) {
+				//左に進む
+				pos.y -= gManager->nowGraphicSize;
+				mydir = dir::UP;
+				return;
+			}
+			//上に進めないなら左右を考える
+			else {
 				//自分のx座標が目的地より左なら右に進む
 				if (myNowPos.x < ChasePoint.x) {
-					if (gManager->GetMapChip(myNowPos + t2k::Vector3(1, 0, 0)) == 0)return;
-					//敵がその位置にいれば移動しない
-					if (gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(1, 0, 0)))return;
+					//壁か敵がいるなら何もしない
+					if (gManager->GetMapChip(myNowPos + t2k::Vector3(1, 0, 0)) == 0 || gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(1, 0, 0)))return;
 
 					pos.x += gManager->nowGraphicSize;
 					mydir = dir::RIGHT;
 					return;
 				}//左に進む
 				else {
-					if (gManager->GetMapChip(myNowPos + t2k::Vector3(-1, 0, 0)) == 0)return;
-					//敵がその位置にいれば移動しない
-					if (gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(-1, 0, 0)))return;
+					//壁か敵がいるなら何もしない
+					if (gManager->GetMapChip(myNowPos + t2k::Vector3(-1, 0, 0)) == 0 || gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(-1, 0, 0)))return;
 
 					pos.x -= gManager->nowGraphicSize;
 					mydir = dir::LEFT;
 					return;
 				}
-				return;
-			}
-			//if (gManager->GetMapChip(myNowPos + t2k::Vector3(0, -1, 0)) == 0)return;
-						//敵がその位置にいれば移動しない
-			if (gManager->CheckIsThereEnemyToDir(myNowPos + t2k::Vector3(0, -1, 0)))return;
 
-			pos.y -= gManager->nowGraphicSize;
-			mydir = dir::UP;
-			return;
+			}
 		}
 	}
-
-	////もし今の自分の位置と目的地が一致していれば
-	//if (pos.x / gManager->GRAPHICSIZE == ChasePoint.x && pos.y / gManager->GRAPHICSIZE == ChasePoint.y) {
-	//	//isSetChasePointをfalseにする
-	//	isSetChasePoint = false;
-	//	//目的地を破棄する
-	//	ChasePoint = { 0,0,0 };
-	//}
-
 }
 int Enemy::GetDir(const int dir, const int getDir)
 {
@@ -448,6 +472,16 @@ void Enemy::CheckDoneChase()
 		//目的地を破棄する
 		ChasePoint = { 0,0,0 };
 	}
+}
+
+void Enemy::ResetDetectFrag()
+{
+	t2k::Vector3 PlayerLocalPos = gManager->WorldToLocal(gManager->player->pos);
+
+	float x = abs(PlayerLocalPos.x - myNowPos.x);
+	float y = abs(PlayerLocalPos.y - myNowPos.y);
+
+	if (x + y > DETECTRANGE)detectFrag = false;
 }
 
 bool Enemy::CheckCanMoveToDir(const int dir, const t2k::Vector3 nowPos, const int checkDir)
@@ -738,6 +772,6 @@ bool Enemy::aster(Node** _nodes, Node* _now, std::list<t2k::Vector3>* _route, t2
 
 	// 再帰的に調べていく
 	return aster(_nodes, node, _route, LeftTop);
-}
+	}
 
 #endif

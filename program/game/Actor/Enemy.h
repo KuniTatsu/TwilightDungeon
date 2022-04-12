@@ -32,6 +32,12 @@ private:
 	//目的地
 	t2k::Vector3 ChasePoint = {};
 
+	//プレイヤー発見フラグ
+	bool detectFrag = false;
+
+	//発見フラグ維持範囲
+	const float DETECTRANGE = 5;
+
 	//倒した時に入手する経験値
 	int baseExp = 0;
 	int exExp = 0;
@@ -63,6 +69,9 @@ private:
 
 	//chasePointについたか確認し、ついたならリセットする関数
 	void CheckDoneChase();
+
+	//敵とplayerの距離が離れ過ぎたら発見フラグを下ろす関数
+	void ResetDetectFrag();
 
 	enum /*class*/ CheckDir {
 		UP,
