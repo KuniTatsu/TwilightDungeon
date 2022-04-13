@@ -57,6 +57,8 @@ public:
 	//HPバーの描画
 	void HpVarDraw();
 
+	void TopHpVarDraw(int PosX, int PosY);
+
 	//経験値の獲得関数
 	bool AddExp(const int num);
 

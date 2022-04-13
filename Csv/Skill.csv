@@ -1,7 +1,7 @@
-id(int),SkillType(int),Skill_Name,damageRate,healRate,Gh(std::string),allnum,xnum,ynum,xsize,ysize
-100,0,ファイア,2,0,graphics/,3,3,1,32,32
-101,0,ファイアボム,3,0,graphics/,3,3,1,32,32
-102,0,インシネレート,4,0,graphics/,3,3,1,32,32
-103,0,ドレイン,2,0.5,graphics/,3,3,1,32,32
-104,0,リーチナックル,3,0.5,graphics/,3,3,1,32,32
-105,0,ソウルスティール,4,1,graphics/,3,3,1,32,32
+id(int),SkillType(int),Skill_Name,damageRate,healRate,Gh(std::string),allnum,xnum,ynum,xsize,ysize,actSpeed
+100,0,ファイア,2,0,graphics/skill_fire.png,10,10,1,120,120,5
+101,0,ファイアボム,3,0,graphics/skill_fireBomb.png,10,10,1,120,120,5
+102,0,インシネレート,4,0,graphics/skill_incine.png,20,20,1,160,120,3
+103,0,ドレイン,2,0.5,graphics/,3,3,1,32,32,5
+104,0,リーチナックル,3,0.5,graphics/,3,3,1,32,32,5
+105,0,ソウルスティール,4,1,graphics/,3,3,1,32,32,3

@@ -104,9 +104,9 @@ void GameManager::Update()
 	}
 	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_P)) {
 		SetActorSkill(player->GetSkillList(), 0, 0);
+		SetActorSkill(player->GetSkillList(), 0, 1);
+		SetActorSkill(player->GetSkillList(), 0, 2);
 	}
-
-
 
 	//
 	SceneManager::Update();
@@ -701,7 +701,7 @@ void GameManager::DealDamageToTarget(Actor* actor, t2k::Vector3 Pos)
 void GameManager::DealSkillDamageToTarget(Actor* Actor, const t2k::Vector3 Pos, Skill* ActivateSkill)
 {
 	//スキルの数値データを取得
-	float* skillData = ActivateSkill->GetSkillAmount();
+	const float* skillData = ActivateSkill->GetSkillAmount();
 	//スキル名を取得
 	std::string skillName = ActivateSkill->GetSkillName();
 
@@ -905,6 +905,9 @@ void GameManager::MakePlayer(SpawnScene nowScene)
 		player = std::make_shared<Player>(SetStartPos(setStartPosType::PLAYER), 100.0f, 30, 30, 30, 0);
 		map->player = player;
 	}
+	SetActorSkill(player->GetSkillList(), 0, 0);
+	SetActorSkill(player->GetSkillList(), 0, 1);
+	SetActorSkill(player->GetSkillList(), 0, 2);
 	liveEntityList.emplace_back(player);
 }
 

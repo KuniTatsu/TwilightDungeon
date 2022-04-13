@@ -119,9 +119,13 @@ private:
 	void DrawAnimation();
 	//アニメーション終了確認
 	void CheckAnimLive();
+	//通常攻撃のアニメーションタイマー
 	const int ATTACKEFFECTSPEED = 10;
+	//スキル攻撃のアニメーションタイマー
+	//const int SKILLANIMSPEED = 10;
 
-	const int SKILLANIMSPEED = 10;
+	//スキル発動関数
+	bool ActivateSkillCheck();
 
 	//int ATTACKEFFECTINDEX = 5;
 	//debug キャンプに戻る

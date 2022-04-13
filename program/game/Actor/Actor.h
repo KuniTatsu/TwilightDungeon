@@ -97,6 +97,7 @@ public:
 	//アニメーションさせたいgh配列,描画スピード,描画最大枚数を引数に持つアニメーション関数
 	void Anim(int* DrawGhArr, int Speed, int MaxIndex, int& DrawGh);
 
+	//所持スキルリストを取得する
 	inline std::vector<Skill*>& GetSkillList() {
 		return mySkill;
 	}

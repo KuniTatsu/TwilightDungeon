@@ -4,7 +4,7 @@
 extern GameManager* gManager;
 
 Skill::Skill(int SkillId, int SkillType, std::string SkillName, float DamageRate, float HealRate, std::string GhPass, int AllNum
-	, int XNum, int YNum, int XSize, int YSize)
+	, int XNum, int YNum, int XSize, int YSize, int ActSpeed)
 {
 	skillId = SkillId;
 	skillType = SkillType;
@@ -24,6 +24,8 @@ Skill::Skill(int SkillId, int SkillType, std::string SkillName, float DamageRate
 
 	xSize = XSize;
 	ySize = YSize;
+
+	actSpeed = ActSpeed;
 }
 
 Skill::~Skill()

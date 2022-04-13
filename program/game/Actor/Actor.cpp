@@ -156,6 +156,8 @@ void Actor::SkillAttack(Skill* usedSkill)
 	//目の前の対象を取得
 	front = gManager->WorldToLocal(pos) + gManager->GetVecter(mydir);
 
+	gManager->addLog(usedSkill->GetSkillName() + "を使った！");
+
 	//目の前の対象を取得,ダメージ処理を行う
 	gManager->DealSkillDamageToTarget(this, front, usedSkill);
 

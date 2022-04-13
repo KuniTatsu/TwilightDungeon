@@ -37,9 +37,10 @@ void SkillManager::LoadCsv()
 		int yNum = atoi(loadSkill[i][8].c_str());
 		int xSize = atoi(loadSkill[i][9].c_str());
 		int ySize = atoi(loadSkill[i][10].c_str());
+		int actSpeed = atoi(loadSkill[i][11].c_str());
 
 		//id,type,name,damage,heal,gh,allnum,xnum,ynum,xsize,ysize
-		Skill* newSkill = new Skill(id, type, loadSkill[i][2], damage, heal, loadSkill[i][5], allNum, xNum, yNum, xSize, ySize);
+		Skill* newSkill = new Skill(id, type, loadSkill[i][2], damage, heal, loadSkill[i][5], allNum, xNum, yNum, xSize, ySize, actSpeed);
 		skillMaster[type].emplace_back(newSkill);
 	}
 

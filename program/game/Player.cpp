@@ -3,6 +3,7 @@
 #include"DxLib.h"
 #include"Camera.h"
 #include"Item/equipItem.h"
+#include"Skill.h"
 
 extern GameManager* gManager;
 
@@ -61,7 +62,7 @@ void Player::ChangeEquipItem(equipItem* item)
 		myEquip[subId - 1]->ChangeEquip();
 		//装備していたアイテムのステータスを装備ステータスから取り除く
 		for (int i = 0; i < 4; ++i) {
-			RemoveStatus(i, myEquip[subId - 1]->getItemData(i+5));
+			RemoveStatus(i, myEquip[subId - 1]->getItemData(i + 5));
 		}
 		//入れ替える
 		item->ChangeEquip();
@@ -213,9 +214,24 @@ void Player::TownMove(dir nextDir)
 void Player::HpVarDraw()
 {
 	DrawRotaGraph(pos.x - gManager->camera->cameraPos.x, pos.y - gManager->camera->cameraPos.y - 30, 1, 0, hpVar_gh, false);
+	//現在HPの割合に応じてHPバーの画像の縮尺を変更する
 	DrawRotaGraph3(pos.x - gManager->camera->cameraPos.x - 15, pos.y - gManager->camera->cameraPos.y - 30 - 5, 0, 0,
 		nowHpVarWidth, 1, 0, nowHpVar_gh, false);
+	//現在HPの数値描画
 	DrawStringEx(pos.x - gManager->camera->cameraPos.x - 10, pos.y - gManager->camera->cameraPos.y - 50, -1, "%.0f", nowHp);
+}
+//UIのHPバー描画
+void Player::TopHpVarDraw(int PosX, int PosY)
+{
+	DrawStringEx(PosX, PosY - 20, -1, "%.0f/%d", nowHp, hp);
+
+	SetFontSize(25);
+	DrawStringEx(PosX, PosY - 50, -1, "HP");
+	SetFontSize(16);
+
+	DrawRotaGraph3(PosX, PosY, 0, 0, 10, 2, 0, hpVar_gh, false);
+	//現在HPの割合に応じてHPバーの画像の縮尺を変更する
+	DrawRotaGraph3(PosX, PosY, 0, 0, nowHpVarWidth * 10, 2, 0, nowHpVar_gh, false);
 }
 //経験値取得とレベルアップ処理
 bool Player::AddExp(const int num)
@@ -327,6 +343,9 @@ void Player::DrawPlayerStatus(int x, int y, int width, int height)
 	DrawStringEx(x + 10, y + yBuf * 3, -1, "攻撃力:%d", attack);	//60
 	DrawStringEx(x + 10, y + yBuf * 4, -1, "防御力:%d", defence);	//80
 	DrawStringEx(x + 10, y + yBuf * 5, -1, "素早さ:%d", speed);	//100
+
+	DrawStringEx(x + 10, y + 120, -1, "経験値:%d/%d", nowExp, nextLevelExp);
+
 	for (int i = 0; i < 6; ++i) {
 		DrawStringEx(x + 160, y + 20 + 30 * i, -1, "%s:", equipName[i].c_str());
 	}
@@ -338,8 +357,12 @@ void Player::DrawPlayerStatus(int x, int y, int width, int height)
 			DrawStringEx(x + 230, y + 20 + 30 * i, -1, "%s", myEquip[i]->getItemName().c_str());
 		}
 	}
+	DrawStringEx(x + 330, y + yBuf, -1, "所持スキル");
+	if (mySkill.empty())return;
+	for (int i = 0; i < mySkill.size(); ++i) {
+		DrawStringEx(x + 330, y + yBuf * (i + 2), -1, "%s", mySkill[i]->GetSkillName().c_str());
+	}
 
-	DrawStringEx(x + 10, y + 120, -1, "経験値:%d/%d", nowExp, nextLevelExp);
 
 }
 

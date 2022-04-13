@@ -9,7 +9,7 @@ class Skill
 {
 public:
 	Skill(int SkillId, int SkillType,std::string SkillName, float DamageRate, float HealRate, std::string GhPass, int AllNum
-		, int XNum, int YNum, int XSize, int YSize);
+		, int XNum, int YNum, int XSize, int YSize,int ActSpeed);
 	~Skill();
 
 	inline const float* GetSkillAmount() {
@@ -21,6 +21,10 @@ public:
 
 	inline const int& GetGraphicAllNum() {
 		return graphicAllNum;
+	}
+
+	inline const int& GetActSpeed() {
+		return actSpeed;
 	}
 
 	inline const std::vector<int>&GetGraphicHandle() {
@@ -55,6 +59,6 @@ private:
 	int xSize = 0;
 	int ySize = 0;
 
-	
+	int actSpeed = 0;
 };
 

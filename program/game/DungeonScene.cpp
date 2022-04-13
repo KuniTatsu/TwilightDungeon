@@ -123,10 +123,14 @@ void DungeonScene::Draw()
 		gManager->MapDraw();
 		//ドロップしているアイテムの描画
 		DrawPopItem();
-
+		//playerとenemyの描画
 		for (auto actor : gManager->liveEntityList) {
 			actor->Draw();
 		}
+
+		//HPバーの描画
+		player->HpVarDraw();
+
 		/*
 
 		//プレイヤーの描画
@@ -141,6 +145,9 @@ void DungeonScene::Draw()
 
 		*/
 
+		//画面上部のプレイヤーHPバー
+		player->TopHpVarDraw(100, 80);
+
 		//ミニマップの描画
 		gManager->MiniMapDraw();
 		//ミニマップの敵の描画
@@ -154,6 +161,7 @@ void DungeonScene::Draw()
 			DrawStringEx(100, 320, -1, "PlayerMapChipY:%d", (int)playerPos.y);
 			DrawEnemyData();
 		}
+
 
 		//プレイヤーの位置が階段の上ならウィンドウを表示する
 		if (gManager->GetMapChip(playerPos) == 3) {
@@ -272,8 +280,23 @@ void DungeonScene::SetDungeonLevel(int addLevel)
 void DungeonScene::MoveLevel(int addLevel)
 {
 	//空じゃないならenemyを全て消去する
-	//if (!eManager->liveEnemyList.empty())eManager->liveEnemyList.clear();
-	if (!gManager->liveEnemyList.empty())gManager->liveEnemyList.clear();
+	if (!gManager->liveEnemyList.empty()) {
+		gManager->liveEnemyList.clear();
+	}
+	//player以外のentityをactorリストから消去する
+	if (!gManager->liveEntityList.empty()) {
+
+		std::list<std::shared_ptr<Actor>>::iterator entity;
+
+		for (entity = gManager->liveEntityList.begin(); entity != gManager->liveEntityList.end(); ) {
+			if ((*entity)->GetActId() != 0) {
+				entity = gManager->liveEntityList.erase(entity);
+				continue;
+			}
+			entity++;
+		}
+	}
+
 	//アイテムの消去
 	dropItems.clear();
 
@@ -321,7 +344,7 @@ void DungeonScene::initDungeonScene()
 	shopDesc = new Menu(720, 90, 300, 180, "graphics/WindowBase_01.png");
 	shopCoin = new Menu(720, 280, 300, 200, "graphics/WindowBase_01.png");
 
-	menuOpen = new Menu(20, 20, 100, 100, "graphics/WindowBase_01.png");
+	menuOpen = new Menu(20, 150, 100, 100, "graphics/WindowBase_01.png");
 
 	inventory = new Menu(255, 50, 420, 340, "graphics/WindowBase_01.png");
 	desc = new Menu(680, 300, 320, 90, "graphics/WindowBase_01.png");
@@ -432,11 +455,11 @@ bool DungeonScene::SeqMain(const float deltatime)
 			enemy->ChangeStatus(2, 10, 0);
 		}
 	}
-	//ショップシークエンスに移動
-	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_S)) {
-		ChangeSequence(sequence::SHOP);
-		return true;
-	}
+	////ショップシークエンスに移動
+	//if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_S)) {
+	//	ChangeSequence(sequence::SHOP);
+	//	return true;
+	//}
 
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_L)) {
 		player->LevelUp();
@@ -488,16 +511,13 @@ bool DungeonScene::SeqMain(const float deltatime)
 		return true;
 
 	}
-	else //Qボタンで1番のスキル発動
-   //プレイヤーの攻撃は目の前に対象がいなかった場合skipと同じ処理を行う
-		if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_Q)) {
-			//ここをアニメーションシークエンスに飛ばす
-			lastUseSkill = player->GetSkillList()[0];
+	else
+	{
+		//スキルの発動チェック
+		//スキルが発動したらこのシークエンスをスキップする
+		if (ActivateSkillCheck())return true;
+	}
 
-			ChangeSequence(sequence::ANIMATION);
-			return true;
-
-		}
 
 	//もしPlayerが動いたら もしくはスキップしたら
 	if (gManager->player->Move() || player->skip) {
@@ -520,7 +540,12 @@ bool DungeonScene::SeqMain(const float deltatime)
 
 bool DungeonScene::SeqPlayerAttack(const float deltatime)
 {
-	player->Attack();
+	if (lastUseSkill != nullptr) {
+		player->SkillAttack(lastUseSkill);
+	}
+	else {
+		player->Attack();
+	}
 	//死亡チェック
 	for (auto enemy : gManager->liveEnemyList) {
 		if (enemy->GetStatus(0) <= 0) {
@@ -547,11 +572,17 @@ bool DungeonScene::SeqPlayerAttack(const float deltatime)
 		}
 	}
 
+	//もしスキル使用後だったら
+	if (lastUseSkill != nullptr)lastUseSkill = nullptr;
+
 	DeleteDeadEnemy();
 	if (!player->skip) {
 		ChangeSequence(sequence::ENEMYACT);
 		return true;
 	}
+
+
+
 	ChangeSequence(sequence::ENEMYACT);
 	return true;
 }
@@ -856,7 +887,7 @@ bool DungeonScene::SeqAnimation(const float deltatime)
 				int index = lastUseSkill->GetGraphicAllNum();
 
 				//Animationクラスをnew
-				std::shared_ptr<Animation>anim = std::make_shared<Animation>(lastUseSkill->GetGraphicHandle(),player->effectPos,SKILLANIMSPEED,index);
+				std::shared_ptr<Animation>anim = std::make_shared<Animation>(lastUseSkill->GetGraphicHandle(), player->effectPos, lastUseSkill->GetActSpeed(), index);
 				//描画リストに登録
 				drawAnimationList.emplace_back(anim);
 				return true;
@@ -871,9 +902,6 @@ bool DungeonScene::SeqAnimation(const float deltatime)
 		}
 		//もしアニメーションが終わっているなら
 		if (drawAnimationList.empty()) {
-
-			//もしスキル使用後だったら
-			if (lastUseSkill != nullptr)lastUseSkill = nullptr;
 
 			//攻撃シークエンスに移動
 			ChangeSequence(sequence::PLAYERATTACK);
@@ -1105,6 +1133,59 @@ bool DungeonScene::SeqFadeOut(const float deltatime)
 		return true;
 	}
 	return true;
+}
+
+bool DungeonScene::ActivateSkillCheck()
+{
+	//1ボタンで1番のスキル発動
+	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_1)) {
+		//ここをアニメーションシークエンスに飛ばす
+		//もしスキルリストが空じゃないなら
+		if (!player->GetSkillList().empty()) {
+			lastUseSkill = player->GetSkillList()[0];
+
+			ChangeSequence(sequence::ANIMATION);
+			return true;
+		}
+		//スキルがない状態でスキルを使おうとすると通常攻撃する
+		else {
+			ChangeSequence(sequence::ANIMATION);
+			return true;
+		}
+	}
+	//2番目のスキル発動
+	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_2)) {
+		//ここをアニメーションシークエンスに飛ばす
+		//もしスキル2があれば
+		if (player->GetSkillList()[1] != nullptr) {
+			lastUseSkill = player->GetSkillList()[1];
+
+			ChangeSequence(sequence::ANIMATION);
+			return true;
+		}
+		//スキルがない状態でスキルを使おうとすると通常攻撃する
+		else {
+			ChangeSequence(sequence::ANIMATION);
+			return true;
+		}
+	}
+	//3番目のスキル発動
+	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_3)) {
+		//ここをアニメーションシークエンスに飛ばす
+		//もしスキル3があれば
+		if (player->GetSkillList()[2] != nullptr) {
+			lastUseSkill = player->GetSkillList()[2];
+
+			ChangeSequence(sequence::ANIMATION);
+			return true;
+		}
+		//スキルがない状態でスキルを使おうとすると通常攻撃する
+		else {
+			ChangeSequence(sequence::ANIMATION);
+			return true;
+		}
+	}
+	return false;
 }
 
 void DungeonScene::ChangeSequence(sequence seq)
