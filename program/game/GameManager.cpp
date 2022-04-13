@@ -37,6 +37,22 @@ GameManager::GameManager()
 
 GameManager::~GameManager()
 {
+	if (player != nullptr)player->GetSkillList().clear();
+	if (!liveEnemyList.empty()) liveEnemyList.clear();
+	if (!liveEntityList.empty())liveEntityList.clear();
+
+	delete resource;
+	delete camera;
+	delete sManager;
+	delete iManager;
+	if (!inventories.empty()) {
+		for (int i = 0; i < inventories.size(); ++i) {
+			delete inventories[i];
+		}
+	}
+	delete sound;
+	delete fControl;
+	InitGraph();
 
 }
 void GameManager::SetActorSkill(std::vector<Skill*>& SkillList, int SkillType, int SkillId)

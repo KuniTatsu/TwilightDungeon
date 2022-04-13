@@ -12,6 +12,12 @@ SkillManager::SkillManager()
 
 SkillManager::~SkillManager()
 {
+	for (int i = 0; i < skillMaster.size(); ++i) {
+		for (int k = 0; k < skillMaster[i].size(); ++k) {
+			if (skillMaster[i].empty())continue;
+			delete skillMaster[i][k];
+		}
+	}
 }
 
 Skill* SkillManager::GetSkill(int SkillType, int SkillId)

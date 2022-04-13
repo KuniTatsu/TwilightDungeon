@@ -16,6 +16,8 @@ public:
 	std::vector<std::vector<std::string>> loadItem;
 
 	ItemManager();
+	~ItemManager();
+
 	//ItemType‚²‚Æ‚ÉU‚è•ª‚¯‚ç‚ê‚½ItemMasterƒf[ƒ^
 	std::vector < std::vector<Item*>> itemMaster;
 

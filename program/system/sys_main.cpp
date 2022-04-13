@@ -3,15 +3,16 @@
 #include "../library/input.h"
 #include "../support/FrameRateController.h"
 #include "../game/game_main.h"
+#include"../game/GameManager.h"
 
 static std::chrono::system_clock::time_point clock_start, clock_end ; 
 
-
+extern GameManager* gManager;
 // プログラムは WinMain から始まります
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 						LPSTR lpCmdLine, int nCmdShow )
 {
-
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	// ウィンドウモードで起動
 	ChangeWindowMode( true ) ;
 
@@ -76,7 +77,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		//SetWaitVSyncFlag(FALSE);
 
 	}
-
+	delete gManager;
 	// ＤＸライブラリ使用の終了処理
 	DxLib_End() ;			
 

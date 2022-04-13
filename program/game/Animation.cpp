@@ -40,6 +40,7 @@ Animation::Animation(std::vector<int>Anim, t2k::Vector3 Pos, int ActSpeed, int M
 
 Animation::~Animation()
 {
+	InitGraph();
 }
 
 void Animation::Update()

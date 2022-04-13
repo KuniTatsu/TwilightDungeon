@@ -10,6 +10,16 @@ ItemManager::ItemManager()
 	LoadItem();
 }
 
+ItemManager::~ItemManager()
+{
+	for (int i = 0; i < itemMaster.size(); ++i) {
+		for (int k = 0; k < itemMaster[i].size(); ++k) {
+			if (itemMaster[i].empty())continue;
+			delete itemMaster[i][k];
+		}
+	}
+}
+
 Item* ItemManager::GetItemData(int ItemId)
 {
 	for (auto master : itemMaster) {

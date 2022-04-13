@@ -42,7 +42,7 @@ DungeonScene::~DungeonScene()
 	delete use_nowEquip;
 	delete firstMenu;
 
-
+	InitGraph();
 }
 
 void DungeonScene::RandEnemyCreate(int num)

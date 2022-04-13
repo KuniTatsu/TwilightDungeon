@@ -13,12 +13,11 @@ Sound::Sound()
 	system_cancel = LoadSoundMem("sound/system_cancel.mp3");
 	system_attack = LoadSoundMem("sound/system_attack.mp3");
 
-
-
 }
 
 Sound::~Sound()
 {
+	InitSoundMem();
 }
 
 void Sound::BGM_Play(int bgm)
