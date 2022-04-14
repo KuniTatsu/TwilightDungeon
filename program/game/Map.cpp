@@ -250,20 +250,20 @@ void Map::MapDraw()
 		int count = 0;
 		for (auto hoge : divideArea) {
 
-			int x1 = (hoge[0] - 1) * SIZE - gManager->camera->cameraPos.x;
-			int y1 = (hoge[1] - 1) * SIZE - gManager->camera->cameraPos.y;
-			int x2 = (hoge[2] + 1) * SIZE - gManager->camera->cameraPos.x;
-			int y2 = (hoge[3] + 1) * SIZE - gManager->camera->cameraPos.y;
+			int x1 = (hoge[0] - 1) * gManager->nowGraphicSize - gManager->camera->cameraPos.x;
+			int y1 = (hoge[1] - 1) * gManager->nowGraphicSize - gManager->camera->cameraPos.y;
+			int x2 = (hoge[2] + 1) * gManager->nowGraphicSize - gManager->camera->cameraPos.x;
+			int y2 = (hoge[3] + 1) * gManager->nowGraphicSize - gManager->camera->cameraPos.y;
 
 			DrawBox(x1, y1, x2, y2, colors[count], true);
 
 			count = (count + 1) % 5;
 		}
 		for (auto hoge : divideLine) {
-			int x1 = hoge[0] * SIZE - gManager->camera->cameraPos.x;
-			int y1 = hoge[1] * SIZE - gManager->camera->cameraPos.y;
-			int x2 = hoge[2] * SIZE - gManager->camera->cameraPos.x;
-			int y2 = hoge[3] * SIZE - gManager->camera->cameraPos.y;
+			int x1 = hoge[0] * gManager->nowGraphicSize - gManager->camera->cameraPos.x;
+			int y1 = hoge[1] * gManager->nowGraphicSize - gManager->camera->cameraPos.y;
+			int x2 = hoge[2] * gManager->nowGraphicSize - gManager->camera->cameraPos.x;
+			int y2 = hoge[3] * gManager->nowGraphicSize - gManager->camera->cameraPos.y;
 
 
 			DrawLine(x1, y1, x2, y2, -1);
@@ -299,7 +299,7 @@ void Map::MapDraw()
 void Map::MiniMapDraw()
 {
 	int x = 150;
-	int y = 50;
+	int y = 130;
 
 	for (int i = 0; i < ground.size(); ++i) {
 		for (int k = 0; k < ground[i].size(); ++k) {
@@ -327,7 +327,7 @@ void Map::MiniMapDraw()
 
 	t2k::Vector3 PlayerPos = gManager->WorldToLocal(player->pos);
 	//ミニマップにプレイヤーの位置を描画
-	DrawRotaGraph(PlayerPos.x * 10 + 150, PlayerPos.y * 10 + 50, 0.5, 0, miniPlayer, true);
+	DrawRotaGraph(PlayerPos.x * 10 + 150, PlayerPos.y * 10 + 130, 0.5, 0, miniPlayer, true);
 
 
 }

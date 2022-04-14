@@ -58,23 +58,26 @@ public:
 	int blue = 0;
 
 	//マップチップの一枚の大きさ
-	const int GRAPHICSIZE = 40;
+	const int GRAPHICSIZE = 20;
 	float nowGraphicSize = GRAPHICSIZE;
 
 	//rotaGraph用倍率
-	double graphEx = 2.0;
+	double graphEx = 1.0;
 	//描画方法
 	enum class ScaleMode :uint32_t {
 		NORMAL,
 		WIDE
 	};
 	//今の描画方法
-	ScaleMode nowScale = ScaleMode::WIDE;
+	ScaleMode nowScale = ScaleMode::NORMAL;
 	//描画方法ごとのマップチップの大きさ
 	const float scale[2] = { 20.0f,40.0f };
 
 	//debug用拡大縮小関数
 	void ScaleChange();
+
+	//scaleChange用計算関数
+	void CalcScale();
 
 	//画面中心
 	const t2k::Vector3 WINDOWCENTER = t2k::Vector3(512, 384, 0);
@@ -156,7 +159,8 @@ public:
 	//プレイヤーの生成
 	void MakePlayer(SpawnScene nowScene);
 
-
+	//camp用player初期座標設定
+	void SetCampStartPlayerPos();
 
 	//スキル獲得
 	void SetSkill(std::vector<Skill*>SkillList, int SkillId);
@@ -283,6 +287,8 @@ public:
 	inline const t2k::Vector3& SpawnPlayerCamp() {
 		return spawnPos;
 	}
+	//プレイヤー座標一時保管用
+	t2k::Vector3 playerPosBuf = {};
 
 
 	//部屋番号ごとの通路の座標を格納するvector

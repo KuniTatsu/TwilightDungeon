@@ -238,10 +238,14 @@ bool Player::AddExp(const int num)
 {
 	nowExp += num;
 	if (nowExp >= nextLevelExp) {
+		gManager->addLog("ƒŒƒxƒ‹‚ª‚ ‚ª‚Á‚½!!");
 		level++;
 		nowExp = nowExp - nextLevelExp;
 		SetLevelStatus();
 		SetNextExp();
+		nowHp = hp;
+		nowHpVarWidth = nowHp / hp;
+
 		return true;
 	}
 	return false;

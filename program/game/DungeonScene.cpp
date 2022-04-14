@@ -30,6 +30,7 @@ DungeonScene::~DungeonScene()
 	delete nextLevelWindow;
 	delete gameOver;
 	delete menuOpen;
+	delete topUI;
 
 	delete shop;
 	delete shopDesc;
@@ -41,8 +42,6 @@ DungeonScene::~DungeonScene()
 	delete use_equip;
 	delete use_nowEquip;
 	delete firstMenu;
-
-	InitGraph();
 }
 
 void DungeonScene::RandEnemyCreate(int num)
@@ -131,9 +130,6 @@ void DungeonScene::Draw()
 		//HPバーの描画
 		player->HpVarDraw();
 
-		//画面上部のプレイヤーHPバー
-		player->TopHpVarDraw(100, 80);
-
 		//ミニマップの描画
 		gManager->MiniMapDraw();
 		//ミニマップの敵の描画
@@ -179,7 +175,17 @@ void DungeonScene::Draw()
 			//今のシークエンス名を表示する
 			DrawNowSequence(nowSeq);
 		}
+
+		//****画面上部のUI背景描画
+		topUI->Menu_Draw();
+
+		DrawTopUI();
+
+		//****
+
 	}
+
+	 
 	//ここから下はシークエンスごとの描画
 
 	firstMenu->All();
@@ -242,6 +248,7 @@ void DungeonScene::Draw()
 		DrawInventory(shopMyInv->menu_x, shopMyInv->menu_y);
 	}
 	if (nowSeq == sequence::FADEDESC)return;
+
 	//ログの背景描画
 	log->Menu_Draw();
 	//ログの描画
@@ -316,7 +323,17 @@ void DungeonScene::UpdateAnimation()
 
 void DungeonScene::initDungeonScene()
 {
+	gManager->ScaleChange();
+	gManager->CalcScale();
+
 	EButton = gManager->LoadGraphEx("graphics/button_E.png");
+	button_1 = gManager->LoadGraphEx("graphics/button_1.png");
+	button_2 = gManager->LoadGraphEx("graphics/button_2.png");
+	button_3 = gManager->LoadGraphEx("graphics/button_3.png");
+
+	numButtons[0] = button_1;
+	numButtons[1] = button_2;
+	numButtons[2] = button_3;
 
 	miniEnemy = gManager->LoadGraphEx("graphics/mini_Enemy.png");
 
@@ -330,7 +347,8 @@ void DungeonScene::initDungeonScene()
 	shopDesc = new Menu(720, 90, 300, 180, "graphics/WindowBase_01.png");
 	shopCoin = new Menu(720, 280, 300, 200, "graphics/WindowBase_01.png");
 
-	menuOpen = new Menu(20, 150, 100, 100, "graphics/WindowBase_01.png");
+	menuOpen = new Menu(20, 160, 100, 100, "graphics/WindowBase_01.png");
+	topUI = new Menu(10, 10, 800, 150, "graphics/WindowBase_01.png");
 
 	inventory = new Menu(255, 50, 420, 340, "graphics/WindowBase_01.png");
 	desc = new Menu(680, 300, 320, 90, "graphics/WindowBase_01.png");
@@ -532,7 +550,7 @@ bool DungeonScene::SeqPlayerAttack(const float deltatime)
 	else {
 		player->Attack();
 	}
-	//死亡チェック
+	//敵死亡チェック
 	for (auto enemy : gManager->liveEnemyList) {
 		if (enemy->GetStatus(0) <= 0) {
 			//もしレベルアップしたら
@@ -542,6 +560,7 @@ bool DungeonScene::SeqPlayerAttack(const float deltatime)
 				//描画リストに登録
 				drawAnimationList.emplace_back(anim);
 			}
+			gManager->addLog(enemy->GetName() + "を倒した!!");
 			//コインのドロップ
 			player->ChangeHaveCoin(DROPCOIN);
 
@@ -850,7 +869,7 @@ void DungeonScene::DrawMiniEnemy()
 		t2k::Vector3 localPos = gManager->WorldToLocal(liveEnemy->pos);
 		if (gManager->CheckCanDraw(localPos)) {
 			//ミニマップにプレイヤーの位置を描画
-			DrawRotaGraph(localPos.x * 10 + 150, localPos.y * 10 + 50, 0.5, 0, miniEnemy, true);
+			DrawRotaGraph(localPos.x * 10 + 150, localPos.y * 10 + 130, 0.5, 0, miniEnemy, true);
 		}
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
@@ -1486,6 +1505,29 @@ void DungeonScene::DropItem(const int ItemId, const t2k::Vector3 DropPos)
 
 	dropItem->SetPos(DropPos);
 	dropItems.emplace_back(dropItem);
+}
+
+void DungeonScene::DrawTopUI()
+{
+	std::vector<Skill*>playerSkills = player->GetSkillList();
+
+	DrawStringEx(topUI->menu_x + 300, topUI->menu_y + 15, -1, "スキル");
+
+	for (int i = 0; i < playerSkills.size(); ++i) {
+		//スキル名描画
+		DrawStringEx(topUI->menu_x + 380 + i * 130, topUI->menu_y + 15, -1, "%s", playerSkills[i]->GetSkillName().c_str());
+		//アイコン画像描画
+		DrawRotaGraph(topUI->menu_x + 400 + i * 150, topUI->menu_y + topUI->menu_height / 2, 1.5, 0, playerSkills[i]->GetSkillIconGh(), true);
+	}
+	//キー画像描画
+	for (int i = 0; i < 3; ++i) {
+		DrawRotaGraph(topUI->menu_x + 370 + i * 130, topUI->menu_y + 23, 1, 0, numButtons[i], false);
+	}
+
+	//画面上部のプレイヤーHPバー
+	//player->TopHpVarDraw(100, 80);
+	player->TopHpVarDraw(topUI->menu_x + 20, topUI->menu_y + 80);
+
 }
 
 void DungeonScene::DungeonClear()

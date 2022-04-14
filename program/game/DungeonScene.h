@@ -55,6 +55,11 @@ private:
 
 	//グラフィック
 	int EButton = 0;
+	int button_1 = 0;
+	int button_2 = 0;
+	int button_3 = 0;
+
+	int numButtons[3] = {};
 
 	//直近に発動したスキル
 	Skill* lastUseSkill = nullptr;
@@ -71,10 +76,10 @@ private:
 
 	//****************************************************
 	//UI関連のクラスのインスタンス
-	
-	//次の回に行けるwindow
+
 	Menu* nextLevelWindow = nullptr;
 	Menu* menuOpen = nullptr;
+	Menu* topUI = nullptr;
 	Menu* inventory = nullptr;
 	Menu* log = nullptr;
 	Menu* desc = nullptr;
@@ -223,12 +228,16 @@ private:
 	//num体敵を作る関数
 	void RandEnemyCreate(const int num);
 
+
+	//画面上部のUI描画関数
+	void DrawTopUI();
+
 	//enemyのデータの確認関数
 	void DrawEnemyData();
 	//描画中のインベントリページ
 	int drawInventoryPage = 0;
 	//選択中のインベントリを描画する関数
-	void DrawInventory(int x,int y);
+	void DrawInventory(int x, int y);
 	//インベントリの別ページに移動する関数
 	void ChangeInventory();
 
@@ -241,7 +250,7 @@ private:
 	//敵からアイテムがドロップする確率
 	const int DROPODDS = 80;
 	//敵からアイテムをドロップさせる関数
-	void DropItem(const int ItemId,const t2k::Vector3 DropPos);
+	void DropItem(const int ItemId, const t2k::Vector3 DropPos);
 
 	//アイテムを拾うフラグ
 	bool itemGetFlag = true;
@@ -274,7 +283,7 @@ private:
 	//ショップのページを入れておく配列
 	std::vector<Inventory*> shopPages;
 
-	enum class ItemType:uint32_t {
+	enum class ItemType :uint32_t {
 		CONSUME,
 		THROW,
 		WEAPON,

@@ -210,6 +210,7 @@ void GameManager::AddItemFromShop(Item* ShopItem)
 		//装備アイテムを生成 生成時にステータスをランダムに変更
 		equipItem* newItem = new equipItem(intData[0], intData[1], stringData[0], intData[2], intData[3], intData[4],
 			stringData[1], intData[5], intData[6], stringData[2], intData[7], intData[8], intData[9], intData[10], 1);
+		addLog(newItem->getItemName()+"を入手した");
 		//インベントリ追加
 		inventories[inventoryNum]->AddInventory(newItem);
 	}
@@ -219,6 +220,8 @@ void GameManager::AddItemFromShop(Item* ShopItem)
 
 		Item* newItem = new Item(intData[0], intData[1], stringData[0], intData[2], intData[3], intData[4], intData[5], stringData[1], stringData[2]);
 
+		addLog(newItem->getItemName() + "を入手した");
+		//インベントリ追加
 		inventories[inventoryNum]->AddInventory(newItem);
 
 	}
@@ -286,7 +289,7 @@ void GameManager::PopItemFromInventory(const int NowInventoryId)
 void GameManager::ScaleChange()
 {
 	//プレイヤーのローカル座標を取得する
-	t2k::Vector3 playerPosBuf = WorldToLocal(player->pos);
+	playerPosBuf = WorldToLocal(player->pos);
 	//今の描画が通常倍率なら
 	if (nowScale == ScaleMode::NORMAL) {
 		//描画方法を拡大にする
@@ -301,12 +304,15 @@ void GameManager::ScaleChange()
 	nowGraphicSize = scale[static_cast<uint32_t>(nowScale)];
 	//描画倍率を修正する
 	graphEx = nowGraphicSize / GRAPHICSIZE;
+
+}
+
+void GameManager::CalcScale()
+{
 	//プレイヤーの描画座標を修正する
 	player->pos = LocalToWorld(playerPosBuf.x, playerPosBuf.y);
-	//player->SetPlayerLocalPos();
 	//カメラをプレイヤー中心に修正する
 	CameraReset();
-
 }
 
 void GameManager::LoadMaxIndex()
@@ -925,6 +931,13 @@ void GameManager::MakePlayer(SpawnScene nowScene)
 	SetActorSkill(player->GetSkillList(), 0, 1);
 	SetActorSkill(player->GetSkillList(), 0, 2);
 	liveEntityList.emplace_back(player);
+}
+
+void GameManager::SetCampStartPlayerPos()
+{
+	const t2k::Vector3 spawnPos = SpawnPlayerCamp();
+	player->pos.x = spawnPos.x;
+	player->pos.y = spawnPos.y;
 }
 
 void GameManager::SetSkill(std::vector<Skill*>SkillList, int SkillId)

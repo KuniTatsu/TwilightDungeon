@@ -22,8 +22,20 @@ CampScene::CampScene()
 	LoadMap("Csv/start_map_cannotMove.csv", loadCollision, collisionData);
 
 	LoadDivGraph("graphics/mapchip_night_20.png", 480, 30, 16, 20, 20, campGraphic);
+
+	//player生成
 	gManager->MakePlayer(GameManager::SpawnScene::Camp);
+	//ポインタ取得
 	if (player == nullptr)player = gManager->GetPlayer();
+
+	////初期位置に移動
+	//gManager->SetCampStartPlayerPos();
+
+	//描画倍率をキャンプ用に変更する
+	if (gManager->nowScale != GameManager::ScaleMode::NORMAL) {
+		gManager->ScaleChange();
+	}
+
 	gManager->CameraReset();
 
 	fragmentsGh[0] = gManager->LoadGraphEx("graphics/fragment_0.png");

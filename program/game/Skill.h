@@ -9,26 +9,32 @@ class Skill
 {
 public:
 	Skill(int SkillId, int SkillType,std::string SkillName, float DamageRate, float HealRate, std::string GhPass, int AllNum
-		, int XNum, int YNum, int XSize, int YSize,int ActSpeed);
+		, int XNum, int YNum, int XSize, int YSize,int ActSpeed, std::string IconGhPass);
 	~Skill();
 
+	//ダメージと回復量のデータを取得する
 	inline const float* GetSkillAmount() {
 		return floatData;
 	}
+	//スキルの名前を取得する
 	inline const std::string& GetSkillName() {
 		return name;
 	}
-
+	//アニメーション画像総枚数を取得する
 	inline const int& GetGraphicAllNum() {
 		return graphicAllNum;
 	}
-
+	//アニメーションタイマー秒数を取得する
 	inline const int& GetActSpeed() {
 		return actSpeed;
 	}
-
+	//アニメーション画像のハンドルVectorを取得する
 	inline const std::vector<int>&GetGraphicHandle() {
 		return animGh;
+	}
+
+	inline const int& GetSkillIconGh() {
+		return iconGh;
 	}
 
 private:
@@ -50,6 +56,11 @@ private:
 	std::string ghPass = "";
 	//DivGraphで分割した画像ハンドル
 	std::vector<int>animGh;
+
+	//iconフォルダパス
+	std::string iconPass="";
+	//iconGh
+	int iconGh = 0;
 
 	//画像の情報
 	int graphicAllNum = 0;
