@@ -131,20 +131,6 @@ void DungeonScene::Draw()
 		//HPバーの描画
 		player->HpVarDraw();
 
-		/*
-
-		//プレイヤーの描画
-		player->Draw();
-		//HPバーの描画
-		player->HpVarDraw();
-		//敵の描画
-		for (auto enemy : gManager->liveEnemyList) {
-			enemy->Draw();
-		}
-
-
-		*/
-
 		//画面上部のプレイヤーHPバー
 		player->TopHpVarDraw(100, 80);
 

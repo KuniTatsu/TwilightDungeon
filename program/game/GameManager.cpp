@@ -42,7 +42,7 @@ GameManager::~GameManager()
 	if (!liveEntityList.empty())liveEntityList.clear();
 
 	delete resource;
-	delete camera;
+	//delete camera;
 	delete sManager;
 	delete iManager;
 	if (!inventories.empty()) {
