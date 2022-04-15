@@ -88,6 +88,9 @@ void GameManager::initGameManager()
 	inventory = new Inventory(0);
 	inventories.emplace_back(inventory);
 
+	bankInventory = new Inventory(0);
+	bankInventories.emplace_back(bankInventory);
+
 	sound = new Sound();
 	fControl = new FadeControl();
 
@@ -103,27 +106,7 @@ void GameManager::initGameManager()
 void GameManager::Update()
 {
 	//debug
-	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_I)) {
-		AddItemToInventory(2, inventories, inventoryNum);
-	}
-	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_O)) {
-		AddItemToInventory(3, inventories, inventoryNum);
-	}
-	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_W)) {
-		AddItemToInventory(11, inventories, inventoryNum);
-	}
-	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_G)) {
-		player->TakeHpEffect(-100);
-	}
-	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_X)) {
-		ScaleChange();
-	}
-	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_P)) {
-		SetActorSkill(player->GetSkillList(), 0, 0);
-		SetActorSkill(player->GetSkillList(), 0, 1);
-		SetActorSkill(player->GetSkillList(), 0, 2);
-	}
-
+	DebugKey();
 	//
 	SceneManager::Update();
 
@@ -131,16 +114,6 @@ void GameManager::Update()
 void GameManager::Draw()
 {
 	SceneManager::Render();
-
-	if (haveItemList.empty())return;
-
-	int k = 0;
-	for (auto id : haveItemList) {
-		Item* haveItem = iManager->GetItemData(id);
-		DrawStringEx(500 + 100 * k, 100, -1, "ItemId:%d", haveItem->getItemData(0));
-		DrawStringEx(500 + 100 * k, 120, -1, "ItemName:%s", haveItem->getItemName().c_str());
-		++k;
-	}
 }
 
 void GameManager::AddItemToInventory(const int ItemId, std::vector<Inventory*>& Inventories,
@@ -305,6 +278,25 @@ void GameManager::ScaleChange()
 	//•`‰æ”{—¦‚ðC³‚·‚é
 	graphEx = nowGraphicSize / GRAPHICSIZE;
 
+}
+
+void GameManager::DebugKey()
+{
+	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_I)) {
+		AddItemToInventory(2, inventories, inventoryNum);
+	}
+	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_O)) {
+		AddItemToInventory(3, inventories, inventoryNum);
+	}
+	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_W)) {
+		AddItemToInventory(11, inventories, inventoryNum);
+	}
+	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_G)) {
+		player->TakeHpEffect(-100);
+	}
+	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_X)) {
+		ScaleChange();
+	}
 }
 
 void GameManager::CalcScale()

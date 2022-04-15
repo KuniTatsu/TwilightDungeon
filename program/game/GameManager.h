@@ -43,6 +43,9 @@ public:
 	Camera* camera = nullptr;
 	ItemManager* iManager = nullptr;
 	Inventory* inventory = nullptr;
+
+	Inventory* bankInventory = nullptr;
+
 	ResourceManager* resource = nullptr;
 
 	SkillManager* sManager = nullptr;
@@ -75,6 +78,9 @@ public:
 
 	//debug用拡大縮小関数
 	void ScaleChange();
+
+	//debug操作関数
+	void DebugKey();
 
 	//scaleChange用計算関数
 	void CalcScale();
@@ -111,6 +117,12 @@ public:
 	//アイテムを追加する際の格納可能なインベントリ配列番号
 	int inventoryNum = 0;
 
+	//Campシーンの倉庫インベントリ配列
+	std::vector<Inventory*> bankInventories;
+
+	//アイテムを追加する際の格納可能なインベントリ配列番号
+	int bankInventoryNum = 0;
+
 	//インベントリにアイテムを追加する関数
 	//アイテムId,追加するインベントリ,現在のインベントリ番号
 	void AddItemToInventory(const int ItemId, std::vector<Inventory*>& Inventories, int& InventoryNum);
@@ -136,7 +148,6 @@ public:
 	//一度読み込んだghを保存するmap
 	std::unordered_map<std::string, int> ghmap;
 
-	std::list<int> haveItemList;
 	//itemIdからItem*を取得する関数
 	Item* GetItemData(const int ItemId);
 
