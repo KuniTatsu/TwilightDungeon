@@ -32,7 +32,7 @@ public:
 	inline const std::vector<int>&GetGraphicHandle() {
 		return animGh;
 	}
-
+	//スキルアイコン画像のGhを取得する
 	inline const int& GetSkillIconGh() {
 		return iconGh;
 	}
