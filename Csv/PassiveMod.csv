@@ -1,0 +1,11 @@
+id(int),ModType,ModName,ModEffect,AttackRate,AddAttack,DefRate,AddDef,SpeedRate,AddSpeed,HpRate,ExtraDamageRate,AddGold,AddExp,Gh(std::string)
+100,0,攻撃力%上昇,攻撃力+#%,20,0,0,0,0,0,0,0,0,0,graphics/
+101,0,防御力%上昇,防御力+#%,0,0,20,0,0,0,0,0,0,0,graphics/
+102,0,速度%上昇,速度+#%,0,0,0,0,20,0,0,0,0,0,graphics/
+103,0,攻撃力定数上昇,攻撃力+#,0,10,0,0,0,0,0,0,0,0,graphics/
+104,0,防御力定数上昇,防御力+#,0,0,0,10,0,0,0,0,0,0,graphics/
+105,0,速度定数上昇,速度+#%,0,0,0,0,0,10,0,0,0,0,graphics/
+106,0,追加ダメージ%上昇,追加ダメージ+#%,0,0,0,0,0,0,0,20,0,0,graphics/
+107,0,最大HP%上昇,最大HP+#%,0,0,0,0,0,0,20,0,0,0,graphics/
+108,0,獲得Gold定数上昇,獲得Gold+#,0,0,0,0,0,0,0,0,50,0,graphics/
+109,0,獲得経験値定数上昇,獲得経験値+#,0,0,0,0,0,0,0,0,0,10,graphics/

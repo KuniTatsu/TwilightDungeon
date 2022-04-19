@@ -8,6 +8,7 @@
 #include<string>
 
 class Skill;
+class PassiveMod;
 
 class Actor {
 public:
@@ -168,5 +169,8 @@ protected:
 	//スキル関連
 	//所持スキル
 	std::vector<Skill*>mySkill = {};
+
+	//所持パッシブ効果
+	std::vector<PassiveMod*>myMod = {};
 
 };

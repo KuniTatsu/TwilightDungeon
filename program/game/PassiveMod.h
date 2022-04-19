@@ -8,29 +8,37 @@
 class PassiveMod
 {
 public:
-	PassiveMod();
+	PassiveMod(int ModId, int ModType, std::string ModName,float AttackRate,float DefRate,float SpeedRate,float AddAttack,float AddDef,float AddSpeed,
+		float ExtraDamage,float ExtraHp,int AddGold,int AddExp);
 	~PassiveMod();
 
 private:
 	//ModId
-	int skillId = 0;
+	int modId = 0;
 	//Modƒ^ƒCƒv
-	int skillType = 0;
+	int modType = 0;
 	//Mod‚Ì–¼‘O
 	std::string name = "";
 
 	//UŒ‚”{—¦’l
-	float damageRate = 0;
+	float attackRate = 0;
 	//UŒ‚‰ÁZ’l
-	float addDamage = 0;
+	float addAttack = 0;
+
 	//–hŒä”{—¦’l
 	float defRate = 0;
 	//–hŒä‰ÁZ’l
 	float addDef = 0;
+
 	//‘¬“x”{—¦’l
-	float SpeedRate = 0;
+	float speedRate = 0;
 	//‘¬“x‰ÁZ’l
 	float addSpeed = 0;
+
+	//’Ç‰Áƒ_ƒ[ƒW”{—¦’l
+	float extraDamageRate = 0;
+	//Å‘åHp’Ç‰Á”{—¦’l
+	float extraHpRate = 0;
 
 	//Šl“¾Gold‰ÁZ
 	int addGold = 0;

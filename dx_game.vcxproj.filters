@@ -93,6 +93,7 @@
     <ClCompile Include="program\game\CampScene.cpp" />
     <ClCompile Include="program\game\ResourcesManager.cpp" />
     <ClCompile Include="program\game\SkillManager.cpp" />
+    <ClCompile Include="program\game\PassiveMod.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="program\support\FrameRateController.h">
@@ -199,5 +200,6 @@
     <ClInclude Include="program\game\SkillManager.h">
       <Filter>program\game</Filter>
     </ClInclude>
+    <ClInclude Include="program\game\PassiveMod.h" />
   </ItemGroup>
 </Project>
