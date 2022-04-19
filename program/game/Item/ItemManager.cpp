@@ -75,6 +75,7 @@ int ItemManager::GetRandomItemWithWeight(int PlayerLevel)
 		// Ÿ‚Ì‘ÎÛ‚ğ’²‚×‚é
 		rand -= itemWeightList[i];
 	}
+	t2k::debugTrace("\n%d\n", selectedItemId);
 	return selectedItemId;
 }
 
