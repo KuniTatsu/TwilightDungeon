@@ -13,6 +13,8 @@ public:
 
 	Skill* GetSkill(int SkillType, int SkillId);
 
+	PassiveMod* GetMod(int ModType, int ModId);
+
 private:
 	//--------スキルのロード------------------------------//
 	void LoadSkillCsv();

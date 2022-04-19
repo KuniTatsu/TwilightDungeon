@@ -261,6 +261,9 @@ private:
 	//落ちているアイテムの描画
 	void DrawPopItem();
 
+	//アイテム取得判定
+	bool DetectItem();
+
 	//インベントリで選んだアイテムを一時的に取得する変数
 	Item* itemBuf = nullptr;
 

@@ -2,12 +2,16 @@
 #include"Item.h"
 #include"equipItem.h"
 #include"../GameManager.h"
+#include"DxLib.h"
+#include<random>
 
 extern GameManager* gManager;
 ItemManager::ItemManager()
 {
 	itemMaster.resize(4);
 	LoadItem();
+	LoadDropWeight();
+
 }
 
 ItemManager::~ItemManager()
@@ -34,10 +38,44 @@ Item* ItemManager::GetItemData(int ItemId)
 
 int ItemManager::GetRamdomTypeItemId(int ItemType)
 {
-	int num = itemMaster[ItemType].size()-1;
+	int num = itemMaster[ItemType].size() - 1;
 	int rand = gManager->GetRandEx(0, num);
 
 	return itemMaster[ItemType][rand]->getItemData(0);
+}
+//アイテムをウェイトに応じて抽選する関数
+int ItemManager::GetRandomItemWithWeight(int PlayerLevel)
+{
+	std::random_device rnd;				 // 非決定的な乱数生成器->初期シードに使う
+	//ランダムな数を求めるための関数名を決める
+	std::mt19937 GetRandom(rnd());       // メルセンヌ・ツイスタの32ビット版、引数は初期シード
+
+	int totalWeight = 0;
+	int selectedItemId = 0;
+
+	//totalWeightを求める->いずれLevelによって出現するアイテムを変化させ、その場で作ったアイテムリストのweightで計算するようにする
+	for (int i = 0; i < itemSumNum; ++i) {
+		totalWeight += itemWeightList[i];
+	}
+
+	//一定範囲の一様分布乱数取得
+	std::uniform_int_distribution<> Weight(0, totalWeight);
+
+	//アイテムをランダムで決める
+	int rand = Weight(GetRandom);
+
+	//抽選
+	for (int i = 0; i < itemSumNum; i++) {
+		if (rand < itemWeightList[i]) {
+			//アイテム決定
+			selectedItemId = i;
+			break;
+		}
+
+		// 次の対象を調べる
+		rand -= itemWeightList[i];
+	}
+	return selectedItemId;
 }
 
 void ItemManager::LoadItem()
@@ -61,14 +99,25 @@ void ItemManager::LoadItem()
 
 		//消費アイテムなら
 		if (type < 2) {
-			Item* newItem = new Item(id, type, loadItem[i][2], manpuku, heal, damage, price,loadItem[i][10], loadItem[i][13]);
+			Item* newItem = new Item(id, type, loadItem[i][2], manpuku, heal, damage, price, loadItem[i][10], loadItem[i][13]);
 			itemMaster[type].emplace_back(newItem);
 		}
 		else {
-			equipItem* newItem = new equipItem(id, type, loadItem[i][2], manpuku, heal, damage, loadItem[i][10], subId, price,loadItem[i][13], equipHp, equipAtack, equipDefence, equipSpeed,1);
+			equipItem* newItem = new equipItem(id, type, loadItem[i][2], manpuku, heal, damage, loadItem[i][10], subId, price, loadItem[i][13], equipHp, equipAtack, equipDefence, equipSpeed, 1);
 			itemMaster[type].emplace_back(newItem);
 		}
 		itemSumNum++;
 	}
 	gManager->SetItemNum(itemSumNum);
+}
+
+void ItemManager::LoadDropWeight()
+{
+	loadWeight = t2k::loadCsv("Csv/ItemDropWeight.csv");
+
+	for (int i = 1; i < loadWeight.size(); ++i) {
+		//アイテムのウェイトのみを格納するvectorに登録
+		itemWeightList.emplace_back(stoi(loadWeight[i][3]));
+	}
+
 }

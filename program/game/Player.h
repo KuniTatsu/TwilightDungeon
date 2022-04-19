@@ -44,11 +44,17 @@ public:
 	//arg2:0->hp,1->attack,2->defence,3->speed
 	int GetStatusFromEquipment(int subId,int statusType);
 
+	//LocalPos‚Ìæ“¾
 	inline t2k::Vector3 GetPlayerLocalPos() {
 		return playerInMap;
 	}
-
+	//LocalPos‚Ìİ’è
 	void SetPlayerLocalPos();
+
+	//Level‚Ìæ“¾ŠÖ”
+	inline int GetPlayerLevel() {
+		return level;
+	}
 
 	//ˆÚ“®ŠÖ”
 	bool Move()override;

@@ -34,6 +34,11 @@ Skill* SkillManager::GetSkill(int SkillType, int SkillId)
 	return skillMaster[SkillType][SkillId];
 }
 
+PassiveMod* SkillManager::GetMod(int ModType, int ModId)
+{
+	return ModMaster[ModType][ModId];
+}
+
 void SkillManager::LoadSkillCsv()
 {
 	loadSkill = t2k::loadCsv("Csv/Skill.csv");

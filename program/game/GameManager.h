@@ -142,6 +142,9 @@ public:
 	//アイテムタイプからランダムなアイテムIdを取得する関数
 	int GetRandItemData(int ItemType);
 
+	//全アイテムからウェイトに応じたアイテムを抽選する関数
+	int GetItemWithWeight(int PlayerLevel);
+
 	//アイテムポインタからアイテムIdを取得する関数
 	int GetItemId(Item* Item);
 

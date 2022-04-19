@@ -89,23 +89,30 @@ void DungeonScene::Update()
 		if (gManager->minimapDraw)gManager->minimapDraw = false;
 		else gManager->minimapDraw = true;
 	}
-	//アイテム当たり判定感知
-	for (auto item : dropItems) {
-		//アイテムとプレイヤーが重なったら
-		if (item->DetectOnPlayer(playerPos)) {
-			//アイテムをすでに拾ってなければ
-			if (itemGetFlag) {
-				gManager->AddItemToInventory(item->GetItemId(), gManager->inventories, gManager->inventoryNum);
-				item->SetIsLiveFalse();
-				itemGetFlag = false;
-			}
+	if (DetectItem()) {
+		for (auto item : dropItems) {
+			if (item->GetIsLive())continue;
+			if (gManager->PopDetectItem(item, dropItems))break;
 		}
 	}
 
-	for (auto item : dropItems) {
+	////アイテム当たり判定感知
+	//for (auto item : dropItems) {
+	//	//アイテムとプレイヤーが重なったら
+	//	if (item->DetectOnPlayer(playerPos)) {
+	//		//アイテムをすでに拾ってなければ
+	//		if (itemGetFlag) {
+	//			gManager->AddItemToInventory(item->GetItemId(), gManager->inventories, gManager->inventoryNum);
+	//			item->SetIsLiveFalse();
+	//			itemGetFlag = false;
+	//		}
+	//	}
+	//}
+	/*for (auto item : dropItems) {
 		if (item->GetIsLive())continue;
 		if (gManager->PopDetectItem(item, dropItems))break;
-	}
+	}*/
+
 	UpdateAnimation();
 	CheckAnimLive();
 
@@ -185,7 +192,7 @@ void DungeonScene::Draw()
 
 	}
 
-	 
+
 	//ここから下はシークエンスごとの描画
 
 	firstMenu->All();
@@ -306,7 +313,8 @@ void DungeonScene::MoveLevel(int addLevel)
 	RandEnemyCreate(5);
 	//アイテムの再生成
 	for (int i = 0; i < spawnItemNum; ++i) {
-		int random = rand() % gManager->GetItemNum();
+		//int random = rand() % gManager->GetItemNum();
+		int random = gManager->GetItemWithWeight(player->GetPlayerLevel());
 		SpawnItem(random);
 	}
 }
@@ -396,16 +404,19 @@ void DungeonScene::initDungeonScene()
 	eManager = std::make_shared<EnemyManager>();
 	//playerのインスタンスがなければ生成(debug)
 	gManager->MakePlayer(GameManager::SpawnScene::Dungeon);
+
+	//playerのポインタを取得
+	player = gManager->GetPlayer();
+
 	//敵をランダムで生成し配置
 	RandEnemyCreate(5);
 
 	//アイテムをランダムに生成し配置
 	for (int i = 0; i < 5; ++i) {
-		int random = rand() % gManager->GetItemNum();
+		//int random = rand() % gManager->GetItemNum();
+		int random = gManager->GetItemWithWeight(player->GetPlayerLevel());
 		SpawnItem(random);
 	}
-	//playerのポインタを取得
-	player = gManager->GetPlayer();
 	gManager->RunDungeonBgm();
 	dungeonClear = false;
 	//ショップ用インベントリを生成する
@@ -567,9 +578,13 @@ bool DungeonScene::SeqPlayerAttack(const float deltatime)
 			//アイテムのポップ判定
 			int odds = rand() % 100;
 			if (odds < DROPODDS) {
+				/*
 				//落ちるアイテムの判定
 				int random = rand() % gManager->GetItemNum();
 				//SpawnItem(random);
+				*/
+
+				int random = gManager->GetItemWithWeight(player->GetPlayerLevel());
 				t2k::Vector3 dropPos = enemy->pos;
 				DropItem(random, dropPos);
 			}
@@ -1497,6 +1512,26 @@ void DungeonScene::SetShopItem(int SetNum, int ItemType)
 		//ショップアイテムページにアイテムを追加
 		gManager->AddItemToInventory(itemId, shopPages, shopPage);
 	}
+}
+
+bool DungeonScene::DetectItem()
+{
+
+	//アイテム当たり判定感知
+	for (auto item : dropItems) {
+		//アイテムとプレイヤーが重なったら
+		if (item->DetectOnPlayer(playerPos)) {
+			//アイテムをすでに拾ってなければ
+			if (itemGetFlag) {
+				gManager->AddItemToInventory(item->GetItemId(), gManager->inventories, gManager->inventoryNum);
+				item->SetIsLiveFalse();
+				itemGetFlag = false;
+				break;
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 void DungeonScene::DropItem(const int ItemId, const t2k::Vector3 DropPos)

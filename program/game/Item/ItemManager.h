@@ -20,14 +20,33 @@ public:
 
 	//ItemTypeごとに振り分けられたItemMasterデータ
 	std::vector < std::vector<Item*>> itemMaster;
+	//アイテム総数を返す関数
+	inline int GetSumItemNum() {
+		return itemSumNum;
+	}
+	
 
-	int itemSumNum = 0;
-
+	//指定したアイテムIDに該当するアイテムのポインタを返す関数
 	Item* GetItemData(int ItemId);
 
+	//指定したアイテムタイプの中からランダムでアイテムIDを返す関数
 	int GetRamdomTypeItemId(int ItemType);
 
+	//playerのレベルからドロップウェイトに応じたアイテムIDを返す関数
+	int GetRandomItemWithWeight(int PlayerLevel);
+
 private:
+	//アイテムマスターデータのロード
 	void LoadItem();
+	//アイテムのドロップウェイトのロード
+	void LoadDropWeight();
+
+	//ロードしたアイテムのウェイト配列
+	std::vector<std::vector<std::string>> loadWeight;
+
+	std::vector<int>itemWeightList;
+
+	//アイテム総数
+	int itemSumNum = 0;
 
 };

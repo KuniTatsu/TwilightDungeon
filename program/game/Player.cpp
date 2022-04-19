@@ -75,6 +75,8 @@ void Player::ChangeEquipItem(equipItem* item)
 	for (int i = 0; i < 4; ++i) {
 		ChangeStatus(i, item->getItemData(i + 5), 1);
 	}
+	//HPバーの調整
+	nowHpVarWidth = nowHp / hp;
 }
 //装備を外す関数
 void Player::RemoveEquipItem(equipItem* item)
@@ -93,6 +95,8 @@ void Player::RemoveEquipItem(equipItem* item)
 	for (int i = 0; i < 4; ++i) {
 		ChangeStatus(i, statuses[i], 1);
 	}
+	//HPバーの調整
+	nowHpVarWidth = nowHp / hp;
 }
 //装備アイテムの合計ステータスを格納する関数
 void Player::GetSumStatusFromEquipment()

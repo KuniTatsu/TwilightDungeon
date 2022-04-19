@@ -320,7 +320,8 @@ Item* GameManager::GetItemData(const int ItemId)
 
 bool GameManager::OutOfRangeInItem(const int ItemId)
 {
-	if (ItemId > 0 && ItemId < iManager->itemSumNum + 1)return true;
+	//if (ItemId > 0 && ItemId < iManager->GetSumItemNum() + 1)return true;
+	if (ItemId > 0 && ItemId < itemNum + 1)return true;
 	return false;
 }
 //ドロップアイテムリストから特定のアイテムを削除
@@ -902,6 +903,11 @@ bool GameManager::CheckEquipItem(int subId)
 int GameManager::GetRandItemData(int ItemType)
 {
 	return iManager->GetRamdomTypeItemId(ItemType);
+}
+
+int GameManager::GetItemWithWeight(int PlayerLevel)
+{
+	return iManager->GetRandomItemWithWeight(PlayerLevel);
 }
 
 int GameManager::GetItemId(Item* Item)
