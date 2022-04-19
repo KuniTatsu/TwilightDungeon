@@ -16,6 +16,9 @@ public:
 	Item() {};
 	Item(int Id,int ItemType,std::string ItemName,int Saturation,int Heal,int HitDamage, int SellPrice,
 		std::string Gh,std::string Desc);
+
+	//アイテムIDから生成する場合
+	explicit Item(int Id);
 	
 	virtual ~Item();
 	//アイテムIDの取得

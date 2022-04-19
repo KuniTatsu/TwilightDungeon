@@ -34,6 +34,11 @@ Item::Item(int Id, int ItemType, std::string ItemName, int Saturation, int Heal,
 
 
 
+Item::Item(int Id)
+{
+	//Id‚©‚ç
+}
+
 Item::~Item()
 {
 	t2k::debugTrace("\nƒAƒCƒeƒ€‚ª”jŠü‚³‚ê‚Ü‚µ‚½\n");

@@ -1352,8 +1352,17 @@ void DungeonScene::ChangeInventory()
 
 void DungeonScene::SpawnItem(int ItemId)
 {
+	//アイテムデータをマスターから取得
 	Item* popItem = gManager->GetItemData(ItemId);
 	if (popItem == nullptr)return;
+
+	std::vector<int> intData = popItem->GetAllIntData();
+	std::vector<std::string> stringData = popItem->GetAllStringData();
+
+
+	//取得したデータでアイテムを新規生成
+	Item* newItem = new Item(intData[0], intData[1], stringData[0], intData[2], intData[3], intData[4], intData[5], stringData[1], stringData[2]);
+
 	//ポップさせる座標
 	t2k::Vector3 popPos;
 	//設置済みのアイテムがない
@@ -1385,8 +1394,8 @@ void DungeonScene::SpawnItem(int ItemId)
 
 		}
 	}
-	popItem->SetPos(popPos);
-	dropItems.emplace_back(popItem);
+	newItem->SetPos(popPos);
+	dropItems.emplace_back(newItem);
 }
 
 void DungeonScene::DrawPopItem()
@@ -1526,7 +1535,7 @@ bool DungeonScene::DetectItem()
 				gManager->AddItemToInventory(item->GetItemId(), gManager->inventories, gManager->inventoryNum);
 				item->SetIsLiveFalse();
 				itemGetFlag = false;
-				break;
+				
 				return true;
 			}
 		}
