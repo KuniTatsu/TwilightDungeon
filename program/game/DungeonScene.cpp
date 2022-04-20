@@ -1157,54 +1157,27 @@ bool DungeonScene::SeqFadeOut(const float deltatime)
 
 bool DungeonScene::ActivateSkillCheck()
 {
-	//1ボタンで1番のスキル発動
-	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_1)) {
-		//ここをアニメーションシークエンスに飛ばす
-		//もしスキルリストが空じゃないなら
-		if (!player->GetSkillList().empty()) {
-			lastUseSkill = player->GetSkillList()[0];
 
-			ChangeSequence(sequence::ANIMATION);
-			return true;
-		}
-		//スキルがない状態でスキルを使おうとすると通常攻撃する
-		else {
-			ChangeSequence(sequence::ANIMATION);
-			return true;
+	//int t[5] = { t2k::Input::KEYBORD_1, t2k::Input::KEYBORD_2 };
+	//各キーが押されたか確認
+	for (int i = 0; i < 3; ++i) {
+		if (t2k::Input::isKeyDownTrigger(static_cast<t2k::Input::eKeys>(skillKeys[i]))) {
+			//もしスキルリストが空じゃないなら
+			if (!player->GetSkillList().empty()) {
+				//スキルを登録
+				lastUseSkill = player->GetSkillList()[i];
+				//アニメーションシークエンスに飛ばす
+				ChangeSequence(sequence::ANIMATION);
+				return true;
+			}
+			//スキルがない状態でスキルを使おうとすると通常攻撃する
+			else {
+				ChangeSequence(sequence::ANIMATION);
+				return true;
+			}
 		}
 	}
-	//2番目のスキル発動
-	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_2)) {
-		//ここをアニメーションシークエンスに飛ばす
-		//もしスキル2があれば
-		if (player->GetSkillList()[1] != nullptr) {
-			lastUseSkill = player->GetSkillList()[1];
 
-			ChangeSequence(sequence::ANIMATION);
-			return true;
-		}
-		//スキルがない状態でスキルを使おうとすると通常攻撃する
-		else {
-			ChangeSequence(sequence::ANIMATION);
-			return true;
-		}
-	}
-	//3番目のスキル発動
-	else if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_3)) {
-		//ここをアニメーションシークエンスに飛ばす
-		//もしスキル3があれば
-		if (player->GetSkillList()[2] != nullptr) {
-			lastUseSkill = player->GetSkillList()[2];
-
-			ChangeSequence(sequence::ANIMATION);
-			return true;
-		}
-		//スキルがない状態でスキルを使おうとすると通常攻撃する
-		else {
-			ChangeSequence(sequence::ANIMATION);
-			return true;
-		}
-	}
 	return false;
 }
 
@@ -1535,7 +1508,7 @@ bool DungeonScene::DetectItem()
 				gManager->AddItemToInventory(item->GetItemId(), gManager->inventories, gManager->inventoryNum);
 				item->SetIsLiveFalse();
 				itemGetFlag = false;
-				
+
 				return true;
 			}
 		}

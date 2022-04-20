@@ -129,6 +129,9 @@ private:
 	//スキル攻撃のアニメーションタイマー
 	//const int SKILLANIMSPEED = 10;
 
+	//スキル発動用キー
+	int skillKeys[3] = { t2k::Input::KEYBORD_1, t2k::Input::KEYBORD_2, t2k::Input::KEYBORD_3 };
+
 	//スキル発動関数
 	bool ActivateSkillCheck();
 

@@ -186,6 +186,21 @@ void Enemy::MoveChasePoint()
 	int disX = abs(ChasePoint.x - myNowPos.x);
 	int disY = abs(ChasePoint.y - myNowPos.y);
 
+	//t2k::Vector3 v[4] ;
+	//v[dir::RIGHT]	= { 1, 0, 0 };
+	//v[dir::LEFT]	= { -1, 0, 0 };
+	//v[dir::UP]		= { 0, 1, 0 };
+	//v[dir::DOWN]	= { 0, -1, 0 };
+
+	//bool is_not_wall[dir::MAX] ;
+	//for (int i = 0; i < dir::MAX; ++i) is_not_wall[i] = gManager->GetMapChip(myNowPos + v[i]);
+
+	//bool is_there_enemy[dir::MAX];
+	//for (int i = 0; i < dir::MAX; ++i) is_there_enemy[i] = gManager->CheckIsThereEnemyToDir(myNowPos + v[i]);
+
+	//int Dir = (disX > disY) ? (myNowPos.x < ChasePoint.x) ? dir::RIGHT : dir::LEFT : (myNowPos.y < ChasePoint.y) ? dir::DOWN : dir::UP ;
+
+
 	//xÇÃÇŸÇ§Ç™í∑Ç¢èÍçá
 	if (disX > disY) {
 		//xï˚å¸Ç…êiÇﬁ
@@ -346,6 +361,8 @@ void Enemy::MoveChasePoint()
 			}
 		}
 	}
+
+
 }
 int Enemy::GetDir(const int dir, const int getDir)
 {

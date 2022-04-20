@@ -21,7 +21,8 @@ public:
 		UP,
 		RIGHT,
 		DOWN,
-		LEFT
+		LEFT,
+		MAX
 	};
 	dir mydir = UP;
 
