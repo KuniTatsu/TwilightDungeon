@@ -304,30 +304,30 @@ void Map::MiniMapDraw()
 	for (int i = 0; i < ground.size(); ++i) {
 		for (int k = 0; k < ground[i].size(); ++k) {
 			if (visited[i][k] == false) {
-				x += 10;
+				x += 8;
 				continue;
 			}
 			if (ground[i][k] == PASSWAY) {
-				DrawRotaGraph(x, y, 0.5, 0, miniMapChip[0], false);
+				DrawRotaGraph(x, y, 0.4, 0, miniMapChip[0], false);
 			}
 			else if (ground[i][k] == STAIRS) {
-				DrawRotaGraph(x, y, 0.5, 0, miniMapChip[0], false);
-				DrawRotaGraph(x, y, 0.5, 0, miniMapChip[1], false);
+				DrawRotaGraph(x, y, 0.4, 0, miniMapChip[0], false);
+				DrawRotaGraph(x, y, 0.4, 0, miniMapChip[1], false);
 			}
 			else if (ground[i][k] == SHOP) {
-				DrawRotaGraph(x, y, 0.5, 0, miniMapChip[0], false);
-				DrawRotaGraph(x, y, 0.5, 0, miniMapChip[2], false);
+				DrawRotaGraph(x, y, 0.4, 0, miniMapChip[0], false);
+				DrawRotaGraph(x, y, 0.4, 0, miniMapChip[2], false);
 			}
-			x += 10;
+			x += 8;
 		}
 		x = 150;
-		y += 10;
+		y += 8;
 	}
 
 
 	t2k::Vector3 PlayerPos = gManager->WorldToLocal(player->pos);
 	//ミニマップにプレイヤーの位置を描画
-	DrawRotaGraph(PlayerPos.x * 10 + 150, PlayerPos.y * 10 + 130, 0.5, 0, miniPlayer, true);
+	DrawRotaGraph(PlayerPos.x * 8 + 150, PlayerPos.y * 8 + 130, 0.4, 0, miniPlayer, true);
 
 
 }

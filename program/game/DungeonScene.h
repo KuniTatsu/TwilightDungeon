@@ -9,6 +9,9 @@
 #include"Scene.h"
 #include "../library/t2klib.h"
 #include<memory>
+#include<queue>
+#include<functional>
+#include<unordered_map>
 
 class Map;
 class Menu;
@@ -106,16 +109,37 @@ private:
 		NOWEQUIP
 	};
 	useType usetype = USABLE;
+	//playerポインタ
 	std::shared_ptr<Player> player = nullptr;
 
 	//飛んでいるアイテムリスト
-	std::list<Item*> throwItem;
-
 	std::list<std::shared_ptr<Item>>throwedItemList;
 	//敵管理マネージャ
 	std::shared_ptr<EnemyManager>eManager = nullptr;
 	//描画するアニメーションリスト
 	std::list<std::shared_ptr<Animation>>drawAnimationList;
+
+	//キューで各ターンの行動を管理したい
+	//std::queue<Actor*> actionQueue;
+
+	//最初のメニューの個数
+
+//menuごとの処理関数
+	void InventoryOpen();
+
+	void CheckFootPoint();
+	void Save();
+
+	
+	void BackTitle();
+
+	void MenuClose();
+
+	void menu5Select();
+	//menuごとの関数をまとめる
+	
+	std::vector<std::function<void(DungeonScene)>>menues;
+
 	//ダンジョンシーン初期化
 	void initDungeonScene();
 	//アニメーション更新
@@ -195,11 +219,14 @@ private:
 		FADEOUT,
 		FADEDESC,
 		SHOP,
-		CAMERA
+		CAMERA,
+		MAX
 
 	};
 	sequence nowSeq = sequence::FADEDESC;
 	sequence lastSeq = sequence::FADEDESC;
+
+	//const int sequences[static_cast<int>(sequence::MAX)] = {};
 
 	enum class DescType {
 		DUNGEONIN,
@@ -278,6 +305,7 @@ private:
 	void DeleteDeadEnemy();
 	//プレイヤー死亡処理
 	void WhenDeadPlayer();
+
 
 	//ショップのアイテム決定関数
 	void SetShopItem(int SetNum, int ItemType);
