@@ -674,6 +674,16 @@ bool GameManager::GetDoneBuy()
 {
 	return map->GetDoneBuy();
 }
+//‹AŠÒÎ‚ÌƒGƒlƒ‹ƒM[[“U
+void GameManager::AddEnergyToStone(int Num)
+{
+	//‚à‚µÅ‘å—Ê‚È‚çŒvŽZ‚µ‚È‚¢
+	if (returnStonePower >= MAXENERGY)return;
+	//ƒGƒlƒ‹ƒM[[“U
+	returnStonePower += Num;
+	//Å‘å’l‚ð’´‚¦‚È‚¢
+	if (returnStonePower >= MAXENERGY)returnStonePower = MAXENERGY;
+}
 
 void GameManager::Zoom()
 {

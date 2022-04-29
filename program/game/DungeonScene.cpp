@@ -335,12 +335,17 @@ void DungeonScene::initDungeonScene()
 
 	miniEnemy = gManager->LoadGraphEx("graphics/mini_Enemy.png");
 
-	//メニュー関数格納
-	menues.emplace_back(&DungeonScene::InventoryOpen);
-	menues.emplace_back(&DungeonScene::CheckFootPoint);
-	menues.emplace_back(&DungeonScene::Save);
-	menues.emplace_back(&DungeonScene::BackTitle);
-	menues.emplace_back(&DungeonScene::MenuClose);
+
+	//std::bind(static_cast<void(&)()>(DungeonScene::InventoryOpen));
+
+	////メニュー関数格納
+	//std::bind(&hoge::aaa, this)
+
+	menues.emplace_back(std::bind(&DungeonScene::InventoryOpen, this));
+	menues.emplace_back(std::bind(&DungeonScene::CheckFootPoint, this));
+	menues.emplace_back(std::bind(&DungeonScene::Save, this));
+	menues.emplace_back(std::bind(&DungeonScene::BackTitle, this));
+	menues.emplace_back(std::bind(&DungeonScene::MenuClose, this));
 
 
 
@@ -449,6 +454,32 @@ void DungeonScene::CheckAnimLive()
 	}
 }
 
+
+void DungeonScene::SelectItemUseMenu(int SelectNum)
+{
+	//使うでEnterを押したら
+	if (SelectNum == 0) {
+		gManager->sound->System_Play(gManager->sound->system_select);
+		ItemUse(drawInventoryPage);
+		use_usable->menu_live = false;
+		itemBuf = nullptr;
+		ChangeSequence(sequence::INVENTORY_OPEN);
+	}
+	//投げるでEnterを押したら
+	else if (SelectNum == 1) {
+		gManager->sound->System_Play(gManager->sound->system_select);
+		firstMenu->menu_live = false;
+		ItemThrow(drawInventoryPage);
+		ChangeSequence(sequence::THROWITEMMOVE);
+	}
+	//やめるでEnterを押したら
+	else if (SelectNum == 2) {
+		gManager->sound->System_Play(gManager->sound->system_cancel);
+		use_usable->menu_live = false;
+		itemBuf = nullptr;
+		ChangeSequence(sequence::INVENTORY_OPEN);
+	}
+}
 
 bool DungeonScene::SeqMain(const float deltatime)
 {
@@ -696,29 +727,29 @@ bool DungeonScene::SeqEnemyAttack(const float deltatime)
 
 bool DungeonScene::SeqFirstMenu(const float deltatime)
 {
-	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
-		//menues[firstMenu->SelectNum] ();
-		//menues[0] ();
+	////std::functionを使ってメニューを管理したかった
+	//if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+	//	//menues[firstMenu->SelectNum] ();
+	//	return true;
+	//}
+
+	//インベントリを開く
+	if (firstMenu->SelectNum == 0 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+		gManager->sound->System_Play(gManager->sound->system_select);
+		//menuの上下を操作出来なくする
+		firstMenu->manageSelectFlag = false;
+
+		//InventoryOpenシークエンスに移動する
+		ChangeSequence(sequence::INVENTORY_OPEN);
 		return true;
 	}
-
-	////インベントリを開く
-	//if (firstMenu->SelectNum == 0 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
-	//	gManager->sound->System_Play(gManager->sound->system_select);
-	//	//menuの上下を操作出来なくする
-	//	firstMenu->manageSelectFlag = false;
-	//	
-	//	//InventoryOpenシークエンスに移動する
-	//	ChangeSequence(sequence::INVENTORY_OPEN);
-	//	return true;
-	//}
-	////メニューを閉じる
-	//else if (firstMenu->SelectNum == 4 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
-	//	gManager->sound->System_Play(gManager->sound->system_cancel);
-	//	firstMenu->menu_live = false;
-	//	ChangeSequence(sequence::MAIN);
-	//	return true;
-	//}
+	//メニューを閉じる
+	else if (firstMenu->SelectNum == 4 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+		gManager->sound->System_Play(gManager->sound->system_cancel);
+		firstMenu->menu_live = false;
+		ChangeSequence(sequence::MAIN);
+		return true;
+	}
 
 	//Escキーでもメニューを閉じる
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_ESCAPE))
@@ -803,35 +834,14 @@ bool DungeonScene::SeqInventoryUse(const float deltatime)
 	//投擲アイテムと分けるべき
 	//消費アイテムなら
 	if (type < 2) {
-		//使うでEnterを押したら
-		if (use_usable->SelectNum == 0 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
-			gManager->sound->System_Play(gManager->sound->system_select);
-			ItemUse(drawInventoryPage);
-			use_usable->menu_live = false;
-			itemBuf = nullptr;
-			ChangeSequence(sequence::INVENTORY_OPEN);
-			return true;
-		}
-		//投げるでEnterを押したら
-		else if (use_usable->SelectNum == 1 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
-			gManager->sound->System_Play(gManager->sound->system_select);
-			firstMenu->menu_live = false;
-			ItemThrow(drawInventoryPage);
-			ChangeSequence(sequence::THROWITEMMOVE);
-			return true;
-		}
-		//やめるでEnterを押したら
-		else if (use_usable->SelectNum == 2 && t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
-			gManager->sound->System_Play(gManager->sound->system_cancel);
-			use_usable->menu_live = false;
-			itemBuf = nullptr;
-			ChangeSequence(sequence::INVENTORY_OPEN);
+		if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_RETURN)) {
+			SelectItemUseMenu(use_usable->SelectNum);
 			return true;
 		}
 	}
 	//装備アイテムなら
 	else {
-		equipItem* eItem = (equipItem*)itemBuf;
+		equipItem* eItem = static_cast<equipItem*> (itemBuf);
 		//装備している時
 		if (eItem->GetIsEquiped()) {
 			//使うでEnterを押したら
@@ -1463,19 +1473,15 @@ void DungeonScene::ItemUse(/*int selectNum, Inventory* inventory,*/ int inventor
 
 void DungeonScene::ItemThrow(int inventoryPage)
 {
-	//itemBuf->SetPos(player->pos);
 
-	//Item* throwedItem = itemBuf;
 	//ここで新しくitemBufと同じデータでアイテムを生成する
 	std::vector<int> intData = itemBuf->GetAllIntData();
 	std::vector<string> stringData = itemBuf->GetAllStringData();
 
-	//Item* throwedItem = new Item(intData[0], intData[1], stringData[0], intData[2], intData[3], intData[4], stringData[1], stringData[2]);
 	std::shared_ptr<Item>throwedItem = std::make_shared<Item>(intData[0], intData[1], stringData[0], intData[2], intData[3], intData[4], intData[5], stringData[1], stringData[2]);
 
 	throwedItem->SetPos(player->pos);
 	throwedItem->SetGoalPos(player->mydir);
-	//throwItem.emplace_back(throwedItem);
 
 	throwedItemList.emplace_back(throwedItem);
 	//インベントリからの消去
@@ -1533,34 +1539,36 @@ void DungeonScene::SetShopItem(int SetNum, int ItemType)
 //firstMenuのselect関数郡
 void DungeonScene::InventoryOpen()
 {
-	gManager->sound->System_Play(gManager->sound->system_select);
-	//menuの上下を操作出来なくする
-	firstMenu->manageSelectFlag = false;
+	t2k::debugTrace("\nmenu1\n");
+	//gManager->sound->System_Play(gManager->sound->system_select);
+	////menuの上下を操作出来なくする
+	//firstMenu->manageSelectFlag = false;
 
-	//InventoryOpenシークエンスに移動する
-	ChangeSequence(sequence::INVENTORY_OPEN);
+	////InventoryOpenシークエンスに移動する
+	//ChangeSequence(sequence::INVENTORY_OPEN);
 }
 
 void DungeonScene::CheckFootPoint()
 {
-	t2k::debugTrace("\nhogehoge\n");
+	t2k::debugTrace("\nmenu2\n");
 }
 
 void DungeonScene::Save()
 {
-	t2k::debugTrace("\nhogehoge\n");
+	t2k::debugTrace("\nmenu3\n");
 }
 
 void DungeonScene::BackTitle()
 {
-	t2k::debugTrace("\nhogehoge\n");
+	t2k::debugTrace("\nmenu4\n");
 }
 
 void DungeonScene::MenuClose()
 {
-	gManager->sound->System_Play(gManager->sound->system_cancel);
+	t2k::debugTrace("\nmenu5\n");
+	/*gManager->sound->System_Play(gManager->sound->system_cancel);
 	firstMenu->menu_live = false;
-	ChangeSequence(sequence::MAIN);
+	ChangeSequence(sequence::MAIN);*/
 }
 void DungeonScene::menu5Select()
 {

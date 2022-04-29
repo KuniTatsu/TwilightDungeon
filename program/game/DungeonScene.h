@@ -136,9 +136,19 @@ private:
 	void MenuClose();
 
 	void menu5Select();
+
 	//menuごとの関数をまとめる
-	
+	//std::vector<std::function<void(void*)>>menues;
 	std::vector<std::function<void(DungeonScene)>>menues;
+
+	/*
+	functionArray.emplace_back(std::bind(&hoge::aaa, this));
+    functionArray.emplace_back(std::bind(&hoge::bbb, this));
+    functionArray.emplace_back(std::bind(&hoge::bbb, this));
+	\*/
+
+
+
 
 	//ダンジョンシーン初期化
 	void initDungeonScene();
@@ -168,6 +178,10 @@ private:
 	int miniEnemy = 0;
 
 	t2k::Vector3 playerPos = {};
+
+
+	//消費アイテム使用シークエンス用関数
+	void SelectItemUseMenu(int SelectNum);
 
 	t2k::Sequence<DungeonScene*> mainSequence =
 		t2k::Sequence<DungeonScene*>(this, &DungeonScene::SeqDescFade);

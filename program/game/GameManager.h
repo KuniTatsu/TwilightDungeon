@@ -441,8 +441,24 @@ public:
 	//同マップで買い物したフラグの取得
 	bool GetDoneBuy();
 
+	//帰還石のエネルギー充填
+	void AddEnergyToStone(int Num);
+
 private:
+	//表示するログ
 	std::string Log[7] = {};
+
+	//帰還石の最大エネルギー量
+	const int MAXENERGY = 100;
+	//帰還石のエネルギー
+	int returnStonePower = 0;
+
+	//画像ハンドル
+	int maxEnergy_gh = 0;
+	int nowEnergy_gh = 0;
+	//現在の所有エネルギーをUIでバーにして表示したい
+	//DrawRotaGraph(pos.x , pos.y, 1, 0, maxEnergy_gh, false);
+	//DrawRotaGraph3(pos.x , pos.y, 0, 0,nowEnergyWidth, 1, 0, nowEnergy_gh, false);
 
 	int test = 0;
 	//アイテムの総数
