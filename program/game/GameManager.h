@@ -443,6 +443,15 @@ public:
 
 	//帰還石のエネルギー充填
 	void AddEnergyToStone(int Num);
+	//帰還石のエネルギー参照
+	inline int& GetEnergyAmount() {
+		return returnStonePower;
+	}
+
+	//帰還石のエネルギーが最大値を超えているかどうか
+	inline bool IsOverMax() {
+		return returnStonePower > MAXENERGY;
+	}
 
 private:
 	//表示するログ

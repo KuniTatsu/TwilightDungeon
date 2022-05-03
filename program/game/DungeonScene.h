@@ -169,9 +169,19 @@ private:
 	//スキル発動関数
 	bool ActivateSkillCheck();
 
-	//int ATTACKEFFECTINDEX = 5;
 	//debug キャンプに戻る
 	void ReturnCamp();
+
+	//チャージ方法
+	enum class CHARGE:uint32_t {
+		WALK,
+		ENEMY,
+		MAX
+	};
+
+	//帰還石チャージ値
+	const int CHARGEENERGY[static_cast<uint32_t>(CHARGE::MAX)] = { 1,5 };
+
 	//敵のミニマップ描画 いずれひとつにする
 	void DrawMiniEnemy();
 	//ミニマップエネミーgh

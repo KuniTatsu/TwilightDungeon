@@ -70,11 +70,21 @@ void DungeonScene::Update()
 
 	//イベントの実行
 
-	//デバッグ
+	//エネルギーが溜まっていたらキャンプに戻る
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_C)) {
-		ReturnCamp();
-		return;
+		//デバッグ
+		if (gManager->isDebug) {
+			ReturnCamp();
+			return;
+		}
+
+		if (gManager->IsOverMax()) {
+			ReturnCamp();
+			return;
+		}
 	}
+
+
 
 	//デバッグ切り替え
 	if (t2k::Input::isKeyDownTrigger(t2k::Input::KEYBORD_F2)) {
@@ -341,11 +351,11 @@ void DungeonScene::initDungeonScene()
 	////メニュー関数格納
 	//std::bind(&hoge::aaa, this)
 
-	menues.emplace_back(std::bind(&DungeonScene::InventoryOpen, this));
-	menues.emplace_back(std::bind(&DungeonScene::CheckFootPoint, this));
-	menues.emplace_back(std::bind(&DungeonScene::Save, this));
-	menues.emplace_back(std::bind(&DungeonScene::BackTitle, this));
-	menues.emplace_back(std::bind(&DungeonScene::MenuClose, this));
+	//menues.emplace_back(std::bind(&DungeonScene::InventoryOpen, this));
+	//menues.emplace_back(std::bind(&DungeonScene::CheckFootPoint, this));
+	//menues.emplace_back(std::bind(&DungeonScene::Save, this));
+	//menues.emplace_back(std::bind(&DungeonScene::BackTitle, this));
+	//menues.emplace_back(std::bind(&DungeonScene::MenuClose, this));
 
 
 
@@ -573,7 +583,8 @@ bool DungeonScene::SeqMain(const float deltatime)
 		//部屋の中に入ったならミニマップの部屋を表示させる
 		gManager->UpdateMiniMap(playerPos);
 
-
+		//帰還石のエネルギー充填
+		gManager->AddEnergyToStone(CHARGEENERGY[static_cast<uint32_t>(CHARGE::WALK)]);
 
 		ChangeSequence(sequence::ENEMYACT);
 		if (player->skip)player->skip = false;
@@ -604,6 +615,9 @@ bool DungeonScene::SeqPlayerAttack(const float deltatime)
 			gManager->addLog(enemy->GetName() + "を倒した!!");
 			//コインのドロップ
 			player->ChangeHaveCoin(DROPCOIN);
+
+			//帰還石のエネルギー充填
+			gManager->AddEnergyToStone(CHARGEENERGY[static_cast<uint32_t>(CHARGE::ENEMY)]);
 
 			//アイテムのポップ判定
 			int odds = rand() % 100;
